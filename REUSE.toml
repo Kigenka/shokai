@@ -1,0 +1,28 @@
+# REUSE (https://reuse.software) map of licenses by path. License texts are in LICENSES/.
+# Code and the whole specification: Apache-2.0. Explanatory documentation in docs/: CC-BY-4.0.
+# Copyright holder: Yu Sung Yeh; Kigenka is the steward brand (see NOTICE).
+version = 1
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Yu Sung Yeh"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "docs/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Yu Sung Yeh"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "CODE_OF_CONDUCT.md"
+precedence = "override"
+SPDX-FileCopyrightText = "Contributor Covenant contributors (adapted from Contributor Covenant 2.1)"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "DCO.txt"
+precedence = "override"
+SPDX-FileCopyrightText = "2004, 2006 The Linux Foundation and its contributors"
+SPDX-License-Identifier = "LicenseRef-DCO-verbatim"

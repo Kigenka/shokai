@@ -1,0 +1,165 @@
+// Verification of standing artifacts beyond the card: allowances and their published status (§5.2, the Revocation status extension), owner consents
+// (§8.1), peer invitations (the Peer meetings extension), and vouch revocation logs (§4). Pure functions over verified bytes plus what the host
+// fetched itself. All fail closed. v0.2.3: owner (ES256) signatures are checked against the owner's relying party.
+import type * as S from "./shapes.js";
+import { digestOf, parseMoney, badTimestamps, isExpired, notYetValid, isTimestamp, sameDid } from "./crypto.js";
+import type { Verifier } from "./verify.js";
+
+/**
+ * What this host fetched itself, keyed by URL (allowance revocation_status the Revocation status extension, a vouch's revocation_log §4, evidence §2.5).
+ * Filled by the transport just before a message is handled (the gate stays a pure function of what was fetched).
+ * A URL that is absent or `ok: false` was unreachable.
+ */
+export type FetchCache = Map<string, { ok: boolean; at: string; body?: unknown; digest?: string }>;
+/** Owner DID → relying party id, learned from verified cards (owner_binding.rp_id). */
+export type RpOf = (ownerId: string) => string | undefined;
+export type Check = { ok: true } | { ok: false; why: string };
+const fail = (why: string): Check => ({ ok: false, why });
+const inWindow = (now: string, from: string, to: string) => !notYetValid(from, now) && !isExpired(to, now);
+
+/** §4: fetched log = RevocationLogEntry[] (host-3-007). Chain and every revocation's signature are checked; broken/unreachable ⇒ no weight. */
+export const STATUS_MAX_LIFETIME_S = 3600;   // D12
+export function vouchLogState(fetched: FetchCache, v: S.Vouch, verifier: Verifier, rpOf: RpOf): "clear" | "revoked" | "unreachable" | "broken" | "no_log" {
+  if (!v.revocation_log) return "no_log";
+  const f = fetched.get(v.revocation_log); if (!f || !f.ok) return "unreachable";
+  const log = Array.isArray(f.body) ? (f.body as S.RevocationLogEntry[]) : null; if (!log) return "broken";
+  const c = checkLog(log, verifier, v.introducer.principal_id, rpOf);
+  if (!c.ok) return "broken";
+  return log.some((e) => e.revocation.payload.vouch_id === v.vouch_id) ? "revoked" : "clear";
+}
+export function checkLog(log: S.RevocationLogEntry[], verifier: Verifier, introducer: string | undefined, rpOf: RpOf): Check {
+  let prev: string = "genesis";
+  for (let i = 0; i < log.length; i++) {
+    const e = log[i];
+    if (!e || e.seq !== i || e.prev_hash !== prev) return fail(`seq/prev at ${i}`);
+    if (badTimestamps(e.revocation).length) return fail(`timestamp at ${i}`);
+    const who = e.revocation?.payload?.introducer_id;
+    const rd = verifier.signed(e.revocation, who, undefined, undefined, rpOf(who));
+    if (!rd) return fail(`revocation signature at ${i}`);
+    if (introducer && !sameDid(who, introducer)) return fail(`foreign introducer at ${i}`);
+    if (e.entry_hash !== digestOf({ seq: e.seq, prev_hash: e.prev_hash, revocation_digest: e.revocation.payload_digest })) return fail(`entry_hash at ${i}`);
+    prev = e.entry_hash;
+  }
+  return { ok: true };
+}
+/** Build the next log entry (tests; an introducer publishes its own log). */
+export function appendLog(log: S.RevocationLogEntry[], revocation: S.Signed<S.VouchRevocation>): S.RevocationLogEntry {
+  const seq = log.length; const prev_hash = seq === 0 ? "genesis" : log[seq - 1].entry_hash;
+  const e: S.RevocationLogEntry = { seq, prev_hash, revocation, entry_hash: digestOf({ seq, prev_hash, revocation_digest: revocation.payload_digest }) };
+  log.push(e); return e;
+}
+
+/** §8.1: one signed OwnerConsent; passkey actions need subject digest, expiry and shown_to_owner inside the signature, checked against the owner's rp_id. */
+export function verifyOwnerConsent(verifier: Verifier, c: S.Signed<S.OwnerConsent> | undefined, x: { action: S.OwnerConsent["action"]; owner_id: string;
+  subject: { kind: S.OwnerConsent["subject_ref"]["kind"]; id: string; digest: string }; now: string; rpId: string | undefined; revoked?: Set<string>; representative_id?: string }): Check {
+  const p = c?.payload; if (!p) return fail("no_consent");
+  if (badTimestamps(c).length) return fail("timestamp_form");
+  if (p.action !== x.action) return fail("wrong_action");
+  if (p.decision !== "approve" && p.decision !== "decline") return fail("no_decision");
+  if (!sameDid(p.owner_id, x.owner_id)) return fail("wrong_owner");
+  if (p.assurance !== "passkey") return fail("not_passkey");                          // chat_reply where a passkey is required (C95)
+  if (p.subject_ref?.kind !== x.subject.kind || p.subject_ref.id !== x.subject.id || p.subject_ref.digest !== x.subject.digest) return fail("wrong_subject");
+  if (!p.expires_at || isExpired(p.expires_at, x.now)) return fail("expired_or_no_expiry");
+  if (!p.issued_at || notYetValid(p.issued_at, x.now)) return fail("issued_at");
+  if (!p.shown_to_owner?.text || !p.shown_to_owner.locale) return fail("no_shown_to_owner");
+  if (x.representative_id && p.representative_id !== x.representative_id) return fail("wrong_representative");
+  if (x.revoked?.has(p.consent_id + "|" + p.owner_id)) return fail("revoked");   // key: consent_id|owner_id (only its owner can revoke a consent)
+  if (!verifier.signed(c!, x.owner_id, undefined, "ES256", x.rpId)) return fail("signature");   // never the representative's signature (signer = owner)
+  return { ok: true };
+}
+
+/** §5.2 / the Revocation status extension: a published or stapled AllowanceStatus, signed by the owner binding's platform key, fresh (D12, v0.2.4: lifetime ≤ 1 h; now < next_update). */
+export function verifyAllowanceStatus(verifier: Verifier, st: S.Signed<S.AllowanceStatus> | undefined, a: S.Allowance, allowanceDigest: string, card: S.RepresentativeCard, now: string): Check {
+  const p = st?.payload; if (!p) return fail("no_status");
+  if (badTimestamps(st).length || !isTimestamp(p.issued_at) || !isTimestamp(p.next_update)) return fail("status_timestamp_form");
+  if (p.allowance_id !== a.allowance_id || p.allowance_digest !== allowanceDigest) return fail("status_for_another_allowance");
+  const platform = card.owner_binding?.platform_key; if (!platform) return fail("no_platform_key");
+  if (!verifier.signed(st!, platform)) return fail("status_signature");
+  if (Date.parse(p.next_update) - Date.parse(p.issued_at) > STATUS_MAX_LIFETIME_S * 1e3) return fail("status_lifetime_over_1h");
+  if (notYetValid(p.issued_at, now)) return fail("status_issued_in_future");
+  if (!(Date.parse(now) < Date.parse(p.next_update))) return fail("status_stale");
+  if (p.status === "revoked") return fail("revoked");
+  if (p.status !== "active") return fail("status_unknown");
+  return { ok: true };
+}
+
+/** §5.2 host verification of a mandate issued under an allowance. Any failure → MANDATE_INVALID. */
+export function verifyAllowance(verifier: Verifier, pres: S.AllowancePresentation | undefined, m: S.Mandate, card: S.RepresentativeCard,
+  x: { now: string; category?: S.PlaceCategory; host_principal: string; fetched: FetchCache; stapled?: S.Signed<S.AllowanceStatus> }): Check {
+  const ua = m.under_allowance; if (!ua) return fail("not_under_allowance");
+  const a = pres?.allowance?.payload; const g = pres?.grant;
+  if (!a || !g) return fail("no_presentation");
+  if (badTimestamps(pres!.allowance).length) return fail("timestamp_form");
+  const owner = card.owner_binding?.owner_id; if (!owner || !sameDid(a.owner_id, owner)) return fail("owner_binding");
+  if (a.representative_id !== card.representative_id || a.card_id !== card.card_id) return fail("allowance_binding");
+  if (a.allowance_id !== ua.allowance_id) return fail("allowance_id");
+  const ad = verifier.signed(pres!.allowance, owner, undefined, "ES256", card.owner_binding?.rp_id);
+  if (!ad) return fail("owner_passkey");                                                       // forged allowance (C97)
+  if (ad !== ua.allowance_digest) return fail("allowance_digest");
+  const gd = digestOf(g);
+  if (gd !== ua.grant_digest || !a.grant_digests.includes(gd)) return fail("grant_digest");
+  if (typeof g.salt !== "string" || g.salt.length < 22) return fail("grant_salt");
+  if (!inWindow(x.now, a.valid_from, a.expires_at)) return fail("allowance_expired");
+  if (Date.parse(m.valid_from) < Date.parse(a.valid_from) || Date.parse(m.expires_at) > Date.parse(a.expires_at)) return fail("mandate_outside_allowance_validity");
+  if (!g.purposes.includes(m.purpose.code)) return fail("purpose_not_in_grant");               // purpose swap (C97)
+  if (m.allowed_actions.some((act) => !g.actions.includes(act))) return fail("actions_not_in_grant");
+  const placeOk = (g.counterparties ?? []).includes(x.host_principal) || (!!x.category && g.place_categories.includes(x.category));
+  if (!placeOk) return fail("place_not_in_grant");                                             // category swap (C97)
+  const mm = m.limits?.max_amount ? parseMoney(m.limits.max_amount) : null;
+  if (!g.spend) { if (m.limits?.max_amount) return fail("spend_without_budget"); }
+  else {
+    const cap = parseMoney(g.spend.per_seat ?? g.spend.per_period); const per = parseMoney(g.spend.per_period);
+    if (!cap || !per || !["P1D", "P7D", "P1M"].includes(g.spend.period)) return fail("grant_budget_malformed");
+    if (mm && (mm.currency !== cap.currency || mm.units > cap.units || mm.units > per.units)) return fail("max_amount_over_grant");   // spend above the grant (C97)
+  }
+  // Status (§5.2, the Revocation status extension): a fresh stapled status, else what we fetched from revocation_status; nothing fresh ⇒ fail closed.
+  // A valid fetched status that says `revoked` wins over any stapled one (a revocation published after the staple).
+  const f = x.fetched.get(a.revocation_status);
+  const fetchedCheck = f?.ok ? verifyAllowanceStatus(verifier, f.body as S.Signed<S.AllowanceStatus>, a, ad, card, x.now) : null;
+  if (fetchedCheck && !fetchedCheck.ok && fetchedCheck.why === "revoked") return fetchedCheck;
+  if (x.stapled) { const s = verifyAllowanceStatus(verifier, x.stapled, a, ad, card, x.now); if (s.ok) return s; if (s.why === "revoked") return s; }
+  if (!fetchedCheck) return fail(x.stapled ? "stapled_status_not_fresh_and_url_unreachable" : "status_unreachable");
+  return fetchedCheck;
+}
+
+/**
+ * the Peer meetings extension: a pair-place request must carry the inviting owner's PeerInvitation and the invited owner's passkey accept_invitation,
+ * presented by a representative the invitation names; single use (spent at the farewell); dead once the acceptance is revoked.
+ */
+export function verifyPeerInvitation(verifier: Verifier, pi: S.InvitationRequest["peer_invitation"], x: { encounter_id: string; host_owner: string; host_rep: string;
+  visitor_rep: string; visitor_principal: string; invitation_ref?: { invitation_id: string; digest: string }; now: string; rpOf: RpOf; spent: Set<string>; revoked: Set<string> }): Check {
+  const inv = pi?.invitation?.payload; if (!inv || !pi?.acceptance) return fail("no_peer_invitation");
+  if (badTimestamps(pi.invitation).length || badTimestamps(pi.acceptance).length) return fail("timestamp_form");
+  if (inv.place?.kind !== "pair" || inv.place.place_id !== x.encounter_id) return fail("not_this_pair_place");
+  if (!inv.representatives.includes(x.host_rep) || !inv.representatives.includes(x.visitor_rep)) return fail("representatives");   // replay by another agent
+  const owners = [inv.from_owner.principal_id, inv.to_owner.principal_id];
+  if (!owners.some((o) => sameDid(o, x.host_owner)) || !owners.some((o) => sameDid(o, x.visitor_principal)) || sameDid(x.host_owner, x.visitor_principal)) return fail("owners");
+  if (!inWindow(x.now, inv.valid_from, inv.expires_at)) return fail("invitation_expired");
+  if (x.spent.has(inv.invitation_id)) return fail("spent");
+  const d = verifier.signed(pi.invitation, inv.from_owner.principal_id, undefined, "ES256", x.rpOf(inv.from_owner.principal_id));
+  if (!d) return fail("inviter_passkey");                                                       // impersonated inviter
+  const acc = verifyOwnerConsent(verifier, pi.acceptance, { action: "accept_invitation", owner_id: inv.to_owner.principal_id,
+    subject: { kind: "invitation", id: inv.invitation_id, digest: d }, now: x.now, rpId: x.rpOf(inv.to_owner.principal_id), revoked: x.revoked });
+  if (!acc.ok) return fail("acceptance:" + acc.why);
+  if (pi.acceptance.payload.decision !== "approve") return fail("declined");
+  if (!x.invitation_ref || x.invitation_ref.invitation_id !== inv.invitation_id || x.invitation_ref.digest !== d) return fail("introduction_without_invitation_ref");
+  return { ok: true };
+}
+
+/**
+ * v0.3.0-rc4 (§2.8, C196): an OwnerLink joins two of one owner's per-place identities for ONE place. Valid when: both owners are
+ * distinct, each signed it with an ES256 passkey signature (a user-verified WebAuthn assertion, Appendix A.1), it is addressed to this
+ * place, it is in its time window, and one of the owners is the card's principal. The place keeps it to itself (§12.4).
+ */
+export const OWNER_LINK_MAX_LIFETIME_S = 400 * 86400;
+export function verifyOwnerLink(verifier: Verifier, l: S.Signed<S.OwnerLink> | undefined, x: { audience: string; principal: string; now: string; rpOf: RpOf }): Check & { other?: string } {
+  const p = l?.payload; if (!p) return { ok: false, why: "missing" };
+  if (!Array.isArray(p.owners) || p.owners.length !== 2 || typeof p.owners[0] !== "string" || typeof p.owners[1] !== "string" || sameDid(p.owners[0], p.owners[1])) return { ok: false, why: "owners" };
+  if (verifier.mode === "real" && badTimestamps(l!).length) return { ok: false, why: "timestamp" };
+  if (!sameDid(p.audience, x.audience)) return { ok: false, why: "audience" };
+  if (!isTimestamp(p.issued_at) || !isTimestamp(p.expires_at) || notYetValid(p.issued_at, x.now) || isExpired(p.expires_at, x.now)) return { ok: false, why: "expired" };
+  if (Date.parse(p.expires_at) - Date.parse(p.issued_at) > OWNER_LINK_MAX_LIFETIME_S * 1e3) return { ok: false, why: "lifetime" };
+  const i = p.owners.findIndex((o) => sameDid(o, x.principal)); if (i < 0) return { ok: false, why: "not_this_owner" };
+  for (const o of p.owners) if (!verifier.signed(l!, o, undefined, "ES256", x.rpOf(o))) return { ok: false, why: "signature" };
+  return { ok: true, other: p.owners[1 - i] };
+}

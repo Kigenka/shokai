@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install
+        run: npm run setup
+      - name: Spec trace lint (every MUST/SHOULD is tested)
+        run: npm run trace-lint
+      - name: Golden traces typecheck
+        run: npm run trace-typecheck
+      - name: Links resolve inside the spec bundle; version strings agree
+        run: npm run check-links
+      - name: Reference place server, prototype and HTTP suites
+        run: bash tools/run-all-suites.sh
+      - name: SDK (core in sync with the reference, unit tests, MCP gate, conformance self-test)
+        run: npm --prefix packages/shokai test
+      - name: Quickstart, as written, in a fresh directory
+        run: bash tools/verify-quickstart.sh
+
+  dco:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Every commit is signed off (DCO)
+        run: |
+          missing=0
+          for c in $(git rev-list ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}); do
+            git show -s --format=%B "$c" | grep -q '^Signed-off-by: ' || { echo "missing sign-off: $(git show -s --format='%h %s' "$c")"; missing=1; }
+          done
+          exit $missing

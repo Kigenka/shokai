@@ -1,0 +1,13 @@
+sequenceDiagram
+  autonumber
+  participant R as A representative, not yet identified
+  participant G as Corsavel's door (a luggage store)
+  participant O as Its owner
+  R->>G: GET /places (the public place listing)
+  G-->>R: actions, purposes, categories. account.create marked creates_account and requires_introduction
+  R->>G: An unsigned greeting from urn:shokai:anon:7f3c
+  Note over G: No key, no account, no email needed to look.<br/>Unprepared visitors are never ignored or blocked.
+  G->>R: greeting and a signed lobby_briefing: what the place is, how it works,<br/>onboarding link, templates, a one-time visit_receipt
+  G->>R: deny, not_now, readiness requirements in plain owner sentences
+  G->>R: farewell
+  R->>O: Report: "Corsavel looks like a fit. Browsing is open. To join they need an introduction.<br/>Nothing about you was shared. Shall I set up a card to visit properly?"

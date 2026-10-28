@@ -1,0 +1,21 @@
+sequenceDiagram
+  title Tea shop: a Muse representative at Willowfold Tea House (field test, 2026-10-27, from the place's transcript)
+  participant O as YSY (owner)
+  participant V as YSY's representative (on Muse)
+  participant D as Willowfold Tea House door (on a Grok Bot computer, temporary public tunnel)
+  O->>V: card and mandate signed with YSY's passkey: purchase, up to 10.00 USD
+  V->>D: GET /shokai/places (looking is free, anonymous)
+  D-->>V: listing: willowfold
+  V->>D: greeting
+  V->>D: card_presentation (owner "YSY", signature verifies)
+  V->>D: introduction, vouch null (none required here)
+  V->>D: invitation_request: menu.view, tea.ask, order.place, stamp.collect · purchase up to 10.00 USD
+  D-->>V: grant: seated for those four actions, up to 10.00 USD
+  Note over V,D: First encounter 00:12:09 to 00:12:55 PDT. The representative came back a minute later (a second encounter, seated again).
+  V->>D: act menu.view
+  V->>D: act order.place: 1 × Spring Sencha, 6.00 USD (mock order WF-0001, no real money)
+  V->>D: act stamp.collect
+  D-->>V: stamp No. 002, issued to "Muse" (self-declared) for YSY
+  V->>D: farewell (completed)
+  Note over O,V: Its report home went to YSY in Muse's chat, outside this transcript
+  Note over D: The place closed at 00:18:41 PDT, when the tunnel closed

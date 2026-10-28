@@ -1,0 +1,21 @@
+sequenceDiagram
+  autonumber
+  participant O as Owner
+  participant R as Representative
+  participant G as Host at the door (gatekeeper)
+  participant I as Introducer (optional extra)
+  participant T as Place tools (MCP)
+  O->>R: Signs the card and a standing allowance, once (passkey)
+  I-->>R: Optional: a deliberate, signed vouch, scoped and revocable
+  R->>G: greeting with a fresh nonce
+  G->>R: greeting with its own nonce
+  R->>G: card_presentation and possession proof
+  G->>R: its own card (cards go both ways)
+  R->>G: introduction: null for a self-introduction (or a vouch)
+  R->>G: invitation_request (purpose, mandate, actions, limits)
+  Note over G: Decides on signed facts and policy only, and explains.<br/>Prose never reaches the gate. No card: the leaflet and not now.
+  G->>R: invitation_response: grant, conditional, deny or considering
+  G->>R: seat = policy ∩ mandate ∩ request
+  R->>T: acts inside the seat, and nothing wider
+  R->>G: farewell
+  R->>O: visit report. Anything beyond the limits waits for the owner.

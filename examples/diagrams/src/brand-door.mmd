@@ -1,0 +1,21 @@
+sequenceDiagram
+  title Brand door: Noor introduces Maison Ardoise at Kiran's own door (reference run, examples/traces/brand-door.mjs, 5/5 checks)
+  participant N as Noor (introducer)
+  participant B as Maison Ardoise's representative (did:web)
+  participant D as Kiran's door (Kiran's representative, owner-signed DoorPolicy)
+  participant K as Kiran (owner)
+  N->>B: vouch signed with Noor's passkey: presentation and gift · interest "none" (a genuine recommendation)
+  B->>D: greeting
+  D-->>B: greeting
+  B->>D: card_presentation
+  D-->>B: card_presentation, card_receipt
+  B->>D: card_receipt
+  B->>D: introduction with Noor's vouch
+  B->>D: invitation_request: door.present, door.gift
+  D-->>B: grant (an introduced brand uses no uninvited slot), farewell: seated
+  B->>D: act door.present: travel coat
+  D-->>B: offer_outcome: kept_for_later (the outcome code only)
+  B->>D: act door.gift: cashmere scarf
+  D-->>B: offer_outcome: accepted, with a claim ticket (never an address)
+  D->>K: digest: the coat and the scarf, introduced by Noor, declared "none"
+  Note over D: Kiran's private note never appears on the wire

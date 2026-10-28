@@ -1,0 +1,20 @@
+sequenceDiagram
+  autonumber
+  participant TM as Theo (employee, owner)
+  participant R as Theo's co-worker representative
+  participant HQ as Halvenstone's company representative
+  participant G as Shōkai gate in front of internal MCP servers
+  participant S as Shipments MCP server
+  participant P as Pricing MCP server
+  TM->>R: Signs the card with a passkey (Theo's password never leaves Theo)
+  HQ-->>R: A vouch from did:web:halvenstone.example: role "account manager", team, purposes
+  R->>G: card, vouch, invitation_request: data_access, shipments.read for one client
+  Note over G: Checks owner signature, company vouch,<br/>role claim (vouched), purpose and limits
+  G->>R: grant, seat: tool_allowlist [shipments.read], 30 minutes
+  R->>G: act shipments.read
+  G->>S: forwarded with the seat attached (whose agent, why, within what)
+  S-->>R: last quarter's shipments
+  R->>G: act pricing.apply_discount 4 percent
+  G->>R: act_decision: considering, routed to the pricing approvals role
+  Note over G,P: Outside the seat, so the call never reaches the pricing server
+  R->>TM: Report: review ready, discount waiting for approval through the usual pricing process

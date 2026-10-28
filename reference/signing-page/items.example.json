@@ -1,0 +1,91 @@
+{
+  "note": "Example items for the reference signing page. Fictional people and places; test keys derived from public labels (Appendix A.2). Replace the representative and place DIDs with real ones.",
+  "owner_display_name": "Aya Linden",
+  "items": [
+    {
+      "name": "1-card",
+      "title": "1 of 2 · Your representative’s card",
+      "summary": [
+        "WHAT: your representative gets a card that says it speaks for you.",
+        "CAN: look at menus and order tea, nothing else.",
+        "FOR: 30 days.",
+        "KEY: the representative’s own key did:key:z6MkokRDcC… (it keeps it; you never see it)."
+      ],
+      "payload": {
+        "card_id": "card-example-aya-1",
+        "protocol": "shokai/0.3",
+        "representative_id": "did:key:z6MkokRDcCS1nEmZSBSvjKMPHpk5yoevvfFD6fLKegemF85j",
+        "principal": {
+          "principal_id": "$OWNER_DID",
+          "kind": "person",
+          "display_name": "Aya Linden"
+        },
+        "role": "Personal representative",
+        "standing": {
+          "tier": "provisional"
+        },
+        "mandate_scope": {
+          "purposes": [
+            "visitation",
+            "purchase"
+          ],
+          "actions": [
+            "menu.view",
+            "order.place"
+          ]
+        },
+        "locales": [
+          "en-US"
+        ],
+        "representative_key": {
+          "key_id": "did:key:z6MkokRDcCS1nEmZSBSvjKMPHpk5yoevvfFD6fLKegemF85j#z6MkokRDcCS1nEmZSBSvjKMPHpk5yoevvfFD6fLKegemF85j",
+          "alg": "Ed25519",
+          "public_key": "ih5tfUK_-suTyLOql_CghmvmWNh1okJgFLJ1jlKSAl4"
+        },
+        "issued_at": "$NOW",
+        "expires_at": "$IN_30D",
+        "owner_binding": {
+          "method": "passkey_webauthn",
+          "owner_id": "$OWNER_DID",
+          "rp_id": "$RP_ID"
+        }
+      }
+    },
+    {
+      "name": "2-mandate",
+      "title": "2 of 2 · Your limit at Kettle & Leaf",
+      "summary": [
+        "WHAT: your representative may visit Kettle & Leaf (a fictional tea shop) only.",
+        "SPEND: at most 10.00 USD in total, at most 5 actions.",
+        "FOR: 7 days."
+      ],
+      "payload": {
+        "mandate_id": "mand-example-aya-kettle-1",
+        "principal_id": "$OWNER_DID",
+        "representative_id": "did:key:z6MkokRDcCS1nEmZSBSvjKMPHpk5yoevvfFD6fLKegemF85j",
+        "card_id": "card-example-aya-1",
+        "purpose": {
+          "code": "purchase",
+          "statement": "Visit Kettle & Leaf: look at the menu and order tea up to 10.00 USD in total.",
+          "locale": "en-US"
+        },
+        "allowed_actions": [
+          "menu.view",
+          "order.place"
+        ],
+        "limits": {
+          "max_amount": {
+            "value": "10.00",
+            "currency": "USD"
+          },
+          "max_operations": 5
+        },
+        "counterparties": [
+          "did:key:z6Mksz9LvdypMtxru7J8itgm8iumY6AmbJyUpCeVHKYrjgy6"
+        ],
+        "valid_from": "$NOW",
+        "expires_at": "$IN_7D"
+      }
+    }
+  ]
+}

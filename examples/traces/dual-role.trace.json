@@ -1,0 +1,206 @@
+{
+  "steps": [
+    {
+      "who": "Fen's agent (no card)",
+      "at": "room",
+      "sent": "an unsigned greeting",
+      "got": [
+        "greeting",
+        "lobby_briefing",
+        "invitation_response",
+        "farewell"
+      ]
+    },
+    {
+      "who": "Maru's representative",
+      "at": "room",
+      "seated": true,
+      "placeSigner": "YSY's key",
+      "repKey": "Edu's key",
+      "acts": [
+        "room.post"
+      ]
+    },
+    {
+      "who": "Edu (card 2)",
+      "at": "tea shop",
+      "seated": true,
+      "acts": [
+        "menu.view: ok",
+        "order.place 12.00 USD: ok"
+      ]
+    },
+    {
+      "who": "YSY",
+      "at": "tea shop",
+      "sent": "card_revocation of card 2",
+      "effect": "old seat's next act: act_decision/deny"
+    },
+    {
+      "who": "Maru's representative",
+      "at": "room",
+      "seated": true,
+      "note": "card 1 untouched"
+    }
+  ],
+  "checks": [
+    {
+      "ok": true,
+      "what": "an unprepared arrival at the room gets the leaflet (lobby_briefing), not silence"
+    },
+    {
+      "ok": true,
+      "what": "Maru's representative checked the room's card (signed by YSY's key, naming Edu) and was seated"
+    },
+    {
+      "ok": true,
+      "what": "Maru's representative posts in the room within its seat"
+    },
+    {
+      "ok": true,
+      "what": "Edu, with card 2, is seated at the tea shop"
+    },
+    {
+      "ok": true,
+      "what": "the tea shop sees card 2 only (the going-out card)"
+    },
+    {
+      "ok": true,
+      "what": "both cards name the same representative key (Edu)"
+    },
+    {
+      "ok": true,
+      "what": "Edu looks at the menu"
+    },
+    {
+      "ok": true,
+      "what": "Edu orders a 12.00 USD sencha, within the 15.00 USD limit"
+    },
+    {
+      "ok": true,
+      "what": "after YSY revokes card 2, Edu's open seat under it is ended"
+    },
+    {
+      "ok": true,
+      "what": "the meeting room, under card 1, still seats visitors"
+    }
+  ],
+  "trace": {
+    "maru_room": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "farewell"
+      }
+    ],
+    "edu_shop": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_decision",
+        "decision": "deny"
+      }
+    ]
+  },
+  "ok": true
+}

@@ -1,0 +1,25 @@
+{
+  "name": "shokai-reference-prototype",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Shōkai narrated reference prototype: fictional hosts, simulated visitors, 14 narrated scenarios and the conformance runner for the prototype checks. Local only.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "demo": "npm run build && node dist/reference/prototype/src/demo.js",
+    "conformance": "npm run build && node dist/reference/prototype/src/conformance.js",
+    "test": "npm run conformance",
+    "vectors": "npm run build && node dist/reference/prototype/src/vectors.js",
+    "traces:gen": "npm run build && node dist/reference/prototype/src/gen-traces.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.6.0"
+  },
+  "author": "Kigenka"
+}

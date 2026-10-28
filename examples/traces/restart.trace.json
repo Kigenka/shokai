@@ -1,0 +1,98 @@
+{
+ "place": "Kettle & Leaf (demo, fictional)",
+ "steps": [
+  {
+   "t_ms": 140,
+   "who": "Kettle & Leaf",
+   "what": "opens on loopback (state file and keys in a temp folder)",
+   "result": "pid 20467"
+  },
+  {
+   "t_ms": 177,
+   "who": "Aya's representative",
+   "what": "seated; orders tea for 6.00 of 20.00 USD",
+   "result": "seat-enc-JRMzrrvBMjGU, order.place-enc-JRMzrrvBMjGU-h6"
+  },
+  {
+   "t_ms": 196,
+   "who": "Bo's owner",
+   "what": "withdraws Bo's card during Bo's visit",
+   "result": "Bo's next act: deny/not_now"
+  },
+  {
+   "t_ms": 202,
+   "who": "the computer",
+   "what": "the tea house's server stops abruptly (SIGKILL to its exact pid 20467; nothing else touched)",
+   "result": ""
+  },
+  {
+   "t_ms": 203,
+   "who": "Aya's representative",
+   "what": "tries to act while the place is down",
+   "result": "SHOKAI_PLACE_UNREACHABLE: menu.view: the place didn't answer (fetch failed); it may be restarting. Whether it was done is unknown; knock…"
+  },
+  {
+   "t_ms": 310,
+   "who": "Kettle & Leaf",
+   "what": "starts again from its state file, same keys",
+   "result": "pid 20479"
+  },
+  {
+   "t_ms": 317,
+   "who": "Aya's representative",
+   "what": "acts on its old seat",
+   "result": "deny/not_a_fit/SEAT_SCOPE_EXCEEDED: \"That visit is no longer open here; it may have been interrupted when the place restarted. Please knock again to start a new visit.\""
+  },
+  {
+   "t_ms": 339,
+   "who": "Aya's representative",
+   "what": "knocks again: seated, orders 6.00, then tries 9.00 (would pass 20.00)",
+   "result": "seat-enc-5Q7FQxFPOiug, order.place-enc-5Q7FQxFPOiug-jol4QQ-h6; then deny"
+  },
+  {
+   "t_ms": 346,
+   "who": "Bo's representative",
+   "what": "knocks again with the withdrawn card",
+   "result": "deny"
+  },
+  {
+   "t_ms": 362,
+   "who": "Aya's representative",
+   "what": "reports home about the first visit",
+   "result": "On Wednesday, October 28, 2026 at 12:23 AM PDT I visited the place with key …2ykMXjXp (claims to be \"Kettle & Leaf (demo)\"; not verified) for you. The place with key …2ykMXjXp (claims to be \"Kettle & Leaf (demo)\"; not verified) seated me for \"menu.view\" and \"order.place\", up to 20.00 USD. I did 1 action; none were refused. This was visit 2 under the mandate you signed. Earlier: here, 1 action done, 1 refused, 6.00 USD spent. In all under this mandate: 2 actions done, 1 refused; spent 12.00 USD of the 20.00 USD allowed, 8.00 USD left. One action wasn't carried out: the place no longer knew my seat (probably a restart). One action got no answer (the place may have been restarting), so I can't tell whether it went through. The visit was interrupted. I'll knock again for a new visit, and won't repeat a purchase until I've checked; what was spent under your mandate still counts. I showed them the card you signed (your display name \"Aya Linden\" and your owner ID) and one mandate. Its listing said these actions ask you for nothing beyond the card. If you don't reply, nothing happens."
+  },
+  {
+   "t_ms": 369,
+   "who": "Kettle & Leaf",
+   "what": "stopped (exact pid 20479); the temp folder is removed",
+   "result": ""
+  }
+ ],
+ "checks": [
+  {
+   "ok": true,
+   "what": "while it is down, the visitor gets a clear error and marks the visit interrupted"
+  },
+  {
+   "ok": true,
+   "what": "the old seat gets a polite 'interrupted, please knock again' (not_a_fit, §3.6/§7.2)"
+  },
+  {
+   "ok": true,
+   "what": "the visit completes, and no door message id repeats across the restart (13 ids)"
+  },
+  {
+   "ok": true,
+   "what": "order references, seats and encounters differ before and after the restart"
+  },
+  {
+   "ok": true,
+   "what": "the mandate's ledger survived the restart (6 + 6 spent; 9 more refused)"
+  },
+  {
+   "ok": true,
+   "what": "Bo's withdrawn card stays withdrawn after the restart"
+  }
+ ],
+ "report_home": "On Wednesday, October 28, 2026 at 12:23 AM PDT I visited the place with key …2ykMXjXp (claims to be \"Kettle & Leaf (demo)\"; not verified) for you. The place with key …2ykMXjXp (claims to be \"Kettle & Leaf (demo)\"; not verified) seated me for \"menu.view\" and \"order.place\", up to 20.00 USD. I did 1 action; none were refused. This was visit 2 under the mandate you signed. Earlier: here, 1 action done, 1 refused, 6.00 USD spent. In all under this mandate: 2 actions done, 1 refused; spent 12.00 USD of the 20.00 USD allowed, 8.00 USD left. One action wasn't carried out: the place no longer knew my seat (probably a restart). One action got no answer (the place may have been restarting), so I can't tell whether it went through. The visit was interrupted. I'll knock again for a new visit, and won't repeat a purchase until I've checked; what was spent under your mandate still counts. I showed them the card you signed (your display name \"Aya Linden\" and your owner ID) and one mandate. Its listing said these actions ask you for nothing beyond the card. If you don't reply, nothing happens."
+}

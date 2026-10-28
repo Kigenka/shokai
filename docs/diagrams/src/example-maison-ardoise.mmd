@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  participant N as Noor Halloran (owner)
+  participant NR as Noor's representative
+  participant B as Maison Ardoise's representative
+  participant D as Kiran's door (her representative)
+  participant K as Kiran (owner)
+  Note over N,NR: Noor is a happy customer and chooses to introduce.<br/>Being connected to Kiran is never an introduction.
+  N->>NR: Approves issue_vouch with a passkey: scope presentation,<br/>introducer_interest "none", expires in 30 days
+  NR-->>B: The signed vouch
+  B->>D: greeting, card, introduction carrying Noor's vouch
+  Note over D: Door policy Kiran signed: fashion and home welcome,<br/>introductions preferred, 2 uninvited a month.<br/>Noor is a trusted introducer, so no uninvited slot is used.
+  B->>D: invitation_request, then act door.invite (one Offer)
+  Note over D: Offer text is data. It needs Kiran's email,<br/>so the ceiling is kept_for_later.
+  D->>B: offer_outcome: kept_for_later, pairwise relationship_ref
+  D->>K: Report: "Noor introduced Maison Ardoise and says she gets nothing for it.<br/>They invite you to a fitting evening and would need your email. Yes or no?"

@@ -1,0 +1,24 @@
+flowchart LR
+  subgraph W["How a representative arrives"]
+    direction TB
+    V3["<b>It introduces itself</b><br/>the normal case: card, purpose, limits<br/>(vouch: null)"]
+    V1["<b>Optional: by invitation</b><br/>the place's own signed invitation"]
+    V2["<b>Optional: with a vouch</b><br/>from someone the place trusts.<br/>The introducer answers for it."]
+  end
+  U["<b>Not ready yet</b><br/>no signed card"]
+  M["<b>The same manners</b><br/>signed card · stated purpose · limits up front"]
+  D{"<b>The host at the door decides</b><br/>by its own policy, and explains"}
+  L["<b>The leaflet</b><br/>what the place is, what's needed,<br/>a sentence for the owner · not now"]
+  V3 --> M
+  V1 --> M
+  V2 --> M
+  M --> D
+  U --> L
+  D --> G["grant"]
+  D --> C["conditional"]
+  D --> N["deny, with a reason and a retry"]
+  D --> K["considering: taken inside to a person"]
+  classDef door fill:#2c4a6c,stroke:#2c4a6c,color:#fbf9f4
+  classDef intro fill:#fbf9f4,stroke:#9c4a32,color:#1d1c1a,stroke-dasharray:4 3
+  class D door
+  class V1,V2 intro

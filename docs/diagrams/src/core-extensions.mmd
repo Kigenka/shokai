@@ -1,0 +1,25 @@
+flowchart TB
+  subgraph CORE["The core, the door: one story, one conformance level"]
+    direction LR
+    a1["Arrive<br/>door · leaflet"] --> a2["Introduce itself<br/>card · optional vouch"] --> a3["Ask<br/>mandate · allowance"] --> a4["Answer<br/>four decisions"] --> a5["Act within limits<br/>seat · caps"] --> a6["Report home<br/>owner decides"] --> a7["Conduct<br/>consequences"]
+    a8["The inbound door<br/>a person receiving brands<br/>never data for a gift"]
+  end
+  subgraph EXT["Optional extensions: each its own document and conformance level"]
+    direction TB
+    subgraph X1["The room: meeting inside a place"]
+      direction LR
+      e1["Gatherings"] ~~~ e2["Peer meetings"] ~~~ e3["Teaching visits"]
+    end
+    subgraph X2["Knowing more"]
+      direction LR
+      e4["Profiles and evidence"] ~~~ e5["Seeking"] ~~~ e10["Meaning notes"] ~~~ e11["W3C VC mapping"]
+    end
+    subgraph X3["Door details"]
+      direction LR
+      e6["Visit receipts"] ~~~ e7["Door gifts"] ~~~ e8["Signed place listings"] ~~~ e9["Revocation status"]
+    end
+    X1 ~~~ X2 ~~~ X3
+  end
+  CORE -- "an extension adds rules, never weakens the core" --> EXT
+  classDef core fill:#2c4a6c,stroke:#2c4a6c,color:#fbf9f4
+  class a1,a2,a3,a4,a5,a6,a7,a8 core

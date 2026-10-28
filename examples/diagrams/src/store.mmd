@@ -1,0 +1,32 @@
+sequenceDiagram
+  title Store: a purchase within a signed limit at Brightwick Outfitters (rc4 simulated-team round 1, recorded wire log)
+  participant V as Quillfern visitor (simulated team, Python)
+  participant D as Brightwick Outfitters (simulated team, Python) door
+  participant G as Brightwick Outfitters (simulated team, Python) MCP gate
+  Note over V,D: [1] harness readiness probe GET /shokai/places → 200
+  V->>D: [2] GET /shokai/
+  D-->>V: 200 DoorPointer (start_with greeting)
+  V->>D: [3] GET /shokai/places
+  D-->>V: 200 listing: brightwick-store
+  V->>D: [4] greeting (digest ✓, sig ✓)
+  D-->>V: 200 greeting (digest ✓, sig ✓)
+  V->>D: [5] card_presentation (digest ✓, sig ✓)  card owner sig ES256: digest ✓, sig ✓
+  D-->>V: 200 card_presentation (digest ✓, sig ✓)
+  D-->>V: card_receipt (digest ✓, sig ✓)
+  V->>D: [6] card_receipt (digest ✓, sig ✓)
+  V->>D: [7] introduction vouch=null (self-introduction) (digest ✓, sig ✓)
+  V->>D: [8] invitation_request purpose=purchase actions=order.place max_amount=100.00 USD, mandate owner sig: digest ✓, sig ✓ (digest ✓, sig ✓)
+  D-->>V: 200 invitation_response grant seat=[order.place] cap 100.00 (digest ✓, sig ✓)
+  D-->>V: farewell outcome=seated (digest ✓, sig ✓)
+  V->>G: [9] MCP initialize
+  G-->>V: 200 protocolVersion,capabilities,serverInfo
+  V->>G: [10] MCP notifications/initialized
+  G-->>V: 200 empty
+  V->>G: [11] MCP tools/list
+  G-->>V: 200 tools: order.place
+  V->>G: [12] MCP tools/call order.place + Shokai-Act(order.place 40.00  digest ✓, sig ✓)
+  G-->>V: 200 result ok: {'receipt': {'payload': {'order_id': 'order-6fee742db1d91033362f', 'pl
+  V->>G: [13] MCP tools/call order.place + Shokai-Act(order.place 80.00  digest ✓, sig ✓)
+  G-->>V: 200 JSON-RPC -32040 refused_by=door not_now/SEAT_SCOPE_EXCEEDED
+  V->>D: [14] farewell outcome=completed (digest ✓, sig ✓)
+  Note over V,G: Two teams that never saw each other's code, built from the spec alone · every signature re-verified with the reference crypto

@@ -1,0 +1,26 @@
+flowchart TB
+  subgraph A["Who is behind the agent"]
+    direction LR
+    O["Owner<br/>signs with a passkey"] --> R["Representative<br/>its own key and card"]
+  end
+  subgraph B["Transport identity (optional, below Shōkai)"]
+    direction LR
+    WBA["Web Bot Auth<br/>which software sent this request"]
+    OA["OAuth / TLS<br/>which client, which session"]
+    WBA ~~~ OA
+  end
+  subgraph C["Shōkai: the door"]
+    direction LR
+    C1["Who it's here for<br/>self-introduction, owner-signed card"] --> C2["Why it came<br/>purpose (optional vouch)"] --> C3["What it may do<br/>owner-signed limits"] --> C4["Decision and seat<br/>with reasons"] --> C5["Conduct<br/>remembered at this door"]
+  end
+  subgraph D["After admission: the work"]
+    direction LR
+    M["MCP servers<br/>tools and data"]
+    A2A["A2A agents<br/>tasks"]
+    API["The place's own APIs"]
+    P["Payments<br/>AP2 · Stripe · ACP"]
+    M ~~~ A2A ~~~ API ~~~ P
+  end
+  A --> B --> C --> D
+  classDef shokai fill:#2c4a6c,stroke:#2c4a6c,color:#fbf9f4
+  class C1,C2,C3,C4,C5 shokai

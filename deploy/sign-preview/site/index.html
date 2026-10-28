@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">
+<title>Sign with your passkey · Shōkai</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<p class="preview" role="note"><strong>Preview only. Signing is turned off here.</strong> This copy shows how the signing page will look at sign.kigenka.com. Please don't create a passkey on this address: a passkey works only on the address it was made on, so one made here could never sign at the real one. This preview has no script, and the browser's passkey feature is switched off.</p>
+<h1>Sign with your passkey</h1>
+<p class="lead">Your representative asks you to approve the items below. This page writes out what each one does from the item itself; anything someone else wrote is shown as a quote. Approve only what matches what you expect. Nothing is sent to anyone from this page.</p>
+<details class="notice" id="notice" open><summary><strong>This signing page is an early, test-stage convenience.</strong></summary>
+<p>Shōkai is still a draft, and Kigenka runs this page while it's being tested.</p>
+<p>Your passkey stays on your phone or computer. Kigenka never sees it and can't sign for you.</p>
+<p>A passkey works only on the web address it was made on, here <strong>sign.kigenka.com</strong>. We plan to keep this address. If it ever has to change, we'll tell you at least 90 days in advance. A way to sign a move to a new key with the passkey you have now, so the places that know your representative can keep recognizing it, is planned (proposal P24, for v0.4) but doesn't exist yet; we won't move the address before it does.</p>
+<p>Everything you've already signed stays valid either way.</p>
+<p>You don't have to use this page. Anyone can sign with their own signing page or their own key. <a href="about">More about this page</a></p>
+</details>
+<section id="step1"><h2>First, create your passkey</h2>
+<p>Your phone or computer will offer to save a passkey for this page. Face ID or your fingerprint stays on your device; only the public half is kept.</p>
+<button id="reg" class="big" disabled>Create my passkey</button></section>
+<section id="stepAll" hidden><h2 id="allTitle">Everything you're asked to sign</h2>
+<ol id="allItems" class="items"></ol>
+<p class="small" id="ownTapNote"></p>
+<button id="signAll" disabled class="big">Approve all with one passkey tap</button>
+<button id="oneByOne" disabled class="quiet">Go through them one by one</button>
+<p class="small">One Face ID or fingerprint approves every item listed above, and nothing else. Each item still gets its own signature, so a place sees only the item meant for it. Anything that can spend money always gets its own tap. If anything above is wrong, go one by one and skip it.</p></section>
+<section id="step2" hidden><h2 id="title2"></h2>
+<div id="summary"></div>
+<button id="sign" disabled class="big">Approve with my passkey</button>
+<button id="decline" disabled class="quiet">Not this one</button>
+<p class="small">Each item is separate. Skipping one signs nothing.</p></section>
+<section id="done" hidden><h2>All done</h2><ul id="results"></ul><p class="small">Signed. Your passkey stays with you. This is a test-stage page; if its address ever changes, you'll hear from us first.</p><p>You can close this page.</p></section>
+<p id="status" role="status" aria-live="polite"></p>
+<p class="small" id="foot"></p>
+</main></body></html>

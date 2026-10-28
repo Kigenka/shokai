@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 720" width="1600" height="720" role="img" aria-labelledby="t d">
+  <title id="t">Shōkai, the agent introduction protocol</title>
+  <desc id="d">An arch made of two halves joined by a keystone, standing on a threshold line. A small figure approaches from the left. The two halves are the visitor and the host; the keystone is the introduction that completes the arch.</desc>
+  <rect width="1600" height="720" fill="#f5f1e8"/>
+  <!-- soft sun disc, very pale -->
+  <circle cx="1130" cy="300" r="250" fill="#ece6d9"/>
+  <!-- threshold -->
+  <line x1="120" y1="560" x2="1480" y2="560" stroke="#c7bdab" stroke-width="2"/>
+  <line x1="880" y1="574" x2="1380" y2="574" stroke="#d8d0c1" stroke-width="1.2"/>
+  <!-- the arch (concept 1a geometry, scaled) -->
+  <g transform="translate(938 186) scale(6)">
+    <g transform="translate(0 2)">
+      <path fill="#2c4a6c" d="M9 53 V30 A23 23 0 0 1 23.95 8.46 L26.92 16.42 A14.5 14.5 0 0 0 17.5 30 V53 Z"/>
+      <path fill="#2c4a6c" d="M55 53 V30 A23 23 0 0 0 40.05 8.46 L37.08 16.42 A14.5 14.5 0 0 1 46.5 30 V53 Z"/>
+      <path fill="#9c4a32" d="M28.49 15.93 L25.71 4.77 A26 26 0 0 1 38.29 4.77 L35.51 15.93 A14.5 14.5 0 0 0 28.49 15.93 Z"/>
+      <rect fill="#2c4a6c" x="6.5" y="52.99" width="13.5" height="3.5" rx="1"/>
+      <rect fill="#2c4a6c" x="44.0" y="52.99" width="13.5" height="3.5" rx="1"/>
+    </g>
+  </g>
+  <!-- the visitor approaching, card in hand -->
+  <g transform="translate(800 0)" fill="#4a4741">
+    <circle cx="0" cy="500" r="11"/>
+    <rect x="-9" y="516" width="18" height="44" rx="9"/>
+    <rect x="12" y="522" width="16" height="11" rx="2" fill="#fbf9f4" stroke="#4a4741" stroke-width="2"/>
+  </g>
+  <!-- footsteps -->
+  <g fill="#c7bdab"><circle cx="700" cy="560" r="3"/><circle cx="660" cy="560" r="3"/><circle cx="620" cy="560" r="3"/></g>
+  <!-- wordmark -->
+  <text x="120" y="250" font-family="Noto Serif, Iowan Old Style, Georgia, serif" font-size="96" fill="#1d1c1a" letter-spacing="1">Shōkai</text>
+  <text x="440" y="250" font-family="Noto Serif CJK JP, Hiragino Mincho ProN, serif" font-size="56" fill="#9c4a32">紹介</text>
+  <text x="122" y="312" font-family="Noto Sans, Helvetica Neue, Arial, sans-serif" font-size="32" fill="#4a4741">The agent introduction protocol</text>
+  <text x="122" y="372" font-family="Noto Sans, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#66615a">Who it’s here for. Why it came. What it may do.</text>
+  <text x="122" y="660" font-family="Noto Sans, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#958e82" letter-spacing="3">FROM KIGENKA</text>
+</svg>

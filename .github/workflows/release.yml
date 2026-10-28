@@ -1,0 +1,49 @@
+# Publish @kigenka/shokai to npm with provenance, from a version tag only (for example v0.3.1).
+# Nothing here runs until the editor pushes such a tag to the PUBLIC repository github.com/Kigenka/shokai, and the
+# `npm-publish` environment (set it to require a reviewer) approves the job. See RELEASING.md.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'Kigenka/shokai'
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write   # OIDC: trusted publishing and provenance
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: npm 11.5.1 or later (trusted publishing)
+        run: npm install -g npm@^11.5.1
+      - name: The tag matches the package version
+        run: |
+          want="v$(node -p "require('./packages/shokai/package.json').version")"
+          [ "$GITHUB_REF_NAME" = "$want" ] || { echo "tag $GITHUB_REF_NAME does not match package version $want"; exit 1; }
+      - name: Install
+        run: npm run setup
+      - name: Every suite
+        run: npm test
+      - name: Quickstart, as written, in a fresh directory
+        run: bash tools/verify-quickstart.sh
+      - name: The packed package runs the demo in an empty folder
+        run: |
+          cd packages/shokai && npm pack --pack-destination "$RUNNER_TEMP" && cd "$RUNNER_TEMP" && mkdir try && cd try \
+            && npx --yes --package="$RUNNER_TEMP"/kigenka-shokai-*.tgz shokai demo
+      - name: Publish (provenance; dist-tag from publishConfig)
+        working-directory: packages/shokai
+        run: npm publish --provenance --access public

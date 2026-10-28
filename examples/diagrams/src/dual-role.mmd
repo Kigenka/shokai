@@ -1,0 +1,26 @@
+sequenceDiagram
+  title One representative, two cards: Edu keeps YSY's room and goes out (SDK run, examples/traces/dual-role.mjs, 10/10 checks)
+  participant F as Fen's agent (no card)
+  participant M as Maru's representative
+  participant R as YSY's meeting room (Edu at the door, card 1)
+  participant E as Edu going out (card 2)
+  participant T as A tea shop
+  participant Y as YSY (owner)
+  Note over R,E: Same representative key (Edu). Card 1 and card 2 both signed by YSY's key.
+  F->>R: greeting, unsigned
+  R-->>F: greeting, lobby_briefing (the leaflet), not now, farewell
+  M->>R: greeting, card_presentation
+  R-->>M: card 1 with possession proof: Maru's representative checks it against the listing
+  M->>R: introduction (vouch null), invitation_request: room.look, room.post
+  R-->>M: grant: seated
+  M->>R: act room.post
+  E->>T: greeting, card_presentation (card 2 only: the shop never sees card 1)
+  E->>T: introduction, invitation_request: purchase up to 15.00 USD
+  T-->>E: grant: seated
+  E->>T: act menu.view, act order.place 12.00 USD
+  T-->>E: act_result ok, ok
+  Y->>T: card_revocation of card 2 (delivered in a new visit of Edu's)
+  E->>T: act menu.view on the old seat
+  T-->>E: act_decision deny: the seat ended with its card (C198)
+  M->>R: a new visit
+  R-->>M: grant: card 1 untouched, the room stays open

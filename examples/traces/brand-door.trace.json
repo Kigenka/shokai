@@ -1,0 +1,94 @@
+{
+  "checks": [
+    {
+      "ok": true,
+      "what": "the introduced brand is seated at Kiran's door"
+    },
+    {
+      "ok": true,
+      "what": "the gift comes as a claim ticket, never an address"
+    },
+    {
+      "ok": true,
+      "what": "the coat is kept for Kiran's digest; the scarf is accepted"
+    },
+    {
+      "ok": true,
+      "what": "Kiran's digest shows Noor's introduction and her declaration: a genuine recommendation ('none')"
+    },
+    {
+      "ok": true,
+      "what": "Kiran's private note never appears on the wire"
+    }
+  ],
+  "trace": [
+    {
+      "dir": "out",
+      "type": "greeting"
+    },
+    {
+      "dir": "in",
+      "type": "greeting"
+    },
+    {
+      "dir": "out",
+      "type": "card_presentation"
+    },
+    {
+      "dir": "in",
+      "type": "card_presentation"
+    },
+    {
+      "dir": "in",
+      "type": "card_receipt"
+    },
+    {
+      "dir": "out",
+      "type": "card_receipt"
+    },
+    {
+      "dir": "out",
+      "type": "introduction",
+      "vouch": "Noor's vouch"
+    },
+    {
+      "dir": "out",
+      "type": "invitation_request"
+    },
+    {
+      "dir": "in",
+      "type": "invitation_response",
+      "decision": "grant"
+    },
+    {
+      "dir": "in",
+      "type": "farewell",
+      "outcome": "seated"
+    },
+    {
+      "dir": "out",
+      "type": "act",
+      "tool": "door.present"
+    },
+    {
+      "dir": "in",
+      "type": "offer_outcome",
+      "outcome": "kept_for_later"
+    },
+    {
+      "dir": "out",
+      "type": "act",
+      "tool": "door.gift"
+    },
+    {
+      "dir": "in",
+      "type": "offer_outcome",
+      "outcome": "accepted"
+    }
+  ],
+  "outcomes": [
+    "kept_for_later",
+    "accepted"
+  ],
+  "ok": true
+}

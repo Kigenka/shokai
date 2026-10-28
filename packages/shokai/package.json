@@ -1,0 +1,86 @@
+{
+  "name": "@kigenka/shokai",
+  "version": "0.3.0",
+  "description": "Reference TypeScript SDK for Shōkai, the agent introduction protocol: signed cards, vouches and envelopes, door policy, visit reports, and a gate that puts a Shōkai door in front of any MCP server.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "private": true,
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/src/mcp.d.ts",
+      "default": "./dist/src/mcp.js"
+    },
+    "./core": {
+      "types": "./dist/src/core/index.d.ts",
+      "default": "./dist/src/core/index.js"
+    },
+    "./conformance": {
+      "types": "./dist/src/conformance/runner.d.ts",
+      "default": "./dist/src/conformance/runner.js"
+    },
+    "./browser": {
+      "types": "./dist/src/browser.d.ts",
+      "default": "./dist/src/browser.js"
+    }
+  },
+  "bin": {
+    "shokai": "dist/src/cli.js",
+    "shokai-conformance": "dist/src/conformance/cli.js"
+  },
+  "files": [
+    "dist/src",
+    "dist/examples",
+    "conformance-data",
+    "spec",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "shokai",
+    "agents",
+    "mcp",
+    "agent-to-agent",
+    "protocol",
+    "passkeys",
+    "introductions"
+  ],
+  "scripts": {
+    "sync": "node scripts/sync-core.mjs",
+    "check-sync": "node scripts/sync-core.mjs --check",
+    "build": "tsc -p .",
+    "prepack": "node scripts/sync-core.mjs --check && node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p .",
+    "test": "node scripts/sync-core.mjs --check && tsc -p . && node dist/test/sdk.test.js && node dist/test/visit.test.js && node dist/test/mandate.test.js && node dist/test/mcp-gate.test.js && node dist/test/gate-release.test.js && node dist/test/fetch-policy.test.js && node dist/test/extras.test.js && node dist/test/state.test.js && node dist/test/owner.test.js && node dist/test/restart.test.js && node dist/test/claims.test.js && node dist/test/doorcard.test.js && node dist/test/demo.test.js && node dist/test/runner.test.js && node dist/src/conformance/cli.js --self-test",
+    "example": "tsc -p . && node dist/examples/toy-mcp/run.js",
+    "demo": "tsc -p . && node dist/src/cli.js demo"
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": ">=1.12.0"
+  },
+  "peerDependenciesMeta": {
+    "@modelcontextprotocol/sdk": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@types/node": "^20.19.43",
+    "typescript": "5.9.3",
+    "zod": "^4.6.7"
+  },
+  "author": "YSY",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "tag": "latest"
+  }
+}

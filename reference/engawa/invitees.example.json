@@ -1,0 +1,10 @@
+{
+  "note": "Example guest list for the reference Engawa: public ids of fictional test representatives only. Changing it changes the Gathering digest.",
+  "invitees": [
+    {
+      "who": "Noor Halloran (fictional test representative)",
+      "representative_id": "did:key:z6MkvkVH42vh4Vuj5GB6NPafVSLqq3CTgNX1C8g3kNzctHs8",
+      "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ik9VZTBjTWxhcVBELS1Pd296TVFWS081UU9qbUNfMTYxQ1VOazhNZzkzTmMiLCJ5IjoicGRBUUJnY2gtR2VqQmNOMkJFeXVpRllGcFRTcDRwVTdkV1JTQmNpSUZ1SSJ9"
+    }
+  ]
+}

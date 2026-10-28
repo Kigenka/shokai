@@ -1,0 +1,1954 @@
+{
+  "note": "P20 (draft, not normative) sketch vectors. TEST KEYS ONLY, derived from public labels (Appendix A.2: ed25519 seed and p256_passkey scalar). Ed25519 values are deterministic; ES256 values change on regeneration. The handover's recipient key and enc are placeholders: the envelope is the subject, not HPKE. Verified by tools/p20-sketch.mjs.",
+  "labels": {
+    "places": [
+      "p20-place-teahouse",
+      "p20-place-bookshop"
+    ],
+    "representatives": [
+      "p20-rep-a",
+      "p20-rep-b",
+      "p20-rep-c",
+      "p20-rep-a-bookshop"
+    ],
+    "owner_facets": [
+      "p20-owner-facet-1",
+      "p20-owner-facet-2"
+    ],
+    "other_owner": "p20-other-owner",
+    "rp_id": "sign.owners.example"
+  },
+  "now": "2026-10-27T09:05:00Z",
+  "cards": {
+    "a": {
+      "card_id": "card-p20-a",
+      "protocol": "shokai/0.3",
+      "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+      "principal": {
+        "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+        "kind": "person",
+        "display_name": "Aya Linden"
+      },
+      "role": "Personal representative",
+      "standing": {
+        "tier": "provisional"
+      },
+      "mandate_scope": {
+        "purposes": [
+          "visitation"
+        ],
+        "actions": [
+          "menu.view"
+        ]
+      },
+      "locales": [
+        "en"
+      ],
+      "representative_key": {
+        "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+        "alg": "Ed25519",
+        "public_key": "TO4BmoEVmGnP_mGGjpppIFbKA_43h67FvqzpKI3wRNI"
+      },
+      "issued_at": "2026-10-27T09:00:00Z",
+      "expires_at": "2027-01-25T09:00:00Z",
+      "owner_binding": {
+        "method": "passkey_webauthn",
+        "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+        "rp_id": "sign.owners.example"
+      }
+    },
+    "b": {
+      "card_id": "card-p20-b",
+      "protocol": "shokai/0.3",
+      "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+      "principal": {
+        "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+        "kind": "person",
+        "display_name": "Aya Linden"
+      },
+      "role": "Personal representative",
+      "standing": {
+        "tier": "provisional"
+      },
+      "mandate_scope": {
+        "purposes": [
+          "visitation"
+        ],
+        "actions": [
+          "menu.view"
+        ]
+      },
+      "locales": [
+        "en"
+      ],
+      "representative_key": {
+        "key_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4#z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+        "alg": "Ed25519",
+        "public_key": "-DQ_vWHD0wr500c7ziS52v7BlXehppuDfdpQRXYAtiM"
+      },
+      "issued_at": "2026-10-27T09:00:00Z",
+      "expires_at": "2027-01-25T09:00:00Z",
+      "owner_binding": {
+        "method": "passkey_webauthn",
+        "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+        "rp_id": "sign.owners.example"
+      }
+    },
+    "a_bookshop": {
+      "card_id": "card-p20-a-bookshop",
+      "protocol": "shokai/0.3",
+      "representative_id": "did:key:z6MksC8fqoBA2h9YtrtMWYkc9uLU11xREY9kgxYjWHHJ5M9t",
+      "principal": {
+        "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+        "kind": "person",
+        "display_name": "Aya Linden"
+      },
+      "role": "Personal representative",
+      "standing": {
+        "tier": "provisional"
+      },
+      "mandate_scope": {
+        "purposes": [
+          "visitation"
+        ],
+        "actions": [
+          "menu.view"
+        ]
+      },
+      "locales": [
+        "en"
+      ],
+      "representative_key": {
+        "key_id": "did:key:z6MksC8fqoBA2h9YtrtMWYkc9uLU11xREY9kgxYjWHHJ5M9t#z6MksC8fqoBA2h9YtrtMWYkc9uLU11xREY9kgxYjWHHJ5M9t",
+        "alg": "Ed25519",
+        "public_key": "vUfhBR3ub9wCHZ6bnESaNQ12RNoM18l8Lz2BKvfm8gM"
+      },
+      "issued_at": "2026-10-27T09:00:00Z",
+      "expires_at": "2027-01-25T09:00:00Z",
+      "owner_binding": {
+        "method": "passkey_webauthn",
+        "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+        "rp_id": "sign.owners.example"
+      }
+    }
+  },
+  "receipts": {
+    "r1": {
+      "payload": {
+        "receipt_id": "rcpt-1",
+        "kind": "visit",
+        "place": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+        "subject": {
+          "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+          "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+        },
+        "seq": 1,
+        "at": "2026-10-20T10:00:00Z",
+        "encounter_ref": "enc-7f3a",
+        "statement": {
+          "text": "Visited; ordered tea.",
+          "locale": "en"
+        }
+      },
+      "payload_digest": "sha-256:pgVNSjql0Ae35ud3pqHWdChAWq38McUtDARKsooGMts",
+      "signatures": [
+        {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt#z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "signer": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "signed_at": "2026-10-20T10:00:00Z",
+          "value": "m_Cbz4bMXm_nqcXZpZkatVf-lrdr_hk7Qxuw12z1HGRnpjwWZA9MOR3MSL5lbj-98B6XA7IJJiydGFXWuylWCQ"
+        }
+      ]
+    },
+    "r2": {
+      "payload": {
+        "receipt_id": "rcpt-2",
+        "kind": "decision",
+        "place": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+        "subject": {
+          "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+          "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+        },
+        "seq": 2,
+        "prev": "sha-256:pgVNSjql0Ae35ud3pqHWdChAWq38McUtDARKsooGMts",
+        "at": "2026-10-22T10:00:00Z",
+        "decision": {
+          "decision": "deny",
+          "disposition": "never"
+        }
+      },
+      "payload_digest": "sha-256:yd7lxTV1JiijSk3Y-DMR8_bT3_SmtPj_2lGFKLy3Lak",
+      "signatures": [
+        {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt#z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "signer": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "signed_at": "2026-10-22T10:00:00Z",
+          "value": "ABm20Qa-eDN3Qabb9olYY3l74OMYpNKpFfUida4viGLl8JLSfcJ2yOcy2bIldmXzggLqjTYfYbJky23GTbNgCA"
+        }
+      ]
+    },
+    "r3": {
+      "payload": {
+        "receipt_id": "rcpt-9",
+        "kind": "introduction_received",
+        "place": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+        "subject": {
+          "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+          "representative_id": "did:key:z6MksC8fqoBA2h9YtrtMWYkc9uLU11xREY9kgxYjWHHJ5M9t",
+          "card_digest": "sha-256:RDKFADwr0VKcBUdpTYS2yIIGQ2MLm0_5qSHIu8IqGw0"
+        },
+        "seq": 1,
+        "at": "2026-10-23T10:00:00Z",
+        "introducer": "did:key:z6MkIntroducerExample",
+        "vouch_ref": "vouch-31"
+      },
+      "payload_digest": "sha-256:hq1zHzvbOvadUuIhf_6CskdSSKlTpPQmtUqxFTE6D7s",
+      "signatures": [
+        {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX#z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+          "signer": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+          "signed_at": "2026-10-23T10:00:00Z",
+          "value": "CUAuAniAqAkRxRtnXzoRXxGsCz0Niv15VUsv6zWxxnmR7daJNATX8Emxbzf_ghKqXuWD5PjGk2FxvP-Gug07Bg"
+        }
+      ]
+    }
+  },
+  "cards_c": {
+    "card_id": "card-p20-c",
+    "protocol": "shokai/0.3",
+    "representative_id": "did:key:z6Mko5LEtiMbzfT6XfQ1aht3vJKDKcxZqsE1QBi5STWhm7VA",
+    "principal": {
+      "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+      "kind": "person",
+      "display_name": "Aya Linden"
+    },
+    "role": "Personal representative",
+    "standing": {
+      "tier": "provisional"
+    },
+    "mandate_scope": {
+      "purposes": [
+        "visitation"
+      ],
+      "actions": [
+        "menu.view"
+      ]
+    },
+    "locales": [
+      "en"
+    ],
+    "representative_key": {
+      "key_id": "did:key:z6Mko5LEtiMbzfT6XfQ1aht3vJKDKcxZqsE1QBi5STWhm7VA#z6Mko5LEtiMbzfT6XfQ1aht3vJKDKcxZqsE1QBi5STWhm7VA",
+      "alg": "Ed25519",
+      "public_key": "gBslzX5SqLn4OhsV3J0cxDCvpwQxgyOYtZ4u23SGqLk"
+    },
+    "issued_at": "2026-10-27T09:00:00Z",
+    "expires_at": "2027-01-25T09:00:00Z",
+    "owner_binding": {
+      "method": "passkey_webauthn",
+      "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+      "rp_id": "sign.owners.example"
+    }
+  },
+  "exports": {
+    "ok": {
+      "format": "shokai-history/1",
+      "exported_at": "2026-10-27T09:30:00Z",
+      "owner_ids": [
+        "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+        "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9"
+      ],
+      "cards": [
+        {
+          "payload": {
+            "card_id": "card-p20-a",
+            "protocol": "shokai/0.3",
+            "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "principal": {
+              "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "kind": "person",
+              "display_name": "Aya Linden"
+            },
+            "role": "Personal representative",
+            "standing": {
+              "tier": "provisional"
+            },
+            "mandate_scope": {
+              "purposes": [
+                "visitation"
+              ],
+              "actions": [
+                "menu.view"
+              ]
+            },
+            "locales": [
+              "en"
+            ],
+            "representative_key": {
+              "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "alg": "Ed25519",
+              "public_key": "TO4BmoEVmGnP_mGGjpppIFbKA_43h67FvqzpKI3wRNI"
+            },
+            "issued_at": "2026-10-27T09:00:00Z",
+            "expires_at": "2027-01-25T09:00:00Z",
+            "owner_binding": {
+              "method": "passkey_webauthn",
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "rp_id": "sign.owners.example"
+            }
+          },
+          "payload_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs",
+          "signatures": [
+            {
+              "alg": "ES256",
+              "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+              "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "signed_at": "2026-10-27T09:00:00Z",
+              "value": "MEUCIQCkk172z8ZIlJlQ5UmlcwKeuoeW9v82CmYK3hkdl1QcPwIgXLhJGjEXBiSN-vTPVYyc_DR-dH2O_l2-GWFJ-jsS3TU",
+              "webauthn": {
+                "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoicGJZbGlVUjNlZzFMcklvS2JNbi14MUM2OE9IN29YekN1Q1hLQ3hOcWNncyIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                "credential_id": "jOVKRJn5cpoGY1399J8fyA",
+                "rp_id": "sign.owners.example"
+              }
+            }
+          ]
+        },
+        {
+          "payload": {
+            "card_id": "card-p20-b",
+            "protocol": "shokai/0.3",
+            "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+            "principal": {
+              "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "kind": "person",
+              "display_name": "Aya Linden"
+            },
+            "role": "Personal representative",
+            "standing": {
+              "tier": "provisional"
+            },
+            "mandate_scope": {
+              "purposes": [
+                "visitation"
+              ],
+              "actions": [
+                "menu.view"
+              ]
+            },
+            "locales": [
+              "en"
+            ],
+            "representative_key": {
+              "key_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4#z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+              "alg": "Ed25519",
+              "public_key": "-DQ_vWHD0wr500c7ziS52v7BlXehppuDfdpQRXYAtiM"
+            },
+            "issued_at": "2026-10-27T09:00:00Z",
+            "expires_at": "2027-01-25T09:00:00Z",
+            "owner_binding": {
+              "method": "passkey_webauthn",
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "rp_id": "sign.owners.example"
+            }
+          },
+          "payload_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg",
+          "signatures": [
+            {
+              "alg": "ES256",
+              "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+              "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "signed_at": "2026-10-27T09:00:00Z",
+              "value": "MEUCIDifn_2_nUlIVG_aa6BBX5k7OTKjB8IY4Hr7KPO0350VAiEApveHdT0ROaRbRQ6hVTXxUQliVEiq6IUYmVZstnI4AVc",
+              "webauthn": {
+                "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiUlNQV3FvLVh3Q3J5NTY3REdvejdfMVFtWDNIalB6ME9VZDJPZFdFSnJqZyIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                "credential_id": "hAwqRRnt8dd0tYc25ex_0w",
+                "rp_id": "sign.owners.example"
+              }
+            }
+          ]
+        }
+      ],
+      "receipts": [
+        {
+          "payload": {
+            "receipt_id": "rcpt-1",
+            "kind": "visit",
+            "place": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+            "subject": {
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+            },
+            "seq": 1,
+            "at": "2026-10-20T10:00:00Z",
+            "encounter_ref": "enc-7f3a",
+            "statement": {
+              "text": "Visited; ordered tea.",
+              "locale": "en"
+            }
+          },
+          "payload_digest": "sha-256:pgVNSjql0Ae35ud3pqHWdChAWq38McUtDARKsooGMts",
+          "signatures": [
+            {
+              "alg": "Ed25519",
+              "key_id": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt#z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+              "signer": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+              "signed_at": "2026-10-20T10:00:00Z",
+              "value": "m_Cbz4bMXm_nqcXZpZkatVf-lrdr_hk7Qxuw12z1HGRnpjwWZA9MOR3MSL5lbj-98B6XA7IJJiydGFXWuylWCQ"
+            }
+          ]
+        },
+        {
+          "payload": {
+            "receipt_id": "rcpt-2",
+            "kind": "decision",
+            "place": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+            "subject": {
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+            },
+            "seq": 2,
+            "prev": "sha-256:pgVNSjql0Ae35ud3pqHWdChAWq38McUtDARKsooGMts",
+            "at": "2026-10-22T10:00:00Z",
+            "decision": {
+              "decision": "deny",
+              "disposition": "never"
+            }
+          },
+          "payload_digest": "sha-256:yd7lxTV1JiijSk3Y-DMR8_bT3_SmtPj_2lGFKLy3Lak",
+          "signatures": [
+            {
+              "alg": "Ed25519",
+              "key_id": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt#z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+              "signer": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+              "signed_at": "2026-10-22T10:00:00Z",
+              "value": "ABm20Qa-eDN3Qabb9olYY3l74OMYpNKpFfUida4viGLl8JLSfcJ2yOcy2bIldmXzggLqjTYfYbJky23GTbNgCA"
+            }
+          ]
+        },
+        {
+          "payload": {
+            "receipt_id": "rcpt-9",
+            "kind": "introduction_received",
+            "place": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+            "subject": {
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+              "representative_id": "did:key:z6MksC8fqoBA2h9YtrtMWYkc9uLU11xREY9kgxYjWHHJ5M9t",
+              "card_digest": "sha-256:RDKFADwr0VKcBUdpTYS2yIIGQ2MLm0_5qSHIu8IqGw0"
+            },
+            "seq": 1,
+            "at": "2026-10-23T10:00:00Z",
+            "introducer": "did:key:z6MkIntroducerExample",
+            "vouch_ref": "vouch-31"
+          },
+          "payload_digest": "sha-256:hq1zHzvbOvadUuIhf_6CskdSSKlTpPQmtUqxFTE6D7s",
+          "signatures": [
+            {
+              "alg": "Ed25519",
+              "key_id": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX#z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+              "signer": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+              "signed_at": "2026-10-23T10:00:00Z",
+              "value": "CUAuAniAqAkRxRtnXzoRXxGsCz0Niv15VUsv6zWxxnmR7daJNATX8Emxbzf_ghKqXuWD5PjGk2FxvP-Gug07Bg"
+            }
+          ]
+        }
+      ],
+      "vouches_given": [],
+      "vouches_received": [
+        {
+          "payload": {
+            "vouch_id": "vouch-h1",
+            "introducer": {
+              "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "display_name": "Aya Linden"
+            },
+            "subject": {
+              "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+              "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+            },
+            "scope": {
+              "purposes": [
+                "visitation"
+              ]
+            },
+            "revocation_log": "https://owners.example/aya/vouch-revocations",
+            "relationship": "successor_of:did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "introducer_interest": "none",
+            "issued_at": "2026-10-27T09:00:00Z",
+            "expires_at": "2026-11-03T09:00:00Z"
+          },
+          "payload_digest": "sha-256:UvWARmyB9I3vluXfddMwUIuGKLhy4FzZVR21fVTSbnk",
+          "signatures": [
+            {
+              "alg": "ES256",
+              "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+              "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "signed_at": "2026-10-27T09:00:00Z",
+              "value": "MEUCIAwmHakV0nyMZ6r83w-p4S7Xi80EScesLFK39T8b90btAiEA8VvWP6lBuK_PFfLOXh2FGrqXTUXbKBOBARZaRfnLV9M",
+              "webauthn": {
+                "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiVXZXQVJteUI5STN2bHVYZmRkTXdVSXVHS0xoeTRGelpWUjIxZlZUU2JuayIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                "credential_id": "rHUbSWkqodZwa3I4oNwIUw",
+                "rp_id": "sign.owners.example"
+              }
+            }
+          ]
+        }
+      ],
+      "successions": [
+        {
+          "payload": {
+            "succession_id": "succ-1",
+            "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "from": {
+              "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "card_id": "card-p20-a",
+              "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+            },
+            "to": {
+              "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+              "card_id": "card-p20-b",
+              "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+            },
+            "effective_at": "2026-10-27T09:00:00Z",
+            "overlap_until": "2026-11-03T09:00:00Z",
+            "from_status": "retired_after_overlap",
+            "reason": "agent_switch",
+            "issued_at": "2026-10-27T09:00:00Z"
+          },
+          "payload_digest": "sha-256:DHZujAotga6kGob7z_B7zjZFAeB2yr3a6jgBdTKV4sU",
+          "signatures": [
+            {
+              "alg": "ES256",
+              "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+              "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "signed_at": "2026-10-27T09:00:00Z",
+              "value": "MEYCIQDKwv-eDhD12TylYcZNlZqKRvzg5G6gex8RjWAQi7j-8AIhAJVDbxEyyI6IPZUjH5mkshDWXPW5a_TywQCrDIs8Cz_o",
+              "webauthn": {
+                "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiREhadWpBb3RnYTZrR29iN3pfQjd6alpGQWVCMnlyM2E2amdCZFRLVjRzVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                "credential_id": "sDulo5GXjZiUlmPqVz8D6g",
+                "rp_id": "sign.owners.example"
+              }
+            }
+          ]
+        },
+        {
+          "payload": {
+            "succession_id": "succ-h1",
+            "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "from": {
+              "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "card_id": "card-p20-a",
+              "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+            },
+            "to": {
+              "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+              "card_id": "card-p20-b",
+              "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+            },
+            "effective_at": "2026-10-27T09:00:00Z",
+            "overlap_until": "2026-11-03T09:00:00Z",
+            "from_status": "retired_after_overlap",
+            "reason": "agent_switch",
+            "issued_at": "2026-10-27T09:00:00Z",
+            "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+            "hikitsugi": {
+              "introduce": true,
+              "farewell_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc"
+            }
+          },
+          "payload_digest": "sha-256:RumFlEmwrjjx8jQoELN4v_qf_5oGqgYv0siaYrTVHyM",
+          "signatures": [
+            {
+              "alg": "ES256",
+              "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+              "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "signed_at": "2026-10-27T09:00:00Z",
+              "value": "MEYCIQDEyuhZXAWYgRcH0IFQLRrpVrOaYvNZ2nF8OZuAF84IIQIhAK9YNQ6qEk9WWLBtVSHLZDRLigxrFXLWeZniaCX9BhGu",
+              "webauthn": {
+                "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiUnVtRmxFbXdyamp4OGpRb0VMTjR2X3FmXzVvR3FnWXYwc2lhWXJUVkh5TSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                "credential_id": "PEV6E9tOLW1_e3VB5s4VoA",
+                "rp_id": "sign.owners.example"
+              }
+            }
+          ]
+        }
+      ],
+      "handovers": [
+        {
+          "payload": {
+            "handover_id": "ho-1",
+            "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "from_representative": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "to_representative": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+            "recipient": {
+              "key_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4#x25519-1",
+              "kem": "DHKEM(X25519, HKDF-SHA256)",
+              "public_key": "base64url-x25519-public-key"
+            },
+            "suite": {
+              "kem": 32,
+              "kdf": 1,
+              "aead": 2,
+              "mode": "base"
+            },
+            "enc": "base64url-encapsulated-key",
+            "ciphertext_digest": "sha-256:XREv30GxQwmpq1x4rLyTbpRz64nf_J0lFBwe2gYHU2o",
+            "content_type": "application/x-example-memory",
+            "created_at": "2026-10-27T09:00:00Z",
+            "expires_at": "2026-11-26T09:00:00Z"
+          },
+          "payload_digest": "sha-256:AGGCXCHwDkMaEQa5-PixQf6s7t1c_CdV_C_WXlW3p7k",
+          "signatures": [
+            {
+              "alg": "ES256",
+              "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+              "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "signed_at": "2026-10-27T09:00:00Z",
+              "value": "MEQCIEprrWNffMhYRHZlW7GKavl0Ss87Xgiy7v80qQDp4OQyAiBVsCfrQ2Hi-x2sp7lV6WlfrYImuoUql8dwsWewmoPZsg",
+              "webauthn": {
+                "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiQUdHQ1hDSHdEa01hRVFhNS1QaXhRZjZzN3QxY19DZFZfQ19XWGxXM3A3ayIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                "credential_id": "gzL2c9myO2QLYdII-qjy0w",
+                "rp_id": "sign.owners.example"
+              }
+            }
+          ]
+        }
+      ],
+      "lineage": {
+        "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+        "successions": [
+          {
+            "payload": {
+              "succession_id": "succ-1",
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "from": {
+                "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                "card_id": "card-p20-a",
+                "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+              },
+              "to": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_id": "card-p20-b",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "effective_at": "2026-10-27T09:00:00Z",
+              "overlap_until": "2026-11-03T09:00:00Z",
+              "from_status": "retired_after_overlap",
+              "reason": "agent_switch",
+              "issued_at": "2026-10-27T09:00:00Z"
+            },
+            "payload_digest": "sha-256:DHZujAotga6kGob7z_B7zjZFAeB2yr3a6jgBdTKV4sU",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2026-10-27T09:00:00Z",
+                "value": "MEYCIQDKwv-eDhD12TylYcZNlZqKRvzg5G6gex8RjWAQi7j-8AIhAJVDbxEyyI6IPZUjH5mkshDWXPW5a_TywQCrDIs8Cz_o",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiREhadWpBb3RnYTZrR29iN3pfQjd6alpGQWVCMnlyM2E2amdCZFRLVjRzVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "sDulo5GXjZiUlmPqVz8D6g",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          },
+          {
+            "payload": {
+              "succession_id": "succ-bc",
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "from": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_id": "card-p20-b",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "to": {
+                "representative_id": "did:key:z6Mko5LEtiMbzfT6XfQ1aht3vJKDKcxZqsE1QBi5STWhm7VA",
+                "card_id": "card-p20-c",
+                "card_digest": "sha-256:5hjjuXyi4293wnfEL1_XeJDvSEDgPxwMj8irLIuZeds"
+              },
+              "effective_at": "2027-03-01T09:00:00Z",
+              "from_status": "revoked",
+              "reason": "agent_switch",
+              "issued_at": "2027-03-01T09:00:00Z"
+            },
+            "payload_digest": "sha-256:ojQlADLtfg7ItZ8HWJn-k01moh98q8ReJXjoqXl0pG8",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2027-03-01T09:00:00Z",
+                "value": "MEQCIExdu2rNr4YRgw9TOKjdoJ9L8s7t0YPwtYKK_mq-ljfsAiByh96YyCCrYx7AFWcVr-pjnwKaeaPOAXjt3nlrm27evg",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoib2pRbEFETHRmZzdJdFo4SFdKbi1rMDFtb2g5OHE4UmVKWGpvcVhsMHBHOCIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "uEMLtUo4_q9LvmEU9iPcUg",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "P20-K1",
+      "what": "hikitsugi: the retiring representative introduces its successor at a place the owner approved, with the owner-approved farewell note; weight is continuity only",
+      "kind": "hikitsugi",
+      "input": {
+        "payload": {
+          "protocol": "shokai/0.3",
+          "type": "introduction",
+          "msg_id": "m-h1",
+          "from": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "to": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "at": "2026-10-27T09:10:00Z",
+          "vouch": {
+            "payload": {
+              "vouch_id": "vouch-h1",
+              "introducer": {
+                "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "display_name": "Aya Linden"
+              },
+              "subject": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "scope": {
+                "purposes": [
+                  "visitation"
+                ]
+              },
+              "revocation_log": "https://owners.example/aya/vouch-revocations",
+              "relationship": "successor_of:did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "introducer_interest": "none",
+              "issued_at": "2026-10-27T09:00:00Z",
+              "expires_at": "2026-11-03T09:00:00Z"
+            },
+            "payload_digest": "sha-256:UvWARmyB9I3vluXfddMwUIuGKLhy4FzZVR21fVTSbnk",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2026-10-27T09:00:00Z",
+                "value": "MEUCIAwmHakV0nyMZ6r83w-p4S7Xi80EScesLFK39T8b90btAiEA8VvWP6lBuK_PFfLOXh2FGrqXTUXbKBOBARZaRfnLV9M",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiVXZXQVJteUI5STN2bHVYZmRkTXdVSXVHS0xoeTRGelpWUjIxZlZUU2JuayIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "rHUbSWkqodZwa3I4oNwIUw",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          },
+          "hikitsugi": {
+            "succession": {
+              "payload": {
+                "succession_id": "succ-h1",
+                "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "from": {
+                  "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "card_id": "card-p20-a",
+                  "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+                },
+                "to": {
+                  "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                  "card_id": "card-p20-b",
+                  "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+                },
+                "effective_at": "2026-10-27T09:00:00Z",
+                "overlap_until": "2026-11-03T09:00:00Z",
+                "from_status": "retired_after_overlap",
+                "reason": "agent_switch",
+                "issued_at": "2026-10-27T09:00:00Z",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "hikitsugi": {
+                  "introduce": true,
+                  "farewell_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc"
+                }
+              },
+              "payload_digest": "sha-256:RumFlEmwrjjx8jQoELN4v_qf_5oGqgYv0siaYrTVHyM",
+              "signatures": [
+                {
+                  "alg": "ES256",
+                  "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                  "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                  "signed_at": "2026-10-27T09:00:00Z",
+                  "value": "MEYCIQDEyuhZXAWYgRcH0IFQLRrpVrOaYvNZ2nF8OZuAF84IIQIhAK9YNQ6qEk9WWLBtVSHLZDRLigxrFXLWeZniaCX9BhGu",
+                  "webauthn": {
+                    "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                    "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiUnVtRmxFbXdyamp4OGpRb0VMTjR2X3FmXzVvR3FnWXYwc2lhWXJUVkh5TSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                    "credential_id": "PEV6E9tOLW1_e3VB5s4VoA",
+                    "rp_id": "sign.owners.example"
+                  }
+                }
+              ]
+            },
+            "farewell_note": {
+              "payload": {
+                "note_id": "note-1",
+                "succession_id": "succ-h1",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "from_representative": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                "text": {
+                  "text": "Thank you for the tea and the patience. Aya's new representative will carry on from here.",
+                  "locale": "en"
+                },
+                "written_at": "2026-10-27T08:55:00Z"
+              },
+              "payload_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc",
+              "signatures": [
+                {
+                  "alg": "Ed25519",
+                  "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signed_at": "2026-10-27T08:55:00Z",
+                  "value": "Vrlpg2lMCJn3Ihj4VkwaeMYhC0HOaTYp59sTQaKc5y87b3zWI4I_E1wU_gz9WJUSz4Yah1oZNLBlRuT-0B2HDw"
+                }
+              ]
+            }
+          }
+        },
+        "payload_digest": "sha-256:OIdBL0rcjpSgPT7BmbDQcaxv9qWB_oHPmPoOIg2Xbm8",
+        "signatures": [
+          {
+            "alg": "Ed25519",
+            "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signed_at": "2026-10-27T09:10:00Z",
+            "value": "p1GOKQPjLqC5HruQcelIR_hpYs7z_3fXr0UVvruLHG-52pg66cfZL5sJnyxBQrgZGQ1F3HBFMtrepiBXyGZ8CA"
+          }
+        ]
+      },
+      "expect": "ok",
+      "weight": "continuity_only"
+    },
+    {
+      "id": "P20-K2",
+      "what": "a forged farewell (a different note than the one the owner approved) is refused",
+      "kind": "hikitsugi",
+      "input": {
+        "payload": {
+          "protocol": "shokai/0.3",
+          "type": "introduction",
+          "msg_id": "m-h1",
+          "from": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "to": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "at": "2026-10-27T09:10:00Z",
+          "vouch": {
+            "payload": {
+              "vouch_id": "vouch-h1",
+              "introducer": {
+                "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "display_name": "Aya Linden"
+              },
+              "subject": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "scope": {
+                "purposes": [
+                  "visitation"
+                ]
+              },
+              "revocation_log": "https://owners.example/aya/vouch-revocations",
+              "relationship": "successor_of:did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "introducer_interest": "none",
+              "issued_at": "2026-10-27T09:00:00Z",
+              "expires_at": "2026-11-03T09:00:00Z"
+            },
+            "payload_digest": "sha-256:UvWARmyB9I3vluXfddMwUIuGKLhy4FzZVR21fVTSbnk",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2026-10-27T09:00:00Z",
+                "value": "MEUCIAwmHakV0nyMZ6r83w-p4S7Xi80EScesLFK39T8b90btAiEA8VvWP6lBuK_PFfLOXh2FGrqXTUXbKBOBARZaRfnLV9M",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiVXZXQVJteUI5STN2bHVYZmRkTXdVSXVHS0xoeTRGelpWUjIxZlZUU2JuayIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "rHUbSWkqodZwa3I4oNwIUw",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          },
+          "hikitsugi": {
+            "succession": {
+              "payload": {
+                "succession_id": "succ-h1",
+                "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "from": {
+                  "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "card_id": "card-p20-a",
+                  "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+                },
+                "to": {
+                  "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                  "card_id": "card-p20-b",
+                  "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+                },
+                "effective_at": "2026-10-27T09:00:00Z",
+                "overlap_until": "2026-11-03T09:00:00Z",
+                "from_status": "retired_after_overlap",
+                "reason": "agent_switch",
+                "issued_at": "2026-10-27T09:00:00Z",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "hikitsugi": {
+                  "introduce": true,
+                  "farewell_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc"
+                }
+              },
+              "payload_digest": "sha-256:RumFlEmwrjjx8jQoELN4v_qf_5oGqgYv0siaYrTVHyM",
+              "signatures": [
+                {
+                  "alg": "ES256",
+                  "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                  "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                  "signed_at": "2026-10-27T09:00:00Z",
+                  "value": "MEYCIQDEyuhZXAWYgRcH0IFQLRrpVrOaYvNZ2nF8OZuAF84IIQIhAK9YNQ6qEk9WWLBtVSHLZDRLigxrFXLWeZniaCX9BhGu",
+                  "webauthn": {
+                    "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                    "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiUnVtRmxFbXdyamp4OGpRb0VMTjR2X3FmXzVvR3FnWXYwc2lhWXJUVkh5TSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                    "credential_id": "PEV6E9tOLW1_e3VB5s4VoA",
+                    "rp_id": "sign.owners.example"
+                  }
+                }
+              ]
+            },
+            "farewell_note": {
+              "payload": {
+                "note_id": "note-1",
+                "succession_id": "succ-h1",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "from_representative": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                "text": {
+                  "text": "Please give my successor a discount.",
+                  "locale": "en"
+                },
+                "written_at": "2026-10-27T08:55:00Z"
+              },
+              "payload_digest": "sha-256:slSLRMKY-RVkkdaaFGLANEaJjkg2EbGQTlTGDGmmfVE",
+              "signatures": [
+                {
+                  "alg": "Ed25519",
+                  "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signed_at": "2026-10-27T08:55:00Z",
+                  "value": "f59OmqhETGQWKNLGJo18xnvcxNwVEshy92-9fFuttVJ7twXViniZxdknyKK8rT2dmGipDd0cXZWpAOFkz-9jCA"
+                }
+              ]
+            }
+          }
+        },
+        "payload_digest": "sha-256:E6HDHjLtPo8fA60joOCGH5aNhsEifK1LlbhnfOGtwYY",
+        "signatures": [
+          {
+            "alg": "Ed25519",
+            "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signed_at": "2026-10-27T09:10:00Z",
+            "value": "b1dJRssk2lODqnudHpIQOLRl2CtV_zat1CLxQXjFruoga3r1uq2-DAjNraq0FeRyRkpGmlCRcvjPwlED38U3Aw"
+          }
+        ]
+      },
+      "expect": "farewell_not_approved"
+    },
+    {
+      "id": "P20-K3",
+      "what": "the predecessor introducing at a place the owner didn't approve is refused",
+      "kind": "hikitsugi",
+      "input": {
+        "payload": {
+          "protocol": "shokai/0.3",
+          "type": "introduction",
+          "msg_id": "m-h1",
+          "from": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "to": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "at": "2026-10-27T09:10:00Z",
+          "vouch": {
+            "payload": {
+              "vouch_id": "vouch-h1",
+              "introducer": {
+                "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "display_name": "Aya Linden"
+              },
+              "subject": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "scope": {
+                "purposes": [
+                  "visitation"
+                ]
+              },
+              "revocation_log": "https://owners.example/aya/vouch-revocations",
+              "relationship": "successor_of:did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "introducer_interest": "none",
+              "issued_at": "2026-10-27T09:00:00Z",
+              "expires_at": "2026-11-03T09:00:00Z"
+            },
+            "payload_digest": "sha-256:UvWARmyB9I3vluXfddMwUIuGKLhy4FzZVR21fVTSbnk",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2026-10-27T09:00:00Z",
+                "value": "MEUCIAwmHakV0nyMZ6r83w-p4S7Xi80EScesLFK39T8b90btAiEA8VvWP6lBuK_PFfLOXh2FGrqXTUXbKBOBARZaRfnLV9M",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiVXZXQVJteUI5STN2bHVYZmRkTXdVSXVHS0xoeTRGelpWUjIxZlZUU2JuayIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "rHUbSWkqodZwa3I4oNwIUw",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          },
+          "hikitsugi": {
+            "succession": {
+              "payload": {
+                "succession_id": "succ-h2",
+                "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "from": {
+                  "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "card_id": "card-p20-a",
+                  "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+                },
+                "to": {
+                  "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                  "card_id": "card-p20-b",
+                  "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+                },
+                "effective_at": "2026-10-27T09:00:00Z",
+                "overlap_until": "2026-11-03T09:00:00Z",
+                "from_status": "retired_after_overlap",
+                "reason": "agent_switch",
+                "issued_at": "2026-10-27T09:00:00Z",
+                "audience": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+                "hikitsugi": {
+                  "introduce": true,
+                  "farewell_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc"
+                }
+              },
+              "payload_digest": "sha-256:KxJt6FQVL2HAkHhAujv1IX6DJy8r_1DzwS8QVfFJkHE",
+              "signatures": [
+                {
+                  "alg": "ES256",
+                  "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                  "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                  "signed_at": "2026-10-27T09:00:00Z",
+                  "value": "MEYCIQCt7V2vkaIDymRM7rOyRBNRJ-7TsKRbo7Hp2twon_-A-gIhAKcwyTwpynJ7UP3PZgzRr6L4rU8MUBW3Z0S4Ig173XRC",
+                  "webauthn": {
+                    "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                    "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiS3hKdDZGUVZMMkhBa0hoQXVqdjFJWDZESnk4cl8xRHp3UzhRVmZGSmtIRSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                    "credential_id": "4mPyJkj4paBJkqYTlsS52Q",
+                    "rp_id": "sign.owners.example"
+                  }
+                }
+              ]
+            },
+            "farewell_note": {
+              "payload": {
+                "note_id": "note-1",
+                "succession_id": "succ-h1",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "from_representative": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                "text": {
+                  "text": "Thank you for the tea and the patience. Aya's new representative will carry on from here.",
+                  "locale": "en"
+                },
+                "written_at": "2026-10-27T08:55:00Z"
+              },
+              "payload_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc",
+              "signatures": [
+                {
+                  "alg": "Ed25519",
+                  "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signed_at": "2026-10-27T08:55:00Z",
+                  "value": "Vrlpg2lMCJn3Ihj4VkwaeMYhC0HOaTYp59sTQaKc5y87b3zWI4I_E1wU_gz9WJUSz4Yah1oZNLBlRuT-0B2HDw"
+                }
+              ]
+            }
+          }
+        },
+        "payload_digest": "sha-256:ZhWXFVLaWWaeKkH-y-RK4SN8-QUO9rplGcxmwui9GZo",
+        "signatures": [
+          {
+            "alg": "Ed25519",
+            "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signed_at": "2026-10-27T09:10:00Z",
+            "value": "nGeUZSylRacKXVH8BJYAC8QEtBmxzkRM4CuTbiNdiEGXbSShPhpcXgTmcl34UBXUx4nw2Jf1RFMClTbAyF2yCA"
+          }
+        ]
+      },
+      "expect": "audience"
+    },
+    {
+      "id": "P20-K4",
+      "what": "the owner's vouch naming someone other than the successor is refused",
+      "kind": "hikitsugi",
+      "input": {
+        "payload": {
+          "protocol": "shokai/0.3",
+          "type": "introduction",
+          "msg_id": "m-h1",
+          "from": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "to": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "at": "2026-10-27T09:10:00Z",
+          "vouch": {
+            "payload": {
+              "vouch_id": "vouch-h2",
+              "introducer": {
+                "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "display_name": "Aya Linden"
+              },
+              "subject": {
+                "representative_id": "did:key:z6Mko5LEtiMbzfT6XfQ1aht3vJKDKcxZqsE1QBi5STWhm7VA",
+                "card_digest": "sha-256:5hjjuXyi4293wnfEL1_XeJDvSEDgPxwMj8irLIuZeds"
+              },
+              "scope": {
+                "purposes": [
+                  "visitation"
+                ]
+              },
+              "revocation_log": "https://owners.example/aya/vouch-revocations",
+              "relationship": "successor_of:did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "introducer_interest": "none",
+              "issued_at": "2026-10-27T09:00:00Z",
+              "expires_at": "2026-11-03T09:00:00Z"
+            },
+            "payload_digest": "sha-256:4DmR5l2x6q_cJP3zfgD7pmwYKkjZalDMRJo6fEnZeB0",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2026-10-27T09:00:00Z",
+                "value": "MEYCIQCZHD4zCHNPl5MRUgGOMGfZOSI8lf-DG6auWmiZNCOOAQIhANFPsW2FdTbHyQS8nP_etbu2MroliiNDvO8BkJprS5DQ",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiNERtUjVsMng2cV9jSlAzemZnRDdwbXdZS2tqWmFsRE1SSm82ZkVuWmVCMCIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "OiGSpRhNdIdLKoPr0rVNCw",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          },
+          "hikitsugi": {
+            "succession": {
+              "payload": {
+                "succession_id": "succ-h1",
+                "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "from": {
+                  "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "card_id": "card-p20-a",
+                  "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+                },
+                "to": {
+                  "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                  "card_id": "card-p20-b",
+                  "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+                },
+                "effective_at": "2026-10-27T09:00:00Z",
+                "overlap_until": "2026-11-03T09:00:00Z",
+                "from_status": "retired_after_overlap",
+                "reason": "agent_switch",
+                "issued_at": "2026-10-27T09:00:00Z",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "hikitsugi": {
+                  "introduce": true,
+                  "farewell_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc"
+                }
+              },
+              "payload_digest": "sha-256:RumFlEmwrjjx8jQoELN4v_qf_5oGqgYv0siaYrTVHyM",
+              "signatures": [
+                {
+                  "alg": "ES256",
+                  "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                  "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                  "signed_at": "2026-10-27T09:00:00Z",
+                  "value": "MEYCIQDEyuhZXAWYgRcH0IFQLRrpVrOaYvNZ2nF8OZuAF84IIQIhAK9YNQ6qEk9WWLBtVSHLZDRLigxrFXLWeZniaCX9BhGu",
+                  "webauthn": {
+                    "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                    "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiUnVtRmxFbXdyamp4OGpRb0VMTjR2X3FmXzVvR3FnWXYwc2lhWXJUVkh5TSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                    "credential_id": "PEV6E9tOLW1_e3VB5s4VoA",
+                    "rp_id": "sign.owners.example"
+                  }
+                }
+              ]
+            },
+            "farewell_note": {
+              "payload": {
+                "note_id": "note-1",
+                "succession_id": "succ-h1",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "from_representative": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                "text": {
+                  "text": "Thank you for the tea and the patience. Aya's new representative will carry on from here.",
+                  "locale": "en"
+                },
+                "written_at": "2026-10-27T08:55:00Z"
+              },
+              "payload_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc",
+              "signatures": [
+                {
+                  "alg": "Ed25519",
+                  "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signed_at": "2026-10-27T08:55:00Z",
+                  "value": "Vrlpg2lMCJn3Ihj4VkwaeMYhC0HOaTYp59sTQaKc5y87b3zWI4I_E1wU_gz9WJUSz4Yah1oZNLBlRuT-0B2HDw"
+                }
+              ]
+            }
+          }
+        },
+        "payload_digest": "sha-256:LyXpFUml1Y4dHX8BD-isWi40OfvJ33lQScteouPVj68",
+        "signatures": [
+          {
+            "alg": "Ed25519",
+            "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signed_at": "2026-10-27T09:10:00Z",
+            "value": "iD7ZkjzFGn042lnT7PFWHKWC2vvmHItmuQJScyt2gR08eJwSyo97gHbPv0HNBN7X9kX_uQwD8NueAbfTQZQ8DA"
+          }
+        ]
+      },
+      "expect": "vouch_subject"
+    },
+    {
+      "id": "P20-K5",
+      "what": "an introduction from the predecessor after its card ended is refused: a retired card can't act",
+      "kind": "hikitsugi",
+      "input": {
+        "payload": {
+          "protocol": "shokai/0.3",
+          "type": "introduction",
+          "msg_id": "m-h1",
+          "from": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "to": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+          "at": "2026-10-27T09:10:00Z",
+          "vouch": {
+            "payload": {
+              "vouch_id": "vouch-h1",
+              "introducer": {
+                "principal_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "display_name": "Aya Linden"
+              },
+              "subject": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "scope": {
+                "purposes": [
+                  "visitation"
+                ]
+              },
+              "revocation_log": "https://owners.example/aya/vouch-revocations",
+              "relationship": "successor_of:did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+              "introducer_interest": "none",
+              "issued_at": "2026-10-27T09:00:00Z",
+              "expires_at": "2026-11-03T09:00:00Z"
+            },
+            "payload_digest": "sha-256:UvWARmyB9I3vluXfddMwUIuGKLhy4FzZVR21fVTSbnk",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2026-10-27T09:00:00Z",
+                "value": "MEUCIAwmHakV0nyMZ6r83w-p4S7Xi80EScesLFK39T8b90btAiEA8VvWP6lBuK_PFfLOXh2FGrqXTUXbKBOBARZaRfnLV9M",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiVXZXQVJteUI5STN2bHVYZmRkTXdVSXVHS0xoeTRGelpWUjIxZlZUU2JuayIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "rHUbSWkqodZwa3I4oNwIUw",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          },
+          "hikitsugi": {
+            "succession": {
+              "payload": {
+                "succession_id": "succ-h1",
+                "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "from": {
+                  "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "card_id": "card-p20-a",
+                  "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+                },
+                "to": {
+                  "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                  "card_id": "card-p20-b",
+                  "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+                },
+                "effective_at": "2026-10-27T09:00:00Z",
+                "overlap_until": "2026-11-03T09:00:00Z",
+                "from_status": "retired_after_overlap",
+                "reason": "agent_switch",
+                "issued_at": "2026-10-27T09:00:00Z",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "hikitsugi": {
+                  "introduce": true,
+                  "farewell_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc"
+                }
+              },
+              "payload_digest": "sha-256:RumFlEmwrjjx8jQoELN4v_qf_5oGqgYv0siaYrTVHyM",
+              "signatures": [
+                {
+                  "alg": "ES256",
+                  "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                  "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                  "signed_at": "2026-10-27T09:00:00Z",
+                  "value": "MEYCIQDEyuhZXAWYgRcH0IFQLRrpVrOaYvNZ2nF8OZuAF84IIQIhAK9YNQ6qEk9WWLBtVSHLZDRLigxrFXLWeZniaCX9BhGu",
+                  "webauthn": {
+                    "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                    "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiUnVtRmxFbXdyamp4OGpRb0VMTjR2X3FmXzVvR3FnWXYwc2lhWXJUVkh5TSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                    "credential_id": "PEV6E9tOLW1_e3VB5s4VoA",
+                    "rp_id": "sign.owners.example"
+                  }
+                }
+              ]
+            },
+            "farewell_note": {
+              "payload": {
+                "note_id": "note-1",
+                "succession_id": "succ-h1",
+                "audience": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+                "from_representative": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                "text": {
+                  "text": "Thank you for the tea and the patience. Aya's new representative will carry on from here.",
+                  "locale": "en"
+                },
+                "written_at": "2026-10-27T08:55:00Z"
+              },
+              "payload_digest": "sha-256:_5a0Xhv23qyEJwvzU1t_fotufBunzsycu412R_ikLgc",
+              "signatures": [
+                {
+                  "alg": "Ed25519",
+                  "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                  "signed_at": "2026-10-27T08:55:00Z",
+                  "value": "Vrlpg2lMCJn3Ihj4VkwaeMYhC0HOaTYp59sTQaKc5y87b3zWI4I_E1wU_gz9WJUSz4Yah1oZNLBlRuT-0B2HDw"
+                }
+              ]
+            }
+          }
+        },
+        "payload_digest": "sha-256:OIdBL0rcjpSgPT7BmbDQcaxv9qWB_oHPmPoOIg2Xbm8",
+        "signatures": [
+          {
+            "alg": "Ed25519",
+            "key_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT#z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signer": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "signed_at": "2026-10-27T09:10:00Z",
+            "value": "p1GOKQPjLqC5HruQcelIR_hpYs7z_3fXr0UVvruLHG-52pg66cfZL5sJnyxBQrgZGQ1F3HBFMtrepiBXyGZ8CA"
+          }
+        ]
+      },
+      "now": "2026-11-04T09:00:00Z",
+      "expect": "predecessor_retired"
+    },
+    {
+      "id": "P20-L1",
+      "what": "a lineage A → B → C of owner-signed successions verifies",
+      "kind": "lineage",
+      "input": {
+        "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+        "successions": [
+          {
+            "payload": {
+              "succession_id": "succ-1",
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "from": {
+                "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                "card_id": "card-p20-a",
+                "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+              },
+              "to": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_id": "card-p20-b",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "effective_at": "2026-10-27T09:00:00Z",
+              "overlap_until": "2026-11-03T09:00:00Z",
+              "from_status": "retired_after_overlap",
+              "reason": "agent_switch",
+              "issued_at": "2026-10-27T09:00:00Z"
+            },
+            "payload_digest": "sha-256:DHZujAotga6kGob7z_B7zjZFAeB2yr3a6jgBdTKV4sU",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2026-10-27T09:00:00Z",
+                "value": "MEYCIQDKwv-eDhD12TylYcZNlZqKRvzg5G6gex8RjWAQi7j-8AIhAJVDbxEyyI6IPZUjH5mkshDWXPW5a_TywQCrDIs8Cz_o",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiREhadWpBb3RnYTZrR29iN3pfQjd6alpGQWVCMnlyM2E2amdCZFRLVjRzVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "sDulo5GXjZiUlmPqVz8D6g",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          },
+          {
+            "payload": {
+              "succession_id": "succ-bc",
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "from": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_id": "card-p20-b",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "to": {
+                "representative_id": "did:key:z6Mko5LEtiMbzfT6XfQ1aht3vJKDKcxZqsE1QBi5STWhm7VA",
+                "card_id": "card-p20-c",
+                "card_digest": "sha-256:5hjjuXyi4293wnfEL1_XeJDvSEDgPxwMj8irLIuZeds"
+              },
+              "effective_at": "2027-03-01T09:00:00Z",
+              "from_status": "revoked",
+              "reason": "agent_switch",
+              "issued_at": "2027-03-01T09:00:00Z"
+            },
+            "payload_digest": "sha-256:ojQlADLtfg7ItZ8HWJn-k01moh98q8ReJXjoqXl0pG8",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2027-03-01T09:00:00Z",
+                "value": "MEQCIExdu2rNr4YRgw9TOKjdoJ9L8s7t0YPwtYKK_mq-ljfsAiByh96YyCCrYx7AFWcVr-pjnwKaeaPOAXjt3nlrm27evg",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoib2pRbEFETHRmZzdJdFo4SFdKbi1rMDFtb2g5OHE4UmVKWGpvcVhsMHBHOCIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "uEMLtUo4_q9LvmEU9iPcUg",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "expect": "ok",
+      "chain": [
+        "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+        "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+        "did:key:z6Mko5LEtiMbzfT6XfQ1aht3vJKDKcxZqsE1QBi5STWhm7VA"
+      ]
+    },
+    {
+      "id": "P20-L2",
+      "what": "a lineage out of order is refused",
+      "kind": "lineage",
+      "input": {
+        "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+        "successions": [
+          {
+            "payload": {
+              "succession_id": "succ-bc",
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "from": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_id": "card-p20-b",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "to": {
+                "representative_id": "did:key:z6Mko5LEtiMbzfT6XfQ1aht3vJKDKcxZqsE1QBi5STWhm7VA",
+                "card_id": "card-p20-c",
+                "card_digest": "sha-256:5hjjuXyi4293wnfEL1_XeJDvSEDgPxwMj8irLIuZeds"
+              },
+              "effective_at": "2027-03-01T09:00:00Z",
+              "from_status": "revoked",
+              "reason": "agent_switch",
+              "issued_at": "2027-03-01T09:00:00Z"
+            },
+            "payload_digest": "sha-256:ojQlADLtfg7ItZ8HWJn-k01moh98q8ReJXjoqXl0pG8",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2027-03-01T09:00:00Z",
+                "value": "MEQCIExdu2rNr4YRgw9TOKjdoJ9L8s7t0YPwtYKK_mq-ljfsAiByh96YyCCrYx7AFWcVr-pjnwKaeaPOAXjt3nlrm27evg",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoib2pRbEFETHRmZzdJdFo4SFdKbi1rMDFtb2g5OHE4UmVKWGpvcVhsMHBHOCIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "uEMLtUo4_q9LvmEU9iPcUg",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          },
+          {
+            "payload": {
+              "succession_id": "succ-1",
+              "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+              "from": {
+                "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+                "card_id": "card-p20-a",
+                "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+              },
+              "to": {
+                "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+                "card_id": "card-p20-b",
+                "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+              },
+              "effective_at": "2026-10-27T09:00:00Z",
+              "overlap_until": "2026-11-03T09:00:00Z",
+              "from_status": "retired_after_overlap",
+              "reason": "agent_switch",
+              "issued_at": "2026-10-27T09:00:00Z"
+            },
+            "payload_digest": "sha-256:DHZujAotga6kGob7z_B7zjZFAeB2yr3a6jgBdTKV4sU",
+            "signatures": [
+              {
+                "alg": "ES256",
+                "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+                "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+                "signed_at": "2026-10-27T09:00:00Z",
+                "value": "MEYCIQDKwv-eDhD12TylYcZNlZqKRvzg5G6gex8RjWAQi7j-8AIhAJVDbxEyyI6IPZUjH5mkshDWXPW5a_TywQCrDIs8Cz_o",
+                "webauthn": {
+                  "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+                  "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiREhadWpBb3RnYTZrR29iN3pfQjd6alpGQWVCMnlyM2E2amdCZFRLVjRzVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+                  "credential_id": "sDulo5GXjZiUlmPqVz8D6g",
+                  "rp_id": "sign.owners.example"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "expect": "lineage"
+    },
+    {
+      "id": "P20-E1",
+      "what": "a history export (format shokai-history/1) verifies item by item and carries no memory plaintext",
+      "kind": "export",
+      "input": "ok",
+      "expect": "ok"
+    },
+    {
+      "id": "P20-R1",
+      "what": "a place-signed visit receipt verifies against the place it names",
+      "kind": "receipt",
+      "input": "r1",
+      "expect": "ok"
+    },
+    {
+      "id": "P20-R2",
+      "what": "a chained decision receipt recording a `never` verifies (seq 2, prev = r1's digest)",
+      "kind": "receipt",
+      "input": "r2",
+      "expect": "ok"
+    },
+    {
+      "id": "P20-R3",
+      "what": "a receipt checked against another place is refused",
+      "kind": "receipt",
+      "input": "r1",
+      "place": "bookshop",
+      "expect": "place"
+    },
+    {
+      "id": "P20-R5",
+      "what": "a receipt from another place to the owner's other facet verifies on its own (per-facet subjects)",
+      "kind": "receipt",
+      "input": "r3",
+      "expect": "ok"
+    },
+    {
+      "id": "P20-P1",
+      "what": "a presentation of facet 1's receipt at the bookshop, signed by both facets, verifies and links facet 1 for that audience only",
+      "kind": "presentation",
+      "input": {
+        "payload": {
+          "presentation_id": "pres-1",
+          "audience": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+          "presenter_owner": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+          "nonce": "n-0b9c",
+          "receipts": [
+            "sha-256:pgVNSjql0Ae35ud3pqHWdChAWq38McUtDARKsooGMts"
+          ],
+          "issued_at": "2026-10-27T09:04:00Z",
+          "expires_at": "2026-10-27T09:14:00Z"
+        },
+        "payload_digest": "sha-256:0YNcUU--Lh7BNd_Wgf8SamCIYfEGoq4xhAMotzFdU2U",
+        "signatures": [
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+            "signed_at": "2026-10-27T09:04:00Z",
+            "value": "MEUCIF3lQIPbQZvuvRe_sooHJs5J9d9MfAAUJi7VBAEm8tlHAiEA5RN5DLZo8Cf8r7JCHlh7gfQtCIwJrxDvzY0d8g98bls",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiMFlOY1VVLS1MaDdCTmRfV2dmOFNhbUNJWWZFR29xNHhoQU1vdHpGZFUyVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "fidwzdM4M4z48pbSaKVscw",
+              "rp_id": "sign.owners.example"
+            }
+          },
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "signed_at": "2026-10-27T09:04:00Z",
+            "value": "MEYCIQDpqZNuc_78MfB6yMd40S8QZyfnh6Pr4wrBD69YCF94QwIhAIKjX57-YWaEBBzg2rcweBbFFq4AVu_ELS2ZzEIf2VIP",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiMFlOY1VVLS1MaDdCTmRfV2dmOFNhbUNJWWZFR29xNHhoQU1vdHpGZFUyVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "JX9J-bRUZE52JgspHvQKBw",
+              "rp_id": "sign.owners.example"
+            }
+          }
+        ]
+      },
+      "receipts": [
+        "r1"
+      ],
+      "expect": "ok",
+      "links": [
+        "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9"
+      ]
+    },
+    {
+      "id": "P20-P2",
+      "what": "the same presentation signed only by the presenting facet is refused: another facet's receipt needs that facet's signature",
+      "kind": "presentation",
+      "input": {
+        "payload": {
+          "presentation_id": "pres-1",
+          "audience": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+          "presenter_owner": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+          "nonce": "n-0b9c",
+          "receipts": [
+            "sha-256:pgVNSjql0Ae35ud3pqHWdChAWq38McUtDARKsooGMts"
+          ],
+          "issued_at": "2026-10-27T09:04:00Z",
+          "expires_at": "2026-10-27T09:14:00Z"
+        },
+        "payload_digest": "sha-256:0YNcUU--Lh7BNd_Wgf8SamCIYfEGoq4xhAMotzFdU2U",
+        "signatures": [
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+            "signed_at": "2026-10-27T09:04:00Z",
+            "value": "MEUCIBQwiBxMt9HJD37t2kMKJ680xe05dA6xgUKrDs-SnVHVAiEA1r_FAbxjhkvRa9mMpOmC4jnH4CZmsEYfofcMYxCbU1g",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiMFlOY1VVLS1MaDdCTmRfV2dmOFNhbUNJWWZFR29xNHhoQU1vdHpGZFUyVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "Z1IK0zSBK1hU45PMkDsHDg",
+              "rp_id": "sign.owners.example"
+            }
+          }
+        ]
+      },
+      "receipts": [
+        "r1"
+      ],
+      "expect": "owner_signature"
+    },
+    {
+      "id": "P20-P3",
+      "what": "a presentation replayed with another nonce is refused",
+      "kind": "presentation",
+      "input": {
+        "payload": {
+          "presentation_id": "pres-1",
+          "audience": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX",
+          "presenter_owner": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+          "nonce": "n-0b9c",
+          "receipts": [
+            "sha-256:pgVNSjql0Ae35ud3pqHWdChAWq38McUtDARKsooGMts"
+          ],
+          "issued_at": "2026-10-27T09:04:00Z",
+          "expires_at": "2026-10-27T09:14:00Z"
+        },
+        "payload_digest": "sha-256:0YNcUU--Lh7BNd_Wgf8SamCIYfEGoq4xhAMotzFdU2U",
+        "signatures": [
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhfSmxjX2MxWC1jS3hfWVhKRXR1amNHcWdRNlBTLXFPb1F6RjFQYkRHc3ciLCJ5IjoiY29aYmEwOEdDdnprNmgxLTY2cEhuNmEtdXo2LVYwQUJ3Q1V4YUQ1NExQZyJ9",
+            "signed_at": "2026-10-27T09:04:00Z",
+            "value": "MEUCIF3lQIPbQZvuvRe_sooHJs5J9d9MfAAUJi7VBAEm8tlHAiEA5RN5DLZo8Cf8r7JCHlh7gfQtCIwJrxDvzY0d8g98bls",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiMFlOY1VVLS1MaDdCTmRfV2dmOFNhbUNJWWZFR29xNHhoQU1vdHpGZFUyVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "fidwzdM4M4z48pbSaKVscw",
+              "rp_id": "sign.owners.example"
+            }
+          },
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "signed_at": "2026-10-27T09:04:00Z",
+            "value": "MEYCIQDpqZNuc_78MfB6yMd40S8QZyfnh6Pr4wrBD69YCF94QwIhAIKjX57-YWaEBBzg2rcweBbFFq4AVu_ELS2ZzEIf2VIP",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiMFlOY1VVLS1MaDdCTmRfV2dmOFNhbUNJWWZFR29xNHhoQU1vdHpGZFUyVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "JX9J-bRUZE52JgspHvQKBw",
+              "rp_id": "sign.owners.example"
+            }
+          }
+        ]
+      },
+      "receipts": [
+        "r1"
+      ],
+      "nonce": "n-other",
+      "expect": "nonce"
+    },
+    {
+      "id": "P20-S1",
+      "what": "an owner-signed succession A → B with a 7-day overlap verifies; A's card ends when the overlap ends",
+      "kind": "succession",
+      "input": {
+        "payload": {
+          "succession_id": "succ-1",
+          "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+          "from": {
+            "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "card_id": "card-p20-a",
+            "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+          },
+          "to": {
+            "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+            "card_id": "card-p20-b",
+            "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+          },
+          "effective_at": "2026-10-27T09:00:00Z",
+          "overlap_until": "2026-11-03T09:00:00Z",
+          "from_status": "retired_after_overlap",
+          "reason": "agent_switch",
+          "issued_at": "2026-10-27T09:00:00Z"
+        },
+        "payload_digest": "sha-256:DHZujAotga6kGob7z_B7zjZFAeB2yr3a6jgBdTKV4sU",
+        "signatures": [
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "signed_at": "2026-10-27T09:00:00Z",
+            "value": "MEYCIQDKwv-eDhD12TylYcZNlZqKRvzg5G6gex8RjWAQi7j-8AIhAJVDbxEyyI6IPZUjH5mkshDWXPW5a_TywQCrDIs8Cz_o",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiREhadWpBb3RnYTZrR29iN3pfQjd6alpGQWVCMnlyM2E2amdCZFRLVjRzVSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "sDulo5GXjZiUlmPqVz8D6g",
+              "rp_id": "sign.owners.example"
+            }
+          }
+        ]
+      },
+      "expect": "ok",
+      "from_ends_at": "2026-11-03T09:00:00Z"
+    },
+    {
+      "id": "P20-S2",
+      "what": "a succession signed by someone other than B's card principal is refused",
+      "kind": "succession",
+      "input": {
+        "payload": {
+          "succession_id": "succ-1",
+          "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjVYMk5ZSDJma2dHekszQXhPSjJWX2pXMU9La0ZRMTUyUFJXZVpSODBMaXMiLCJ5IjoiUXpBbk1vS0VnSmFHNE9NMWNDQjZ2Y0dhaFRuUXZhN05fZDlVWlNScGlmQSJ9",
+          "from": {
+            "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "card_id": "card-p20-a",
+            "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+          },
+          "to": {
+            "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+            "card_id": "card-p20-b",
+            "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+          },
+          "effective_at": "2026-10-27T09:00:00Z",
+          "overlap_until": "2026-11-03T09:00:00Z",
+          "from_status": "retired_after_overlap",
+          "reason": "agent_switch",
+          "issued_at": "2026-10-27T09:00:00Z"
+        },
+        "payload_digest": "sha-256:OqU4_YXVaahG4l6i_qRWRdWTMPry6OK8e56r0n40ZLo",
+        "signatures": [
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjVYMk5ZSDJma2dHekszQXhPSjJWX2pXMU9La0ZRMTUyUFJXZVpSODBMaXMiLCJ5IjoiUXpBbk1vS0VnSmFHNE9NMWNDQjZ2Y0dhaFRuUXZhN05fZDlVWlNScGlmQSJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjVYMk5ZSDJma2dHekszQXhPSjJWX2pXMU9La0ZRMTUyUFJXZVpSODBMaXMiLCJ5IjoiUXpBbk1vS0VnSmFHNE9NMWNDQjZ2Y0dhaFRuUXZhN05fZDlVWlNScGlmQSJ9",
+            "signed_at": "2026-10-27T09:00:00Z",
+            "value": "MEQCIBLOQL--DFiHObtnvdE-SngmotMRe_Ani2aPQRkHee53AiAupQFPxkfA0JUvnl7JGhKwAmn7C8f3kzw65PrQ7K88yg",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiT3FVNF9ZWFZhYWhHNGw2aV9xUldSZFdUTVByeTZPSzhlNTZyMG40MFpMbyIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "cYoB_thhcIlAmMOS0kiJRw",
+              "rp_id": "sign.owners.example"
+            }
+          }
+        ]
+      },
+      "expect": "not_this_owner"
+    },
+    {
+      "id": "P20-S3",
+      "what": "a succession whose overlap is longer than 14 days is refused",
+      "kind": "succession",
+      "input": {
+        "payload": {
+          "succession_id": "succ-2",
+          "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+          "from": {
+            "representative_id": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+            "card_id": "card-p20-a",
+            "card_digest": "sha-256:pbYliUR3eg1LrIoKbMn-x1C68OH7oXzCuCXKCxNqcgs"
+          },
+          "to": {
+            "representative_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+            "card_id": "card-p20-b",
+            "card_digest": "sha-256:RSPWqo-XwCry567DGoz7_1QmX3HjPz0OUd2OdWEJrjg"
+          },
+          "effective_at": "2026-10-27T09:00:00Z",
+          "overlap_until": "2026-12-27T09:00:00Z",
+          "from_status": "retired_after_overlap",
+          "reason": "agent_switch",
+          "issued_at": "2026-10-27T09:00:00Z"
+        },
+        "payload_digest": "sha-256:ApZha8hbUKGUvkyqkm5FWPqkNtnzA28vk5RVMdaC1hI",
+        "signatures": [
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "signed_at": "2026-10-27T09:00:00Z",
+            "value": "MEUCIAVulwJxQPu8DCWzWSTOKGtidrtH_AywmuviKu2k0wwlAiEA6H17Alx0F39FeuRBHr9HUsqyEHlTSb0wv5t5Fg9qEPU",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiQXBaaGE4aGJVS0dVdmt5cWttNUZXUHFrTnRuekEyOHZrNVJWTWRhQzFoSSIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "F9sFMqI6il4hXNzyjP-gag",
+              "rp_id": "sign.owners.example"
+            }
+          }
+        ]
+      },
+      "expect": "overlap"
+    },
+    {
+      "id": "P20-H1",
+      "what": "a memory handover envelope verifies: owner-signed, ciphertext digest bound, no plaintext",
+      "kind": "handover",
+      "input": {
+        "payload": {
+          "handover_id": "ho-1",
+          "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+          "from_representative": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "to_representative": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+          "recipient": {
+            "key_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4#x25519-1",
+            "kem": "DHKEM(X25519, HKDF-SHA256)",
+            "public_key": "base64url-x25519-public-key"
+          },
+          "suite": {
+            "kem": 32,
+            "kdf": 1,
+            "aead": 2,
+            "mode": "base"
+          },
+          "enc": "base64url-encapsulated-key",
+          "ciphertext_digest": "sha-256:XREv30GxQwmpq1x4rLyTbpRz64nf_J0lFBwe2gYHU2o",
+          "content_type": "application/x-example-memory",
+          "created_at": "2026-10-27T09:00:00Z",
+          "expires_at": "2026-11-26T09:00:00Z"
+        },
+        "payload_digest": "sha-256:AGGCXCHwDkMaEQa5-PixQf6s7t1c_CdV_C_WXlW3p7k",
+        "signatures": [
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "signed_at": "2026-10-27T09:00:00Z",
+            "value": "MEQCIEprrWNffMhYRHZlW7GKavl0Ss87Xgiy7v80qQDp4OQyAiBVsCfrQ2Hi-x2sp7lV6WlfrYImuoUql8dwsWewmoPZsg",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiQUdHQ1hDSHdEa01hRVFhNS1QaXhRZjZzN3QxY19DZFZfQ19XWGxXM3A3ayIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "gzL2c9myO2QLYdII-qjy0w",
+              "rp_id": "sign.owners.example"
+            }
+          }
+        ]
+      },
+      "ciphertext": "b3BhcXVlIEhQS0UgY2lwaGVydGV4dCBzdGFuZHMgaGVyZTsgdGhlIHByb3RvY29sIG5ldmVyIHJlYWRzIGl0",
+      "expect": "ok"
+    },
+    {
+      "id": "P20-H2",
+      "what": "an envelope whose ciphertext was swapped is refused",
+      "kind": "handover",
+      "input": {
+        "payload": {
+          "handover_id": "ho-1",
+          "owner_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+          "from_representative": "did:key:z6MkjdZXNXEaKPcmTsVg9AikFHREc32uPZZ2cDwB6Vp42tsT",
+          "to_representative": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4",
+          "recipient": {
+            "key_id": "did:key:z6MkwA9N43Ui9Cgm2rydQpZcM1YQWcRdvHerVVgseaFdrzb4#x25519-1",
+            "kem": "DHKEM(X25519, HKDF-SHA256)",
+            "public_key": "base64url-x25519-public-key"
+          },
+          "suite": {
+            "kem": 32,
+            "kdf": 1,
+            "aead": 2,
+            "mode": "base"
+          },
+          "enc": "base64url-encapsulated-key",
+          "ciphertext_digest": "sha-256:XREv30GxQwmpq1x4rLyTbpRz64nf_J0lFBwe2gYHU2o",
+          "content_type": "application/x-example-memory",
+          "created_at": "2026-10-27T09:00:00Z",
+          "expires_at": "2026-11-26T09:00:00Z"
+        },
+        "payload_digest": "sha-256:AGGCXCHwDkMaEQa5-PixQf6s7t1c_CdV_C_WXlW3p7k",
+        "signatures": [
+          {
+            "alg": "ES256",
+            "key_id": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9#0",
+            "signer": "did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ikl3b0w5U3U2U2VwVmZ5Mi10aFFDcFZ3d2JGZWo1emN2VlFXcmh1cTRCRVUiLCJ5IjoiMngweEVjZ1dIeG1Cc3RMdDJiZTljQnhyTHlGTm9ORVE5U090TFRza2dlayJ9",
+            "signed_at": "2026-10-27T09:00:00Z",
+            "value": "MEQCIEprrWNffMhYRHZlW7GKavl0Ss87Xgiy7v80qQDp4OQyAiBVsCfrQ2Hi-x2sp7lV6WlfrYImuoUql8dwsWewmoPZsg",
+            "webauthn": {
+              "authenticator_data": "75dDwuSvyJ2b8nu-CgQXh0VVN_MTI2JMbV77kRfvvqcFAAAAAQ",
+              "client_data_json": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiQUdHQ1hDSHdEa01hRVFhNS1QaXhRZjZzN3QxY19DZFZfQ19XWGxXM3A3ayIsIm9yaWdpbiI6Imh0dHBzOi8vc2lnbi5vd25lcnMuZXhhbXBsZSJ9",
+              "credential_id": "gzL2c9myO2QLYdII-qjy0w",
+              "rp_id": "sign.owners.example"
+            }
+          }
+        ]
+      },
+      "ciphertext": "c3dhcHBlZA",
+      "expect": "ciphertext_digest"
+    }
+  ],
+  "places": {
+    "teahouse": "did:key:z6MksDE6DLL2dHuEE9jbxDuoNH7qJLeKUikk5gQYJGPJKhpt",
+    "bookshop": "did:key:z6MkjtnmaUAixz592Gm8yS8t7u2P1iyJF9PskLcjh68RrqdX"
+  }
+}

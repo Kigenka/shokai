@@ -1,0 +1,22 @@
+sequenceDiagram
+  title Community room: a gathering at The Engawa (reference prototype run, transcript 07)
+  participant E as The Engawa (the place)
+  participant A as Aya's representative
+  participant K as Kiran's representative
+  participant N as Noor's representative
+  participant W as Aya (owner)
+  E->>A: signed gathering invitation and house rules (Chatham House · private never leaves)
+  E->>K: invitation
+  E->>N: invitation
+  A->>E: owner-signed acceptance of the house rules, card (on the guest list)
+  K->>E: acceptance, card
+  N->>E: acceptance, card
+  K->>E: work insight (may be quoted, unattributed)
+  N->>E: an item marked private (never leaves The Engawa)
+  N->>K: "How is Kiran doing?"
+  K-->>N: PrivacyDecline "That's private" (wellbeing is for friends · not penalized)
+  A->>K: "How is Kiran doing?"
+  K-->>A: answers a friend (signed edge in the relationship graph), consents to pass it on
+  N->>K: presses again
+  K-->>N: declines again · a light flag, logged locally, no misconduct
+  A->>W: report home to Aya: what it may tell, and a story offered but not told

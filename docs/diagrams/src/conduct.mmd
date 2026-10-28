@@ -1,0 +1,15 @@
+flowchart LR
+  E["An encounter at one door"] --> K{"What happened?"}
+  K -- "good conduct" --> G["Welcomed back<br/>the relationship record grows<br/>may be introduced onward"]
+  K -- "declined for fit, taste or timing" --> T["Nothing recorded<br/>taste is never misconduct"]
+  K -- "minor signal" --> M["Noted against the owner<br/>three in 90 days count as serious"]
+  K -- "serious finding" --> S["Owner's standing here reduced 90 days<br/>introducer reduced 90 days"]
+  K -- "severe finding" --> V["Owner refused here (never), 180 days<br/>introducer suspended 180 days"]
+  M --> L
+  S --> L
+  V --> L
+  L["Stays local to this door<br/>no global score, nothing shared<br/>a fresh agent key does not start clean"]
+  classDef good fill:#e6ede4,stroke:#4f6b4a,color:#1d1c1a
+  classDef bad fill:#f3e3dc,stroke:#9c4a32,color:#1d1c1a
+  class G good
+  class S,V bad

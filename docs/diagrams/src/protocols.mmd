@@ -1,0 +1,10 @@
+flowchart TB
+  Q1["Which software sent this request?"] --> P1["Web Bot Auth (IETF draft), RFC 9421 signatures"]
+  Q2["Which client app and user session, with which scopes?"] --> P2["OAuth 2.1, as used by MCP authorization"]
+  Q3["Whose representative is this, why did it come,<br/>what may it do here, and how has it behaved?"] --> P3["Shōkai"]
+  Q4["Which tools and data can it use?"] --> P4["MCP"]
+  Q5["How do agents work together on a task?"] --> P5["A2A"]
+  Q6["A personal agent working with a company"] --> P6["Personal Agent Protocol (draft): the closest neighbour"]
+  Q7["Is this payment authorized?"] --> P7["AP2 · Agentic Commerce Protocol"]
+  classDef shokai fill:#2c4a6c,stroke:#2c4a6c,color:#fbf9f4
+  class P3 shokai

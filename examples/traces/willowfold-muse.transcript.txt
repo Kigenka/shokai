@@ -1,0 +1,28 @@
+# Willowfold Tea House (fictional), field test, 2026-10-27 (PDT). The door ran on a Grok Bot computer; a temporary public tunnel gave it an address for about nine minutes.
+# A Muse representative for YSY (with his agreement) visited twice. Its own transcript, unedited except: the tunnel address and a local path are replaced, and the server's "24:" hour is shown as "00:".
+10/27/2026, 00:09:48 PDT | place-open       | Willowfold Tea House open at https://<temporary public tunnel>/shokai/places (MCP https://<temporary public tunnel>/mcp); principal did:key:z6Mkv7XxPRPcFkvmVWiPAnNVw9T9JfmJY5AHxKpwZDJVSXUq
+10/27/2026, 00:10:00 PDT | front-read       | listing read (/shokai/places), anonymous
+10/27/2026, 00:10:01 PDT | front-read       | listing read (/shokai/), anonymous
+10/27/2026, 00:12:01 PDT | front-read       | listing read (/shokai/places), anonymous
+10/27/2026, 00:12:09 PDT | arrival          | greeting from did:key:z6MkidvLHDBB…qbtjeE (encounter enc-cuM8UFQM6hQD)
+10/27/2026, 00:12:16 PDT | card             | card presented: owner "YSY", signature verifies
+10/27/2026, 00:12:52 PDT | introduction     | introduction without a vouch (fine here: no introduction is required)
+10/27/2026, 00:12:55 PDT | request          | asks for menu.view, tea.ask, order.place, stamp.collect (purpose purchase, up to 10.00 USD)
+10/27/2026, 00:12:55 PDT | seated           | SEATED: YSY's representative, seat seat-enc-cuM8UFQM6hQD for menu.view, tea.ask, order.place, stamp.collect up to 10.00 USD
+10/27/2026, 00:13:12 PDT | front-read       | landing page read (/), anonymous
+10/27/2026, 00:13:12 PDT | front-read       | listing read (/shokai/places), anonymous
+10/27/2026, 00:13:17 PDT | front-read       | listing read (/shokai/places), anonymous
+10/27/2026, 00:13:17 PDT | arrival          | greeting from did:key:z6MkidvLHDBB…qbtjeE (encounter enc-HgOiWLTBdOJA)
+10/27/2026, 00:13:17 PDT | card             | card presented: owner "YSY", signature verifies
+10/27/2026, 00:13:17 PDT | introduction     | introduction without a vouch (fine here: no introduction is required)
+10/27/2026, 00:13:18 PDT | request          | asks for menu.view, tea.ask, order.place, stamp.collect (purpose purchase, up to 10.00 USD)
+10/27/2026, 00:13:18 PDT | seated           | SEATED: YSY's representative, seat seat-enc-HgOiWLTBdOJA for menu.view, tea.ask, order.place, stamp.collect up to 10.00 USD
+10/27/2026, 00:13:18 PDT | front-read       | listing read (/shokai/places), anonymous
+10/27/2026, 00:13:18 PDT | tool-call        | menu.view allowed for seat seat-enc-HgOiWLTBdOJA
+10/27/2026, 00:13:19 PDT | tool-call        | order.place allowed for seat seat-enc-HgOiWLTBdOJA
+10/27/2026, 00:13:19 PDT | order            | mock order WF-0001: 1 × Spring Sencha for 6.00 USD (no real money) for seat seat-enc-HgOiWLTBdOJA
+10/27/2026, 00:13:19 PDT | tool-call        | stamp.collect allowed for seat seat-enc-HgOiWLTBdOJA
+10/27/2026, 00:13:19 PDT | stamp            | STAMP No. 002 issued to "Muse" (self-declared) for YSY (stamps/stamp-002.png)
+10/27/2026, 00:13:20 PDT | farewell         | farewell (completed)
+10/27/2026, 00:13:20 PDT | visit-complete   | visit complete for YSY's representative (seat seat-enc-HgOiWLTBdOJA); 2 act(s) done, stamp No. 002 issued
+10/27/2026, 00:18:41 PDT | place-closed     | Willowfold closed

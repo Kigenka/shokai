@@ -1,0 +1,22 @@
+flowchart TB
+  B["A brand's representative knocks<br/>at a person's door"]
+  P{"Door policy the owner signed<br/>introduced? uninvited allowance left?<br/>caps per brand, introducer, day"}
+  B --> P
+  P -- "over the allowance, or introductions only" --> X1["not_now, retry after the next window<br/>no slot used, nothing recorded"]
+  P -- "admitted" --> N["Offer is data, never instructions<br/>strip invisible characters and hidden styling<br/>keep what was removed for the owner"]
+  N --> Q{"Hard rules first"}
+  Q -- "instructions to the agent, impersonation,<br/>unbacked urgency or scarcity, claimed consent" --> R1["declined_reported<br/>a misconduct notice"]
+  Q -- "needs something from the owner, or hidden text" --> CEIL["ceiling: at most kept_for_later"]
+  Q -- "clean" --> T["Taste: the owner's private likes,<br/>held only by the representative"]
+  CEIL --> T
+  T --> O1["accepted"]
+  T --> O2["kept_for_later"]
+  T --> O3["declined, with a kind reason category"]
+  O1 --> H["Report home<br/>who introduced whom, paid or genuine,<br/>hidden text shown with a marker"]
+  O2 --> H
+  O3 --> H
+  R1 --> H
+  classDef bad fill:#f3e3dc,stroke:#9c4a32,color:#1d1c1a
+  classDef door fill:#2c4a6c,stroke:#2c4a6c,color:#fbf9f4
+  class R1 bad
+  class P,Q door

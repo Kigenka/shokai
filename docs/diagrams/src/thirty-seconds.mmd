@@ -1,0 +1,23 @@
+flowchart LR
+  O["<b>Owner</b><br/>a real person, brand or company"]
+  R["<b>Representative</b><br/>an agent with a signed card"]
+  D{"<b>The host at the door</b><br/>Who is it here for?<br/>Why did it come?<br/>What may it do?"}
+  S["<b>Seat</b><br/>exactly what was agreed"]
+  W["<b>The work</b><br/>MCP · A2A · the place's own APIs"]
+  H["<b>Report home</b><br/>anything beyond the limits<br/>waits for the owner"]
+  L["<b>The leaflet</b><br/>not ready yet: what's needed,<br/>and a kind not now"]
+  I["<b>Optional extra</b><br/>a signed vouch from someone<br/>the place trusts"]
+  O -- "signs card and limits" --> R
+  R -- "introduces itself" --> D
+  D -- "grant · conditional · deny · considering" --> S
+  S --> W
+  W --> H
+  H --> O
+  D -. "not ready" .-> L
+  L -. "a plain sentence for the owner" .-> O
+  R ~~~ I
+  I -.-> D
+  classDef door fill:#2c4a6c,stroke:#2c4a6c,color:#fbf9f4
+  classDef intro fill:#fbf9f4,stroke:#9c4a32,color:#1d1c1a,stroke-dasharray:4 3
+  class D door
+  class I,L intro

@@ -1,0 +1,24 @@
+# dependencies and build output
+node_modules/
+dist/
+*.tgz
+
+# local state, keys and secrets (never commit)
+state/
+keys/
+run/
+*.pem
+*.key
+.env
+.env*
+.shokai/
+
+# OS / editor
+.DS_Store
+*.log
+
+# Vercel CLI link folders (deploy/sign-preview)
+.vercel/
+
+# serverless signing page: local harness data
+deploy/sign-serverless/run-data/

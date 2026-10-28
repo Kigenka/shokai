@@ -1,0 +1,24 @@
+sequenceDiagram
+  title Marketplace: turned away with the leaflet, then back prepared and seated at Mossgate Commons (rc4 simulated-team round 2, recorded wire log)
+  participant V as A plain agent, then prepared (simulated)
+  participant D as Mossgate Commons (simulated team, Python) door
+  participant G as Mossgate Commons (simulated team, Python) MCP gate
+  Note over V,D: [1] harness readiness probe GET /shokai/places → 200
+  V->>D: [2] GET /shokai/places
+  D-->>V: 200 listing: market-hall, notice-board, members-room
+  V->>D: [3] plain prose (application/json)
+  D-->>V: 200 greeting (digest ✓, sig ✓)
+  D-->>V: lobby_briefing onboarding_url, readiness (digest ✓, sig ✓)
+  D-->>V: invitation_response deny/not_now/CREDENTIAL_REQUIRED (digest ✓, sig ✓)
+  D-->>V: farewell outcome=declined (digest ✓, sig ✓)
+  V->>D: [4] greeting (digest ✓, sig ✓)
+  D-->>V: 200 greeting (digest ✓, sig ✓)
+  V->>D: [5] card_presentation (digest ✓, sig ✓)  card owner sig ES256: digest ✓, sig ✓
+  D-->>V: 200 card_presentation (digest ✓, sig ✓)
+  D-->>V: card_receipt (digest ✓, sig ✓)
+  V->>D: [6] introduction vouch=null (self-introduction) (digest ✓, sig ✓)
+  V->>D: [7] invitation_request purpose=visitation actions=stalls.browse, mandate owner sig: digest ✓, sig ✓ (digest ✓, sig ✓)
+  D-->>V: 200 invitation_response grant seat=[stalls.browse] (digest ✓, sig ✓)
+  D-->>V: farewell outcome=seated (digest ✓, sig ✓)
+  V->>D: [8] farewell outcome=completed (digest ✓, sig ✓)
+  Note over V,G: Signatures re-verified with the reference crypto

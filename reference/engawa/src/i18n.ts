@@ -1,0 +1,135 @@
+// Courtesy phrases. Courtesy is never a gate input (§6.5); it is chosen after the decision.
+import type { Locale } from "./shapes.js";
+import { lookupLocale } from "./crypto.js";
+type Key = "greet" | "grant" | "conditional" | "deny_not_now" | "deny_not_a_fit" | "deny_never" | "considering" | "lobby_deny"
+  | "farewell_seated" | "farewell_declined" | "ritual" | "ctx_card" | "ctx_paused" | "ctx_mandate" | "ctx_evidence" | "receipt" | "revisit" | "farewell_inside" | "act_deny" | "greet_back" | "ctx_consent"
+  | "farewell_never" | "farewell_withdrawn" | "farewell_completed" | "ctx_possession" | "ctx_vouch_log" | "ctx_purpose" | "act_deny_spend" | "act_seat_gone";
+const T: Record<string, Record<Key, string>> = {
+  "en-US": { farewell_never: "This encounter is closed.", farewell_withdrawn: "Understood. Thank you for letting us know.", farewell_completed: "Thank you for the meeting.", ctx_possession: "We seat representatives that show their card is their own, with a proof signed for this encounter.", ctx_vouch_log: "We could not check the introduction just now; this is not held against you.", ctx_purpose: "This place serves only the purposes it lists.", act_deny_spend: "I can't do {tool} under this seat. With your owner's confirmation, ask again.", farewell_inside: "Thank you. I have taken your request inside; you will hear from us by the date given.", act_deny: "I can't do that within this seat.", act_seat_gone: "That visit is no longer open here; it may have been interrupted when the place restarted. Please knock again to start a new visit.", greet_back: "Welcome back. It's good to see you again.", ctx_consent: "Entry needs a consent signed by your owner.",
+    greet: "Welcome to {place}.", grant: "Thank you. You are welcome to proceed within the seat described.", conditional: "We can proceed under the conditions listed.",
+    deny_not_now: "Thank you for visiting. We can't extend an invitation at this time.", deny_not_a_fit: "Thank you. This isn't something we can take on here.",
+    deny_never: "We are unable to extend an invitation.", considering: "I can't grant that myself, but I'll bring it inside to someone who can decide, and reply by {date}.",
+    lobby_deny: "Thank you for stopping by. You're welcome in the lobby; to be seated we need a few things first, listed for you.",
+    farewell_seated: "Your seat is ready. Enjoy your visit.", farewell_declined: "Thank you for visiting. We hope to welcome you properly another time.", ritual: "Let's begin again from a fresh greeting.",
+    ctx_card: "We meet representatives who present a card signed by their principal.", ctx_paused: "At the moment we are not taking on new partners for this item.",
+    ctx_mandate: "We meet representatives whose request is covered by a mandate signed by their principal.", ctx_evidence: "Some parts of this place require claims backed by evidence or a vouch.",
+    receipt: "Card received.", revisit: "We'd be glad to hear from you when this reopens." },
+  "ja-JP": { farewell_never: "この面会は終了しました。", farewell_withdrawn: "承知しました。お知らせいただきありがとうございます。", farewell_completed: "お時間をいただきありがとうございました。", ctx_possession: "名刺がご本人のものであることを、この面会用の署名で示していただいております。", ctx_vouch_log: "ただいま紹介を確認できませんでした。これは不利には扱いません。", ctx_purpose: "こちらでは掲載している目的のみを承っております。", act_deny_spend: "この席では {tool} はできません。オーナー様の確認のうえ、改めてお申し付けください。", farewell_inside: "ありがとうございます。ご依頼は内部に取り次ぎました。記載の期日までにご連絡いたします。", act_deny: "この席の範囲では、その操作はできません。", act_seat_gone: "この面会はもう開いていません。こちらの再起動で中断された可能性があります。お手数ですが、もう一度ノックして新しい面会を始めてください。", greet_back: "またお越しいただきありがとうございます。", ctx_consent: "ご入場には、オーナー様の署名入りの同意が必要です。",
+    greet: "{place} へようこそお越しくださいました。", grant: "ありがとうございます。記載の範囲でお進みください。", conditional: "記載の条件のもとで進めることができます。",
+    deny_not_now: "ご来訪ありがとうございます。現時点ではお招きすることができません。", deny_not_a_fit: "ありがとうございます。こちらではお引き受けできない内容です。",
+    deny_never: "お招きすることはできません。", considering: "私の判断ではお受けできませんが、決定できる者に取り次ぎ、{date} までにご連絡いたします。",
+    lobby_deny: "お立ち寄りいただきありがとうございます。ご着席の前に、いくつかご準備いただきたいことがございます。",
+    farewell_seated: "お席の用意ができました。どうぞごゆっくり。", farewell_declined: "ご来訪ありがとうございました。またのお越しをお待ちしております。", ritual: "改めてご挨拶から始めましょう。",
+    ctx_card: "当方では、ご本人の署名入りの名刺をお持ちの代理人とお会いしております。", ctx_paused: "現時点では、この件の新たなパートナー募集を一時停止しております。",
+    ctx_mandate: "ご本人の署名入りの委任の範囲内でのご依頼を承っております。", ctx_evidence: "一部の内容には、裏付けのある主張または紹介が必要です。",
+    receipt: "名刺を頂戴いたしました。", revisit: "募集再開の際に、改めてお声がけいただけましたら幸いです。" },
+  "fr-FR": { farewell_never: "Cette rencontre est close.", farewell_withdrawn: "Entendu. Merci de nous avoir prévenus.", farewell_completed: "Merci pour cette rencontre.", ctx_possession: "Nous recevons les représentants qui prouvent que leur carte est la leur, par une signature propre à cette rencontre.", ctx_vouch_log: "Nous n'avons pas pu vérifier la recommandation pour l'instant ; rien n'est retenu contre vous.", ctx_purpose: "Cette maison ne sert que les objets qu'elle annonce.", act_deny_spend: "Je ne peux pas faire {tool} dans cette place. Avec l'accord de votre mandant, redemandez.", farewell_inside: "Merci. Votre demande a été transmise ; vous aurez une réponse à la date indiquée.", act_deny: "Je ne peux pas faire cela dans le cadre de cette place.", act_seat_gone: "Cette visite n'est plus ouverte ici ; elle a peut-être été interrompue par un redémarrage. Merci de frapper à nouveau pour une nouvelle visite.", greet_back: "Bon retour parmi nous.", ctx_consent: "L'entrée exige un consentement signé par votre mandant.",
+    greet: "Bienvenue à {place}.", grant: "Merci. Vous êtes le bienvenu dans le cadre décrit.", conditional: "Nous pouvons poursuivre aux conditions indiquées.",
+    deny_not_now: "Merci de votre visite. Nous ne pouvons pas vous inviter pour le moment.", deny_not_a_fit: "Merci. Ce n'est pas une demande que nous pouvons accueillir.",
+    deny_never: "Nous ne pouvons pas vous inviter.", considering: "Je ne peux pas l'accorder moi-même, mais je le transmets à qui peut décider, réponse d'ici le {date}.",
+    lobby_deny: "Merci de votre passage. Pour être reçu, il nous faut d'abord quelques éléments, indiqués ci-dessous.",
+    farewell_seated: "Votre place est prête. Bonne visite.", farewell_declined: "Merci de votre visite. Au plaisir de vous recevoir une autre fois.", ritual: "Reprenons depuis une nouvelle salutation.",
+    ctx_card: "Nous recevons les représentants munis d'une carte signée par leur mandant.", ctx_paused: "Nous ne recherchons pas de nouveaux partenaires sur ce point pour le moment.",
+    ctx_mandate: "Nous recevons les demandes couvertes par un mandat signé.", ctx_evidence: "Certaines parties de la maison exigent des éléments étayés ou une recommandation.",
+    receipt: "Carte bien reçue.", revisit: "Nous serons heureux de vous revoir à la réouverture." },
+  "pt-BR": { farewell_never: "Este encontro está encerrado.", farewell_withdrawn: "Entendido. Obrigado por avisar.", farewell_completed: "Obrigado pelo encontro.", ctx_possession: "Recebemos representantes que mostram que o cartão é deles, com uma prova assinada para este encontro.", ctx_vouch_log: "Não conseguimos verificar a apresentação agora; isso não conta contra você.", ctx_purpose: "Este lugar atende apenas os propósitos que lista.", act_deny_spend: "Não posso fazer {tool} neste assento. Com a confirmação do seu dono, peça de novo.", farewell_inside: "Obrigado. Levei seu pedido para dentro; você terá resposta até a data indicada.", act_deny: "Não posso fazer isso dentro deste assento.", act_seat_gone: "Esta visita não está mais aberta aqui; pode ter sido interrompida por um reinício. Bata de novo para começar uma nova visita.", greet_back: "Bem-vindo de volta.", ctx_consent: "A entrada exige um consentimento assinado pelo seu dono.",
+    greet: "Bem-vindo a {place}.", grant: "Obrigado. Pode seguir dentro do assento descrito.", conditional: "Podemos seguir com as condições listadas.",
+    deny_not_now: "Obrigado pela visita. Não podemos estender um convite neste momento.", deny_not_a_fit: "Obrigado. Isso não é algo que possamos assumir aqui.",
+    deny_never: "Não podemos estender um convite.", considering: "Não posso conceder isso sozinho, mas vou levar a quem pode decidir e respondo até {date}.",
+    lobby_deny: "Obrigado por passar aqui. Para sentar, precisamos de algumas coisas antes, listadas para você.",
+    farewell_seated: "Seu lugar está pronto. Aproveite a visita.", farewell_declined: "Obrigado pela visita. Esperamos recebê-lo em outra ocasião.", ritual: "Vamos recomeçar com uma nova saudação.",
+    ctx_card: "Recebemos representantes com um cartão assinado pelo seu principal.", ctx_paused: "No momento não estamos buscando novos parceiros para este item.",
+    ctx_mandate: "Recebemos pedidos cobertos por um mandato assinado.", ctx_evidence: "Algumas partes deste lugar exigem afirmações com evidência ou aval.",
+    receipt: "Cartão recebido.", revisit: "Ficaremos felizes em ouvir de você quando reabrir." },
+  "es-ES": { farewell_never: "Este encuentro ha terminado.", farewell_withdrawn: "Entendido. Gracias por avisarnos.", farewell_completed: "Gracias por el encuentro.", ctx_possession: "Recibimos a representantes que muestran que su tarjeta es suya, con una prueba firmada para este encuentro.", ctx_vouch_log: "No pudimos comprobar la presentación ahora mismo; no se tiene en cuenta en su contra.", ctx_purpose: "Este lugar solo atiende los propósitos que indica.", act_deny_spend: "No puedo hacer {tool} con este asiento. Con la confirmación de su titular, vuelva a pedirlo.", farewell_inside: "Gracias. He llevado su solicitud adentro; tendrá respuesta en la fecha indicada.", act_deny: "No puedo hacer eso dentro de este asiento.", act_seat_gone: "Esta visita ya no está abierta aquí; puede haberse interrumpido por un reinicio. Llame de nuevo para empezar una nueva visita.", greet_back: "Bienvenido de nuevo.", ctx_consent: "La entrada requiere un consentimiento firmado por su propietario.",
+    greet: "Hola, bienvenido a {place}.", grant: "Gracias. Puede continuar dentro del asiento descrito.", conditional: "Podemos continuar con las condiciones indicadas.",
+    deny_not_now: "Gracias por su visita. Por ahora no podemos extender una invitación.", deny_not_a_fit: "Gracias. Esto no es algo que podamos atender aquí.",
+    deny_never: "No podemos extender una invitación.", considering: "No puedo concederlo yo mismo, pero lo llevaré a quien puede decidir y responderé antes del {date}.",
+    lobby_deny: "Gracias por pasar. Aún no podemos sentarle; esto es exactamente lo que lo permitiría.",
+    farewell_seated: "Su sitio está listo. Disfrute de la visita.", farewell_declined: "Gracias por su visita. Esperamos recibirle como corresponde en otra ocasión.", ritual: "Empecemos de nuevo con un saludo.",
+    ctx_card: "En este momento solo damos asiento a representantes que pueden mostrar a quién representan.", ctx_paused: "Por el momento no buscamos nuevos socios para este punto.",
+    ctx_mandate: "Recibimos solicitudes cubiertas por un mandato firmado.", ctx_evidence: "Algunas partes de este lugar requieren afirmaciones con evidencia o aval.",
+    receipt: "Tarjeta recibida.", revisit: "Nos alegrará saber de usted cuando se reabra." },
+};
+/** §6.6 (D10): RFC 4647 lookup of the counterpart's list against the supported locales (that have phrases). */
+export function pickLocaleMatch(counterpart: Locale[], supported: Locale[]): { locale: Locale; match: "exact" | "fallback" | "none" } {
+  return lookupLocale(counterpart ?? [], supported.filter((s) => T[s]), supported.find((s) => T[s]) ?? "en-US");
+}
+export function pickLocale(counterpart: Locale[], supported: Locale[]): Locale { return pickLocaleMatch(counterpart, supported).locale; }
+/** D10: dates come from machine fields, rendered in the reader's IANA time zone (default UTC), never as relative words. */
+export function renderDate(iso: string, locale: Locale, timeZone?: string): string {
+  try { return new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: timeZone ?? "UTC" }).format(new Date(iso)) + (timeZone ? "" : " (UTC)"); }
+  catch { return iso.slice(0, 10) + " (UTC)"; }
+}
+export function t(locale: Locale, key: Key, vars: Record<string, string> = {}): string {
+  let s = (T[locale] ?? T["en-US"])[key];
+  for (const [k, v] of Object.entries(vars)) s = s.replace("{" + k + "}", v);
+  return s;
+}
+export function lobbyText(m: Record<string, string>, locale: Locale): string { return m[locale] ?? m[Object.keys(m)[0]]; }
+
+// ---------- Readiness items (§3.3): `detail` for the representative, `owner_text` for its owner (no protocol words) ----------
+type RCode = "card" | "owner_binding" | "purpose" | "introduction" | "claim_evidence" | "possession_proof" | "owner_consent";
+const R: Record<string, Record<RCode, [string, string]>> = {
+  "en-US": {
+    card: ["A representative card (a signed profile) with your own Ed25519 key, signed by your principal.", "Your assistant needs a profile card that you sign once, saying who it works for."],
+    owner_binding: ["Proof that you represent your owner: your owner signs your card and mandate (or a standing allowance) with their passkey.", "Please confirm with Face ID or your passkey that this assistant really works for you."],
+    purpose: ["A stated purpose: what you're here to do, as a structured request within a signed mandate.", "Your assistant needs to say clearly what it is here to do, with your permission for it."],
+    introduction: ["An introduction: a signed vouch from someone we know.", "This place asks for an introduction from someone it already knows."],
+    claim_evidence: ["Claims backed by evidence we can fetch (with a content digest) or by a vouch, for the parts of this place that require them.", "This place asks for proof of some of the things your profile says about you."],
+    possession_proof: ["Start a new visit (a fresh greeting, so a new encounter and nonce) and present your card with a possession proof: your card key's signature over that encounter and our greeting nonce.", "Your assistant needs to show again that its profile card is really its own; it can do this by itself."],
+    owner_consent: ["A consent signed by your owner with their passkey (for example accepting the house rules or a meeting invitation).", "This needs your own approval with your passkey before your assistant can come in."],
+  },
+  "es-ES": {
+    card: ["Una tarjeta de representante (un perfil firmado con afirmaciones respaldadas).", "Su asistente necesita una tarjeta de perfil que usted firma una vez, diciendo para quién trabaja."],
+    owner_binding: ["Prueba de que representa a su titular: su titular firma su mandato con su llave de acceso (passkey).", "Confirme con Face ID o su llave de acceso que este asistente trabaja de verdad para usted."],
+    purpose: ["Un propósito declarado: lo que viene a hacer, como solicitud estructurada.", "Su asistente debe decir claramente a qué viene, con su permiso para ello."],
+    introduction: ["Una presentación: un aval firmado por alguien que conocemos.", "Este lugar pide una presentación de alguien a quien ya conocen."],
+    claim_evidence: ["Afirmaciones respaldadas por pruebas que podamos consultar, o por un aval.", "Este lugar pide pruebas de algunas cosas que su perfil dice de usted."],
+    possession_proof: ["Empiece una visita nueva (un saludo nuevo, con encuentro y nonce nuevos) y presente su tarjeta con una prueba de posesión firmada con la clave de la tarjeta para ese encuentro.", "Su asistente debe mostrar de nuevo que su tarjeta de perfil es suya; puede hacerlo solo."],
+    owner_consent: ["Un consentimiento firmado por su titular con su llave de acceso.", "Esto necesita su aprobación con su llave de acceso antes de que su asistente pueda entrar."],
+  },
+  "fr-FR": {
+    card: ["Une carte de représentant (un profil signé), avec votre propre clé Ed25519, signée par votre mandant.", "Votre assistant a besoin d'une carte de profil que vous signez une fois, indiquant pour qui il travaille."],
+    owner_binding: ["La preuve que vous représentez votre mandant : il signe votre carte et votre mandat (ou une allocation permanente) avec sa clé d'accès.", "Confirmez avec Face ID ou votre clé d'accès que cet assistant travaille bien pour vous."],
+    purpose: ["Un objet déclaré : ce que vous venez faire, sous forme de demande structurée dans un mandat signé.", "Votre assistant doit dire clairement ce qu'il vient faire, avec votre accord."],
+    introduction: ["Une recommandation signée par quelqu'un que nous connaissons.", "Ce lieu demande une recommandation de la part de quelqu'un qu'il connaît déjà."],
+    claim_evidence: ["Des affirmations étayées par des éléments vérifiables ou par une recommandation.", "Ce lieu demande des preuves de certaines choses que votre profil dit de vous."],
+    possession_proof: ["Commencez une nouvelle visite (une nouvelle salutation, donc une nouvelle rencontre et un nouveau nonce) et présentez votre carte avec une preuve de possession signée par la clé de la carte pour cette rencontre.", "Votre assistant doit montrer à nouveau que sa carte de profil est bien la sienne ; il peut le faire seul."],
+    owner_consent: ["Un consentement signé par votre mandant avec sa clé d'accès.", "Il faut votre accord, donné avec votre clé d'accès, avant que votre assistant puisse entrer."],
+  },
+  "ja-JP": {
+    card: ["ご本人が署名した代理人の名刺（署名済みプロフィール）と、代理人自身の Ed25519 鍵。", "アシスタントには、誰のために働くかを示す、あなたが一度だけ署名するプロフィールカードが必要です。"],
+    owner_binding: ["オーナーを代理している証明：オーナーがパスキーで名刺と委任（または常設の許可）に署名します。", "このアシスタントが本当にあなたのために働いていることを、Face ID またはパスキーで確認してください。"],
+    purpose: ["目的の明示：署名された委任の範囲内での、構造化された依頼。", "アシスタントは、何のために来たのかを、あなたの許可とともにはっきり伝える必要があります。"],
+    introduction: ["紹介：当方が知っている方の署名入りの推薦。", "こちらでは、すでに知っている方からの紹介をお願いしています。"],
+    claim_evidence: ["当方が確認できる証拠、または推薦に裏付けられた主張。", "プロフィールに書かれている内容の一部について、裏付けをお願いしています。"],
+    possession_proof: ["新しい訪問（新しい挨拶、つまり新しい面会と nonce）を始め、その面会のための署名による所持証明を添えて名刺を提示してください。", "アシスタントは、プロフィールカードが自分のものであることをもう一度示す必要があります。これは自分でできます。"],
+    owner_consent: ["オーナーがパスキーで署名した同意。", "アシスタントが入る前に、パスキーによるあなたの承認が必要です。"],
+  },
+  "pt-BR": {
+    card: ["Um cartão de representante (um perfil assinado) com sua própria chave Ed25519, assinado pelo seu principal.", "Seu assistente precisa de um cartão de perfil que você assina uma vez, dizendo para quem ele trabalha."],
+    owner_binding: ["Prova de que você representa seu dono: ele assina seu cartão e seu mandato (ou uma permissão permanente) com a chave de acesso.", "Confirme com Face ID ou sua chave de acesso que este assistente trabalha mesmo para você."],
+    purpose: ["Um propósito declarado: o que veio fazer, como pedido estruturado dentro de um mandato assinado.", "Seu assistente precisa dizer claramente o que veio fazer, com a sua permissão."],
+    introduction: ["Uma apresentação: um aval assinado por alguém que conhecemos.", "Este lugar pede uma apresentação de alguém que já conhece."],
+    claim_evidence: ["Afirmações com evidências que possamos consultar, ou com um aval.", "Este lugar pede provas de algumas coisas que seu perfil diz sobre você."],
+    possession_proof: ["Comece uma nova visita (uma nova saudação, com novo encontro e nonce) e apresente o cartão com uma prova de posse assinada pela chave do cartão para esse encontro.", "Seu assistente precisa mostrar de novo que o cartão de perfil é dele; ele faz isso sozinho."],
+    owner_consent: ["Um consentimento assinado pelo seu dono com a chave de acesso.", "Isto precisa da sua aprovação com a sua chave de acesso antes que seu assistente possa entrar."],
+  },
+};
+/** v0.2.4 (§3.3, C136): an OPTIONAL item's owner sentence says it would help but isn't needed. */
+const OPT: Record<string, Partial<Record<RCode, string>> & { other: string }> = {
+  "en-US": { introduction: "An introduction from someone this place already knows would help, but it isn't needed.", claim_evidence: "Proof of some of the things your profile says would help, but it isn't needed.", other: "This would help, but it isn't needed." },
+  "es-ES": { introduction: "Una presentación de alguien a quien este lugar ya conoce ayudaría, pero no es necesaria.", claim_evidence: "Pruebas de algunas cosas que dice su perfil ayudarían, pero no son necesarias.", other: "Esto ayudaría, pero no es necesario." },
+  "fr-FR": { introduction: "Une recommandation de quelqu'un que ce lieu connaît déjà aiderait, mais elle n'est pas nécessaire.", claim_evidence: "Des preuves de certaines choses que dit votre profil aideraient, mais elles ne sont pas nécessaires.", other: "Cela aiderait, mais ce n'est pas nécessaire." },
+  "ja-JP": { introduction: "こちらがすでに知っている方からの紹介があると助かりますが、必須ではありません。", claim_evidence: "プロフィールの内容の一部に裏付けがあると助かりますが、必須ではありません。", other: "あると助かりますが、必須ではありません。" },
+  "pt-BR": { introduction: "Uma apresentação de alguém que este lugar já conhece ajudaria, mas não é necessária.", claim_evidence: "Provas de algumas coisas que seu perfil diz ajudariam, mas não são necessárias.", other: "Isto ajudaria, mas não é necessário." },
+};
+/** Readiness texts in the lobby's locale (RFC 4647 lookup already applied); falls back to en-US with an honest locale tag. */
+export function readiness(code: RCode, locale: Locale, required = true): { detail: { text: string; locale: Locale }; owner_text: { text: string; locale: Locale } } {
+  const loc = R[locale] ? locale : "en-US"; const [d, o] = R[loc][code];
+  const ot = required ? o : (OPT[loc][code] ?? OPT[loc].other);
+  return { detail: { text: d, locale: loc }, owner_text: { text: ot, locale: loc } };
+}
+/** Words an owner sentence must not contain (§3.3). */
+export const PROTOCOL_WORDS = /\b(mandate|mandato|mandat|DID|nonce|did:|digest|Ed25519|JCS|vouch)\b/i;

@@ -1,0 +1,49 @@
+sequenceDiagram
+  title Bank: a transfer within 50.00 USD, then a revisit under the same mandate at Harborlight Bank (rc4 simulated-team round 1, recorded wire log)
+  participant V as Reference SDK visitor (TypeScript)
+  participant D as Harborlight Bank (simulated team, Python) door
+  participant G as Harborlight Bank (simulated team, Python) MCP gate
+  Note over V,D: [1] harness readiness probe GET /shokai/places → 200
+  V->>D: [2] GET /shokai/places
+  D-->>V: 200 listing: harborlight-bank
+  V->>D: [3] greeting (digest ✓, sig ✓)
+  D-->>V: 200 greeting (digest ✓, sig ✓)
+  V->>D: [4] card_presentation (digest ✓, sig ✓)  card owner sig ES256: digest ✓, sig ✓
+  D-->>V: 200 card_receipt (digest ✓, sig ✓)
+  D-->>V: card_presentation (digest ✓, sig ✓)
+  V->>D: [5] introduction vouch=null (self-introduction) (digest ✓, sig ✓)
+  V->>D: [6] invitation_request purpose=payment_initiation actions=transfer.request max_amount=50.00 USD, mandate owner sig: digest ✓, sig ✓ (digest ✓, s
+  D-->>V: 200 invitation_response grant seat=[transfer.request] cap 50 (digest ✓, sig ✓)
+  D-->>V: farewell outcome=seated (digest ✓, sig ✓)
+  V->>G: [7] MCP initialize
+  G-->>V: 200 protocolVersion,capabilities,serverInfo,instructions
+  V->>G: [8] MCP initialize
+  G-->>V: 200 protocolVersion,capabilities,serverInfo,instructions
+  V->>G: [9] MCP notifications/initialized
+  G-->>V: 202 (empty)
+  V->>G: [10] GET /mcp
+  G-->>V: 404 empty
+  V->>G: [11] MCP tools/call transfer.request + Shokai-Act(transfer.request  digest ✓, sig ✓)
+  G-->>V: 200 JSON-RPC -32040 refused_by=door not_now/REQUEST_INCOMPLETE
+  V->>G: [12] MCP tools/call transfer.request + Shokai-Act(transfer.request 30.00  digest ✓, sig ✓)
+  G-->>V: 200 result ok: {'simulated': true, 'reference': 'txr-5e8f25-1', 'status': 'pending_ow
+  V->>D: [13] farewell outcome=completed (digest ✓, sig ✓)
+  V->>D: [14] greeting (digest ✓, sig ✓)
+  D-->>V: 200 greeting (digest ✓, sig ✓)
+  V->>D: [15] card_presentation (digest ✓, sig ✓)  card owner sig ES256: digest ✓, sig ✓
+  D-->>V: 200 card_receipt (digest ✓, sig ✓)
+  D-->>V: card_presentation (digest ✓, sig ✓)
+  V->>D: [16] introduction vouch=null (self-introduction) (digest ✓, sig ✓)
+  V->>D: [17] invitation_request purpose=payment_initiation actions=transfer.request max_amount=50.00 USD, mandate owner sig: digest ✓, sig ✓ (digest ✓, s
+  D-->>V: 200 invitation_response grant seat=[transfer.request] cap 20 (digest ✓, sig ✓)
+  D-->>V: farewell outcome=seated (digest ✓, sig ✓)
+  V->>G: [18] MCP initialize
+  G-->>V: 200 protocolVersion,capabilities,serverInfo,instructions
+  V->>G: [19] MCP notifications/initialized
+  G-->>V: 202 (empty)
+  V->>G: [20] GET /mcp
+  G-->>V: 404 empty
+  V->>G: [21] MCP tools/call transfer.request + Shokai-Act(transfer.request 30.00  digest ✓, sig ✓)
+  G-->>V: 200 JSON-RPC -32040 refused_by=door not_now/SEAT_SCOPE_EXCEEDED
+  V->>D: [22] farewell outcome=completed (digest ✓, sig ✓)
+  Note over V,G: The bank counts across visits: 30.00 of 50.00 USD used, so the second seat is capped at 20 and a second 30.00 transfer is refused. Signatures re-verified with the reference crypto

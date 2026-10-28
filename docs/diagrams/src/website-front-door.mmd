@@ -1,0 +1,19 @@
+flowchart LR
+  V["A representative<br/>for its owner"]
+  subgraph P["A place: a bank, a store, a photographer"]
+    direction LR
+    W["1. The website<br/>ordinary public pages<br/><i>outside Shōkai</i>"]
+    F["2. The agent front<br/>listing and lobby<br/>who it is · what it offers<br/>data asks · door rules<br/><b>open to look at</b>"]
+    D{"3. The door<br/>anything personal<br/>owner-signed card<br/>introduction if required<br/>signed limits"}
+    X["Existing pieces<br/>schema.org · product feed<br/>MCP Server Card · A2A Agent Card<br/>NLWeb · checkout protocols"]
+    S["Seat<br/>quote · booking · account · payment<br/>within the limits"]
+  end
+  V -. "can already read any public URL" .-> W
+  V -- "looks anonymously<br/>nothing asked, nothing kept" --> F
+  F -. "links (hints)" .-> X
+  V == "asks for something personal" ==> D
+  D -- "grant · conditional · deny · considering" --> S
+  classDef shokai fill:#2c4a6c,stroke:#2c4a6c,color:#fbf9f4
+  classDef outside fill:#f5f1e8,stroke:#c7bdab,color:#4a4741
+  class F,D shokai
+  class W,X outside

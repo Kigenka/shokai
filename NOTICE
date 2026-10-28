@@ -1,0 +1,28 @@
+Shōkai, the agent introduction protocol
+Copyright 2026 Yu Sung Yeh
+
+Kigenka is the project's steward brand. It is not yet a registered legal
+entity, so the copyright holder and licensor is Yu Sung Yeh. The rights may
+be assigned to Kigenka once it is formed; this notice will then be updated.
+
+The Shōkai specification (SPEC.md, extensions/, conformance/, proposals/,
+protocol-shapes.ts, THREAT-MODEL.md) and all code are licensed under the
+Apache License, Version 2.0 (see LICENSE). Explanatory documentation in
+docs/ is licensed under the Creative Commons Attribution 4.0 International
+license (see LICENSE-docs). REUSE.toml maps every path to its license, and
+the license texts are also in LICENSES/.
+
+The royalty-free patent commitment for final versions of the specification
+is in PATENTS.md (a draft, not yet made; its wording is pending legal
+review). Use of the Shōkai and Kigenka names and logo is covered by
+TRADEMARKS.md.
+
+Shōkai is an independent project. It is not affiliated with, sponsored by or
+endorsed by the Model Context Protocol project, the Linux Foundation, or any
+company or standards body whose technology it names. Technology and product
+names are used only to describe compatibility and remain the property of
+their owners. Model Context Protocol and MCP are trademarks of LF Projects,
+LLC. All people, organizations and places in examples and test fixtures are
+fictional, with one exception: YSY (the editor, Yu Sung Yeh) and his
+representatives Edu and Muse appear by name in the field-test notes and
+walkthroughs, with his agreement.

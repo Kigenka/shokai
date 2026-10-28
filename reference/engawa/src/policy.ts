@@ -1,0 +1,96 @@
+// Host policy model (host-local; the spec leaves the policy format open: host-1-020).
+import type { DoorConfig } from "./inbound.js";
+import type { Limits, PurposeCode, ProofLevel, SeatingLevel, ConsiderationRoute, AccessMode, Locale, SignedSeekingDeclaration, SignedCard, Gathering, Signed,
+  PlaceCategory, PurposeDescription, DataAsk } from "./shapes.js";
+
+export type PolicyMinProof = { target: string; level: ProofLevel }; // target: "imprint.<group>" | "claim.<area>" (§2.5)
+export type ActionPolicy = {
+  action: string;
+  /** by_purpose (§5.1): the purposes this action is seated for. */
+  purposes: PurposeCode[];
+  level: SeatingLevel;
+  limits?: Limits;
+  min_proof?: PolicyMinProof[];
+  /** v0.3.0-rc1 (§3.1, D19): the personal data this action will ask the owner for; listed as `data_asks` ([] when absent). */
+  data_asks?: DataAsk[];
+  /** Action is only seated while this Seeking item is open (G4a/G4b). */
+  requires_open_seeking_item?: string;
+};
+export type PlacePolicy = {
+  policy_version: string;
+  supported_locales: Locale[];   // first = default
+  access_mode: AccessMode;
+  /** §5.2: self-declared place category (stated in greeting and listing). */
+  category?: PlaceCategory;
+  /** §5.1: purposes this place serves, described for newcomers (every x- code MUST be described). */
+  purposes: PurposeDescription[];
+  actions: ActionPolicy[];
+  /** D11: actions that move money; outside any mandate that has no max_amount. */
+  spending_actions: string[];
+  considering: { actions: string[]; routed_to: ConsiderationRoute; response_days: number; requires_introduction: boolean };
+  /** Purposes for which a vouch (full or reduced) is required to be seated. */
+  require_vouch_for: PurposeCode[];
+  /** Introducer principal ids whose vouches this gatekeeper honors; "*" = any valid vouch.
+   *  v0.2.8 (§4, P2): "*" never gives a vouch weight for a request with a money operation or an account-creating action;
+   *  a place that wants introductions to count there MUST name its trusted introducers. */
+  trusted_introducers: string[] | "*";
+  /** v0.2.8 (§4, P2): under "*", the introducers this place names for money / account-creating requests (none by default). */
+  commitment_introducers?: string[];
+  /** v0.2.8 (§4, P2): actions that create an account / sign up. `account.create` always counts. */
+  account_actions?: string[];
+  /**
+   * v0.2.9 (§9.4, P9 minimal): sign-up limits. Account-creating grants are counted per OWNER (canonical principal DID, across
+   * all of its representatives) and per introducer over a rolling window, so one owner with many agents (S1) or one a day (S4)
+   * can't drip past them. Values are a place setting; the reference default is 1 per owner and 5 per introducer per 30 days.
+   */
+  account_caps?: { per_owner: { count: number; window_s: number }; per_introducer: { count: number; window_s: number } } | null;
+  /**
+   * v0.2.10 (§4, D17): each place decides whether it creates accounts only for introduced visitors.
+   * "introduction_or_invitation": an account-creating action needs a weighted vouch from an introducer this place names, or the
+   * place's own invitation (a vouch signed by the place's own principal). Absent / "open": sign-up stays open (accepted by design,
+   * mitigated by §9.4 caps). The spec recommends (SHOULD) requiring one where a place offers accounts or money.
+   */
+  account_creation?: "open" | "introduction_or_invitation";
+  /** v0.2.9 (§9.3, P5): reviewers (besides the place's principal) whose signed IntroducerReview may restore standing. Never the penalised introducer. */
+  introducer_reviewers?: string[];
+  lobby: { about: Record<string, string>; how: Record<string, string>; onboarding_url: string; receipt_ttl_days: number;
+           readiness: { code: "card" | "owner_binding" | "purpose" | "introduction" | "claim_evidence"; required: boolean }[] };
+  /** §3.3 (v0.2.3): the lobby offers an allowance-grant template when the place serves visitors under allowances. */
+  serves_allowances?: boolean;
+  /** Seat lifetime when no max_session_s applies (host-local; default 86400). */
+  seat_ttl_s?: number;
+  /** §9.1: invalid receipt echoes per sender per hour. */
+  receipt_echo_limit: number;
+  probing_threshold: number;        // N distinct rejected request shapes (§9.3)
+  probing_window_s: number;         // W
+  ritual_retry_s: number;
+  /** Days an approved consideration stays valid (outcome valid_until). Not fixed by the spec (open item 15); default 30. */
+  outcome_valid_days?: number;
+  not_a_fit_retry_days: number;
+  paused_retry_days: number;
+  /** §5.1: personal (person-kind) principals must sign mandates with an owner passkey, unless under an allowance. */
+  enforce_owner_passkey: boolean;
+};
+
+export type PeerConfig = {
+  /** This host is a personal representative; meetings need a PeerInvitation both owners consented to (the Peer meetings extension). */
+  owner_id: string;
+};
+
+export type PlaceConfig = {
+  name: string;                     // short slug used in HTTP routes
+  display_name: string;
+  principal_id: string;
+  rep_id: string;
+  policy: PlacePolicy;
+  seeking?: SignedSeekingDeclaration;
+  card?: SignedCard;
+  gathering?: Signed<Gathering>;
+  /** Terms considered identifying for a speaker at gatherings (D4 hint stripping). */
+  affiliation_hints?: string[];
+  peer?: PeerConfig;
+  /** v0.2.9 (§10): this place is a person's inbound door, under the owner-signed DoorPolicy. */
+  door?: DoorConfig;
+  /** v0.3.0-rc1 (§3.1, D20): optional links from the agent front to what the place publishes elsewhere (hints only). */
+  links?: import("./shapes.js").PlaceLink[];
+};
