@@ -6,7 +6,7 @@ Shōkai is stewarded by Kigenka. How decisions are made is in [GOVERNANCE.md](./
 
 | Name | GitHub | Role | Areas |
 |---|---|---|---|
-| YSY (Yu Sung Yeh) | to be confirmed | Editor and author | Everything: the specification, the extensions, the conformance suite, the SDK, the reference implementations |
+| YSY (Yu Sung Yeh) | [@Humanoidme](https://github.com/Humanoidme) | Editor and author | Everything: the specification, the extensions, the conformance suite, the SDK, the reference implementations |
 
 ## Maintainers
 

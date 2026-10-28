@@ -1,21 +1,20 @@
 # Who reviews what. GitHub requests a review from these owners on every pull request that touches the paths.
-# The editor reviews everything today (GOVERNANCE.md). Replace the placeholder with the editor's GitHub handle before
-# the repository goes public; an unknown handle makes GitHub ignore the line.
+# The editor reviews everything today (GOVERNANCE.md).
 
-*                         @YSY-GITHUB-HANDLE
+*                         @Humanoidme
 
 # The normative text and what it must agree with
-/SPEC.md                  @YSY-GITHUB-HANDLE
-/protocol-shapes.ts       @YSY-GITHUB-HANDLE
-/schema/                  @YSY-GITHUB-HANDLE
-/extensions/              @YSY-GITHUB-HANDLE
-/conformance/             @YSY-GITHUB-HANDLE
-/SIGNING.md               @YSY-GITHUB-HANDLE
+/SPEC.md                  @Humanoidme
+/protocol-shapes.ts       @Humanoidme
+/schema/                  @Humanoidme
+/extensions/              @Humanoidme
+/conformance/             @Humanoidme
+/SIGNING.md               @Humanoidme
 
 # Project policies
-/GOVERNANCE.md            @YSY-GITHUB-HANDLE
-/SECURITY.md              @YSY-GITHUB-HANDLE
-/PATENTS.md               @YSY-GITHUB-HANDLE
-/TRADEMARKS.md            @YSY-GITHUB-HANDLE
-/LICENSE*                 @YSY-GITHUB-HANDLE
-/.github/                 @YSY-GITHUB-HANDLE
+/GOVERNANCE.md            @Humanoidme
+/SECURITY.md              @Humanoidme
+/PATENTS.md               @Humanoidme
+/TRADEMARKS.md            @Humanoidme
+/LICENSE*                 @Humanoidme
+/.github/                 @Humanoidme
