@@ -34,16 +34,27 @@ jobs:
         run: |
           want="v$(node -p "require('./packages/shokai/package.json').version")"
           [ "$GITHUB_REF_NAME" = "$want" ] || { echo "tag $GITHUB_REF_NAME does not match package version $want"; exit 1; }
+      - name: Skip a version that is already on npm (v0.3.0 was published by hand from a laptop)
+        id: published
+        run: |
+          v="$(node -p "require('./packages/shokai/package.json').version")"
+          if npm view "@kigenka/shokai@$v" version >/dev/null 2>&1; then echo "already=true" >> "$GITHUB_OUTPUT"; echo "@kigenka/shokai@$v is already published; nothing to do"; else echo "already=false" >> "$GITHUB_OUTPUT"; fi
       - name: Install
+        if: steps.published.outputs.already == 'false'
         run: npm run setup
       - name: Every suite
+        if: steps.published.outputs.already == 'false'
         run: npm test
       - name: Quickstart, as written, in a fresh directory
+        if: steps.published.outputs.already == 'false'
         run: bash tools/verify-quickstart.sh
       - name: The packed package runs the demo in an empty folder
+        if: steps.published.outputs.already == 'false'
         run: |
           cd packages/shokai && npm pack --pack-destination "$RUNNER_TEMP" && cd "$RUNNER_TEMP" && mkdir try && cd try \
             && npx --yes --package="$RUNNER_TEMP"/kigenka-shokai-*.tgz shokai demo
       - name: Publish (provenance; dist-tag from publishConfig)
+        if: steps.published.outputs.already == 'false'
         working-directory: packages/shokai
-        run: npm publish --provenance --access public
+        # package.json keeps "private": true in git so nothing is published by accident; only this approved job removes it.
+        run: npm pkg delete private && npm publish --provenance --access public

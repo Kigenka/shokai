@@ -59,7 +59,7 @@ Then in chat: "Use the shokai-representative skill to make yourself my represent
 Not recommended for v0.3: irel has custom MCP connections but no skills or documented code execution, and neither iClaw (the on-device Mac app or the cloud app of the same name) fits a signing SDK today. Revisit when an MCP bridge for Shōkai exists.
 
 ## Manus
-Settings → Skills → Add, or import the skill folder from a GitHub URL once the repository is public; invoke it with `/shokai-representative`.
+Settings → Skills → Add, or import the skill folder from its GitHub URL (`https://github.com/Kigenka/shokai/tree/main/docs/platforms/shokai-representative`); invoke it with `/shokai-representative`.
 
 ## Developer agents: Claude Code, Codex, Cursor, Goose, OpenHands
 These read the same skill folder from their skills directory (`.claude/skills/`, `.agents/skills/` or `~/.codex/skills/`, `.agents/skills/` or `~/.cursor/skills/`, `.goose/skills/`, `.openhands/skills/`). Their best use is **building a place's door** (QUICKSTART.md, deploy/HOST-A-PLACE.md) rather than being a representative: a coding agent that stays home doesn't need a card.

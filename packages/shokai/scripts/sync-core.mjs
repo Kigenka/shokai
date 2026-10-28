@@ -5,8 +5,8 @@
 // into src/core, byte for byte under a one-line header, so the SDK and the reference that passes every suite never drift.
 //   node scripts/sync-core.mjs          copy
 //   node scripts/sync-core.mjs --check  exit 1 if src/core differs from the reference (CI)
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
+import { dirname, join, relative, sep, posix } from "node:path";
 import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const candidates = [join(here, "../../../reference/engawa/src")];
@@ -41,14 +41,41 @@ const SPEC_FILES = { "SPEC.md": pick("SPEC.md"), "protocol-shapes.ts": pick("pro
   "CHANGELOG.md": pick("repo-export/public/CHANGELOG.md", ["CHANGELOG.md"]), "PATENTS.md": pick("repo-export/public/PATENTS.md", ["PATENTS.md"]),
   "TRADEMARKS.md": pick("repo-export/public/TRADEMARKS.md", ["TRADEMARKS.md"]), "LICENSE": pick("repo-export/public/LICENSE", ["LICENSE"]),
   "conformance/golden-traces.md": pick("conformance/golden-traces.md"), "conformance/homes.json": pick("conformance/homes.json"),
-  "conformance/test-vectors.json": pick("conformance/test-vectors.json"),
+  "conformance/test-vectors.json": pick("conformance/test-vectors.json"), "conformance/mcp-2026-07-28-notes.md": pick("conformance/mcp-2026-07-28-notes.md"),
   "SIGNING.md": pick("SIGNING.md"), "DECISIONS.md": pick("DECISIONS.md"), "docs/relationship-to-other-protocols.md": pick("docs/relationship-to-other-protocols.md"),
   "proposals/P18-owner-key-continuity.md": pick("proposals/P18-owner-key-continuity.md"), "proposals/P23-identity-binding.md": pick("proposals/P23-identity-binding.md"), "proposals/P24-owner-key-move.md": pick("proposals/P24-owner-key-move.md"), "QUICKSTART.md": pick("QUICKSTART.md") };
 const extDir = join(ROOT, "extensions");
 if (existsSync(extDir)) for (const f of readdirSync(extDir).filter((f) => f.endsWith(".md"))) SPEC_FILES["extensions/" + f] = join(extDir, f);
+// The JSON Schema generated from protocol-shapes.ts (tools/schema/schema.mjs), for implementers who don't read TypeScript.
+const SPEC_V = readFileSync(join(ROOT, "SPEC.md"), "utf8").match(/\*\*Specification v(\d+\.\d+\.\d+(?:-rc\d+)?) \(core\)\.\*\*/)?.[1];
+if (SPEC_V) SPEC_FILES["schema.json"] = pick(`schema/v${SPEC_V}/schema.json`);
+// A relative link in a Markdown file of the bundle that points at a repository file the package doesn't ship (deploy/, reference/,
+// CONTRIBUTING.md, …) would break for a reader who has only the package (and on npmjs.com). Such links are rewritten to the
+// same file in the repository at this package version's tag (images to their raw bytes); links inside the bundle stay relative.
+const REPO = "https://github.com/Kigenka/shokai";
+const TAG = "v" + JSON.parse(readFileSync(join(here, "../package.json"), "utf8")).version;
+const shipped = new Set(Object.entries(SPEC_FILES).filter(([, s]) => s).map(([rel]) => rel));
+const toPosix = (x) => x.split(sep).join("/");
+function outwardLinks(rel, srcPath, text) {
+  if (!rel.endsWith(".md")) return text;
+  const fromRepo = toPosix(relative(ROOT, dirname(srcPath)));
+  return text.split(/(```[\s\S]*?```|`[^`\n]*`)/g).map((part, i) => i % 2 ? part : part.replace(/\]\(([^)\s]+)((?:\s+"[^"]*")?)\)/g, (m, href, title) => {
+    if (/^(https?:|mailto:|#|\/)/.test(href)) return m;
+    const [path, anchor] = href.split("#");
+    const target = posix.normalize(posix.join(fromRepo, decodeURIComponent(path)));
+    if (target.startsWith("..")) return m;
+    const inBundle = posix.normalize(posix.join(posix.dirname(rel), decodeURIComponent(path)));
+    if (shipped.has(inBundle) || [...shipped].some((f) => f.startsWith(inBundle.replace(/\/$/, "") + "/"))) return m;
+    if (!existsSync(join(ROOT, target))) return m;
+    const isDir = statSync(join(ROOT, target)).isDirectory();
+    const image = /\.(svg|png|jpe?g|gif|webp)$/i.test(target);
+    const url = image ? `https://raw.githubusercontent.com/Kigenka/shokai/${TAG}/${target}` : `${REPO}/${isDir ? "tree" : "blob"}/${TAG}/${target}${anchor !== undefined ? "#" + anchor : ""}`;
+    return `](${url}${title})`;
+  })).join("");
+}
 for (const [rel, srcPath] of Object.entries(SPEC_FILES)) {
   if (!srcPath) { console.error("sync-core: spec file not found: " + rel); drift++; continue; }
-  const p = join(here, "../spec", rel); const body = readFileSync(srcPath, "utf8"); const have = existsSync(p) ? readFileSync(p, "utf8") : null;
+  const p = join(here, "../spec", rel); const body = outwardLinks(rel, srcPath, readFileSync(srcPath, "utf8")); const have = existsSync(p) ? readFileSync(p, "utf8") : null;
   if (have === body) continue;
   if (check) { console.error("drift: spec/" + rel); drift++; } else { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, body); }
 }

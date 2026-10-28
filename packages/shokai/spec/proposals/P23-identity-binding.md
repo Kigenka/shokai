@@ -15,7 +15,7 @@
 
 Three tricksters, all refused under the claimed identity (see the round-3 report): a representative calling itself "Mira Castellane's representative" with her photo and the handle `@m1racastellane`; a door calling itself "Harb0rlight Bank" (zero for o); and a fresh key claiming to be "the representative of Kiran Vale, your customer since 2024". rc4 refuses to give a claim any weight, which is safe but leaves no way for the *real* Mira's representative to be recognized at a place that has never met her. P23 adds that way.
 
-**Worked examples:** [docs/examples/identity-proofs.md](../docs/examples/identity-proofs.md) (a brand and its domain, a person and their X account, a fictional famous-person impostor rejected).
+**Worked examples:** [docs/examples/identity-proofs.md](https://github.com/Kigenka/shokai/blob/v0.3.0/docs/examples/identity-proofs.md) (a brand and its domain, a person and their X account, a fictional famous-person impostor rejected).
 
 ## The bindings, ranked
 

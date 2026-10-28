@@ -12,7 +12,7 @@
 5. **If the old key is already gone, there is no shortcut:** the owner starts over with a new identity and rebuilds through vouches from people the place trusts and through the place's own relationship with them (P18 covers recovery keys named in advance).
 
 ## Why now
-The steward runs a test-stage signing page at `sign.kigenka.com` ([deploy/SIGNING-PAGE-PLAN.md](../deploy/SIGNING-PAGE-PLAN.md)). Every passkey made there names that address forever (SPEC §2.1, Appendix A.1, C195). The plan keeps the address, but owners deserve to know what happens if it ever moves. The honest rc4 answer is "you start over"; P24 is the better answer for v0.4, and the steward commits not to move the address before it exists.
+The steward runs a test-stage signing page at `sign.kigenka.com` ([deploy/SIGNING-PAGE-PLAN.md](https://github.com/Kigenka/shokai/blob/v0.3.0/deploy/SIGNING-PAGE-PLAN.md)). Every passkey made there names that address forever (SPEC §2.1, Appendix A.1, C195). The plan keeps the address, but owners deserve to know what happens if it ever moves. The honest rc4 answer is "you start over"; P24 is the better answer for v0.4, and the steward commits not to move the address before it exists.
 
 Other reasons an owner moves keys, all covered by the same artifact:
 - the owner switches passkey providers or platforms and the passkey doesn't sync across;

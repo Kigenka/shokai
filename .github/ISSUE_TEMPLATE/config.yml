@@ -1,0 +1,15 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability (privately)
+    url: https://github.com/Kigenka/shokai/security/advisories/new
+    about: >
+      Please don't file security problems as issues. Use GitHub private vulnerability reporting; see SECURITY.md.
+  - name: Ask a question or share an idea
+    url: https://github.com/Kigenka/shokai/discussions
+    about: >
+      Questions, ideas and show-and-tell go to Discussions. Issues are for problems and concrete changes.
+  - name: Propose a protocol change (a numbered proposal)
+    url: https://github.com/Kigenka/shokai/blob/main/proposals/README.md
+    about: >
+      A change to normative behaviour starts as a proposal file in proposals/, opened as a pull request.
+      Open a "Specification issue or change" first if you'd like to discuss the idea.

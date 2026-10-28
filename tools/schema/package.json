@@ -1,0 +1,12 @@
+{
+  "name": "shokai-schema-tools",
+  "private": true,
+  "description": "Generates schema/v<version>/schema.json from protocol-shapes.ts and checks the golden traces against it.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "devDependencies": {
+    "ajv": "8.17.1",
+    "ajv-formats": "3.0.1",
+    "ts-json-schema-generator": "2.4.0"
+  }
+}

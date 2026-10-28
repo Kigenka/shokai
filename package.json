@@ -4,16 +4,18 @@
   "private": true,
   "description": "Shōkai, the agent introduction protocol: specification, SDK, conformance runner and reference implementations.",
   "license": "Apache-2.0",
-  "author": "Kigenka",
+  "author": "YSY",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "setup": "npm --prefix reference/engawa ci && npm --prefix reference/prototype ci && npm --prefix packages/shokai ci",
+    "setup": "npm --prefix reference/engawa ci && npm --prefix reference/prototype ci && npm --prefix packages/shokai ci && npm --prefix tools/schema ci",
     "test": "bash tools/run-all-suites.sh && npm --prefix packages/shokai test",
     "trace-lint": "node tools/trace-lint.mjs",
     "trace-typecheck": "node tools/trace-typecheck.mjs",
     "check-links": "node tools/check-links-versions.mjs",
-    "quickstart": "bash tools/verify-quickstart.sh"
+    "quickstart": "bash tools/verify-quickstart.sh",
+    "schema": "node tools/schema/schema.mjs",
+    "check-schema": "node tools/schema/schema.mjs --check"
   }
 }

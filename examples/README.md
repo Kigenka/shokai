@@ -1,6 +1,6 @@
 # Examples
 
-Working doors and visitors you can run, and annotated visits you can read. Every person, business and place in them is fictional, and every example is **non-normative**: where an example and [SPEC.md](../SPEC.md) disagree, the spec wins. Written for v0.3.0-rc4.
+Working doors and visitors you can run, and annotated visits you can read. Every person, business and place in them is fictional, and every example is **non-normative**: where an example and [SPEC.md](../SPEC.md) disagree, the spec wins. Written for v0.3.0.
 
 **New here?** Run `shokai demo` (below), then read [How Shōkai works](../docs/how-it-works.md): a tea shop, a stranger who gets the leaflet, and a representative that introduces itself and buys a green tea within its owner's limit.
 
@@ -22,7 +22,7 @@ Each page is a short story, one sequence diagram drawn from a recorded run (a fi
 
 | Example | What it shows | Where | Run |
 |---|---|---|---|
-| **The two-second visit** | A tea shop (*Kettle & Leaf*) and a visitor on your machine: the ritual, a seat, an order within a 10.00 USD limit, an order past it refused, the report home | [`packages/shokai/src/cli.ts`](../packages/shokai/src/cli.ts) | `npx @kigenka/shokai demo` (once published); from this repo: `cd packages/shokai && npm run demo` |
+| **The two-second visit** | A tea shop (*Kettle & Leaf*) and a visitor on your machine: the ritual, a seat, an order within a 10.00 USD limit, an order past it refused, the report home | [`packages/shokai/src/cli.ts`](../packages/shokai/src/cli.ts) | `npx @kigenka/shokai demo`; from this repo: `cd packages/shokai && npm run demo` |
 | **Quickstart tea shop** | Your MCP server plus a Shōkai door; a visitor that spends within a mandate and comes back for a second visit; the conformance check | [`QUICKSTART.md`](../QUICKSTART.md), code in [`packages/shokai/examples/quickstart/`](../packages/shokai/examples/quickstart/) | `npm run quickstart` (runs QUICKSTART.md as written) |
 | **A gate in front of any MCP server** | Three note tools behind a Shōkai door; `tools/list` narrowed to the seat; every call a signed act | [`packages/shokai/examples/toy-mcp/`](../packages/shokai/examples/toy-mcp/) | `cd packages/shokai && npm run example` |
 | **A door ready for a public host** | Stable keys, state that survives restarts, edge limits, a kill switch | [`deploy/HOST-A-PLACE.md`](../deploy/HOST-A-PLACE.md), [`deploy/demo-place/`](../deploy/demo-place/) | see the guide |

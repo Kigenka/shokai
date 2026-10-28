@@ -101,7 +101,7 @@ Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell 
 
 ## 5. Red-team results (v0.3.0-rc1)
 
-Both rounds ran on loopback against the reference place server with fictional people and places and fresh keys. Full tables: [`security/redteam/`](./security/redteam/).
+Both rounds ran on loopback against the reference place server with fictional people and places and fresh keys. Full tables: [`security/redteam/`](https://github.com/Kigenka/shokai/tree/v0.3.0/security/redteam/).
 
 | Round | Attacks | Held | Broke | Notes |
 |---|---|---|---|---|
@@ -152,4 +152,4 @@ The owner keeps that allowance small and narrow:
 - **Short lifetimes.** Keep cards, mandates and allowances short (§12.2), and revoke when something looks wrong (§2.6, §5.2).
 - **Per-act approval.** For anything that matters, sign a mandate for that one errand instead of a standing allowance, so the owner approves it at the time; anything beyond it comes home for approval (§5.1, §5.2, §8.1).
 
-Report vulnerabilities privately as described in [SECURITY.md](./SECURITY.md).
+Report vulnerabilities privately as described in [SECURITY.md](https://github.com/Kigenka/shokai/blob/v0.3.0/SECURITY.md).

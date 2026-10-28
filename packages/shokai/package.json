@@ -27,7 +27,8 @@
     "./browser": {
       "types": "./dist/src/browser.d.ts",
       "default": "./dist/src/browser.js"
-    }
+    },
+    "./schema.json": "./spec/schema.json"
   },
   "bin": {
     "shokai": "dist/src/cli.js",
@@ -78,6 +79,15 @@
     "zod": "^4.6.7"
   },
   "author": "YSY",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kigenka/shokai.git",
+    "directory": "packages/shokai"
+  },
+  "homepage": "https://github.com/Kigenka/shokai/tree/main/packages/shokai#readme",
+  "bugs": {
+    "url": "https://github.com/Kigenka/shokai/issues"
+  },
   "publishConfig": {
     "access": "public",
     "provenance": true,

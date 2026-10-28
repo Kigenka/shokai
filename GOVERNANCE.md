@@ -4,7 +4,7 @@
 
 ## Today: a single editor
 
-Shōkai is maintained by Kigenka. Like many young protocols (the Model Context Protocol began the same way), it starts with a single **editor** who has final say on what goes into the specification and the reference code (a "benevolent dictator" model). The editor:
+Shōkai is maintained by Kigenka. The editor today is YSY (see [MAINTAINERS.md](./MAINTAINERS.md)). Like many young protocols (the Model Context Protocol began the same way), it starts with a single **editor** who has final say on what goes into the specification and the reference code (a "benevolent dictator" model). The editor:
 
 - merges or declines pull requests and proposals, and explains each decision in the pull request or proposal;
 - records every normative decision in the changelog, with the proposal it came from;
@@ -14,14 +14,14 @@ Maintainers who aren't the editor may review and merge editorial fixes, tests an
 
 ## How a change is decided
 
-1. Open an issue or a proposal (see [CONTRIBUTING.md](./CONTRIBUTING.md)).
+1. Open an issue or a proposal (see [CONTRIBUTING.md](./CONTRIBUTING.md)). Questions and early ideas can start in GitHub Discussions.
 2. Discussion stays open for at least **14 days** for normative changes (7 days for editorial ones), unless it fixes a security problem.
 3. The editor decides and records the reason. Security fixes may be made first and discussed after, through the process in [SECURITY.md](./SECURITY.md).
 
 ## Versions
 
 - Before 1.0, minor versions (0.x) may break compatibility. Each break is listed in the changelog with a migration note.
-- Release candidates (`-rcN`) are for review. Before v0.3.0 a release candidate may still gain rules for gaps found in review or field tests (rc4 did); each change is listed in the changelog. The final release freezes the text for its version.
+- Release candidates (`-rcN`) are for review, and may still gain rules for gaps found in review or field tests (0.3.0-rc4 did); each change is listed in the changelog. A final release (such as v0.3.0) freezes the text for its version; later fixes go into a new version.
 
 ## Tomorrow: a steering group
 

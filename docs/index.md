@@ -47,4 +47,17 @@ Shōkai is inspired by how good introductions work between people, and by *omote
 - [A place's address](./place-addresses.md): pop-up links, quick links and a fixed address (hosting guidance)
 - [Specification](./specification.md): the normative text
 
+## Every page
+
+| Section | Pages |
+|---|---|
+| **Understand it** | [How Shōkai works](./how-it-works.md) · [Why Shōkai](./why.md) · [Architecture](./architecture.md) · [Glossary](./glossary.md) · [FAQ](./faq.md) · [Design lessons](./design-lessons.md) |
+| **Core concepts** | [Index](./concepts/index.md) · [Owners and representatives](./concepts/owners-and-representatives.md) · [Places and doors](./concepts/places-and-doors.md) · [Website, agent front, door](./concepts/website-front-door.md) · [Arriving](./concepts/arriving.md) · [Cards](./concepts/cards.md) · [Limits](./concepts/limits.md) · [Outcomes](./concepts/outcomes.md) · [Report home](./concepts/report-home.md) · [Conduct](./concepts/conduct.md) · [Door policy](./concepts/door-policy.md) · [Visit stamps](./concepts/visit-stamps.md) |
+| **Build with it** | [Quickstart](./quickstart.md) · [Specification](./specification.md) · [Extensions](./extensions.md) · [JSON Schema](../schema/README.md) · [SDK](../packages/shokai/README.md) · [Host a place](../deploy/HOST-A-PLACE.md) · [A place's address](./place-addresses.md) · [Signing profile](../SIGNING.md) |
+| **Examples** | [Annotated visits](./examples/index.md) · [Runnable examples](../examples/README.md) · [Owner journeys](./owner-journeys.md) · [Agent platforms](./platforms/README.md) |
+| **Security** | [Security and threat model](./security.md) · [Full threat model](../THREAT-MODEL.md) · [Red-team rounds](../security/redteam/README.md) · [Reporting a vulnerability](../SECURITY.md) |
+| **Transparency** | [Field tests](./field-tests.md) · [Review history](./review-history.md) · [Design decisions](../DECISIONS.md) · [Changelog](../CHANGELOG.md) · [Release notes v0.3.0](./releases/v0.3.0.md) |
+| **Context and plans** | [Relationship to other protocols](./relationship-to-other-protocols.md) · [Roadmap](./roadmap.md) · [Proposals](../proposals/README.md) |
+| **The project** | [Contributing](../CONTRIBUTING.md) · [Governance](../GOVERNANCE.md) · [Maintainers](../MAINTAINERS.md) · [Code of Conduct](../CODE_OF_CONDUCT.md) · [Trademarks](../TRADEMARKS.md) · [Patents](../PATENTS.md) |
+
 *Shōkai is stewarded by Kigenka. Status: **v0.3.0**, not 1.0 (the clarifications since the 0.3 feature freeze are listed in the CHANGELOG): implement the core, add only the extensions you need, and treat proposals as drafts ([What to implement](./specification.md#what-to-implement)). Technologies and companies named in these docs (MCP, A2A, OAuth, WebAuthn, Plaid, Stripe and others) are illustrative and imply no affiliation, partnership or endorsement. See [Names and affiliation](./faq.md#are-the-named-technologies-partners).*

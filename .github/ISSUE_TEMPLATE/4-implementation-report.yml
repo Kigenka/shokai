@@ -1,0 +1,40 @@
+name: Implementation report
+description: You implemented Shōkai, or part of it. Tell us how it went and where the specification made you guess.
+labels: [implementation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        An independent implementation is the strongest review there is. Thank you for writing one.
+  - type: input
+    id: implementation
+    attributes:
+      label: Implementation
+      description: Language, and a link if it's public.
+    validations:
+      required: true
+  - type: checkboxes
+    id: roles
+    attributes:
+      label: Roles implemented
+      options:
+        - label: A place (a door and its host)
+        - label: A representative (visitor)
+        - label: An introducer (vouches)
+        - label: An inbound door (SPEC §10)
+        - label: One or more extensions (name them below)
+  - type: textarea
+    id: results
+    attributes:
+      label: Conformance results
+      description: "`npx shokai-conformance <url> --json`, or a summary."
+  - type: textarea
+    id: guesses
+    attributes:
+      label: Where the specification made you guess
+    validations:
+      required: true
+  - type: textarea
+    id: hard
+    attributes:
+      label: What was hard, or more work than it should be

@@ -113,7 +113,7 @@ Any agent can play this. It starts with Grok Bot, and other agents can follow. H
 - Whether "withdraw Edu's card" is found without help.
 
 ## What's not ready (rc4)
-- `sign.kigenka.com` runs only for short, private signing sessions (the first was on October 27, 2026), not as an always-on page; the package isn't published (release gates).
+- `sign.kigenka.com` runs only for short, private signing sessions (the first was on October 27, 2026), not as an always-on page. (When this draft was written, the package wasn't published yet; `@kigenka/shokai` 0.3.0 has been on npm since October 28, 2026.)
 - The reference signing page now asks for Face ID once for the whole list (one tap, Appendix A.1), with one by one as a fallback. Not yet tried on a real phone at a fixed address.
 - A door needs a public address while it's open. Today: a temporary tunnel from the Grok Bot's computer (proven in the field test, where Muse was seated at a tea house running on a Grok Bot computer); the address changes each time and the place is open only while the computer runs it. A stable address needs a relay or small hosted front door. Opening either needs the owner's yes each time.
 - `createDoor()` now presents the "my door" card the owner signed on their phone (rc4, F3). A tampered or withdrawn card is refused, and the owner's withdrawal closes the running door at once.

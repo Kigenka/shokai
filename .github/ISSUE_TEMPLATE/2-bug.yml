@@ -1,0 +1,68 @@
+name: Bug in the SDK, the conformance runner or the reference code
+description: Something in packages/, reference/, deploy/ or tools/ doesn't behave as the specification says.
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a problem in the specification text itself, use "Specification issue or change". For a security problem, use
+        [private vulnerability reporting](https://github.com/Kigenka/shokai/security/advisories/new).
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - "@kigenka/shokai SDK (door, representative, owner helpers, shokai demo)"
+        - The conformance runner (shokai-conformance)
+        - The reference place server (reference/engawa)
+        - The reference prototype (reference/prototype)
+        - The reference signing page (reference/signing-page)
+        - The demo place (deploy/demo-place)
+        - Tools, CI or the JSON Schema
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: "`npx @kigenka/shokai --version` prints it."
+      placeholder: "@kigenka/shokai 0.3.0 (shokai/0.3, spec 0.3.0)"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Node.js version and operating system
+      placeholder: "Node.js 22.11, macOS 15"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The smallest code or command that shows it.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: Cite the SPEC section if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: Output, a conformance report with `--json`, or a failing test. Remove any keys or tokens first.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Before you submit
+      options:
+        - label: I've removed private keys, tokens, signing links and personal data from everything above.
+          required: true

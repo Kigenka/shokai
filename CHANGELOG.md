@@ -2,6 +2,19 @@
 
 All notable changes to the Shōkai specification, SDK and reference code. Before 1.0, minor versions may break compatibility; each break is listed here.
 
+## Unreleased
+
+Repository and packaging work for going public. Nothing on the wire changes, and the specification text is unchanged.
+
+- **JSON Schema.** `schema/v0.3.0/schema.json`, generated from `protocol-shapes.ts` (the TypeScript stays the source of truth), as MCP publishes its schema. `npm run check-schema` (in `npm test` and CI) fails if it is stale, validates every golden-trace message without a fixture placeholder (103), and checks that broken controls fail. The SDK ships it as `spec/schema.json` (`@kigenka/shokai/schema.json`).
+- **Package links.** `repository`, `homepage` and `bugs` are back in `packages/shokai/package.json`. The 27 relative links in the package's `spec/` that only worked inside the repository now point to the same files at the release tag on GitHub, and `check-links` checks every Markdown file in the package's bundle. `spec/conformance/mcp-2026-07-28-notes.md` is synced again (0.3.0 shipped an older copy that still said "rc4").
+- **Release workflow.** It removes `"private"` only in its own working copy, and skips a version that is already on npm, so pushing the `v0.3.0` tag publishes nothing.
+- **CI.** Node.js 20, 22 and 24; the schema check; manual runs; one run per branch at a time. Dependabot for npm and GitHub Actions.
+- **Issues and pull requests.** Issue forms for specification issues and changes, bugs, conformance checks and implementation reports; blank issues off, with links to private vulnerability reporting, Discussions and the proposal process. The pull-request template asks about the schema and AI assistance. `CODEOWNERS` (the editor's handle to be filled in).
+- **Project documents.** A new README front page (what the repository contains, a 60-second try, three diagrams: the introduction, who stands behind whom, the trust path; a repository map); `MAINTAINERS.md`; SECURITY.md gains supported versions, what happens after a report, and the behaviours that are intended rather than vulnerabilities; CONTRIBUTING.md gains getting started and where things live; a map of every docs page.
+- **Tested in the open.** The field-test report (`docs/field-tests.md`), a review history (`docs/review-history.md`) and the v0.3.0 release notes (`docs/releases/v0.3.0.md`) are published in the repository.
+- **Deployment notes** use placeholders instead of the steward's local paths, team and deployment identifiers.
+
 ## v0.3.0, 2026-10-28
 
 The first release of the 0.3 line. It is the text of release candidate 4 (below) with the clarifications and fixes made since its feature freeze on October 27, and nothing new on the wire.

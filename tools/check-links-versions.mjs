@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 Yu Sung Yeh
 // Link and version check for the specification bundle (v0.3.0; the version comes from the SPEC.md header). Usage: node scripts/check-links-versions.mjs [bundle-dir ...]
-//  1. Every relative link in the normative documents of a bundle (SPEC.md, extensions/, conformance/) resolves to a file inside
+//  1. Every relative link in the normative documents of a bundle (SPEC.md, extensions/, conformance/; in the SDK package's spec/, every
+//     Markdown file) resolves to a file inside
 //     that bundle (anchors ignored; http(s), mailto and site-absolute links are not checked): a reader who has only the bundle
 //     must be able to follow every link the specification makes.
 //  2. Every place that names the current specification version names the same one: SPEC.md's header, its spec_ref example,
@@ -21,7 +22,9 @@ function mdFiles(dir, top) { const out = []; for (const n of readdirSync(dir)) {
   if (st.isDirectory()) { if (top === dir ? SKIP_DIRS.has(n) : n === "node_modules") continue; out.push(...mdFiles(p, top)); } else if (n.endsWith(".md")) out.push(p); } return out; }
 const LINK = /\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
 for (const b of bundles) {
-  const files = ["SPEC.md", "extensions", "conformance"].flatMap((f) => { const p = join(b, f); return !existsSync(p) ? [] : statSync(p).isDirectory() ? mdFiles(p, p) : [p]; });
+  // The package's bundle is read without the repository (in node_modules, on npmjs.com): every Markdown file in it must keep its links inside it.
+  const files = b.endsWith(join("packages", "shokai", "spec")) ? mdFiles(b, null)
+    : ["SPEC.md", "extensions", "conformance"].flatMap((f) => { const p = join(b, f); return !existsSync(p) ? [] : statSync(p).isDirectory() ? mdFiles(p, p) : [p]; });
   for (const f of files) {
     const text = readFileSync(f, "utf8").replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]*`/g, "");
     for (const m of text.matchAll(LINK)) {

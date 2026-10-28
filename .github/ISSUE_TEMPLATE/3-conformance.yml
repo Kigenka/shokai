@@ -1,0 +1,54 @@
+name: Conformance check or test vector
+description: The conformance runner, a golden trace or a test vector says something you believe is wrong, or a check is missing.
+labels: [conformance, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Conformance checks are tagged `C…` in SPEC.md and named like `door.spec_ref` in the runner's output.
+        If your door fails a check and you think the check is wrong, this is the right place. Please include the runner's JSON report.
+  - type: input
+    id: check
+    attributes:
+      label: Which check, trace or vector?
+      placeholder: "seat.mandate_across (C175), or golden trace G3, or vector passkey_profile #4"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What's wrong?
+      options:
+        - A check fails a door I believe is conformant
+        - A check passes a door I believe is not conformant
+        - A golden trace or test vector disagrees with SPEC.md
+        - A check the specification needs is missing
+        - The runner's message is unclear
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Runner and specification version
+      description: "`npx @kigenka/shokai --version`"
+      placeholder: "@kigenka/shokai 0.3.0 (shokai/0.3, spec 0.3.0)"
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: The runner's report
+      description: "`npx shokai-conformance <url> --json` (remove anything private)."
+      render: json
+  - type: textarea
+    id: why
+    attributes:
+      label: Why you think it's wrong
+      description: Quote the SPEC text the check should follow.
+    validations:
+      required: true
+  - type: input
+    id: implementation
+    attributes:
+      label: Your implementation (optional)
+      description: Language, and a link if it's public.

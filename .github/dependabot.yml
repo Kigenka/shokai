@@ -1,0 +1,12 @@
+# Weekly dependency updates, grouped so each ecosystem opens at most one pull request a week.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }
+    groups: { actions: { patterns: ["*"] } }
+  - package-ecosystem: npm
+    directories: [/packages/shokai, /reference/engawa, /reference/prototype, /tools/schema, /deploy/demo-place]
+    schedule: { interval: weekly }
+    groups: { npm: { patterns: ["*"] } }
+    open-pull-requests-limit: 5

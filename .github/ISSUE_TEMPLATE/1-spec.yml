@@ -1,0 +1,65 @@
+name: Specification issue or change
+description: Something in SPEC.md or an extension is unclear, contradictory, unsafe or missing, or you want to propose a change.
+labels: [spec, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Quote the section so we can find it. For a security problem, **stop here** and use
+        [private vulnerability reporting](https://github.com/Kigenka/shokai/security/advisories/new) instead (see SECURITY.md).
+        A larger change to normative behaviour ends as a numbered proposal in `proposals/`; this issue is a good place to start the discussion.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of issue is it?
+      options:
+        - The text is ambiguous or contradicts itself
+        - The text allows something unsafe
+        - A case the text should cover is missing
+        - The types (protocol-shapes.ts) or the JSON Schema disagree with the prose
+        - An example, golden trace or test vector is wrong
+        - I propose a change or an addition
+        - Wording or editorial
+    validations:
+      required: true
+  - type: input
+    id: section
+    attributes:
+      label: Where?
+      description: The section, extension or file, and the conformance check if one is involved.
+      placeholder: "SPEC §6.7, C151 (or extensions/gatherings.md §2)"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Specification version
+      placeholder: "v0.3.0"
+    validations:
+      required: true
+  - type: textarea
+    id: says
+    attributes:
+      label: What the text says now
+      description: Quote it.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong, unclear or missing
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you expected, or what you propose
+      description: If it changes behaviour on the wire, say how a door and a representative would each be affected.
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Before you submit
+      options:
+        - label: Examples use fictional people, businesses and places (example domains such as `*.example`), and no keys, tokens or personal data.
+          required: true
+        - label: If AI tools helped write this issue, I've said so and checked its content myself.

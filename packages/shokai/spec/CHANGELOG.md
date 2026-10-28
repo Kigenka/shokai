@@ -2,6 +2,19 @@
 
 All notable changes to the Shōkai specification, SDK and reference code. Before 1.0, minor versions may break compatibility; each break is listed here.
 
+## Unreleased
+
+Repository and packaging work for going public. Nothing on the wire changes, and the specification text is unchanged.
+
+- **JSON Schema.** `schema/v0.3.0/schema.json`, generated from `protocol-shapes.ts` (the TypeScript stays the source of truth), as MCP publishes its schema. `npm run check-schema` (in `npm test` and CI) fails if it is stale, validates every golden-trace message without a fixture placeholder (103), and checks that broken controls fail. The SDK ships it as `spec/schema.json` (`@kigenka/shokai/schema.json`).
+- **Package links.** `repository`, `homepage` and `bugs` are back in `packages/shokai/package.json`. The 27 relative links in the package's `spec/` that only worked inside the repository now point to the same files at the release tag on GitHub, and `check-links` checks every Markdown file in the package's bundle. `spec/conformance/mcp-2026-07-28-notes.md` is synced again (0.3.0 shipped an older copy that still said "rc4").
+- **Release workflow.** It removes `"private"` only in its own working copy, and skips a version that is already on npm, so pushing the `v0.3.0` tag publishes nothing.
+- **CI.** Node.js 20, 22 and 24; the schema check; manual runs; one run per branch at a time. Dependabot for npm and GitHub Actions.
+- **Issues and pull requests.** Issue forms for specification issues and changes, bugs, conformance checks and implementation reports; blank issues off, with links to private vulnerability reporting, Discussions and the proposal process. The pull-request template asks about the schema and AI assistance. `CODEOWNERS` (the editor's handle to be filled in).
+- **Project documents.** A new README front page (what the repository contains, a 60-second try, three diagrams: the introduction, who stands behind whom, the trust path; a repository map); `MAINTAINERS.md`; SECURITY.md gains supported versions, what happens after a report, and the behaviours that are intended rather than vulnerabilities; CONTRIBUTING.md gains getting started and where things live; a map of every docs page.
+- **Tested in the open.** The field-test report (`docs/field-tests.md`), a review history (`docs/review-history.md`) and the v0.3.0 release notes (`docs/releases/v0.3.0.md`) are published in the repository.
+- **Deployment notes** use placeholders instead of the steward's local paths, team and deployment identifiers.
+
 ## v0.3.0, 2026-10-28
 
 The first release of the 0.3 line. It is the text of release candidate 4 (below) with the clarifications and fixes made since its feature freeze on October 27, and nothing new on the wire.
@@ -41,7 +54,7 @@ The first release of the 0.3 line. It is the text of release candidate 4 (below)
 **Licensing (pending legal review)**
 
 - The whole specification (`SPEC.md`, `extensions/`, `conformance/`, `proposals/`, `protocol-shapes.ts`, `THREAT-MODEL.md`) is under the Apache License 2.0, like the code; CC BY 4.0 now covers only the explanatory docs in `docs/`. This fixes a contradiction between the README and NOTICE.
-- New: [PATENTS.md](./PATENTS.md) (a draft royalty-free patent commitment, based on OWFa 1.0, for each final specification version; not yet made), [TRADEMARKS.md](./TRADEMARKS.md), [REUSE.toml](./REUSE.toml) and [LICENSES/](./LICENSES/).
+- New: [PATENTS.md](./PATENTS.md) (a draft royalty-free patent commitment, based on OWFa 1.0, for each final specification version; not yet made), [TRADEMARKS.md](./TRADEMARKS.md), [REUSE.toml](https://github.com/Kigenka/shokai/blob/v0.3.0/REUSE.toml) and [LICENSES/](https://github.com/Kigenka/shokai/tree/v0.3.0/LICENSES/).
 - CONTRIBUTING: a rule for AI-assisted contributions (the person signing off is accountable). GOVERNANCE: an intellectual-property section.
 - SPDX headers in the specification, the extensions, the SDK sources and the tools; the SDK package now ships NOTICE.
 
@@ -72,7 +85,7 @@ Found when the field-test computer restarted and rolled its files back a few min
 - **Reference door: an act whose seat was lost in a restart gets a clear courtesy text** ("That visit is no longer open here; it may have been interrupted when the place restarted. Please knock again…", new key `act_seat_gone` in all five locales). The disposition is still `not_a_fit` / `SEAT_SCOPE_EXCEEDED`, as §7.2 requires.
 - **Reference door: simulated act references no longer repeat.** With `uniqueActRefs` (the SDK's `Door` sets it), or after a restart, the reference is `<tool>-<msg_id>` instead of `<tool>-<n>`.
 - **SDK:** `visit.act()` throws `SHOKAI_PLACE_UNREACHABLE` when the place doesn't answer, and marks the visit `interrupted` (`"unreachable"`, or `"seat_gone"` when the place no longer knows the seat). The report home says which actions weren't carried out and which got no answer, and that the representative will knock again without repeating a purchase it can't confirm. Interrupted actions aren't counted as refused.
-- New test `packages/shokai/test/restart.test.ts` (12 checks, including a file rollback: a rolled-back door forgets a revocation until the owner's side delivers it again) and example trace [`examples/traces/restart.mjs`](./examples/traces/restart.mjs), which kills the demo tea house by its exact pid mid-visit.
+- New test `packages/shokai/test/restart.test.ts` (12 checks, including a file rollback: a rolled-back door forgets a revocation until the owner's side delivers it again) and example trace [`examples/traces/restart.mjs`](https://github.com/Kigenka/shokai/blob/v0.3.0/examples/traces/restart.mjs), which kills the demo tea house by its exact pid mid-visit.
 
 **rc4 clarifications from a clean-room interop exercise (2026-10-27; the wire tag and `spec_ref` are unchanged)**
 
@@ -158,20 +171,20 @@ Gaps found in field tests and an expert-style review. The wire tag stays `shokai
 - Tests: `v030rc4` (52 checks), SDK state tests (6).
 - SDK owner helpers: `signCardRevocation` (and standby), `cardRevocationMessage`, `signOwnerLink`, `passkeyRequest` / `signedFromPasskeyAssertion`, and `@kigenka/shokai/browser` (`signWithPasskey` with a real passkey, WebCrypto only). Tests: owner (12).
 - `shokai demo`: a door and a visitor on 127.0.0.1, printed, in about two seconds; `shokai visit <door-url>` for a demo door elsewhere. Tests: demo (7).
-- [`reference/signing-page/`](./reference/signing-page/README.md): the reference passkey signing page (SIGNING.md profile, no dependencies), with a software-authenticator test (19).
+- [`reference/signing-page/`](https://github.com/Kigenka/shokai/blob/v0.3.0/reference/signing-page/README.md): the reference passkey signing page (SIGNING.md profile, no dependencies), with a software-authenticator test (19).
 - Reference pilot server: keeps each place's durable state across restarts and refuses on loss (§3.6), and prefetches card revocation lists from its fetch allow-list only (§2.6). Tests: pilot persistence (6).
 - Vectors: `passkey_profile` in `conformance/test-vectors.json` (A.1, C195): crossOrigin false/true, topOrigin, an origin with a port, http, a subdomain, and a one-tap batch with its negatives (12 checks; also run by the conformance runner as `vec.passkey_profile` and against the reference signing page). Generated once by `tools/gen-passkey-profile-vectors.mjs` and frozen.
 - SDK MCP gate: releases an act the MCP server did not carry out (JSON-RPC error, `isError` result, 4xx/5xx with no result), operation and amount together (§7.2, C187, C194); `releaseOn` option; SSE responses are not inspected. Tests: gate release (8).
 - Golden replay (Part A) runs under real verification: `reference/engawa/test/golden-keys.ts` (the test keys) and `golden-gen.ts` (the regenerator); a new row checks the bytes.
 - SDK door fetches: `https` only, and never a loopback, private, link-local or metadata address literal or a `localhost` / `.local` / `.internal` name (a hardening toward proposal P8; refused means unreachable, which fails closed), read for at most 2 seconds and 256 KiB (§12.2 now notes these bounds, informative). Tests: fetch policy (9).
-- [`deploy/HOST-A-PLACE.md`](./deploy/HOST-A-PLACE.md): host a real place (stable keys, durable state, limits, a kill switch, egress); `npm run quickstart` now runs its `place.mjs` as written, visits it with the quickstart's scripts and runs conformance against it. The demo place gains `KEY_DIR` (stable keys, `keys.mjs`; 10 checks).
-- [`.github/workflows/release.yml`](./.github/workflows/release.yml): publishes on a version tag with provenance, behind a reviewer-gated environment. Not run.
-- [`deploy/`](./deploy/DEPLOY.md): a demo place (simulated tea shop; rate limit, body cap, kill switch, durable state; 9 checks), the copy-paste prompt for any agent, and a deployment plan. Nothing is deployed. [RELEASING.md](./RELEASING.md): the package is publish-ready and not published.
+- [`deploy/HOST-A-PLACE.md`](https://github.com/Kigenka/shokai/blob/v0.3.0/deploy/HOST-A-PLACE.md): host a real place (stable keys, durable state, limits, a kill switch, egress); `npm run quickstart` now runs its `place.mjs` as written, visits it with the quickstart's scripts and runs conformance against it. The demo place gains `KEY_DIR` (stable keys, `keys.mjs`; 10 checks).
+- [`.github/workflows/release.yml`](https://github.com/Kigenka/shokai/blob/v0.3.0/.github/workflows/release.yml): publishes on a version tag with provenance, behind a reviewer-gated environment. Not run.
+- [`deploy/`](https://github.com/Kigenka/shokai/blob/v0.3.0/deploy/DEPLOY.md): a demo place (simulated tea shop; rate limit, body cap, kill switch, durable state; 9 checks), the copy-paste prompt for any agent, and a deployment plan. Nothing is deployed. [RELEASING.md](https://github.com/Kigenka/shokai/blob/v0.3.0/RELEASING.md): the package is publish-ready and not published.
 
 **Proposals (not normative)**
 
-- [P18](./proposals/P18-owner-key-continuity.md) owner key continuity; [P19](./proposals/P19-alignment.md) asynchronous alignment (deferred, not before v0.4).
-- [P20](./proposals/P20-representative-continuity.md) representative continuity and history (draft; D25 partly decided): full history export as a duty of a Shōkai-compatible agent (memory export SHOULD, envelope only); owner-signed succession that can only add to a record; an optional handover ceremony inspired by *hikitsugi*, in which the retiring representative introduces its successor at places the owner approved, with an optional farewell note and a lineage kept in the owner's history; several representatives per owner; an honest Sybil statement. Continuity is planned as an optional v0.3 extension; place receipts are deferred to v0.4. Sketch vectors checked by `tools/p20-sketch.mjs` (21 checks).
+- [P18](./proposals/P18-owner-key-continuity.md) owner key continuity; [P19](https://github.com/Kigenka/shokai/blob/v0.3.0/proposals/P19-alignment.md) asynchronous alignment (deferred, not before v0.4).
+- [P20](https://github.com/Kigenka/shokai/blob/v0.3.0/proposals/P20-representative-continuity.md) representative continuity and history (draft; D25 partly decided): full history export as a duty of a Shōkai-compatible agent (memory export SHOULD, envelope only); owner-signed succession that can only add to a record; an optional handover ceremony inspired by *hikitsugi*, in which the retiring representative introduces its successor at places the owner approved, with an optional farewell note and a lineage kept in the owner's history; several representatives per owner; an honest Sybil statement. Continuity is planned as an optional v0.3 extension; place receipts are deferred to v0.4. Sketch vectors checked by `tools/p20-sketch.mjs` (21 checks).
 - [DECISIONS.md](./DECISIONS.md): D25 (partly decided) and D26 (rc4 limits accepted as documented).
 
 ## v0.3.0-rc3, 2026-10-26

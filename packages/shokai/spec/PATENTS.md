@@ -1,6 +1,6 @@
 # Patent commitment
 
-> **DRAFT. The wording is pending legal review, and the commitment has not yet been made.** This file describes the patent commitment that Yu Sung Yeh, the copyright holder (see [NOTICE](./NOTICE)), intends to make for the Shōkai specification. Nothing below has been signed or executed, and until it is, this file grants no rights beyond those in the [Apache License 2.0](./LICENSE). Kigenka is the project's steward brand; if it is formed as a legal entity and the rights are assigned to it, later commitments will be made by Kigenka, and earlier ones stay binding on successors as OWFa 1.0 provides.
+> **DRAFT. The wording is pending legal review, and the commitment has not yet been made.** This file describes the patent commitment that Yu Sung Yeh, the copyright holder (see [NOTICE](https://github.com/Kigenka/shokai/blob/v0.3.0/NOTICE)), intends to make for the Shōkai specification. Nothing below has been signed or executed, and until it is, this file grants no rights beyond those in the [Apache License 2.0](./LICENSE). Kigenka is the project's steward brand; if it is formed as a legal entity and the rights are assigned to it, later commitments will be made by Kigenka, and earlier ones stay binding on successors as OWFa 1.0 provides.
 
 ## Why there is a separate commitment
 
@@ -21,7 +21,7 @@ The commitment covers the **core specification and the extensions** of the versi
 
 ## Contributions
 
-Contributors license their contributions under the Apache License 2.0 (see [CONTRIBUTING.md](./CONTRIBUTING.md)), including its §3 patent licence. Contributors aren't asked to sign the OWFa; a future steering group or foundation may adopt a fuller patent policy for participants (see [GOVERNANCE.md](./GOVERNANCE.md)).
+Contributors license their contributions under the Apache License 2.0 (see [CONTRIBUTING.md](https://github.com/Kigenka/shokai/blob/v0.3.0/CONTRIBUTING.md)), including its §3 patent licence. Contributors aren't asked to sign the OWFa; a future steering group or foundation may adopt a fuller patent policy for participants (see [GOVERNANCE.md](https://github.com/Kigenka/shokai/blob/v0.3.0/GOVERNANCE.md)).
 
 ## Record of commitments
 

@@ -72,7 +72,7 @@ No. It carries limits and hands over to the payment rail a place already uses, f
 
 ## Does Shōkai stop prompt injection?
 
-It doesn't make an agent immune, and no protocol can. It limits the damage: the place checks the owner's signed limits itself, whatever platform runs the agent; injected text can't make the owner's passkey signature, so a hijacked agent can do at most what the owner signed, as each place counts it (a budget across places is kept by the representative itself); and prose never decides anything at a place. What remains is misuse inside what the owner signed, so keep limits small and narrow. [Does Shōkai stop prompt injection?](./security.md#does-shokai-stop-prompt-injection) has the details.
+It doesn't make an agent immune, and no protocol can. It limits the damage: the place checks the owner's signed limits itself, whatever platform runs the agent; injected text can't make the owner's passkey signature, so a hijacked agent can do at most what the owner signed, as each place counts it (a budget across places is kept by the representative itself); and prose never decides anything at a place. What remains is misuse inside what the owner signed, so keep limits small and narrow. [Does Shōkai stop prompt injection?](./security.md#does-shōkai-stop-prompt-injection) has the details.
 
 ## Why the Japanese name?
 

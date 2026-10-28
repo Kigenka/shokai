@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -13,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [20, 22]
+        node: [20, 22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,6 +32,8 @@ jobs:
         run: npm run trace-typecheck
       - name: Links resolve inside the spec bundle; version strings agree
         run: npm run check-links
+      - name: JSON Schema is generated from protocol-shapes.ts and the golden traces validate against it
+        run: npm run check-schema
       - name: Reference place server, prototype and HTTP suites
         run: bash tools/run-all-suites.sh
       - name: SDK (core in sync with the reference, unit tests, MCP gate, conformance self-test)

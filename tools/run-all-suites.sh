@@ -11,6 +11,7 @@ echo "== reference conformance (prototype)"
 (cd "$ROOT/reference/prototype" && npm run conformance > "$OUT/reference.txt" 2>&1) || rc=1; tail -1 "$OUT/reference.txt"
 echo "== trace-lint (core + extensions)"; node "$ROOT/tools/trace-lint.mjs" > "$OUT/trace-lint.txt" 2>&1 || rc=1; tail -1 "$OUT/trace-lint.txt"
 echo "== trace-typecheck"; node "$ROOT/tools/trace-typecheck.mjs" > "$OUT/trace-typecheck.txt" 2>&1 || rc=1; tail -1 "$OUT/trace-typecheck.txt"
+echo "== JSON Schema (generated from protocol-shapes.ts; golden-trace messages validate, broken controls fail)"; node "$ROOT/tools/schema/schema.mjs" --check > "$OUT/schema.txt" 2>&1 || rc=1; tail -1 "$OUT/schema.txt"
 echo "== reference signing page (software authenticator, loopback)"; node "$ROOT/reference/signing-page/test/e2e.mjs" > "$OUT/signing-page.txt" 2>&1 || rc=1; tail -1 "$OUT/signing-page.txt"
 echo "== signing-page preview copy (deploy/sign-preview)"; node "$ROOT/deploy/sign-preview/build.mjs" --check || rc=1
 echo "== sign.kigenka.com front, relay mode (deploy/sign-front, loopback only)"; ( node "$ROOT/deploy/sign-front/build.mjs" --check && node "$ROOT/deploy/sign-front/test.mjs" ) > "$OUT/sign-front.txt" 2>&1 || rc=1; tail -1 "$OUT/sign-front.txt"

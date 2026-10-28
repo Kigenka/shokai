@@ -45,7 +45,7 @@ When a card is issued, the page can offer a standby revocation (`CardRevocation`
 
 ## 7. Running your own: checklist
 
-The [reference signing page](./reference/signing-page/README.md) is a small, dependency-free server that does §2–§4 as its README lists them (since 2026-10-28 it builds every summary from the item's machine fields), with one gap: it shows them in English only, not yet in the owner's language (§2 item 3). Run it on your own domain.
+The [reference signing page](https://github.com/Kigenka/shokai/blob/v0.3.0/reference/signing-page/README.md) is a small, dependency-free server that does §2–§4 as its README lists them (since 2026-10-28 it builds every summary from the item's machine fields), with one gap: it shows them in English only, not yet in the owner's language (§2 item 3). Run it on your own domain.
 
 - [ ] A stable hostname; the domain on auto-renew with registrar lock.
 - [ ] Hardware-key two-factor sign-in on your registrar, DNS and hosting accounts.

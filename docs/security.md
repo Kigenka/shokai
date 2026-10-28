@@ -2,7 +2,7 @@
 
 Shōkai makes deception **costly and traceable, not impossible.** This page summarises what the core defends, how, and what it doesn't. The full [threat model](../THREAT-MODEL.md) (assets, actors, trust boundaries, a STRIDE-style table mapping every red-team item to its rule and test) ships with the specification.
 
-**Reporting a vulnerability:** email security@kigenka.com, or use private vulnerability reporting on the repository once it is public (its **Security** tab, **Report a vulnerability**). Please don't open a public issue. The [security policy](../SECURITY.md) has the details.
+**Reporting a vulnerability:** please don't open a public issue. Use GitHub private vulnerability reporting on the repository (its **Security** tab, **Report a vulnerability**), or email security@kigenka.com. Details are in [SECURITY.md](../SECURITY.md).
 
 ## Assets and trust boundaries
 

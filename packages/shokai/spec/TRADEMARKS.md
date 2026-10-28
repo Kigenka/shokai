@@ -28,4 +28,4 @@ Shōkai's documents name other technologies (for example the Model Context Proto
 
 Open an issue titled "Trademark question", or ask privately at security@kigenka.com.
 
-If the project moves to a neutral foundation, the names and logo move with it (see [GOVERNANCE.md](./GOVERNANCE.md)), and that foundation's trademark policy will replace this one.
+If the project moves to a neutral foundation, the names and logo move with it (see [GOVERNANCE.md](https://github.com/Kigenka/shokai/blob/v0.3.0/GOVERNANCE.md)), and that foundation's trademark policy will replace this one.
