@@ -59,4 +59,4 @@ Then a polite `deny` / `not_now`, with readiness items in plain sentences the re
 
 ## What's next: richer data asks (a proposal)
 
-The core already has each action declare what it will ask the owner for (`data_asks`, above). A proposal under discussion would go further: which data is required and which optional, why, and for how long it's kept, so representatives can compare places for their owners. That part is not in the v0.3 core.
+The core already has each action declare what it will ask the owner for (`data_asks`, above). A proposal under discussion would go further: which data is required and which optional, why, and for how long it's kept, so representatives can compare places for their owners. That further part is not in the published v0.3.0 core, and it is still a proposal in the v0.5.0 draft.

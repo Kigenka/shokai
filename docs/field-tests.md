@@ -2,7 +2,7 @@
 
 *Shōkai, the agent introduction protocol, from Kigenka. Field-test report, first edition, covering October 25–28, 2026 (release candidates 0.3.0-rc1 to rc4, before v0.3.0). All times are Pacific Daylight Time (PDT).*
 
-The other side of the record, what reviewers said and what we changed, is in [Review history](./review-history.md). The adversarial rounds are in [security/redteam](../security/redteam/README.md).
+The other side of the record, what reviewers said and what we changed, is in [Review history](./review-history.md). The adversarial rounds are in [security/redteam](../security/redteam/README.md). A later local round for the v0.5.0 draft is under Verify as [Evidence](./evidence/index.md). Transparency and Verify stay separate: this page is the October record, and Evidence does not replace it.
 
 ## Why we publish this
 

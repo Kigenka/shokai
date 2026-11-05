@@ -1,6 +1,6 @@
 # Security and threat model
 
-Shōkai makes deception **costly and traceable, not impossible.** This page summarises what the core defends, how, and what it doesn't. The full [threat model](../THREAT-MODEL.md) (assets, actors, trust boundaries, a STRIDE-style table mapping every red-team item to its rule and test) ships with the specification.
+Shōkai makes deception **costly and traceable, not impossible.** This page summarises what the core defends, how, and what it doesn't. The full [threat model](../THREAT-MODEL.md) (assets, actors, trust boundaries, a STRIDE-style table mapping every red-team item to its rule and test) ships with the specification. What was actually run is [Evidence](./evidence/index.md) (Verify) and the [field tests](./field-tests.md) (Transparency). Those records are linked from here. They are not folded into one section.
 
 **Reporting a vulnerability:** please don't open a public issue. Use GitHub private vulnerability reporting on the repository (its **Security** tab, **Report a vulnerability**), or email security@kigenka.com. Details are in [SECURITY.md](../SECURITY.md).
 

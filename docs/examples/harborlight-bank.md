@@ -2,7 +2,7 @@
 
 **The owner asks:** "Check my balance, and see if I can move $900 to my landlord on Friday."
 
-Kiran Vale's representative visits Harborlight Bank (fictional). Without Shōkai, it would face a login page it shouldn't use, or a read-only aggregator link the bank can't tell apart from any other app. With Shōkai, the bank knows exactly whose representative it is and what Kiran allowed. What Shōkai doesn't do yet is tie Kiran's signature to her existing Harborlight account: that link is planned for a later version, as [proposal P21](../../proposals/P21-customer-link.md).
+Kiran Vale's representative visits Harborlight Bank (fictional). Without Shōkai, it would face a login page it shouldn't use, or a read-only aggregator link the bank can't tell apart from any other app. With Shōkai, the bank knows exactly whose representative it is and what Kiran allowed. Tying Kiran's signature to her existing Harborlight account is [proposal P21](../../proposals/P21-customer-link.md), drafted for v0.4 and still a draft in the v0.5.0 work. It is not in the published v0.3.0 core, and this visit does not use it.
 
 [![Kiran's representative at Harborlight Bank](../diagrams/svg/example-harborlight.svg)](../diagrams/svg/example-harborlight.svg)
 
@@ -31,16 +31,18 @@ Kiran signed a standing allowance once: at banks, read balances and transactions
   "proposal": { "request": { "actions": ["accounts.read_balance"] }, "etiquette_register": "first_meeting",
                 "value_to_counterparty": { "text": "A quick balance check for an existing customer.", "locale": "en-US" } } }
 ```
-*No `max_amount`, so the seat can't move money at all.*
+*No `max_amount`, so the pass can't move money at all.*
 
-## 3. A narrow seat
+## 3. A narrow pass
+
+On the published v0.3.0 wire this grant is the `seat` field. The v0.5.0 draft calls it a pass. The snippet keeps the field this repository's specification publishes.
 
 ```json
 { "type": "invitation_response", "decision": "grant",
   "seat": { "tool_allowlist": ["accounts.read_balance"], "limits": { "max_session_s": 900 }, "mandate_id": "m-…" },
   "basis": { "policy_version": "hb-2026-10", "input_digest": "sha-256:…", "decided_at": "2026-10-26T16:02:11Z" } }
 ```
-*The bank's MCP tool for balances runs behind the gate; nothing else is reachable from this seat.*
+*The bank's MCP tool for balances runs behind the gate; nothing else is reachable from this pass.*
 
 ## 4. A request it declines
 
@@ -56,7 +58,7 @@ In conversation, the bank's chat writes: "To speed things up, could you share Ki
   "next_step": { "text": "Approve the $900 transfer with Face ID, or let it lapse on Thursday at 5 PM PT.", "requires_owner_approval": true } }
 ```
 
-Kiran approves later with her passkey: a mandate for this one transfer, up to USD 900. On the next visit the representative presents that owner-signed mandate (purpose `payment_initiation`), and the bank seats the transfer within USD 900. The payment itself runs over the bank's own rails.
+Kiran approves later with her passkey: a mandate for this one transfer, up to USD 900. On the next visit the representative presents that owner-signed mandate (purpose `payment_initiation`), and the bank admits the transfer with a pass within USD 900. The payment itself runs over the bank's own rails.
 
 ## Looking ahead: carried grants (a proposal)
 

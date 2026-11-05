@@ -1,8 +1,10 @@
-# Examples
+# Runnable examples
 
-Working doors and visitors you can run, and annotated visits you can read. Every person, business and place in them is fictional, and every example is **non-normative**: where an example and [SPEC.md](../SPEC.md) disagree, the spec wins. Written for v0.3.0.
+Working doors and visitors you can run. Place stories you read, and situations and proofs, are a different set: [worked examples](../docs/examples/index.md). Every person, business and place here is fictional, and every example is **non-normative**: where an example and [SPEC.md](../SPEC.md) disagree, the spec wins. Written for the **v0.5.0 draft**.
 
-**New here?** Run `shokai demo` (below), then read [How Shōkai works](../docs/how-it-works.md): a tea shop, a stranger who gets the leaflet, and a representative that introduces itself and buys a green tea within its owner's limit.
+The draft calls the grant a place gives a **pass**. This repository still publishes v0.3.0, whose wire names that grant `seat`. Diagrams copied from an older wire log or field-test transcript still say seat or seated. Those pictures are the recording. They are not v0.5 traces.
+
+**New here?** Run `shokai demo` (below), then read [How Shōkai works](../docs/how-it-works.md): a tea shop, an anonymous visitor who gets the leaflet, and a representative that introduces itself and buys a green tea within its owner's limit.
 
 ## The main examples, each with a diagram from a real run
 
@@ -10,10 +12,10 @@ Each page is a short story, one sequence diagram drawn from a recorded run (a fi
 
 | Example | Kind of place | The diagram is drawn from |
 |---|---|---|
-| [Tea shop](tea-shop.md) | Shop | A field test: a Muse representative seated at Willowfold Tea House, from the place's own transcript |
-| [Store](store.md) | Shop | A wire log: two simulated teams, a purchase within a limit and one refused past it |
-| [Bank](bank.md) | Bank | A wire log: a transfer, then a revisit the bank counts under the same mandate |
-| [Marketplace](marketplace.md) | Marketplace | A wire log: turned away with the leaflet, then back prepared and seated |
+| [Tea shop](tea-shop.md) | Shop | A field-test transcript (2026-10-27). The picture still says seated. The v0.5 draft calls that grant a pass. |
+| [Store](store.md) | Shop | A v0.3.0-rc4 wire log: two simulated teams, a purchase within a limit and one refused past it. The log says seat. |
+| [Bank](bank.md) | Bank | A v0.3.0-rc4 wire log: a transfer, then a revisit the bank counts under the same mandate. The log says seat. |
+| [Marketplace](marketplace.md) | Marketplace | A v0.3.0-rc4 wire log: turned away with the leaflet, then back prepared. The log says seated. |
 | [Community room](community-room.md) | A gathering | A reference prototype run (transcript 07): discretion and a report home |
 | [Brand door](brand-door.md) | A person's own door | A reference run you can repeat ([traces/brand-door.mjs](traces/brand-door.mjs)) |
 | [One representative, two roles](dual-role.md) | A person's meeting room, and a tea shop | An SDK run you can repeat ([traces/dual-role.mjs](traces/dual-role.mjs)) |
@@ -22,25 +24,33 @@ Each page is a short story, one sequence diagram drawn from a recorded run (a fi
 
 | Example | What it shows | Where | Run |
 |---|---|---|---|
-| **The two-second visit** | A tea shop (*Kettle & Leaf*) and a visitor on your machine: the ritual, a seat, an order within a 10.00 USD limit, an order past it refused, the report home | [`packages/shokai/src/cli.ts`](../packages/shokai/src/cli.ts) | `npx @kigenka/shokai demo`; from this repo: `cd packages/shokai && npm run demo` |
-| **Quickstart tea shop** | Your MCP server plus a Shōkai door; a visitor that spends within a mandate and comes back for a second visit; the conformance check | [`QUICKSTART.md`](../QUICKSTART.md), code in [`packages/shokai/examples/quickstart/`](../packages/shokai/examples/quickstart/) | `npm run quickstart` (runs QUICKSTART.md as written) |
-| **A gate in front of any MCP server** | Three note tools behind a Shōkai door; `tools/list` narrowed to the seat; every call a signed act | [`packages/shokai/examples/toy-mcp/`](../packages/shokai/examples/toy-mcp/) | `cd packages/shokai && npm run example` |
+| **The two-second visit** | A tea shop (*Kettle & Leaf*) and a visiting representative on your machine: the ritual, a pass, an order within a 10.00 USD limit, an order past it refused, the report home | [`packages/shokai/src/cli.ts`](../packages/shokai/src/cli.ts) | `npx @kigenka/shokai demo`; from this repo: `cd packages/shokai && npm run demo` |
+| **Quickstart tea shop** | Your MCP server plus a Shōkai door; a visiting representative that spends within a mandate and comes back for a second visit; the conformance check | [`QUICKSTART.md`](../QUICKSTART.md), code in [`packages/shokai/examples/quickstart/`](../packages/shokai/examples/quickstart/) | `npm run quickstart` (runs QUICKSTART.md as written) |
+| **A gate in front of any MCP server** | Three note tools behind a Shōkai door; `tools/list` narrowed to the pass; every call a signed act | [`packages/shokai/examples/toy-mcp/`](../packages/shokai/examples/toy-mcp/) | `cd packages/shokai && npm run example` |
 | **A door ready for a public host** | Stable keys, state that survives restarts, edge limits, a kill switch | [`deploy/HOST-A-PLACE.md`](../deploy/HOST-A-PLACE.md), [`deploy/demo-place/`](../deploy/demo-place/) | see the guide |
-| **The reference place server** (*The Engawa*) | The whole core and the stable extensions: lobby, gate, seats, misconduct, the inbound door, gatherings, peer meetings | [`reference/engawa/`](../reference/engawa/) | `npm run setup && npm test` |
+| **The reference place server** (*The Engawa*) | The whole core and the stable extensions: lobby, gate, passes, misconduct, the inbound door, gatherings, peer meetings | [`reference/engawa/`](../reference/engawa/) | `npm run setup && npm test` |
 | **The reference signing page** | An owner makes a passkey and approves, item by item, what their representative asks them to sign | [`reference/signing-page/`](../reference/signing-page/README.md) | `node reference/signing-page/test/e2e.mjs` (software authenticator) |
 
-## Read it: annotated visits
+## Worked examples
+
+Place stories, not this runnable list: [Worked examples](../docs/examples/index.md).
 
 | Example | Kind of place | Shows |
 |---|---|---|
-| [The tea shop, the first walkthrough](../scenarios/places-first.md#the-tea-shop-the-first-walkthrough) | Shop | Self-introduction, the leaflet for a stranger, a purchase within a signed limit |
-| [A personal representative at a bank](../docs/examples/harborlight-bank.md) | Bank | Cards both ways, a standing allowance, a narrow seat, a transfer taken home |
+| [The tea shop, the first walkthrough](../scenarios/places-first.md#the-tea-shop-the-first-walkthrough) | Shop | Self-introduction, the leaflet for an anonymous visitor, a purchase within a signed limit |
+| [A personal representative at a bank](../docs/examples/harborlight-bank.md) | Bank | Shōkai cards both ways, a standing allowance, a narrow pass, a transfer taken home |
 | [Look before you join](../docs/examples/look-before-you-join.md) | Any | An anonymous look at the listing; the leaflet's plain sentences for the owner |
 | [An employee's co-worker agent](../docs/examples/enterprise-coworker.md) | A company's internal tools | A company-vouched role; a gate in front of internal MCP servers |
-| [Pressure declined and reported](../docs/examples/pressure-declined.md) | A person's own door | Hidden text, false urgency, a misconduct notice |
 | [A friend introduces a brand](../docs/examples/brand-door.md) | A person's own door | The optional vouch, paid or genuine |
-| [One representative, two roles](../scenarios/dual-role.md) | A person's meeting room, and a tea shop | Two cards from one owner: keeping the door and going out |
+| [One representative, two roles](../scenarios/dual-role.md) | A person's meeting room, and a tea shop | Two Shōkai cards from one owner: keeping the door and going out |
 | [Places first: six everyday scenarios and the room](../scenarios/places-first.md) | Store, marketplace, bank, community | Browsing, buying later within a limit, a cold gift purchase, a marketplace guide, an existing bank customer, a referral trail, representatives meeting in a room; with the gaps rc4 leaves |
+
+## Situations and proofs
+
+| Example | Kind of place | Shows |
+|---|---|---|
+| [Unsolicited offer, pressure declined](../docs/examples/pressure-declined.md) | A person's own door | Hidden text, false urgency, a misconduct notice |
+| [Proving who a representative is for](../docs/examples/identity-proofs.md) | A brand's domain, and a person's account | What published v0.3.0 already checks, and what P23 still leaves as a v0.4 / v0.5 draft |
 
 ## By kind of place
 
