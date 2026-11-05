@@ -4,23 +4,25 @@ Shōkai's core reads as one story, and it starts from places: **a representative
 
 [![The arrival story, from the owner's signature to the report home](../diagrams/svg/arrival-sequence.svg)](../diagrams/svg/arrival-sequence.svg)
 
+Read them door-first: the place, then the door, then the card, then who sent the representative.
+
 | Concept | In one line | Page |
 |---|---|---|
+| **Place and door** | A place keeps a door, with its own agent there as the host at the door; every arrival gets a machine-readable answer, and an agent that isn't ready gets the place's leaflet. | [Places and doors](./places-and-doors.md) |
+| **Website, agent front, door** | The website is outside Shōkai; the agent front (listing and lobby) is open to look at; anything personal happens at the door. | [Website, agent front, door](./website-front-door.md) |
+| **Shōkai card** | The representative's signed business card (*meishi*): whose it is, its role, what it may ever be asked to do. | [Shōkai cards](./cards.md) |
 | **Owner** | The person, brand or company behind a representative, who signs for it and answers for it. | [Owners and representatives](./owners-and-representatives.md) |
 | **Representative** | An agent acting for one owner, loyal to that owner, with its own key. | [Owners and representatives](./owners-and-representatives.md) |
-| **Website, agent front, door** | The website is outside Shōkai; the agent front (listing and lobby) is open to look at; anything personal happens at the door. | [Website, agent front, door](./website-front-door.md) |
-| **Place and door** | A place keeps a door, with its own agent there as the host at the door; every arrival gets a machine-readable answer, and an agent that isn't ready gets the place's leaflet. | [Places and doors](./places-and-doors.md) |
-| **Card** | The representative's signed business card (*meishi*): whose it is, its role, what it may ever be asked to do. | [Cards](./cards.md) |
 | **Self-introduction** | The normal case: the representative introduces itself with its owner-signed card, why it came and its signed limits (`vouch: null`). | [Arriving](./arriving.md) |
 | **Invitation** | The place's own signed invitation, which it always weighs as its own. | [Arriving](./arriving.md) |
 | **Vouch** (optional) | A deliberate, signed vouch from someone the place trusts, who answers for it. Some places ask for one before accounts or money. | [Arriving](./arriving.md) |
-| **Door policy** | The rules the receiver sets, from a bank's policy to a person's signed rules for brands. | [Door policy](./door-policy.md) |
-| **Limits** | Mandates and the standing allowance: purposes, actions, amounts and expiry the owner signed. | [Limits](./limits.md) |
-| **Outcomes** | Four decisions, decided on signed facts, with reasons and a retry; then a seat. | [Outcomes](./outcomes.md) |
-| **Conduct** | A representative's conduct is its owner's conduct. Consequences stay local to the door that saw it. | [Conduct](./conduct.md) |
+| **Limits** | Mandates and the standing allowance: purposes, actions, amounts and expiry the owner signed. | [Limits and mandates](./limits.md) |
+| **Outcomes** | Four decisions, decided on signed facts, with reasons and a retry; then a pass. The published v0.3.0 wire still calls that grant a seat. | [Outcomes](./outcomes.md) |
 | **Report home** | After every visit the representative tells its owner what happened; nothing beyond the limits happens without the owner. | [Report home](./report-home.md) |
+| **Conduct** | A representative's conduct is its owner's conduct. Consequences stay local to the door that saw it. | [Conduct](./conduct.md) |
+| **Door policy** | The rules the receiver sets, from a bank's policy to a person's signed rules for brands. | [Door policy](./door-policy.md) |
+| **Visit stamps** (a place pattern) | A signed keepsake some places give a visitor they admitted with a pass; checked against the listing's principal. | [Visit stamps](./visit-stamps.md) |
 | **The room** (extensions) | Inside a place, the representatives it let in can meet: a signed guest list, every card checked, every message signed. Agents meet inside a place, never in the open. | [Extensions](../extensions.md) |
-| **Visit stamps** (a place pattern) | A signed keepsake some places give a seated visitor; checked against the listing's principal. | [Visit stamps](./visit-stamps.md) |
 
 ## Six design principles
 

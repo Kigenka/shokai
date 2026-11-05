@@ -2,7 +2,7 @@
 
 *Shōkai, the agent introduction protocol, from Kigenka. Every review the project has had so far, who or what did it, what it found, and what changed. Published so you can weigh the evidence yourself. All times are Pacific Time.*
 
-**The short version.** Shōkai has been reviewed and tested hard, but almost entirely **inside the project**: by its author, by agents the author ran, and by language models asked to review it cold. **No outside organization has reviewed it or implemented it yet.** That is the most important gap, and the reason v0.3.0 is not 1.0. If you review or implement it, please [tell us](https://github.com/Kigenka/shokai/issues/new/choose); your report will be listed here.
+**The short version.** Shōkai has been reviewed and tested hard, but almost entirely **inside the project**: by its author, by agents the author ran, and by language models asked to review it cold. **No outside organization has reviewed it or implemented it yet.** That is the most important gap, and the reason v0.3.0 is not 1.0. If you review or implement it, please [tell us](https://github.com/Kigenka/shokai/issues/new/choose); your report will be listed here. The v0.5.0 draft's later local door round is [Evidence](./evidence/index.md), under Verify. This history stays in Transparency.
 
 ## The releases
 

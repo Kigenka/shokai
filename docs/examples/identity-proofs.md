@@ -2,7 +2,7 @@
 
 **The story:** a name on a card is only a claim (C199). These three examples show how a claim becomes more than a claim, and how a false one fails. A brand ties its representative to its **domain**. A person ties theirs to their **X account**. A stranger tries to borrow a famous person's name and account, and is turned down because the account never posted the stranger's key.
 
-**What is v0.3.0 and what is v0.4.** Example 1 works in v0.3.0 today: an organization principal may be `did:web`, and reports already name a place by its verified domain. Example 1's `.well-known/shokai-owners.json` variant, and all of examples 2 and 3, follow the draft proposal [P23](../../proposals/P23-identity-binding.md) (bindings B1 and B2) for v0.4. They are not in rc4. In rc4, a name without a domain stays "claims to be …".
+**What is published, and what is still a draft.** Written for the v0.5.0 draft. Example 1 works in published v0.3.0: an organization principal may be `did:web`, and reports already name a place by its verified domain. Example 1's `.well-known/shokai-owners.json` variant, and all of examples 2 and 3, follow the draft proposal [P23](../../proposals/P23-identity-binding.md) (bindings B1 and B2), drafted for v0.4 and still a draft in the v0.5.0 work. They are not in the published core. A name without a domain stays "claims to be …".
 
 **About the names.** Harborlight Bank (`harborlight.example`), the look-alike "Harb0rlight Bank", Kiran Vale and Mira Castellane (a famous tennis champion) are fictional, and so are their handles. Any real account with one of these handles is unrelated. X is named only because a Grok Bot owner can connect their X account; this implies no affiliation. Keys and digests are shortened with `…`.
 

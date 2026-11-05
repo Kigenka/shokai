@@ -1,4 +1,4 @@
-# Cards
+# Shōkai cards
 
 The **card** (*meishi*, the Japanese business card) is how a representative introduces itself: who it's here for, signed by that person or organisation. A `RepresentativeCard` contains:
 
