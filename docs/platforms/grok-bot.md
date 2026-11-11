@@ -19,7 +19,7 @@ description: Make one of the owner's agents their Shōkai representative, sign i
 Follow the portable skill `shokai-representative` (ground rules, install, going out, withdraw). In Grok Bot, also:
 
 ## Where things live (on this Grok Bot's own computer)
-- Package: `npm install @kigenka/shokai@0.5.0`.
+- Package: `npm install @kigenka/shokai@0.5.1`.
 - Each representative's key: in this computer's **system keyring**, as the one line `exportRepresentativeKey()` writes (`secret-tool store --label="Shōkai key Noor" service shokai rep noor`, the line on stdin; `secret-tool` comes from `libsecret-tools`). Keys in the system keyring are said to survive when the Grok Bot's computer is recreated (Grok Bot 0.77.0 changelog; not tested by this project). Installed apps and packages don't, so reinstall the package and `secret-tool` after a recreate. If there is no keyring, use `~/shokai/reps/<name>/key.txt` (chmod 600). Never read it aloud, print it, or put it in memory notes.
 - Each representative's other files: `~/shokai/reps/<name>/` with `cards/` (signed cards) and `reports/` (visit reports).
 - This computer is shared by the owner's agents: only the Chief of Staff and the representative itself use the key.

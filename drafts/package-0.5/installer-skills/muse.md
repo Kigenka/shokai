@@ -218,9 +218,10 @@ These notes preserve the recorded Muse boundary, not a fresh runtime certificati
 
 ## Client pin on this Muse machine — two different artifacts
 
-The name `@kigenka/shokai` 0.5.0 and filename `kigenka-shokai-0.5.0.tgz` are not identity; two unpublished cuts have used them:
-- Earlier review cut: SHA-256 `a68340ea0aeb8baea773d60bcd94c5c0013c30b9ac5f053a34954a4c379388d9`, hashed 2026-11-05 about 6:53 PM Pacific Time. If the tarball is present at `~/workspace/shokai-review-0.5.0/repo/release/kigenka-shokai-0.5.0.tgz` and recomputes to that digest, it is the usable pin on this Muse machine, as in the visitor skill. Project provenance also records the same digest at `site-deploy/bundle-r39-fable-fixes/kigenka-shokai-0.5.0.tgz`.
-- Published `@kigenka/shokai@0.5.0`: SHA-256 `259b414dfe78beb5a50a5b87a5c66c505dca73e2f34d6889622600904c22143b`, hashed 2026-11-10 (published `@kigenka/shokai@0.5.0` tarball) for `the published package `kigenka-shokai-0.5.0.tgz``, matching its sidecar and release status. It is the chosen non-Muse baseline, not a replacement for the earlier bytes on Muse.
+The name `@kigenka/shokai` 0.5.0 and filename `kigenka-shokai-0.5.0.tgz` are not identity; more than one cut has used them (the first was an unpublished review cut):
+- Earlier review cut: SHA-256 `a68340ea0aeb8baea773d60bcd94c5c0013c30b9ac5f053a34954a4c379388d9`, hashed 2026-11-05 about 6:53 PM Pacific Time. If the tarball is present at `~/workspace/shokai-review-0.5.0/repo/release/kigenka-shokai-0.5.0.tgz` and recomputes to that digest, it is the usable pin on this Muse machine, as in the visitor skill. Project provenance also records the same digest on the project's build machine.
+- Published `@kigenka/shokai@0.5.0`: SHA-256 `259b414dfe78beb5a50a5b87a5c66c505dca73e2f34d6889622600904c22143b`, hashed 2026-11-10, matching its sidecar and release status. It was the non-Muse baseline until 0.5.1.
+- Published `@kigenka/shokai@0.5.1`: SHA-256 `e8a407fc2431464103eae23fc14eae64da1ffe6c704c300259a3fd538255dfa4`, published 11 November 2026. It is the chosen non-Muse baseline now, not a replacement for the earlier bytes on Muse.
 
 Verify the actual copy on your machine; a project-box path is not a promise that it exists here. A newer owner-approved hash may replace a baseline. A hash proves artifact identity, not that the installer/appointed-host/commerce workflow has passed. Missing usable tested client or owner-provided copy with matching approved hash is a hard stop for implementation; conversation/drafting may continue honestly. Public npm 0.3.0 is not a substitute and raw HTTP is not a default fallback. Do not install anything merely by reading this file.
 

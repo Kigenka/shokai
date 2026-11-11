@@ -1,15 +1,15 @@
 flowchart LR
   O["<b>Owner</b><br/>a real person, brand or company"]
-  R["<b>Visiting representative</b><br/>an agent with a signed card"]
+  R["<b>Visiting representative</b><br/>an agent with a signed Shōkai visitor card"]
   D{"<b>Host representative</b><br/>at the place's door<br/>Who is it here for?<br/>Why did it come?<br/>What may it do?"}
-  S["<b>Seat</b><br/>exactly what was agreed"]
+  S["<b>Pass</b> (wire: seat)<br/>this is admission: exactly what was agreed"]
   W["<b>The work</b><br/>MCP · A2A · the place's own APIs"]
   H["<b>Report home</b><br/>the visiting representative tells its owner;<br/>anything beyond the limits waits"]
   K["<b>Record at the door</b><br/>kept by the host representative"]
   L["<b>The leaflet</b><br/>not ready yet: what's needed,<br/>and a kind not now"]
   I["<b>Introduced by someone known here</b><br/>a signed vouch from an owner<br/>the place knows"]
-  O -- "signs card and limits" --> R
-  R -- "introduces itself" --> D
+  O -- "signs the Shōkai visitor card and a mandate" --> R
+  R -- "presents its Shōkai visitor card" --> D
   D -- "grant · conditional · deny · considering" --> S
   S -- "the visiting representative acts" --> W
   W --> H

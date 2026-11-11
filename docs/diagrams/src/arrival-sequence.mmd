@@ -5,18 +5,20 @@ sequenceDiagram
   participant G as Host representative (at the place's door)
   participant I as Introducer (someone known here)
   participant T as Place tools (MCP)
-  O->>R: Signs the card and a standing allowance, once (passkey)
+  Note over O,G: Wire tag shokai/0.5
+  O->>R: Signs a Shōkai visitor card and a mandate, once (passkey)
   I-->>R: If the place asks: a vouch the introducer signs, scoped and revocable
   R->>G: greeting with a fresh nonce
-  G->>R: greeting with its own nonce
-  R->>G: card_presentation and possession proof
-  G->>R: its own card, signed by the place's owner (cards go both ways)
-  R->>G: introduction: null for a self-introduction (or a vouch)
+  G->>R: greeting with its own nonce, and the host card or a pointer
+  Note over R: After the greetings the visitor fetches and verifies the host card<br/>(principal_id / representative_id / house_digest — revocation before a spending visit)<br/>and reads the house summary before invitation_request.
+  R->>G: card_presentation: Shōkai visitor card and possession proof (audience, under shokai/0.5)
+  G->>R: host card and a fresh possession proof (cards go both ways — the visitor is in the entryway, not admitted yet)
+  R->>G: introduction: vouch null for a self-introduction (or a vouch)
   R->>G: invitation_request (purpose, mandate, actions, limits)
-  Note over G: Decides on signed facts and policy only, and explains.<br/>Prose never reaches the gate. No card: the leaflet and not now.
-  G->>R: invitation_response: grant, conditional, deny or considering
-  G->>R: seat = policy ∩ mandate ∩ request
-  R->>T: acts inside the seat, and nothing wider
+  Note over G: Checks in SPEC-DETAIL §2.4 order, then limits. Prose never reaches the decision. No visitor card: the leaflet and not now.
+  G->>R: invitation_response: grant with a pass (wire: seat), or conditional, deny (not_now or not_a_fit) or considering
+  R->>T: Signed acts inside the pass (policy ∩ mandate ∩ request)
+  T-->>R: Results. Over the limit may be held (act_held) — the owner signs a superseding mandate — act_confirmation
   R->>G: farewell
-  Note over G: Records the visit at its door.
+  Note over G: Local record at the door, not a global score.
   R->>O: visit report. Anything beyond the limits waits for the owner.

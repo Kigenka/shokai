@@ -330,6 +330,6 @@ Pending the editor sign-off. Principle: make attacks expensive.
 3. **Hardware-backed passkeys.** A place MAY require a passkey attested to live in a real device or security key, which raises the cost of minting cards in bulk.
 4. **Owner-presence signals.** Under Return with care, a place MAY note cards whose owner never shows up: no approvals, no replies to findings, or instant and identical owner responses across many cards. These count as `sybil_signal` findings.
 
-**APPROVED (Fri 2026-10-30, 9:57 PM PT, the editor t620s2701):** both the Sybil-resistance addendum and Addendum 2 (door levels, personhood stamp, hardware passkeys, owner-presence signals) were approved as written.
+**APPROVED (Fri 2026-10-30, 9:57 PM PT, the editor):** both the Sybil-resistance addendum and Addendum 2 (door levels, personhood stamp, hardware passkeys, owner-presence signals) were approved as written.
 
 **Amendment via P29 (approved Fri 2026-10-30, 10:55 PM PT):** §6.5 "keep a deposit only on a recorded finding" now applies to TrustReceipt (trust) deposits only. Booking deposits follow the place's signed `BookingTerms` (P29).

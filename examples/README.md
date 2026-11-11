@@ -1,8 +1,8 @@
 # Runnable examples
 
-Working doors and visitors you can run. Place stories you read, and situations and proofs, are a different set: [worked examples](../docs/examples/index.md). Every person, business and place here is fictional, and every example is **non-normative**: where an example and [SPEC.md](../SPEC.md) disagree, the spec wins. Written for the **v0.5.0**.
+Working doors and visitors you can run. Place stories you read, and situations and proofs, are a different set: [worked examples](../docs/examples/index.md). Every person, business and place here is fictional, and every example is **non-normative**: where an example and [SPEC.md](../SPEC.md) disagree, the spec wins. Written for specification **v0.5.0** and package **0.5.1**.
 
-The protocol calls the grant a place gives a **pass**. On the wire the field is still `seat` in both 0.3 and 0.5. The diagrams on the main example pages were redrawn from the 11 November 2026 0.5 recordings; they say pass in the prose and `seat` only where the wire field or a reason code is shown. Prefer `@kigenka/shokai@0.5.0` (npm `latest` as of 10 November 2026). The public GitHub repository is [Kigenka/shokai](https://github.com/Kigenka/shokai) at v0.5.0. Some examples still need the project tree, not only the npm package.
+The protocol calls the grant a place gives a **pass**. On the wire the field is still `seat` in both 0.3 and 0.5. The diagrams on the main example pages were redrawn from the 11 November 2026 0.5 recordings; they say pass in the prose and `seat` only where the wire field or a reason code is shown. Use `@kigenka/shokai@0.5.1` (npm `latest` as of 11 November 2026). The public GitHub repository is [Kigenka/shokai](https://github.com/Kigenka/shokai) at v0.5.1. Some examples still need the project tree, not only the npm package.
 
 **New here?** Run `npx @kigenka/shokai@0.5.1 demo`, then read [How Shōkai works](../docs/how-it-works.md): a tea shop, an anonymous visitor who gets the leaflet, and a representative that introduces itself and buys a green tea within its owner's limit.
 
@@ -21,12 +21,15 @@ Each page is a short story, one sequence diagram drawn from a recorded 0.5 run y
 | [Community room](community-room.md) | A gathering | A 0.5 recording on the protocol core: discretion and a report home. |
 | [Brand door](brand-door.md) | A person's own door | A 0.5 recording on the protocol core ([traces/brand-door.mjs](traces/brand-door.mjs)). |
 | [One representative, two roles](dual-role.md) | A person's meeting room, and a tea shop | A 0.5 SDK recording ([traces/dual-role.mjs](traces/dual-role.mjs)). |
+| [Online university](university.md) | A campus, a course, a study room and a coursework folder | A 0.5 SDK recording ([traces/university.mjs](traces/university.mjs)): a narrow pass for a prospective student, enrollment with a signed offer, another student's records refused. |
+| [A place restarts](traces/README.md#about-the-diagrams) | A tea house | A 0.5 recording ([traces/restart.mjs](traces/restart.mjs)): stopped mid-visit, the visitor knocks again, and what was spent still counts. |
+| [Two refusals](traces/README.md#about-the-diagrams) | A tea room | A 0.5 SDK recording ([traces/refusals.mjs](traces/refusals.mjs)): a stolen card gets a `never` reply with an end date and an appeal link, and a pasted login session is refused. Needs 0.5.1. |
 
 ## Run it
 
 | Example | What it shows | Where | Run |
 |---|---|---|---|
-| **The two-second visit** | A tea shop (*Kettle & Leaf*) and a visiting representative on your machine: the ritual, a pass, an order within a 10.00 USD limit, an order past it refused, the report home | [`packages/shokai/src/cli.ts`](../packages/shokai/src/cli.ts) | **v0.5.0:** download [kigenka-shokai-0.5.0.tgz](../release/kigenka-shokai-0.5.0.tgz) then `npx --package=./kigenka-shokai-0.5.1.tgz shokai demo` ([Local trial](https://shokaiprotocol.com/docs/quickstart#local-trial)), or pin `npx @kigenka/shokai@0.5.1 demo`. |
+| **The two-second visit** | A tea shop (*Kettle & Leaf*) and a visiting representative on your machine: the ritual, a pass, an order within a 10.00 USD limit, an order past it refused, the report home | [`packages/shokai/src/cli.ts`](../packages/shokai/src/cli.ts) | **0.5.1:** download [kigenka-shokai-0.5.1.tgz](../release/kigenka-shokai-0.5.1.tgz), then `npx --package=./kigenka-shokai-0.5.1.tgz shokai demo` ([Local trial](https://shokaiprotocol.com/docs/quickstart#local-trial)), or pin `npx @kigenka/shokai@0.5.1 demo`. |
 | **Quickstart tea shop** | Your MCP server plus a Shōkai door; a visiting representative that spends within a mandate and comes back for a second visit; the conformance check | [`QUICKSTART.md`](../QUICKSTART.md), code in [`packages/shokai/examples/quickstart/`](../packages/shokai/examples/quickstart/) | `npm run quickstart` (runs QUICKSTART.md as written) |
 | **A gate in front of any MCP server** | Three note tools behind a Shōkai door; `tools/list` narrowed to the pass; every call a signed act | [`packages/shokai/examples/toy-mcp/`](../packages/shokai/examples/toy-mcp/) | `cd packages/shokai && npm run example` |
 | **A door ready for a public host** | Stable keys, state that survives restarts, edge limits, a kill switch | [`deploy/HOST-A-PLACE.md`](../deploy/HOST-A-PLACE.md), [`deploy/demo-place/`](../deploy/demo-place/) | see the guide |

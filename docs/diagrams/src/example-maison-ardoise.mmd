@@ -1,16 +1,19 @@
 sequenceDiagram
   autonumber
-  participant N as Noor Halloran (owner)
-  participant NR as Noor's representative
-  participant B as Maison Ardoise's visiting representative
-  participant D as Kiran's door (her host representative)
-  participant K as Kiran (owner)
-  Note over N,NR: Noor is a happy customer and chooses to introduce.<br/>Being connected to Kiran is never an introduction.
-  N->>NR: Approves issue_vouch with a passkey: scope presentation,<br/>introducer_interest "none", expires in 30 days
+  participant N as Noor Halloran<br/>(owner)
+  participant NR as Noor's agent<br/>representative
+  participant B as Maison Ardoise's<br/>agent representative
+  participant D as Kiran's door<br/>(host representative)
+  participant K as Kiran<br/>(owner)
+  Note over D,K: Kiran's door and her signed policy come first.<br/>A vouch is optional (SPEC §4).
+  Note over N,NR: Noor is a happy customer<br/>and chooses to sign a vouch.<br/>Being connected to Kiran<br/>is not an introduction.
+  N->>NR: Approves issue_vouch with a passkey:<br/>scope presentation, interest "none"
   NR-->>B: The signed vouch
-  B->>D: greeting, card, introduction carrying Noor's vouch
-  Note over D: Door policy Kiran signed: fashion and home welcome,<br/>introductions preferred, 2 uninvited a month.<br/>Noor is a trusted introducer, so no uninvited slot is used.
-  B->>D: invitation_request, then act door.invite (one Offer)
-  Note over D: Offer text is data. It needs Kiran's email,<br/>so the ceiling is kept_for_later.
-  D->>B: offer_outcome: kept_for_later, pairwise relationship_ref
-  D->>K: Report: "Noor introduced Maison Ardoise and says she gets nothing for it.<br/>They invite you to a fitting evening and would need your email. Yes or no?"
+  B->>D: greeting, Shōkai visitor card,<br/>audience-bound proof, optional vouch
+  D->>B: Shōkai host card, with its proof,<br/>then a welcome
+  Note over B,D: Policy: fashion and home welcome,<br/>introductions preferred, 2 uninvited a month
+  B->>D: purpose and signed mandate,<br/>then act door.invite (one offer)
+  Note over B,D: Offer text is data. It needs Kiran's email,<br/>so the ceiling is kept_for_later.
+  D->>B: offer_outcome: kept_for_later,<br/>pairwise relationship_ref
+  D->>K: Report home: Noor introduced Maison Ardoise.<br/>A fitting evening would need your email. Yes or no?
+  Note over D: Local record<br/>at the door.<br/>No global score.

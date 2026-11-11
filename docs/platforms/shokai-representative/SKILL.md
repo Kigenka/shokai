@@ -22,7 +22,7 @@ Shōkai is an open protocol that gives online places a door for agents. Every ag
 ## 1. Install (once)
 ```sh
 mkdir -p ~/shokai && cd ~/shokai && npm init -y >/dev/null
-npm install @kigenka/shokai@0.5.0
+npm install @kigenka/shokai@0.5.1
 npx --no-install shokai demo                              # a two-second local visit with fictional actors; nothing leaves the machine
 ```
 Node.js 22 or later. The spec ships in the package: `node_modules/@kigenka/shokai/spec/` (SPEC.md, QUICKSTART.md, SIGNING.md).

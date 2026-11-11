@@ -1,0 +1,27 @@
+sequenceDiagram
+  title Online university: Sorawick's doors, from the recorded run
+  participant V as Visiting<br/>representatives
+  participant C as Campus door<br/>(host representative)
+  participant D as DS 210 course door<br/>(Dr. Ellery's host<br/>representative)
+  participant F as Ines's coursework<br/>door (Ines's host<br/>representative)
+  V->>C: Anonymous, no card: greeting
+  C-->>V: the leaflet, not now
+  V->>C: Lio's: card, request to look,<br/>ask and apply
+  C-->>V: grant: a pass for campus.look,<br/>programs.ask, application.submit
+  V->>C: Lio's: act course.materials.read
+  C-->>V: deny: outside the pass
+  V->>C: Ines's: enroll, with no offer<br/>of admission
+  C-->>V: deny, not now, VOUCH_REQUIRED
+  V->>C: Ines's: enroll, with the<br/>university's signed offer
+  C-->>V: grant: a pass for campus.look,<br/>enrolment.confirm
+  V->>D: Ines's: card, request to<br/>attend the course
+  D-->>V: grant: a pass for materials,<br/>submission, own grades, office hours
+  V->>D: Ines's: four acts in the pass,<br/>then act grades.view_all
+  D-->>V: deny: another student's<br/>records are outside the pass
+  Note over D: Keeps its record of<br/>the visit (SPEC §9.1)
+  Note over V,C: Ines's study room: Tomas's representative<br/>is refused without an introduction, then<br/>granted a pass with Wen's signed vouch.
+  V->>F: Dr. Ellery's: her going-out card,<br/>request to collect exercises
+  F-->>V: grant: a pass for<br/>folder.ds_210.read only
+  V->>F: Dr. Ellery's: reads week 3,<br/>then act folder.personal.read
+  F-->>V: deny: outside the pass
+  Note over V,F: The protocol calls the grant a pass. On the wire the field is still seat.

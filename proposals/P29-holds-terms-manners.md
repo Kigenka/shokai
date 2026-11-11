@@ -280,4 +280,4 @@ type HouseNotes = {                          // P30 §2.5 (Q6 default); shape pr
 
 ---
 
-**APPROVED (Fri 2026-10-30, 10:55 PM PT, the editor t624s2748):** P29 as drafted. This covers all sign-off items 1–13, the three §7.3 MUST amendments, the P27 §6.5 narrowing (booking deposits follow the signed `BookingTerms`), and the proposed defaults for open questions 1–8. Questions at the door may live in `HouseNotes`, so a delegate can reword them, while which actions they attach to stays in the owner-signed policy. P30 Q6's default is confirmed as the split-out `HouseNotes`.
+**APPROVED (Fri 2026-10-30, 10:55 PM PT, the editor):** P29 as drafted. This covers all sign-off items 1–13, the three §7.3 MUST amendments, the P27 §6.5 narrowing (booking deposits follow the signed `BookingTerms`), and the proposed defaults for open questions 1–8. Questions at the door may live in `HouseNotes`, so a delegate can reword them, while which actions they attach to stays in the owner-signed policy. P30 Q6's default is confirmed as the split-out `HouseNotes`.

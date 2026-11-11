@@ -1,0 +1,18 @@
+sequenceDiagram
+  title Two refusals at Juniper Tea Room
+  participant V as Vex's representative<br/>(showing Dana's card)
+  participant J as Juniper Tea Room<br/>host representative
+  participant D as Dana's visiting<br/>representative
+  V->>J: greeting, then Dana's card<br/>under Vex's own key
+  J-->>V: deny, never: until a date at<br/>most 180 days away, and<br/>where to appeal. No reason code.
+  J-->>V: farewell
+  D->>J: Dana's own card,<br/>invitation_request
+  J-->>D: grant: a pass for menu.view,<br/>order.place, up to 10.00 USD
+  Note over J,D: The stolen-card attempt did not<br/>ban Dana or her representative.
+  D->>J: act order.place carrying<br/>a pasted login session
+  J-->>D: deny, not_a_fit,<br/>CREDENTIAL_NOT_ACCEPTED
+  Note over J: Refused at the door, before<br/>the shop's service sees it.
+  D->>J: act order.place 5.00 USD,<br/>no session
+  J-->>D: act_result ok
+  D->>J: farewell
+  Note over V,D: The protocol calls the grant a pass. On the wire the field is still seat.

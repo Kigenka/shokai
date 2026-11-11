@@ -35,7 +35,17 @@ There is also one older recording that cannot be re-run: **Willowfold Tea House,
 
 ### About the diagrams
 
-The diagrams on the example pages (tea shop, store, bank, marketplace, community room, brand door, and one representative with two roles) were redrawn from these 11 November 2026 0.5 recordings. They use **pass** in the prose; where a wire field or reason code is shown, the field is still `seat`. The older Willowfold field-test transcript was not used for the tea-shop diagram; it is kept separately, as recorded.
+The diagrams on the example pages (tea shop, store, bank, marketplace, community room, brand door, one representative with two roles, and the online university) were drawn from these 11 November 2026 0.5 recordings. The two stories without an example page of their own have their diagrams here:
+
+**A place restarts**
+
+[![Kettle & Leaf stops mid-visit and starts again](../diagrams/png/restart.png)](../diagrams/svg/restart.svg)
+
+**Two refusals**
+
+[![Two refusals at Juniper Tea Room](../diagrams/png/refusals.png)](../diagrams/svg/refusals.svg)
+
+All of these diagrams use **pass** in the prose; where a wire field or reason code is shown, the field is still `seat`. The older Willowfold field-test transcript was not used for the tea-shop diagram; it is kept separately, as recorded.
 
 ## For builders: the files
 

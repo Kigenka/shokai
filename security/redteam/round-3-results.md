@@ -18,7 +18,7 @@ A skipped attack is never counted as held, and "accepted by design" is an open r
 | Earlier attacks, rerun on 0.5 | 48 | 45 | 3 (S1, S2, S4) | 0 | 0 |
 | New 0.5 attacks | 45 | 41 | 1 (V05-F10-03) | 3 | 0 |
 | **Scripted total** | **93** | **86** | **4** | **3** | **0** |
-| **Scripted total after the first fix** (preview code, 11 November 2026; V05-F10-03 still accepted) | **93** | **89** | **4** | **0** | **0** |
+| **Scripted total after the first fix** (the 0.5.1 code in progress, 11 November 2026; V05-F10-03 still accepted) | **93** | **89** | **4** | **0** | **0** |
 | **Scripted total after V05-F10-03 also closed** (0.5.1 code, 11 November 2026; 0.5.0 lacks it) | **93** | **90** | **3** (S1, S2, S4) | **0** | **0** |
 | Role-plays | 14 | 14 | 0 | 0 | 0 |
 

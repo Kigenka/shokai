@@ -1,0 +1,27 @@
+sequenceDiagram
+  title A place restarts: Kettle & Leaf stops mid-visit
+  participant A as Aya's visiting<br/>representative
+  participant K as Kettle & Leaf host<br/>representative
+  participant B as Bo's visiting<br/>representative
+  A->>K: card, invitation_request
+  K-->>A: grant: a pass for menu.view,<br/>order.place, up to 20.00 USD
+  A->>K: act order.place 6.00 USD
+  K-->>A: act_result ok
+  Note over K,B: Bo's owner withdraws Bo's card<br/>during Bo's visit.
+  B->>K: act
+  K-->>B: deny, not now
+  Note over K: The server stops abruptly.
+  A-xK: act: no answer. The visit<br/>is marked interrupted.
+  Note over K: It starts again from its<br/>state file, same keys.
+  A->>K: act on the old pass
+  K-->>A: deny, not_a_fit:<br/>please knock again
+  A->>K: a new visit, same mandate
+  K-->>A: grant: a new pass
+  A->>K: act order.place 6.00 USD
+  K-->>A: act_result ok<br/>(12.00 of 20.00 USD spent)
+  A->>K: act order.place 9.00 USD
+  K-->>A: deny: would go past<br/>the 20.00 USD limit
+  B->>K: a new visit with the<br/>withdrawn card
+  K-->>B: deny: the card stays<br/>withdrawn
+  Note over A: Report home: the visit<br/>was interrupted, and what was<br/>spent still counts.
+  Note over A,B: The protocol calls the grant a pass. On the wire the field is still seat.

@@ -45,12 +45,12 @@ git checkout package.json                # put the safety catch back
 git tag v0.3.1 && git push origin v0.3.1      # for example; then approve the npm-publish environment in GitHub
 ```
 
-**One artefact.** The release tarball is packed once, by `tools/pack-release.sh` (a copy of the package without `"private"`), committed under `release/` with its sha256, and hosted unchanged on the site. CI never repacks it for publishing, so the npm tarball and the site tarball are byte-identical. Provenance therefore attests *who published it and from which commit*, not that CI built it; the build itself is checked by the full test run and the demo from that file; `npm view @kigenka/shokai@<v> dist.integrity` can be checked against the file.
+**One artifact.** The release tarball is packed once, by `tools/pack-release.sh` (a copy of the package without `"private"`), committed under `release/` with its sha256, and hosted unchanged on the site. CI never repacks it for publishing, so the npm tarball and the site tarball are byte-identical. Provenance therefore attests *who published it and from which commit*, not that CI built it; the build itself is checked by the full test run and the demo from that file; `npm view @kigenka/shokai@<v> dist.integrity` can be checked against the file.
 
 ## Check after publishing
 
 ```bash
-cd "$(mktemp -d)" && npm install @kigenka/shokai@0.5.0 && npx --no-install shokai --version && npx --no-install shokai demo && npm view @kigenka/shokai dist-tags   # expect latest: 0.5.0
+cd "$(mktemp -d)" && npm install @kigenka/shokai@0.5.1 && npx --no-install shokai --version && npx --no-install shokai demo && npm view @kigenka/shokai dist-tags   # expect latest: 0.5.1
 ```
 
 ## Publish-day checklist for 0.5.0 (run only when the editor says go)
@@ -65,7 +65,7 @@ cd "$(mktemp -d)" && npm install @kigenka/shokai@0.5.0 && npx --no-install shoka
    ```
 
 4. Dist-tag: `release-status.json` says `"dist_tag": "latest"`. v0.5.0 was published from a laptop under that tag. Make the public repository match this tree (from the clean history of step 3), then tag `v0.5.0` for the GitHub Release; the release workflow will skip republishing a version that is already on npm.
-5. Check the registry has the same bytes: `curl -fsSL "$(npm view @kigenka/shokai@0.5.0 dist.tarball)" | sha256sum` must print `release-status.json`'s sha256; record it and `npm view @kigenka/shokai@0.5.0 dist.integrity` on the Releases page. Read the release date from `npm view @kigenka/shokai time.0.5.0` (authoritative, H2) and mirror it, with the window's end date (+90 days), in CHANGELOG.md, the GitHub Release notes and the Releases page.
+5. Check the registry has the same bytes: `curl -fsSL "$(npm view @kigenka/shokai@0.5.0 dist.tarball)" | sha256sum` must print `release-status.json`'s sha256; record it and `npm view @kigenka/shokai@0.5.0 dist.integrity` on the Releases page. Read the release date from `npm view @kigenka/shokai time --json`, the `"0.5.0"` entry (authoritative, H2; `time.0.5.0` as a key path prints nothing) and mirror it, with the window's end date (+90 days), in CHANGELOG.md, the GitHub Release notes and the Releases page.
 6. **Flip the status in one place:** set `"npm_status": "published"` in `release/release-status.json`, rebuild the site (its nav, hero and release pages read the file) and run `node tools/check-links-versions.mjs`: it fails on any repository Markdown file (CHANGELOG.md and docs/review-history.md, the history, aside), package doc or site page still saying 0.5.0 is pending.
 7. **Run the Quickstart from the public path** on a clean machine (Linux and macOS): `npm install @kigenka/shokai@0.5.0`, then `QUICKSTART.md` steps 1–6 as written, and `bash tools/verify-quickstart.sh` online. This is the first run from the public path (v0.5.0's earlier runs used the package file); record the result on the Releases page.
 8. 0.5.0 was published directly under `latest` (`"latest_on_npm": "0.5.0"`, `"dist_tag": "latest"`). For a later 0.5.x, keep `publishConfig.tag` in agreement with `release-status.json`.
@@ -76,7 +76,7 @@ cd "$(mktemp -d)" && npm install @kigenka/shokai@0.5.0 && npx --no-install shoka
 
 1. `bash tools/pack-release.sh` once more if anything in the package changed, and commit `release/` (tarball, `.sha256`, `release-status.json`). Run `bash tools/verify.sh`, `SHOKAI_QUICKSTART_TGZ=release/kigenka-shokai-0.5.1.tgz bash tools/verify-quickstart.sh` and, with the site built, `SHOKAI_REQUIRE_SITE=1 node tools/check-links-versions.mjs`.
 2. **Publish from the laptop first**, the same way as 0.5.0: `npm publish release/kigenka-shokai-0.5.1.tgz --provenance=false --access public --tag latest` (npm asks for the one-time code). This publishes the committed file, byte for byte.
-3. Check the registry has the same bytes: `curl -fsSL "$(npm view @kigenka/shokai@0.5.1 dist.tarball)" | sha256sum` must print `release-status.json`'s sha256, and `npm view @kigenka/shokai@0.5.1 dist.integrity` must match the file. Read the publish time from `npm view @kigenka/shokai time.0.5.1`.
+3. Check the registry has the same bytes: `curl -fsSL "$(npm view @kigenka/shokai@0.5.1 dist.tarball)" | sha256sum` must print `release-status.json`'s sha256, and `npm view @kigenka/shokai@0.5.1 dist.integrity` must match the file. Read the publish time from `npm view @kigenka/shokai time --json` (the `"0.5.1"` entry). `npm view @kigenka/shokai time.0.5.1` prints nothing, because the dots in the version break the key path.
 4. **Flip the status in one place:** in `release/release-status.json` set `"npm_status": "published"`, `"latest_on_npm": "0.5.1"` and `"published_at"`, then run `node tools/check-links-versions.mjs`.
 5. Push `main` to the public repository (a new commit, never a force push), then push the tag `v0.5.1`. The release workflow skips a version that is already on npm, so the tag only anchors the GitHub Release and the `blob/v0.5.1/…` links in the package's `spec/`. Attach the tarball and its `.sha256` to the GitHub Release.
 6. Deploy the site, which hosts both `kigenka-shokai-0.5.1.tgz` and the earlier `kigenka-shokai-0.5.0.tgz` (sha256 `259b414d…`), and check the hosted files' sha256.

@@ -242,6 +242,6 @@ Pending the editor sign-off. Like the bank's two-key safe deposit box, or multi-
 - Each signature is single-use and bound to the specific request (resource, action, nonce), so it cannot be replayed.
 - Co-owners: non-delegable actions can use joint opening with threshold 1 (either owner) or 2 (both).
 
-**APPROVED (Fri 2026-10-30, 9:58 PM PT, the editor t620s2706):** all P30 sign-off items 1–13, the project invitation allowance and `InvitationRequest`, joint opening, and the proposed defaults for open questions 1–9. Co-owners are handled through joint opening (threshold 1 or 2 for non-delegable actions).
+**APPROVED (Fri 2026-10-30, 9:58 PM PT, the editor):** all P30 sign-off items 1–13, the project invitation allowance and `InvitationRequest`, joint opening, and the proposed defaults for open questions 1–9. Co-owners are handled through joint opening (threshold 1 or 2 for non-delegable actions).
 
 **Rename (Fri 2026-10-30, 10:07 PM PT):** the member's request is now `MemberInviteRequest`, to avoid a clash with v0.4.0's `InvitationRequest` (§5.3). The meaning is unchanged.

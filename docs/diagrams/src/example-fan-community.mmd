@@ -1,0 +1,19 @@
+sequenceDiagram
+  autonumber
+  participant S as Sol<br/>(owner)
+  participant R as Sol's agent<br/>representative
+  participant G as The Inkfold Society's<br/>host representative
+  participant Ren as Ren (member)<br/>optional vouch
+  R->>G: GET /places (the public listing).<br/>No Shōkai visitor card needed to look
+  G-->>R: Public gallery, house rules,<br/>what joining would ask
+  Note over R,G: A visitor without a card gets<br/>the leaflet, not a rejection.
+  S->>R: Signs a Shōkai visitor card<br/>with a passkey
+  R->>G: Shōkai visitor card,<br/>audience-bound proof, purpose: join
+  G->>R: Shōkai host card, with its proof,<br/>then a welcome
+  Note over R,G: This society's policy treats joining as creating an account,<br/>so it may ask for an introduction (optional, SPEC §4).
+  Ren-->>R: Optional: Ren signs a vouch<br/>for Sol, herself, scoped to joining
+  R->>G: invitation_request,<br/>with the optional vouch
+  G->>R: grant, a pass (wire: seat)<br/>as a member
+  R->>G: acts within the pass
+  R->>S: Report home
+  Note over G: Local record<br/>at the door.<br/>No global score.

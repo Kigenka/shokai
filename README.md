@@ -403,7 +403,7 @@ Eight annotated visits, most with a diagram and message snippets (non-normative,
 - [An employee's co-worker agent](docs/examples/enterprise-coworker.md): inside one company, a company-vouched role with narrower limits than the employee's own, and why a door when there's already single sign-on
 - [A collector at a heritage watchmaker](docs/examples/heritage-watchmaker.md): shared context that shapes the welcome, a named introducer's vouch, a limited piece taken inside
 - [A fan community](docs/examples/fan-community.md): a member's vouch to join, members-only rooms and drops, conduct remembered at the door
-- [An online university](docs/examples/online-university.md): a campus door and course doors kept by faculty members' representatives, a prospective student's narrow pass, enrolment with a signed offer, only your own records, a study room with a classmate's introduction
+- [An online university](docs/examples/online-university.md): a campus door and course doors kept by faculty members' representatives, a prospective student's narrow pass, enrollment with a signed offer, only your own records, a study room with a classmate's introduction
 - [Unsolicited offer, pressure declined](docs/examples/pressure-declined.md): a business's representative tries pressure tricks; hidden text, false urgency, a misconduct notice
 - [A brand at a person's door, introduced by a friend](docs/examples/brand-door.md): introduced by someone known here, a vouch the friend signs herself, declared paid or genuine, under a person's door policy
 
@@ -453,7 +453,7 @@ The core is one story: arrive, introduce itself, ask, answer, act within limits,
 
 ## Status
 
-**v0.5, not 1.0.** This repository is specification v0.5.0, wire tag `shokai/0.5`, and package `@kigenka/shokai@0.5.1`. A 0.5.x patch release keeps the wire tag, `spec_ref.version` ("0.5.0") and the JSON Schema id, so 0.5.0 and 0.5.1 peers keep talking to each other; 0.5.1 adds optional members and one MUST-level rule (see [CHANGELOG.md](CHANGELOG.md)). How earlier wire tags are treated is in the changelog too. The text is detailed and tested; review continues, and later fixes go into later 0.5.x releases.
+**v0.5, not 1.0.** This repository is specification v0.5.0, wire tag `shokai/0.5`, and package `@kigenka/shokai@0.5.1`. A 0.5.x patch release keeps the wire tag and `spec_ref.version` ("0.5.0"), so 0.5.0 and 0.5.1 peers keep talking to each other (0.5.1's JSON Schema is a new file with its own `$id`; the 0.5.0 file is unchanged); 0.5.1 adds optional members and one MUST-level rule (see [CHANGELOG.md](CHANGELOG.md)). How earlier wire tags are treated is in the changelog too. The text is detailed and tested; review continues, and later fixes go into later 0.5.x releases.
 
 - Tested inside the project: a clean-room implementation written by a sandboxed agent from the spec alone and run by the editors, two adversarial red-team rounds, conformance suites, and field tests with the editor's own passkey and several agent platforms. **Implementations from other organizations and outside review are still needed.**
 - Signing: owners sign on a passkey signing page ([SIGNING.md](SIGNING.md)). Kigenka opens sign.kigenka.com for guided signing sessions, with no uptime promise; it is not an always-on service. The reference signing page ([reference/signing-page](reference/signing-page/README.md)) lets anyone run their own.

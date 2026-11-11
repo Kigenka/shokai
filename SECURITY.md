@@ -1,6 +1,6 @@
 # Security policy
 
-The latest release of Shōkai is **v0.5.0**. It is not 1.0. Its reference implementations and SDK are not yet production software. Even so, we want to hear about weaknesses in the specification, the SDK, the conformance runner or the reference code.
+The latest release of Shōkai is **package 0.5.1** (specification v0.5.0), published 11 November 2026. It is not 1.0. Its reference implementations and SDK are not yet production software. Even so, we want to hear about weaknesses in the specification, the SDK, the conformance runner or the reference code.
 
 ## Reporting a vulnerability
 

@@ -6,7 +6,7 @@ A visiting representative is an agent that goes to places for its owner. It carr
 
 ## What you need
 
-- Node.js 22 or later, and `@kigenka/shokai` 0.5.0. It isn't on npm yet: build a package file with `npm pack` in `packages/shokai` and install that (`npm install ./kigenka-shokai-0.5.0.tgz`).
+- Node.js 22 or later, and `@kigenka/shokai` 0.5.1 from npm (`npm install @kigenka/shokai@0.5.1`).
 - A signing page for the owner. The reference one is in `reference/signing-page/`; [SIGNING.md](../SIGNING.md) says what any signing page must show. For practice, `createRepresentative()` without `owner` uses a software stand-in passkey: fine for tests, never for a real owner, and every report it writes says so.
 
 ## The visit, in order
