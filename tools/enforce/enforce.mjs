@@ -142,7 +142,7 @@ async function run(c, ctx) {
   try { await c.fn({ ...ctx, expect, saw }); } catch (e) { error = String(e?.stack ?? e).split("\n").slice(0, 3).join(" | "); }
   const status = error ? "ERROR" : !checks.length ? "GAP" : checks.every((x) => x.ok) ? "PASS" : checks.every((x) => x.ok || x.known) ? "KNOWN GAP" : "GAP";
   const r = { id: c.id, title: c.title, attack: c.attack, door_did: did, spec: c.spec, status, checks, ...(error ? { error } : {}), ms: Date.now() - t0 };
-  results.push(r); if (!QUIET) print(r); return r;
+  results.push(r); if (!QUIET || r.status === "ERROR") print(r); return r;   // --quiet still prints a thrown case, so CI logs name it
 }
 function print(r) {
   const mark = { PASS: "PASS", GAP: "GAP ", "KNOWN GAP": "KNOWN GAP", ERROR: "ERR " }[r.status];

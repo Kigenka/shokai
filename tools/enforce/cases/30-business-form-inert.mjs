@@ -85,8 +85,20 @@ export default (H) => [H.kase("30-business-form-inert", "The shop sign-up form o
       saw(`was loaded in a headless browser; ${ids.length} fields typed into, the button clicked, Enter pressed; ${late.length} requests left the page, ${after?.enabledFields?.length ?? "?"} fields enabled.`);
     } finally {
       try { ws?.close(); } catch { /* closed */ }
-      if (chrome && chrome.exitCode === null) { chrome.kill("SIGTERM"); await Promise.race([H.exited(chrome), sleep(4000)]); }
+      if (chrome && chrome.exitCode === null) {
+        chrome.kill("SIGTERM");
+        await Promise.race([H.exited(chrome), sleep(4000)]);
+        if (chrome.exitCode === null) {
+          try { chrome.kill("SIGKILL"); } catch { /* already gone */ }
+          await Promise.race([H.exited(chrome), sleep(2000)]);
+        }
+      }
       if (srv) await new Promise((r) => srv.close(() => r()));
-      H.fs.rmSync(tmp, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+      // Chrome can still be writing its user-data dir after the parent exits. A leftover
+      // temp profile must not fail a case whose checks already ran.
+      for (let i = 0; i < 10; i++) {
+        try { H.fs.rmSync(tmp, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 }); break; }
+        catch (e) { if (i === 9) console.warn(`enforce: case 30 left ${tmp}: ${e.message}`); else await sleep(250); }
+      }
     }
   })];
