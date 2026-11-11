@@ -28,6 +28,7 @@ const CONSOLE = path.join(STATE, "console"); const RECEIVED = path.join(STATE, "
 for (const d of [STATE, WIRE, CONSOLE, path.join(CONSOLE, "done"), path.join(STATE, "reports"), RECEIVED]) fs.mkdirSync(d, { recursive: true });
 import { KEY_HOME } from "./compat.js";
 import { SPEC_VERSION } from "./version.js";
+import * as V5 from "./v050.js";
 const ephemeral = process.argv.includes("--ephemeral-keys=true");
 const KEYS = KEY_HOME;   // the pilot's local key directory (compat.ts); never read with --ephemeral-keys
 // Red team 2026-10-25 hardening (see redteam/2026-10-25/REPORT.md). Loopback pilot limits; generous for the ritual (largest real message ≈ 10 kB).
@@ -139,11 +140,11 @@ const bucket = (r: { burst: number; perSec: number }) => { let tokens = r.burst,
 const takeAll = bucket(RATE_ALL), takeAnon = bucket(RATE_ANON);
 const anonymous = (m: unknown) => { const x: any = m; return !(x && typeof x === "object" && !Array.isArray(x) && (typeof x.payload?.from === "string" || typeof x.from === "string")); };
 const srv = http.createServer((req, res) => {
-  const empty = (code: number, extra: Record<string, string> = {}) => { res.writeHead(code, { "content-type": "application/json; charset=utf-8", connection: "close", ...extra }); res.end(JSON.stringify({ protocol: "shokai/0.3", messages: [] })); };
+  const empty = (code: number, extra: Record<string, string> = {}) => { res.writeHead(code, { "content-type": "application/json; charset=utf-8", connection: "close", ...extra }); res.end(JSON.stringify({ protocol: "shokai/0.5", messages: [] })); };
   if (req.method === "POST" && !takeAll()) { empty(429, { "retry-after": "1" }); req.resume(); return; }   // RT-L1
   // RT-I4. v0.2.8: close only after the 413 is flushed, so the sender reliably reads it (destroying at once raced the reply).
   // The rest of the body is discarded unread-into-memory (bounded: ≤ 64 MB or 5 s), then the socket closes.
-  if (Number(req.headers["content-length"] ?? 0) > MAX_BODY) { res.writeHead(413, { "content-type": "application/json; charset=utf-8" }); res.end(JSON.stringify({ protocol: "shokai/0.3", messages: [] })); let gone = 0; const kill = setTimeout(() => req.destroy(), 5000);
+  if (Number(req.headers["content-length"] ?? 0) > MAX_BODY) { res.writeHead(413, { "content-type": "application/json; charset=utf-8" }); res.end(JSON.stringify({ protocol: "shokai/0.5", messages: [] })); let gone = 0; const kill = setTimeout(() => req.destroy(), 5000);
     req.on("data", (c: Buffer) => { gone += c.length; if (gone > 64 << 20) { clearTimeout(kill); req.destroy(); } }); req.on("end", () => clearTimeout(kill)); return; }
   const chunks: Buffer[] = []; let size = 0, tooBig = false;
   req.on("data", (c) => { if (tooBig) return; size += c.length; if (size > MAX_BODY) { tooBig = true; chunks.length = 0; empty(413); req.destroy(); return; } chunks.push(c); });
@@ -159,8 +160,8 @@ const srv = http.createServer((req, res) => {
       if (!(parts[0] === "places" && parts.length === 3 && parts[1] === name) || req.method !== "POST") return door404();
       if (parts[2] === "entry" || parts[2] === "lobby") {
         let m: unknown = body; try { m = JSON.parse(body); } catch { /* prose → lobby */ }
-        if (anonymous(m) && !takeAnon()) { res.setHeader("retry-after", "1"); return send(429, { protocol: "shokai/0.3", messages: [] }); }   // RT-L1
-        writeWire(typeof m === "string" ? { prose: m } : m, "in");
+        if (anonymous(m) && !takeAnon()) { res.setHeader("retry-after", "1"); return send(429, { protocol: V5.replyTag((m as any)?.payload?.protocol ?? (m as any)?.protocol), messages: [] }); }   // RT-L1
+        writeWire(typeof m === "string" ? (V5.luhnLike(m) ? { prose: "[withheld: payment instrument]" } : { prose: m }) : V5.carriesInstrument(m) ? { withheld: "payment instrument" } : m, "in");   // v0.5.0 (C235)
         await prefetch(m);
         let env: S.ReplyEnvelope; try { env = host.entryPost(m); } catch { env = host.entryPost(String(body)); }
         // v0.2.8 (§3.4, P12): at the encounter cap the newcomer is refused (fail closed), never an existing guest.

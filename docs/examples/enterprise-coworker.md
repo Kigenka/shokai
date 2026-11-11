@@ -33,17 +33,19 @@ Theo signs his representative's card with his passkey. Halvenstone's own represe
                 "value_to_counterparty": { "text": "Quarterly review prep.", "locale": "en-US" } } }
 ```
 
-## 3. The seat, enforced on every tool call
+## 3. The pass, enforced on every tool call
+
+On the published v0.3.0 wire this grant is the `seat` field. The v0.5.0 calls it a pass. The snippet keeps the field this repository's specification publishes.
 
 ```json
 { "decision": "grant",
   "seat": { "tool_allowlist": ["shipments.read"], "limits": { "max_session_s": 1800, "data_classes": ["client:lantern-coast"] } } }
 ```
-The gate forwards each MCP `tools/call` for `shipments.read` with the seat attached. A call to any other tool never reaches a server.
+The gate forwards each MCP `tools/call` for `shipments.read` with the pass attached. A call to any other tool never reaches a server.
 
-## 4. Outside the seat: considering, not a silent failure
+## 4. Outside the pass: considering, not a silent failure
 
-The representative suggests a 4% discount and tries `pricing.apply_discount`. It's outside the seat, so it gets an explicit decision:
+The representative suggests a 4% discount and tries `pricing.apply_discount`. It's outside the pass, so it gets an explicit decision:
 
 ```json
 { "type": "act_decision", "decision": "considering",

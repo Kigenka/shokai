@@ -7,7 +7,7 @@
  * Trace blocks: arrays of ShokaiMessage (or Signed<…> envelopes, or a DoorPointer). Fixture blocks:
  * mapped by heading (cards, mandates, vouches, Seeking, meaning notes). Usage: node scripts/trace-typecheck.mjs
  */
-import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdtempSync, existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
@@ -38,6 +38,8 @@ for (const line of md.split("\n")) {
 const dir = mkdtempSync(join(tmpdir(), "trace-tc-"));
 writeFileSync(join(dir, "traces.ts"), `import type * as S from "${join(root, "protocol-shapes.js")}";\n${out.join("\n")}\n`);
 try {
-  execSync(`npx -y -p typescript@5 tsc --noEmit --strict --target es2022 --module nodenext --moduleResolution nodenext --skipLibCheck ${join(dir, "traces.ts")}`, { stdio: "pipe" });
+  // the repository's own TypeScript when installed (no download, so it runs offline); else npx fetches typescript@5
+  const localTsc = [join(root, "packages", "shokai", "node_modules", ".bin", "tsc"), join(root, "reference", "engawa", "node_modules", ".bin", "tsc")].find((f) => existsSync(f));
+  execSync(`${localTsc ?? "npx -y -p typescript@5 tsc"} --noEmit --strict --target es2022 --module nodenext --moduleResolution nodenext --skipLibCheck ${join(dir, "traces.ts")}`, { stdio: "pipe" });
   console.log(`trace-typecheck: ${out.filter((l) => l.includes("\nexport const")).length} blocks typecheck (tsc --strict) ✓`);
 } catch (e) { console.log(String(e.stdout || e.message).split("\n").slice(0, 60).join("\n")); console.log(`(generated file: ${join(dir, "traces.ts")})`); process.exit(1); }

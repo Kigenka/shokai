@@ -24,11 +24,11 @@ const FX = `http://127.0.0.1:${(fx.address() as any).port}`;
 
 // ---- door (§11.1) ----
 const root = await req("/");
-check(root.status === 200 && root.body.type === "door_pointer" && root.body.spec_ref?.version === "0.3.0" && root.body.places.every((p: any) => p.inbox && p.entry && p.lobby), "GET / → 200 DoorPointer with spec_ref 0.2.10 and each place's inbox (C118, C119)");
+check(root.status === 200 && root.body.type === "door_pointer" && root.body.spec_ref?.version === "0.5.0" && root.body.places.every((p: any) => p.inbox && p.entry && p.lobby), "GET / → 200 DoorPointer with spec_ref 0.2.10 and each place's inbox (C118, C119)");
 const unk = await req("/no/such/route"); check(unk.status === 404 && unk.body.type === "door_pointer", "unknown path → 404 DoorPointer");
 for (const old of ["/places/fernwood/state", "/places/fernwood/admin/allowances", "/places/engawa/guests"]) { const r = await req(old); check(r.status === 404 && r.body.type === "door_pointer", `stand-in ${old} → 404 DoorPointer`); }
 const list = await req("/places");
-check(list.status === 200 && list.body.type === "place_listing" && list.body.places.every((p: any) => p.spec_ref?.version === "0.3.0" && p.inbox && p.entry && p.category && Array.isArray(p.actions) && !("x-shokai-inbox" in p)),
+check(list.status === 200 && list.body.type === "place_listing" && list.body.places.every((p: any) => p.spec_ref?.version === "0.5.0" && p.inbox && p.entry && p.category && Array.isArray(p.actions) && !("x-shokai-inbox" in p)),
   "GET /places → every entry has inbox + spec_ref; x-shokai-inbox gone (C119)");
 check(list.body.places.every((p: any) => p["x-test-profile"] === "shokai-b/0.3"), "every entry declares x-test-profile shokai-b/0.3 (Appendix B)");
 check(list.body.places.filter((p: any) => p["x-test-decider"] === true).map((p: any) => p.name).join() === "harborlight", "only the bank (harborlight) declares x-test-decider: true (B.4)");
@@ -46,7 +46,7 @@ check((await req(path(fern.entry))).status === 404 && (await req(path(fern.entry
 const viaLobby = await post(path(fern.lobby), "Hello! Can I buy a cup?");
 check(types(viaLobby).includes("lobby_briefing") && pl(viaLobby).find((p) => p.type === "lobby_briefing").inbox === fern.inbox, "POST at the lobby works like the entry → the lobby, which names the inbox (C120)");
 const prose = await post(path(fern.entry), "Hello!");
-check(prose.protocol === "shokai/0.3" && pl(prose).find((p) => p.type === "lobby_briefing").spec_ref?.version === "0.3.0", "prose at the entry → 200 ReplyEnvelope with the lobby (spec_ref 0.2.5)");
+check(prose.protocol === "shokai/0.5" && pl(prose).find((p) => p.type === "lobby_briefing").spec_ref?.version === "0.5.0", "prose at the entry → 200 ReplyEnvelope with the lobby (spec_ref 0.2.5)");
 { // v0.3.0-rc1 (§3.1, D20): the front is open to look at. A bare request (no headers beyond fetch's own, no card, no cookie) reads the listing and the lobby, and nothing is set on the reader.
   const bare = await fetch(BASE + "/places"); const bl: any = await bare.json();
   const lob = await fetch(BASE + path(fern.lobby), { method: "POST", body: "Just looking, thanks." }); const le: any = await lob.json();

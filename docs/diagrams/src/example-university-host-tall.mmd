@@ -1,0 +1,13 @@
+flowchart TD
+  U["Sorawick Online University<br/>(fictional; the owner)"] -- "signs the campus card,<br/>sets the door policy" --> C
+  A["Arrivals<br/>read the campus window:<br/>programmes, what enrolment asks"] --> C{"Campus host representative<br/>admissions and registrar<br/>checks the card"}
+  C -. "anonymous visitor" .-> L["The leaflet<br/>what's needed, a sentence<br/>for the owner, a kind not now"]
+  C -- "prospective student" --> P["Narrow seat<br/>look around, ask, apply<br/>nothing of a student's"]
+  C -- "admitted student" --> E["Enrolment seat<br/>with the offer of admission,<br/>the university's own invitation"]
+  P -. "applies; admissions decides" .-> E
+  E --> CD{"Course door<br/>kept by a faculty member's<br/>host representative"}
+  CD -- "grant" --> S["Course seat<br/>materials · submit · own grades<br/>· office hours"]
+  CD -- "another student's records" --> X["Refused, with a reason"]
+  S --> R["The room inside<br/>study groups, card exchange,<br/>a classmate's vouch"]
+  C -- "every decision" --> K["Records at each door<br/>per counterpart, kept by<br/>each host representative"]
+  CD -- "every decision" --> K

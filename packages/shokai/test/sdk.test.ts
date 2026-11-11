@@ -4,7 +4,7 @@ import { createDoor, createRepresentative, verifySigned, sign, generateRepresent
 
 let pass = 0, fail = 0;
 const check = (c: boolean, what: string) => { if (c) { pass++; console.log("  PASS " + what); } else { fail++; console.log("  FAIL " + what); } };
-const notes = () => createDoor({ name: "notes", displayName: "Lantern Notes", category: "x-tools",
+const notes = (o: Record<string, unknown> = {}) => createDoor({ ...o, approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "notes", displayName: "Lantern Notes", category: "x-tools",
   purposes: [{ code: "inquiry", statement: "Reading and searching notes." }],
   actions: [{ action: "notes.search", purposes: ["inquiry"], level: "discover", limits: { max_operations: 3 } },
             { action: "notes.read", purposes: ["inquiry"], level: "discover" },
@@ -12,7 +12,7 @@ const notes = () => createDoor({ name: "notes", displayName: "Lantern Notes", ca
 
 async function main() {
   console.log("SDK (@kigenka/shokai)");
-  check(PROTOCOL === "shokai/0.3" && SPEC_VERSION === "0.3.0", "wire tag shokai/0.3, spec 0.3.0");
+  check(PROTOCOL === "shokai/0.5" && SPEC_VERSION === "0.5.0", "wire tag shokai/0.5, spec 0.5.0 (§11.1)");
   // signing and verification
   const k = generateRepresentativeKey(); const env = sign({ hello: "world" }, k);
   check(verifySigned(env).ok === true, "an Ed25519 envelope verifies");
@@ -40,6 +40,10 @@ async function main() {
   const v2 = await aya.visit(door, { purpose: "inquiry", actions: ["notes.add"] });
   check(v2.decision !== "grant", "asking beyond the mandate scope is not seated (" + v2.decision + "/" + v2.response?.disposition + ")");
 
+  // §7.7 (C274): a place lowers the costly-action cap; over it, refused (RATE_LIMITED) before the place acts.
+  { const dc = notes({ costlyActions: ["notes.search"], costlyActionCaps: { per_seat: 2 } }); const vc = await aya.visit(dc, { purpose: "inquiry", actions: ["notes.search"] });
+    const rs = [await vc.act("notes.search", { q: "a" }), await vc.act("notes.search", { q: "b" }), await vc.act("notes.search", { q: "c" })];
+    check(rs[0]?.ok === true && rs[1]?.ok === true && rs[2]?.type === "act_decision" && rs[2].reason_code === "RATE_LIMITED", `a costly action past the seat's cap is refused: ${rs.map((r: any) => r?.ok ? "ok" : r?.reason_code).join(",")}`); }
   // over HTTP
   const door2 = notes(); const srv = http.createServer(async (req, res) => { if (!(await door2.handleHttp(req, res))) { res.writeHead(404); res.end(); } });
   await new Promise<void>((r) => srv.listen(0, "127.0.0.1", r)); const port = (srv.address() as any).port; door2.setBaseUrl(`http://127.0.0.1:${port}/shokai`);

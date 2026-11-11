@@ -855,7 +855,7 @@ export class Representative {
     this.relationships.set(key, r);
     if (card && e.cardStatus === "verified") this.graph.record(card.principal.principal_id, "visited", this.clock.now(), `visit: ${core.decision}${core.disposition ? " " + core.disposition : ""}`, digestOf(resp));
     if (core.decision !== "grant") e.nonGrant.push(m?.proposal.request.actions.join(",") ?? "");
-    if (m && (core.decision === "conditional" || (core.decision === "deny" && ["MANDATE_SCOPE_EXCEEDED", "POLICY_DENY", "PURPOSE_NOT_SERVED"].includes(core.reason_code ?? ""))))
+    if (m && (core.decision === "conditional" || (core.decision === "deny" && core.reason_code === "MANDATE_SCOPE_EXCEEDED")))
       this.rejections.set(who, [...(this.rejections.get(who) ?? []), { at: this.clock.now(), shape: this.shape(m), response_msg_id: resp.msg_id, complied: false, conditions: core.conditions }]);
     if (core.decision === "grant" && resp.decision === "grant") e.grantedSeat = resp.seat;
     // v0.2.4 (Appendix B): a test-profile gathering place admits a verified requester of gathering.request_invitation:

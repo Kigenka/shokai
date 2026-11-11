@@ -16,7 +16,7 @@ const L = Exchange.log as Wire[];
 const fx = new Map<string, unknown>();
 const redact = (p: Record<string, unknown>): Record<string, unknown> => {
   const o = JSON.parse(JSON.stringify(p));
-  if (o.card) { fx.set("F13", o.card); o.card = { $fixture: "F13 Dana's representative card (generated, v0.2.1)" }; }
+  if (o.card) { fx.set("F13", o.card); o.card = { $fixture: "F13 Dana's Shōkai card (generated, v0.2.1)" }; }
   if (o.mandate) { fx.set("F14", o.mandate); o.mandate = { $fixture: "F14 Dana's mandate (generated, v0.2.1)" }; }
   if (o.seeking) { o.seeking = { $fixture: "Fernwood Seeking declaration (signed; see the reference transcript)" }; }
   if (o.visit_receipt?.nonce) o.visit_receipt.nonce = "<bearer secret: redacted in transcripts>";
@@ -39,7 +39,7 @@ const act = L.find((w) => w.payload.type === "act" && (w.payload as { encounter_
 const res = L.find((w) => w.payload.type === "act_result" && (w.payload as { encounter_id: string }).encounter_id === "lim-1")!;
 const anon = L.find((w) => w.payload.type === "greeting" && (w.payload as { encounter_id: string }).encounter_id === "l0a")!;
 out += block([act, res, anon]);
-out += `\n### F13 Dana's representative card (generated, v0.2.1)\n\n` + block(fx.get("F13"));
+out += `\n### F13 Dana's Shōkai card (generated, v0.2.1)\n\n` + block(fx.get("F13"));
 out += `\n### F14 Dana's mandate (generated, v0.2.1)\n\n` + block(fx.get("F14"));
 // ---------------- v0.2.2 ----------------
 const v3 = runV3();
@@ -49,7 +49,7 @@ let inlineAll = false;
 const redact2 = (p: Record<string, unknown>): Record<string, unknown> => {
   const o = JSON.parse(JSON.stringify(p));
   if (o.card) { const c = o.card as { payload: { principal: { display_name: string } } }; const aya = c.payload.principal.display_name === "Aya Linden";
-    if (aya) { fx.set("F18", o.card); o.card = { $fixture: "F18 Aya's representative card (generated, v0.2.3)" }; } else if (c.payload.principal.display_name.startsWith("Kiran")) { fx.set("F19", o.card); o.card = { $fixture: "F19 Kiran's representative card (generated, v0.2.3)" }; } else o.card = { $fixture: "the representative's card (signed by its owner)" }; }
+    if (aya) { fx.set("F18", o.card); o.card = { $fixture: "F18 Aya's Shōkai card (generated, v0.2.3)" }; } else if (c.payload.principal.display_name.startsWith("Kiran")) { fx.set("F19", o.card); o.card = { $fixture: "F19 Kiran's Shōkai card (generated, v0.2.3)" }; } else o.card = { $fixture: "the representative's card (signed by its owner)" }; }
   if (o.seeking) o.seeking = { $fixture: "Seeking declaration" };
   if (o.allowance_status) { fx.set("F20", o.allowance_status); o.allowance_status = { $fixture: "F20 AllowanceStatus, platform-signed, 1 h (generated, v0.2.4, D12)" }; }
   if (o.allowance?.allowance) { fx.set("F15", o.allowance.allowance); o.allowance.allowance = { $fixture: "F15 Aya's standing allowance (generated, v0.2.2)" }; }
@@ -83,8 +83,8 @@ inlineAll = false;
 out += `\n### F15 Aya's standing allowance (generated, v0.2.2)\n\n` + block(fx.get("F15"));
 out += `\n### F16 peer invitation (generated, v0.2.2)\n\n` + block(fx.get("F16"));
 out += `\n### F17 accept_invitation consent (generated, v0.2.2)\n\n` + block(fx.get("F17"));
-out += `\n### F18 Aya's representative card (generated, v0.2.3)\n\n` + block(fx.get("F18"));
-out += `\n### F19 Kiran's representative card (generated, v0.2.3)\n\n` + block(fx.get("F19"));
+out += `\n### F18 Aya's Shōkai card (generated, v0.2.3)\n\n` + block(fx.get("F18"));
+out += `\n### F19 Kiran's Shōkai card (generated, v0.2.3)\n\n` + block(fx.get("F19"));
 out += `\n### F20 AllowanceStatus, platform-signed, 1 h (generated, v0.2.4, D12)\n\nSigned by the owner binding's platform key (\`card.owner_binding.platform_key\` in F18). For testing, that key's seed is SHA-256 of the public label "platform:owner-chat" (the derivation test-vectors.json states), so an implementation can sign its own fresh statuses for replay. \`next_update\` − \`issued_at\` = 1 hour (D12).\n\n` + block(fx.get("F20"));
 // v0.2.3 (host-2-020): the policies of the places in the generated traces, informative (gate inputs are digested by version + digest).
 const pol = { fernwood: r.world.hosts.fernwoodRep.profile!.policy, kiran_pair_place: (p1.data.kiranRep as { profile: { policy: unknown } }).profile.policy, aya_pair_place: (p1.data.ayaRep as { profile: { policy: unknown } }).profile.policy };

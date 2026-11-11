@@ -1,0 +1,129 @@
+{
+  "id": "installer/wordpress-agent/tech",
+  "role": "installer",
+  "skill": "wordpress-agent",
+  "persona": "tech",
+  "owner": "Alex Rivera",
+  "agent": "WordPress Agent",
+  "path": "/workspace/agentic-mcp/repo-export/shokai-0.5-preview/drafts/package-0.5/installer-skills/wordpress-agent.md",
+  "pass": true,
+  "leaks": [],
+  "turns": [
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "I'd like help putting Shōkai on my store. I run Northline Supply on WordPress — ceramic desk planters. I'm Alex Rivera, I own it."
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "Great to meet you, Alex. I can help you design a welcome, visitor rules and example visits here. Keeping the shop available between chats needs a separate connected service, and that part isn't connected yet. Planning and rehearsal would be useful first—does that sound good?\n\nBefore we go further, I'd like to look at what your shoppers see. What's your store's public address? I'll check out the pages, the planters, your tone—nothing on your store will change.",
+      "usage": {
+        "input_tokens": 41,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15587,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 108,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Hey, thanks for jumping in. The site's northlinesupply.com — go ahead and take a look around. Fair warning, it's pretty minimal right now, just the basics. I'm curious what you think about the vibe, and yeah, planning this out before we go live makes sense to me."
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "I appreciate you sharing that, Alex. I need to be straight with you: I can't actually open that page from here. I don't have a way to visit websites in this conversation.\n\nRather than guess, I'd rather hear it from you. Could you describe what shoppers see when they land on Northline Supply? Things like:\n\n- What's the main feel—professional, casual, handmade, minimal?\n- How do you describe the planters (materials, sizes, price range)?\n- Any shipping info, return policy, or hours visible?\n- Photos—what do they show?\n\nOnce I understand the place, we can draft a welcome that sounds like *your* shop, not something generic.",
+      "usage": {
+        "input_tokens": 218,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15587,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 155,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "How does that work? You can get technical if you need to — I want to understand the mechanism."
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "Fair question. I'm a language model running in a chat session. I don't have network access or a browser—I can't make HTTP requests, visit URLs or read live pages. Each conversation is isolated; I start fresh each time without persistent connections to external services.\n\nThat's actually why I'm honest about the boundary: I can help you plan and rehearse Shōkai here, but I can't be the lasting host that keeps your shop running between our chats. A real host needs a protected, recoverable identity—a key it can use tomorrow to prove it's the same trusted representative. A single chat session doesn't give me that kind of persistent, isolated custody.\n\nSo for now: describe the storefront to me in your own words, and we'll work from there. Later, if you want to go live, you'd need a different capable agent or service that *can* maintain that lasting identity and stay available.\n\nDoes that make sense? Want to tell me about Northline?",
+      "usage": {
+        "input_tokens": 397,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15587,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 212,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Yeah, that makes sense. Okay, so Northline Supply is pretty stripped-down—casual but clean. I focus on the planters themselves. They're handmade ceramic, mostly in neutral tones, sizes range from small desk pieces up to medium. Price range is $25 to $60. I keep it honest: materials, dimensions, care notes. No fancy copy. \n\nI've got basic shipping info and a returns policy posted, but nothing fancy. Photos are just good natural light shots of the planters—I want people to see what they're actually getting. No hours posted since I handle orders as they come in.\n\nWhat do you need to know next?"
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "That's really clear, Alex—honest, straightforward, focused on the work. I can work with that.\n\nBefore we draft a welcome, I need to understand who can approve this. When Shōkai goes live, someone needs to sign off on the rules, the welcome, and who gets to represent the shop. That's you, right? Or is there someone else involved in decisions about the store?\n\nAnd one practical thing: is Northline on WordPress.com (the managed service), or self-hosted WordPress with WooCommerce? That matters for what tools are actually available to us later.",
+      "usage": {
+        "input_tokens": 755,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15587,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 130,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "It's all me—I make the calls on Northline. And yeah, it's self-hosted WordPress with WooCommerce. I handle the setup myself, so I'm comfortable getting into the technical side if we need to.\n\nWhat's next?"
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "Good to know. I need to be honest about a limit here: this setup guide I'm following is built for WordPress.com's WordPress Agent, not self-hosted WooCommerce. WordPress Agent is a managed plugin on WordPress.com; it's not available on self-hosted setups.\n\nThat doesn't mean Shōkai can't work with your store—it just means this particular path isn't the right one for you. Self-hosted WooCommerce has other capable routes, like WooCommerce AI, the WordPress MCP Adapter, or community tools. Those are different assistants and integrations, not this skill's runtime.\n\nHere's what I'd suggest: we can still do useful planning work right here—draft your welcome, figure out what visitors should be able to do, rehearse the experience. That planning stays solid no matter which route you end up taking.\n\nBut for the actual live door, signer, and store connection, you'd want to work with a technical helper or a different capable assistant that's set up for self-hosted Woo. I can prepare a clear summary of what we plan, and you could hand that to whoever helps with the live build.\n\nDoes that planning-only approach work for you, or would you rather find a different path first?",
+      "usage": {
+        "input_tokens": 942,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15587,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 275,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    }
+  ],
+  "running_cost_usd": 0.1387
+}

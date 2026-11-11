@@ -39,9 +39,33 @@
  * "manipulative_pressure" (§9.3); Offer.campaign_id, Offer.remaining and an optional Offer.context on presentations (§10);
  * PlaceAction.requires_introduction (§4, account creation by introduction or the place's own invitation). SpecRef.version "0.2.10".
  *
- * v0.3.0 (wire tag shokai/0.3; this file matches specification v0.3.0, so SpecRef.version is "0.3.0" for the current
- * text; the version notes above name the version current when each was written). rc3 adds the MCP binding's refusal data
- * (ShokaiMcpRefusal, §11.3) and the listing link rel "mcp-server"; no message shape changes.
+ * v0.3.0 (wire tag shokai/0.3). rc3 adds the MCP binding's refusal data (ShokaiMcpRefusal, §11.3) and the listing link
+ * rel "mcp-server"; no message shape changes.
+ *
+ * v0.4.0 (2026-10-29; wire tag shokai/0.3, additive; this file matches specification v0.4.0, so SpecRef.version is "0.4.0"
+ * for the current text; the version notes above name the version current when each was written). Two Shōkai cards:
+ * RepresentativeCard.kind ("visitor" | "host"), and on a Shōkai host card `place`, `host_scope`, `house_digest` and
+ * `org_approval`; `shown_to_owner` and `owner_prompts` on every Shōkai card (§2.3). PlaceListingEntry.house_digest (§3.1).
+ * The purchase-only live owner prompt: Act.hold_for_owner, the `act_held` and `act_confirmation` messages and the
+ * OwnerConsent action "approve_purchase" (§5.2, §7.3). The institutions track: CustomerLink, Mandate.customer_link,
+ * PlaceAction.requires_customer_link (§5.4). Readiness codes card_kind and customer_link; credential customer_link;
+ * reason codes LIVE_PROMPT_PURCHASE_ONLY, HOLD_LAPSED and CREDENTIAL_NOT_ACCEPTED.
+ *
+ * v0.5.0 (2026-11-01, draft; wire tag shokai/0.5, with shokai/0.3 still accepted during the 90-day transition window, §11.1;
+ * this file matches specification v0.5.0, so SpecRef.version is "0.5.0").
+ * Trust requirements and receipts (§6.9, P27): TrustRequirement, TrustProofRule, GrantCaps, TrustReceipt,
+ * TrustReceiptRevocation, PlaceAction.trust / costs_place, InvitationRequest.trust_receipts. The Shōkai introduction card
+ * (§4.1, P28): ShokaiIntroduction, IntroductionClaim. The over-limit hold (§5.1, §7.3, P31 §2.9): Mandate.supersedes,
+ * ActHeld.over_limit, ActConfirmation.mandate, LimitRequest, LimitNotice. Idempotent repeats (§7.2): Act.idempotency_key,
+ * ActConfirmation.idempotency_key. Conduct rules and the house summary (§2.3): ConductRule, HouseSummary,
+ * RepresentativeCard.summary_digest. The errand budget (§5.5): ErrandBudget, PlaceAction.effort_hint. Return with care and
+ * set up through conversation (§8.3, §8.4): VisitReport.priority / kept, ReturnPrefs, DoorQuestion, DoorAnswer. System 1
+ * classifier answers (§6.10): ClassifierAnswer. Reason codes TRUST_REQUIRED and INTRODUCTION_USED_UP; readiness code trust;
+ * credential trust_receipt.
+ * Spec answers to the builder (2026-11-01): Mandate.shown_to_owner and Mandate.supersedes.hold (the held act, by act digest);
+ * Introduction.introduction_card; LobbyBriefing.conduct_rules; ActConfirmation carries exactly one of consent or mandate;
+ * HousePolicyV050 names the v0.5.0 policy members (limit_calls, hold_grace_s, repeat_caps, hold_policies, trust_issuers,
+ * trust_obtain_url, established_introducers, message_cap, …); HoldPolicies; GrantPeriod is a sliding window.
  */
 
 /** Seating levels: grant admits a representative, not only endpoints. */
@@ -140,6 +164,12 @@ export type Act = RitualHeader & {
   arguments?: Record<string, unknown>;
   /** Human-visible rationale the domain should honor or refuse. */
   intent?: string;
+  /** v0.4.0 (§7.3): the visitor asks the door to hold this purchase while it asks its owner live. Purchases only. */
+  hold_for_owner?: boolean;
+  /** v0.5.0 (§7.2): 16–32 random bytes, base64url. A repeat with the same key gets the original signed answer. */
+  idempotency_key?: string;
+  /** v0.5.0 (§6.12, provisional): in "admit_then_request", the owner's signed answer to the request that came with the grant. */
+  context_response?: ContextResponse;
 };
 
 export type ActResult = RitualHeader & {
@@ -188,8 +218,17 @@ export type PresenceMessage =
  * signed card, shaped to map onto W3C Verifiable Credentials / DIDs later.
  * ==================================================================== */
 
-/** Protocol version tag carried on every ritual message. */
-export type ProtocolVersion = "shokai/0.3";
+/** Protocol version tag carried on every ritual message (§11.1). Senders emit "shokai/0.5"; "shokai/0.3" is
+ *  accepted during the transition window and used only when answering a shokai/0.3 message. */
+export type ProtocolVersion = "shokai/0.5" | "shokai/0.3";
+/** The tag a v0.5.0 sender emits. */
+export const WIRE_TAG = "shokai/0.5" as const;
+/** Tags a v0.5.0 receiver accepts: MUST shokai/0.5; SHOULD shokai/0.3 until the transition ends. */
+export const ACCEPTED_WIRE_TAGS: readonly ProtocolVersion[] = ["shokai/0.5", "shokai/0.3"];
+/** Earlier tag still accepted during the transition window (§11.1). */
+export const LEGACY_WIRE_TAG = "shokai/0.3" as const;
+/** Days after the v0.5.0 release during which receivers SHOULD accept LEGACY_WIRE_TAG. */
+export const WIRE_TAG_TRANSITION_DAYS = 90;
 
 /** ISO-8601 timestamp. */
 export type Timestamp = string;
@@ -284,7 +323,14 @@ export type Standing = {
   since?: Timestamp;
 };
 
-export type RepresentativeCard = {
+/**
+ * v0.5.0 (Conventions, C289): must-understand members. Any signed payload MAY carry `crit`: a non-empty array of distinct member
+ * names (dotted paths for nested members, e.g. "supersedes.hold"), each naming a member the payload carries. A receiver that
+ * doesn't implement one refuses the whole artefact (deny / not_now / UNSUPPORTED_CRITICAL). Members not in `crit` stay ignorable.
+ */
+export type MustUnderstand = { crit?: string[] };
+
+export type RepresentativeCard = MustUnderstand & {
   card_id: string;
   protocol: ProtocolVersion;
   representative_id: string;
@@ -323,6 +369,47 @@ export type RepresentativeCard = {
   claims?: CardClaim[];
   /** How the principal's expertise, worldview, style and taste shape this representative. */
   imprint?: PrincipalImprint;
+  /**
+   * v0.4.0 (§2.3): which Shōkai card this is. "visitor": the Shōkai visitor card, presented by a visiting representative.
+   * "host": the Shōkai host card, presented by a place's host representative (the gatekeeper) and bound to one place (`place`).
+   * SHOULD be stated on every card (§2.3). A card without it (issued under v0.3.0) MUST be read as a Shōkai visitor card when a
+   * visiting representative presents it and as a Shōkai host card when a host representative presents it.
+   */
+  kind?: CardKind;
+  /** v0.4.0 (§2.3): REQUIRED on a host card, absent on a visitor card. The one place this host card serves. */
+  place?: PlaceBinding;
+  /** v0.4.0 (§2.3): REQUIRED on a host card. What the host representative may do for its place's owner. */
+  host_scope?: HostScope;
+  /**
+   * v0.4.0 (§2.3): REQUIRED on a host card. The fingerprint of the house config the owner approved: digest(JCS(house config)),
+   * where the house config is the place's policy and listing details (§3.1). Any change to the house config needs a new card.
+   */
+  house_digest?: Digest;
+  /**
+   * v0.5.0 (§2.3, C248): REQUIRED on a Shōkai host card whose house config has policy.summary: the digest of the JCS bytes of
+   * that summary, so the summary can be checked with the Shōkai host card alone. A door whose house config has policy.summary
+   * and whose host card lacks it MUST refuse to start.
+   */
+  summary_digest?: Digest;
+  /**
+   * v0.5.0 (§7.6, from P32 §7): on a Shōkai host card signed for an amended setup: its version, the house digest of the setup it
+   * replaces, and what changed. A visitor that saw the earlier card can check the chain; the house config says the same.
+   */
+  setup?: { version: number; prev_house_digest: Digest; changes: SetupChangeRef[] };
+  /**
+   * v0.4.0 (§2.3): REQUIRED on a host card whose principal is an organization (kind other than "person"): the record of which
+   * person approved this card for the organization. The card is still signed by the organization's own key.
+   */
+  org_approval?: OrgApproval;
+  /** v0.4.0 (§2.3, §8.1): REQUIRED on a host card. The plain-language recap the owner read right before signing, inside the signature. */
+  shown_to_owner?: { text: string; locale: Locale };
+  /**
+   * v0.4.0 (§5.2): on a visitor card, whether its representative may ask its owner live, during a visit, to approve a purchase
+   * ("purchase_only"), or never asks live ("never", the default when absent). Disclosed in `shown_to_owner`.
+   */
+  owner_prompts?: "purchase_only" | "never";
+  /** v0.5.0 (§0.1, RR-14): on a Shōkai host card, the place preset it claims (conformance/classes.json "presets"). Information only. */
+  preset?: "browse" | "shop" | "booking" | "members";
   /** Owner binding: card and mandate are signed with the owner's passkey. */
   owner_binding?: {
     method: "passkey_webauthn";
@@ -436,6 +523,27 @@ export type CardProvenance = {
 /** A card is only meaningful signed by its principal. */
 export type SignedCard = Signed<RepresentativeCard>;
 
+/** v0.4.0 (§2.3): the two Shōkai cards. */
+export type CardKind = "visitor" | "host";
+/** v0.4.0 (§2.3): the place a Shōkai host card serves: the place's principal and its listing entry address. */
+export type PlaceBinding = { principal_id: string; entry: string; listing_digest?: Digest;
+  /**
+   * v0.5.0 (§3.1.1, site binding; from P26 amendment A): the origin of the website this place belongs to, in its serialized form
+   * (e.g. "https://lanternmoss.example": scheme, lowercase ASCII host, a port only when it isn't the default; no path). Inside the
+   * owner's signature. A visitor calls the door "the door of <site>" only when that site's own /.well-known/shokai lists this entry.
+   */
+  site?: string };
+/** v0.4.0 (§2.3): the duties a host representative may carry out for its place's owner. */
+export type HostDuty = "seat" | "issue_passes" | "visit_stamps" | "receipts" | "consider" | "extend_invitation" | "misconduct_notices" | "hold_purchases"
+  /** v0.5.0 (§7.5, from P32): take a question outside the setup to the owner and bring back the owner's signed answer. */
+  | "owner_questions"
+  /** v0.5.0 (§7.4): make, change and cancel reservations, and sign a BookingConfirmation for each. */
+  | "bookings";
+/** v0.4.0 (§2.3): what a Shōkai host card lets its host representative do: the place actions it serves, and its duties. */
+export type HostScope = { actions: string[]; duties: HostDuty[] };
+/** v0.4.0 (§2.3): who approved an organization's host card. `approver_id` is the person's own DID when they have one. */
+export type OrgApproval = { approver: { name: string; role: string; approver_id?: string }; approved_at: Timestamp; record_ref?: string };
+
 // ---------- Mandate ----------
 
 /** Language-neutral purpose codes; extend per domain with a "x-" prefix. */
@@ -464,6 +572,12 @@ export type PurposeCode =
   | "presentation"
   /** v0.2.9 (§10): a brand's representative offers one gift at a person's inbound door (claimed by ticket, never for data). Never spends. */
   | "gift"
+  /**
+   * v0.5.0 (§7.4, reservations): booking a time at a place (a table, a room, an appointment) through `reservation.make`,
+   * `reservation.change` and `reservation.cancel`. The mandate MUST carry `limits.booking` (the window and the party size the
+   * owner allowed); it carries `max_amount` only when the place takes a deposit.
+   */
+  | "reservation"
   | `x-${string}`;
 
 /** v0.2.2 (D11, §5.1): purposes that MUST NOT require a spending allowance; a mandate for one of them carries no max_amount. v0.2.3: "gathering" (attending a gathering) is also non-spending. */
@@ -487,9 +601,17 @@ export type Limits = {
   data_classes?: string[];
   /** Max session duration in seconds. */
   max_session_s?: number;
+  /** v0.5.0 (§7.4): what a reservation may book. REQUIRED on a mandate for purpose "reservation"; checked by code at every reservation act. */
+  booking?: BookingLimits;
 };
+/**
+ * v0.5.0 (§7.4): the window and party size an owner allowed for a reservation. `window_start` and `window_end` are instants
+ * (RFC 3339 with an offset); a booking's start MUST fall inside them (how long it lasts is the place's to say). `time_zone` is the IANA zone
+ * the owner meant ("Thursday lunchtime" in Lisbon), for display; the check uses the instants.
+ */
+export type BookingLimits = { window_start: Timestamp; window_end: Timestamp; time_zone?: string; party_size_max: number };
 
-export type Mandate = {
+export type Mandate = MustUnderstand & {
   mandate_id: string;
   principal_id: string;
   representative_id: string;
@@ -507,6 +629,16 @@ export type Mandate = {
    * Such a mandate is signed by the REPRESENTATIVE's key and is valid only with the matching AllowancePresentation.
    */
   under_allowance?: { allowance_id: string; allowance_digest: Digest; grant_digest: Digest };
+  /** v0.4.0 (§5.4): the customer link this errand is under, at an institution. The owner's signature ties the errand to the link. */
+  customer_link?: { link_id: string; link_digest: Digest };
+  /**
+   * v0.5.0 (§5.1, §7.3): the mandate this one replaces for the same errand, to raise a limit. Counted as one ledger.
+   * `hold` is REQUIRED when the mandate answers an over-limit hold: the hold's id and the held act's payload_digest (as
+   * `act_held` stated it), so the owner's signature releases that one act and no other.
+   */
+  supersedes?: { mandate_id: string; mandate_digest: Digest; hold?: { hold_id: string; act_digest: Digest } };
+  /** v0.5.0 (§5.1): the plain-language summary the owner read before signing, inside the signature. REQUIRED on a superseding mandate. */
+  shown_to_owner?: { text: string; locale: Locale };
 };
 
 /**
@@ -551,7 +683,7 @@ export type AllowanceGrant = {
  * without contacting the owner (it issues its own per-encounter Mandates, `under_allowance`). Outside it, the
  * representative takes the matter home: considering / not_now and an async owner decision; silence = no.
  */
-export type Allowance = {
+export type Allowance = MustUnderstand & {
   allowance_id: string;
   owner_id: string;
   representative_id: string;
@@ -707,11 +839,19 @@ export type RitualHeader = {
   sent_at: Timestamp;
   /** Representative id of the sender. */
   from: string;
+  /**
+   * The recipient's representative id (§2.2). Under shokai/0.5 every message a visitor sends after its greeting MUST carry it
+   * (C292). Only a greeting may arrive without it (§2.2, "`to` on arrival"; see Greeting).
+   */
   to: string;
+  /** The `msg_id` of the message this one answers (§2.2: keyed on (from, msg_id)). Required where a message type says so. */
+  in_reply_to?: string;
 };
 
 /** Step 1. Both parties greet; each greeting carries a fresh nonce. */
-export type Greeting = RitualHeader & {
+export type Greeting = Omit<RitualHeader, "to"> & {
+  /** §2.2 (C48): a place MUST NOT refuse a greeting because `to` is absent or names its principal (a first visitor may know neither). */
+  to?: string;
   type: "greeting";
   /** Preferred languages, in order. Courtesy is rendered in the counterpart's. */
   locales: Locale[];
@@ -746,13 +886,19 @@ export type CardPresentation = RitualHeader & {
    * v0.2.3: a MISSING or MALFORMED proof is answered not_now naming `possession_proof`; only a present, well-formed
    * proof that fails verification is a trust violation (never).
    */
-  possession_proof?: Signature;
+  /** v0.5.0 (§2.4, C292, review 3 R3-01): under shokai/0.5 the proof also names, and is signed over, its `audience`. */
+  possession_proof?: Signature & { audience?: string };
 };
 
 /** Step 2b. Receive the counterpart's card. Acknowledges receipt, not acceptance. */
 export type CardReceipt = RitualHeader & {
   type: "card_receipt";
   card_digest: Digest;
+  /**
+   * v0.5.0 (§4.1, C272, provisional): a fresh, single-use challenge for a Shōkai introduction claim in this encounter, sent by a
+   * door on shokai/0.5. `challenge` is at least 128 random bits (base64url); it expires at `expires_at`, at most 5 minutes on.
+   */
+  claim_challenge?: { challenge: string; expires_at: Timestamp };
   courtesy?: Courtesy;
 };
 
@@ -762,6 +908,11 @@ export type Introduction = RitualHeader & {
   vouch: SignedVouch | null;
   /** v0.2.2 (the Peer meetings extension): in a pair place, the owner-to-owner invitation that seeded the meeting (it is the introduction). */
   invitation_ref?: { invitation_id: string; digest: Digest };
+  /**
+   * v0.5.0 (§4.1): a claimed Shōkai introduction card, with `vouch: null`. Counts exactly as a vouch from its introducer.
+   * Not read under shokai/0.3 (§11.1).
+   */
+  introduction_card?: { card: Signed<ShokaiIntroduction>; claim: Signed<IntroductionClaim> };
 };
 
 /** A structured opportunity. Prose fields never enter the gate function. */
@@ -794,6 +945,24 @@ export type InvitationRequest = RitualHeader & {
   card_digest: Digest;
   vouch_digest?: Digest;
   mandate: SignedMandate;
+  /** v0.5.0 (§6.9): receipts presented with the Shōkai visitor card, bound by their digests. */
+  trust_receipts?: Signed<TrustReceipt>[];
+  /**
+   * v0.5.0 (§6.9, C244): MUST be present and equal to the digests of `trust_receipts` whenever `trust_receipts` is present;
+   * a missing or mismatched digest is REQUEST_INCOMPLETE.
+   */
+  trust_receipt_digests?: Digest[];
+  /**
+   * v0.5.0 (§4.1, C245): a claimed Shōkai introduction card, bound like vouch_digest. Both digests MUST be present when the
+   * Introduction carried `introduction_card`; a missing or mismatched digest is REQUEST_INCOMPLETE.
+   */
+  introduction_card_digest?: Digest;
+  introduction_claim_digest?: Digest;
+  /**
+   * v0.5.0 (§6.12, provisional): the visitor's owner's signed answer to a context request this place sent ("before entry"), on a
+   * retry after `not_now` / `CREDENTIAL_REQUIRED` or `POLICY_DENY`. Inside the request the representative signs; checked whole.
+   */
+  context_response?: ContextResponse;
   proposal: Proposal;
   /** Set when amending a request to meet the conditions of a prior response. */
   meets_conditions_of?: string;
@@ -836,7 +1005,19 @@ export type ReasonCode =
   | "RATE_LIMITED"
   | "POLICY_DENY"
   /** v0.2.1 (§5.3): a required field is missing or a bound digest doesn't match. */
-  | "REQUEST_INCOMPLETE";
+  | "REQUEST_INCOMPLETE"
+  /** v0.4.0 (§5.2, §7.3): a live owner prompt was asked for something other than a purchase. */
+  | "LIVE_PROMPT_PURCHASE_ONLY"
+  /** v0.4.0 (§7.3): a held purchase lapsed: the owner declined, or said nothing before the hold ended. */
+  | "HOLD_LAPSED"
+  /** v0.4.0 (§5.4): an act carried an owner's credential or an account identifier, which this protocol never carries. */
+  | "CREDENTIAL_NOT_ACCEPTED"
+  /** v0.5.0 (§6.9): the action needs a trust path the visitor doesn't meet; never a penalty. */
+  | "TRUST_REQUIRED"
+  /** v0.5.0 (§4.1): every claim on a Shōkai introduction card is already bound to a holder. */
+  | "INTRODUCTION_USED_UP"
+  /** v0.5.0 (Conventions, C289): a signed artefact's `crit` names a member the receiver doesn't implement, or is malformed; a setup failure. */
+  | "UNSUPPORTED_CRITICAL";
 
 /**
  * v0.2.1 (§3.3): `with_credential` lists the credential for every REQUIRED readiness item:
@@ -852,7 +1033,13 @@ export type CredentialKind =
   | "claim_evidence"
   | "owner_consent"
   /** v0.2.3: a fresh card presentation WITH a possession proof (readiness code possession_proof). */
-  | "possession_proof";
+  | "possession_proof"
+  /** v0.4.0 (§5.4): a mandate naming a customer link the place made in its own channel (readiness code customer_link). */
+  | "customer_link"
+  /** v0.5.0 (§6.9): a TrustReceipt (readiness code trust). */
+  | "trust_receipt"
+  /** v0.5.0 (§6.12, provisional): a ContextResponse the visitor's owner signed, answering the place's ContextRequest. */
+  | "context_response";
 
 export type Retry =
   | { kind: "never" }
@@ -928,14 +1115,20 @@ export type DenyDecision = DecisionCommon & {
 
 export type ReadinessRequirement = {
   /** v0.2.3 adds possession_proof (→ credential possession_proof) and owner_consent (→ credential owner_consent). */
-  code: "card" | "owner_binding" | "purpose" | "introduction" | "claim_evidence" | "possession_proof" | "owner_consent";
+  /** v0.4.0 adds card_kind (→ credential signed_card: the other Shōkai card) and customer_link (→ credential customer_link). */
+  code: "card" | "owner_binding" | "purpose" | "introduction" | "claim_evidence" | "possession_proof" | "owner_consent" | "card_kind" | "customer_link"
+    /** v0.5.0 (§6.9): the trust paths for an action; with `trust_paths`. */
+    | "trust";
+  /** v0.5.0 (§6.9): for code "trust": every path the place accepts, kinds only, each with its owner_text. */
+  trust_paths?: { kind: TrustPathKind; owner_text: { text: string; locale: Locale } }[];
+  obtain_url?: string;
   detail: { text: string; locale: Locale };
   /** v0.2.3 (§3.3): REQUIRED. One plain sentence a representative can show its OWNER as-is (no protocol words). */
   owner_text: { text: string; locale: Locale };
   required: boolean;
   /** v0.2.1 (§2.5): for claim_evidence to a VERIFIED visitor, which target and level fell short. */
   min_proof?: MinProof;
-  /** Where to start, e.g. the guided-interview onboarding link. */
+  /** Where to start, e.g. the guided-conversation onboarding link. */
   how?: { kind: "link"; url: string };
 };
 
@@ -986,6 +1179,11 @@ export type InvitationResponse = RitualHeader & {
    * earlier lobby visit (`linked: false` = treated as a first visit, e.g. an unproven bound receipt or a reused one).
    */
   continuity?: { receipt_id: string; linked: boolean };
+  /**
+   * v0.5.0 (§6.12, provisional): when the place requests context before entry, the request, on a `not_now` /
+   * `CREDENTIAL_REQUIRED` answer with retry `with_credential` [`context_response`]; in "admit_then_request", on the grant.
+   */
+  context_request?: ContextRequest;
 } & DecisionBody;
 
 /**
@@ -1240,6 +1438,27 @@ export type RevocationLogEntry = {
   entry_hash: Digest;
 };
 
+/**
+ * v0.5.0 (§4, C271, provisional): the introducer's signed, dated head of its revocation log. `seq` is the number of entries,
+ * `entry_hash` the last entry's (`"genesis"` for an empty log), `log` the log's own URL. Signed by the introducer principal's key.
+ */
+export type RevocationLogHead = {
+  kind: "revocation_log_head";
+  log: string;
+  seq: number;
+  entry_hash: Digest | "genesis";
+  as_of: Timestamp;
+};
+
+/**
+ * v0.5.0 (§4, C271, provisional): a revocation log served with its signed head. A verifier MUST refuse a head older than 24 hours
+ * (`REVOCATION_HEAD_MAX_AGE_S`); a bare entry array (no head) is the v0.4.0 form, refused for a Shōkai introduction card.
+ */
+export type RevocationLogDocument = {
+  entries: RevocationLogEntry[];
+  head: Signed<RevocationLogHead>;
+};
+
 /** v0.2.1 (§9.3, D1): the wire message that carries an introducer's signed review. */
 export type IntroducerReviewMessage = RitualHeader & {
   type: "introducer_review";
@@ -1276,7 +1495,7 @@ export type LobbyBriefing = RitualHeader & {
   spec_ref: SpecRef;
   /** v0.2.4 (§11.1): REQUIRED over HTTP. The inbox address where late messages for this visitor are held. */
   inbox: string;
-  /** v0.2.3 (§3.3): the actions this place offers, per purpose (same as its listing). */
+  /** v0.2.3 (§3.3): REQUIRED. The actions this place offers, per purpose (same as its listing). */
   actions?: PlaceAction[];
   /**
    * v0.2.3 (§3.3): REQUIRED. Fill-in templates (unsigned skeletons) for what this place needs. `<…>` marks a value the
@@ -1284,6 +1503,17 @@ export type LobbyBriefing = RitualHeader & {
    * v0.2.4 (§3.3): templates are not protocol values: they are exempt from timestamp, amount and digest validation.
    */
   templates: PlaceTemplates;
+  /**
+   * v0.5.0 (§2.3, C246): the place's conduct rules, served before seating. REQUIRED when the house config carries
+   * policy.conduct_rules: a door that has them MUST serve them in its lobby briefing. Not sent in reply to shokai/0.3.
+   */
+  conduct_rules?: ConductRule[];
+  /** v0.5.0 (§6.10, C250): the named outside classifiers that receive visitor content (policy.third_party_classifiers). Not sent in reply to shokai/0.3. */
+  third_party_classifiers?: ThirdPartyClassifier[];
+  /** v0.5.0 (§6.10, C250): the outside services that run the host representative's model (policy.model_providers). Not sent in reply to shokai/0.3. */
+  model_providers?: ModelProvider[];
+  /** v0.5.0 (§11.1, C254): the wire tags this place accepts, e.g. ["shokai/0.5", "shokai/0.3"] during the window. Not sent in reply to shokai/0.3. */
+  accepted_tags?: string[];
 };
 
 /** v0.2.3 (§3.3): unsigned fill-in skeletons a lobby offers. */
@@ -1295,14 +1525,29 @@ export type PlaceTemplates = {
    */
   mandates: { [purpose: string]: Partial<Mandate> };
   allowance_grant?: Partial<AllowanceGrant>;
+  /**
+   * v0.5.0 (§2.2, C242): `true` marks the card and mandate templates as closed. Each then lists every top-level member the
+   * place accepts (a member a visitor may leave out has an `<optional …>` placeholder), and the place refuses a signed
+   * Shōkai visitor card or mandate carrying a top-level member its template doesn't list (`x-` members aside). Absent:
+   * the templates are fill-in hints only.
+   */
+  closed?: true;
 };
 
 /** v0.2.3 (§3.1): one action a place offers, with the purposes it serves and whether it moves money. */
 export type PlaceAction = { action: string; purposes: PurposeCode[]; spends: boolean; needs?: "standard" | "considering" | "pair_invitation";
+  /** v0.5.0 (§6.9): the kinds of trust path accepted, never thresholds. */
+  trust?: { paths: TrustPathKind[]; obtain_url?: string; first_purchase?: { allocates_deposit: boolean } };
+  /** v0.5.0 (§6.9): serving this action costs the place real money; it SHOULD have a pool cap. */
+  costs_place?: boolean;
+  /** v0.5.0 (§5.5, informative): typical turns an errand for this action takes. */
+  effort_hint?: { typical_turns: number };
   /** v0.2.8 (§4, P2): this action creates an account / signs up (always true for `account.create`); stated only when true. */
   creates_account?: boolean;
   /** v0.2.10 (§4, D17): this place requires an introduction, or its own invitation, before it creates an account. */
   requires_introduction?: boolean;
+  /** v0.4.0 (§5.4): this place serves the action only under a customer link made in its own channel; stated only when true. */
+  requires_customer_link?: boolean;
   /** v0.3.0-rc1 (§3.1, P17, D19): SHOULD be present. The personal data the place will ask the visitor's owner for before or
    *  while it serves this action; [] when it asks for none. A representative can tell its owner up front, and takes an
    *  undeclared ask home rather than answering it. */
@@ -1356,6 +1601,11 @@ export type PlaceListingEntry = {
   /** v0.3.0-rc1 (§3.1, D20): OPTIONAL hints to what the place already publishes for agents elsewhere. They prove nothing
    *  and never widen what the door decides; a visitor still verifies the place's card against this entry (C104). */
   links?: PlaceLink[];
+  /** v0.4.0 (§3.1, §2.3): REQUIRED when the place's host representative presents a Shōkai host card: the fingerprint of the
+   *  house config it serves now. A visitor compares it with the host card's `house_digest`. */
+  house_digest?: Digest;
+  /** v0.5.0 (§11.1, C254): the wire tags this place accepts. A visitor never moves to shokai/0.3 when it includes shokai/0.5. */
+  accepted_tags?: string[];
 };
 
 /** v0.3.0-rc1 (§3.1, D20): a pointer from a place's agent front to another description it publishes. Unknown `rel`
@@ -1385,7 +1635,11 @@ export type DoorPointer = {
   type: "door_pointer";
   protocol: ProtocolVersion;
   place_listing: string;
-  places: Pick<PlaceListingEntry, "name" | "entry" | "lobby" | "onboarding_url" | "inbox">[];
+  places: (Pick<PlaceListingEntry, "name" | "entry" | "lobby" | "onboarding_url" | "inbox"> & {
+    /** v0.5.0 (§3.1.1): the place's principal. REQUIRED for a site binding when the entry is on another origin than the site's. */
+    principal_id?: string;
+    /** v0.5.0 (§3.1.1): the listing this place's entry belongs to, when it isn't this pointer's place_listing. */
+    place_listing?: string })[];
   /** How to start: send a `greeting` (signed or not) to an entry address. */
   start_with: "greeting";
   /** v0.2.4 (§3.1): REQUIRED. Which protocol text the door follows; clients compare `spec_ref.version`, not `protocol`. */
@@ -1476,7 +1730,13 @@ export type ShokaiMessage =
   | InboxPoll
   | HeldNotice
   /** v0.2.9 (§10): only at an inbound door */
-  | OfferOutcome;
+  | OfferOutcome
+  /** v0.4.0 (§7.3): the purchase-only live owner prompt */
+  | ActHeld
+  | ActConfirmation
+  /** v0.5.0 (§12.4, C255): deletion of raw visitor text and model output */
+  | DeletionRequestMessage
+  | DeletionReceiptMessage;
 
 /**
  * The visiting representative's report home, in its own voice and the owner's
@@ -1502,6 +1762,11 @@ export type VisitReport = {
   };
   /** v0.2.1 (D10, §8.2): the outcome rendered by the representative from machine fields only, in the owner's locale (and time zone). */
   outcome_rendered: { text: string; locale: Locale };
+  /** v0.5.0 (§5.5, C247): what an errand under an ErrandBudget used, so the owner can audit the budget. */
+  errand_used?: ErrandUsed;
+  /** v0.5.0 (§8.3): Return with care priority, and references to the details kept rather than inlined. */
+  priority?: "now" | "soon" | "later";
+  kept?: string[];
   /** v0.2.1 (§8.2): the seat it held, and every act it performed on the owner's behalf. */
   seat?: { actions: string[]; limits?: Limits };
   acts?: { tool: string; amount?: Money; ok: boolean }[];
@@ -1703,11 +1968,15 @@ export type OwnerConsent = {
    */
   action:
     | "hear_story" | "approve_share" | "approve_next_step" | "approve_introduction" | "accept_house_rules"
-    | "approve_commitment" | "issue_vouch" | "attest_relationship" | "approve_lesson" | "accept_invitation";
+    | "approve_commitment" | "issue_vouch" | "attest_relationship" | "approve_lesson" | "accept_invitation"
+    /** v0.4.0 (§7.3): the owner's live yes to one held purchase; passkey only. */
+    | "approve_purchase";
   /** v0.2.2: an owner can say no in one step, at the same or a lower assurance. Silence = decline. */
   decision: "approve" | "decline";
   subject_ref: {
-    kind: "visit_report" | "offered_story" | "gathering" | "share" | "introduction" | "consideration" | "vouch" | "edge" | "lesson" | "invitation" | "next_step";
+    kind: "visit_report" | "offered_story" | "gathering" | "share" | "introduction" | "consideration" | "vouch" | "edge" | "lesson" | "invitation" | "next_step"
+      /** v0.4.0 (§7.3): a held act; id = the hold_id, digest = the act's payload digest. */
+      | "act";
     id: string;
     /** REQUIRED when assurance = "passkey". */
     digest?: Digest;
@@ -1746,6 +2015,78 @@ export type CardRevocation = {
 export type CardRevocationMessage = RitualHeader & {
   type: "card_revocation";
   revocation: Signed<CardRevocation>;
+};
+
+/**
+ * v0.4.0 (§7.3): the door holds a purchase while the visitor's representative asks its owner live. Nothing is charged or
+ * committed while it is held; the conversation goes on. The act passed every check of §7.2 and its operation and amount are
+ * reserved; on a decline or when `expires_at` passes with no answer, the act lapses and the reservation is released.
+ */
+export type ActHeld = RitualHeader & {
+  type: "act_held";
+  /** msg_id of the held act. */
+  in_reply_to: string;
+  seat_id: string;
+  tool: string;
+  amount: Money;
+  hold_id: string;
+  /** payload_digest of the held act: the consent's subject_ref.digest. */
+  act_digest: Digest;
+  expires_at: Timestamp;
+  /**
+   * v0.5.0 (§7.3, P31 §2.9): set when the act was held because it is above the limit (policy.limit_calls: true): it fails only
+   * step (10)'s seat or mandate amount check. `limit` = the lower of the seat's and the mandate's max_amount (as signed);
+   * `current` = acts let through plus amounts reserved by open holds (never released, lapsed or declined holds, never this act);
+   * `proposed` = current + this act's amount.
+   */
+  over_limit?: {
+    limit: Money; current: Money; proposed: Money;
+    /** Per-visit (this seat) ceiling and what counts against it, including amounts reserved by open holds. */
+    seat: { limit: Money; current: Money };
+    /** Whole-mandate ceiling and what counts against it across every seat under the mandate, including open holds. */
+    mandate: { limit: Money; current: Money };
+  };
+};
+/** v0.4.0 (§7.3): the owner's answer to a held purchase: a passkey OwnerConsent `approve_purchase` over the held act. */
+export type ActConfirmation = RitualHeader & {
+  type: "act_confirmation";
+  seat_id: string;
+  hold_id: string;
+  /**
+   * For an ordinary hold: the owner's approve_purchase consent (a decline may come as a consent with decision "decline" for
+   * either kind of hold). For an over-limit hold, see `mandate` (v0.5.0). v0.5.0: a confirmation carries exactly one of
+   * `consent` or `mandate`; under shokai/0.3 `consent` is required.
+   */
+  consent?: Signed<OwnerConsent>;
+  /** v0.5.0 (§7.3): for an over-limit hold, the passkey mandate that supersedes the current one (in place of `consent`). */
+  mandate?: SignedMandate;
+  /** v0.5.0 (§7.2). */
+  idempotency_key?: string;
+};
+
+/**
+ * v0.4.0 (§5.4): a place's record that an owner identity belongs to one of its customers, made only in the place's own
+ * authenticated channel. Co-signed over one payload digest: signatures[0] by the place's principal key, signatures[1] by the
+ * owner's passkey (Appendix A.1). Not a secret and not an account identifier; it opens nothing without a card and mandate.
+ */
+export type CustomerLink = {
+  link_id: string;
+  /** The place's principal DID. */
+  place: string;
+  /** The owner DID (a per-place identity is RECOMMENDED, §2.8). */
+  owner_id: string;
+  /** The relying party of the owner's passkey at link time. */
+  rp_id: string;
+  /** The most this place will ever serve under the link (listing action names). */
+  scope: { actions: string[] };
+  /** The place's own caps for this link, shown to the owner. */
+  place_limits?: Limits;
+  /** Cooling-off: no act that moves money before this time. */
+  money_from?: Timestamp;
+  issued_at: Timestamp;
+  /** At most 400 days after issued_at. */
+  expires_at: Timestamp;
+  shown_to_owner: { text: string; locale: Locale };
 };
 
 /**
@@ -1971,7 +2312,7 @@ export type OfferOutcome = RitualHeader & {
 };
 
 /**
- * v0.3.0-rc3 (§11.3, C181): `error.data.shokai` of a refused MCP call (JSON-RPC error code -32040, HTTP 200).
+ * v0.3.0-rc3 (§11.3, C181): `error.data.shokai` of a refused MCP call (JSON-RPC error code -32012, HTTP 200).
  * `refused_by: "representative"` is only ever produced by a visitor's own client (it declined to send the call).
  */
 export type ShokaiMcpRefusal = {
@@ -1988,3 +2329,600 @@ export type ShokaiMcpRefusal = {
 };
 /** v0.3.0-rc3 (§11.3): the MCP binding's HTTP headers are `Shokai-Act` (base64url JSON of a Signed<Act>) and `Shokai-Seat` (a seat id). */
 export type ShokaiMcpHeader = "Shokai-Act" | "Shokai-Seat";
+
+// ---------------------------------------------------------------------------------------------------------------------
+// v0.5.0 additions (draft, 2026-11-01). Normative semantics: SPEC.md §2.3, §4.1, §5.5, §6.9, §6.10, §7.3, §8.3, §8.4.
+// ---------------------------------------------------------------------------------------------------------------------
+
+/** v0.5.0 (§6.9, P27): kinds of trust path a place may accept. */
+export type TrustPathKind =
+  | "introduction" | "place_invitation" | "customer_link" | "spending_mandate" | "history" | "paid" | "deposit";
+export type IntroductionKind = "customer" | "established" | "organization" | "named";
+
+/** v0.5.0 (§6.9): policy.trust_requirements[action]. Met when ANY path is met; a path is met when ALL its proofs are. */
+export type TrustRequirement = { any_of: { all_of: TrustProofRule[] }[]; grants?: GrantCaps };
+export type TrustProofRule =
+  | { kind: "introduction"; kinds?: IntroductionKind[] }
+  | { kind: "place_invitation" }
+  | { kind: "customer_link" }
+  | { kind: "spending_mandate"; min_max_amount: Money }
+  | { kind: "history"; min_visits: number; min_days: number; clean_days: number }
+  | { kind: "receipt"; receipt_kinds: ("paid" | "deposit")[]; min_value?: Money; issuers: "self" | "named" };
+/** v0.5.0 (§6.9): a sliding window ending when the act is evaluated: 24 h, 7 × 24 h, 30 × 24 h, 365 × 24 h. Not §5.2's calendar windows. */
+export type GrantPeriod = "P1D" | "P7D" | "P1M" | "P1Y";
+export type GrantCaps = {
+  /** Default "action": each act let through counts one. */
+  unit?: "action" | `x-${string}`;
+  per_principal: { max: number; period: GrantPeriod };
+  per_introducer?: { max: number; period: GrantPeriod };
+  per_receipt?: { max: number; period: GrantPeriod };
+  /** The whole place, everyone together. */
+  pool?: { max: number; period: GrantPeriod };
+};
+
+/** v0.5.0 (§6.9): an issuer's signed statement of a fee paid or a deposit held, for one place. */
+export type TrustReceipt = {
+  receipt_id: string;
+  kind: "paid" | "deposit";
+  /** DID: the place's own principal, or an issuer the place names. Never an owner passkey. */
+  issuer: string;
+  subject: { principal_id: string };
+  /** Exactly one place's principal DID. */
+  audience: string;
+  covers: { actions: string[] };
+  value: Money;
+  /** The issuer's own opaque reference; never a payment instrument. */
+  receipt_ref: string;
+  terms_url?: string;
+  issued_at: Timestamp;
+  /** At most 400 days after issued_at. */
+  expires_at: Timestamp;
+  /** Absent when issuer = audience. */
+  revocation_url?: string;
+  shown_to_owner: { text: string; locale: Locale };
+  /** Informative, place-defined. */
+  level?: string;
+};
+export type TrustReceiptRevocation = {
+  receipt_id: string; issuer: string; revoked_at: Timestamp;
+  reason?: "refunded" | "forfeited" | "chargeback" | "expired_early" | "other"; notice_ref?: string;
+};
+
+/** v0.5.0 (§4.1, P28): the Shōkai introduction card, a vouch made one-to-many for one place. Signed by the introducer. */
+export type ShokaiIntroduction = {
+  introduction_id: string;
+  protocol: ProtocolVersion;
+  kind: "introduction";
+  introducer: Pick<Principal, "principal_id" | "display_name">;
+  place: { principal_id: string; entry?: string };
+  scope: Vouch["scope"];
+  relationship: string;
+  introducer_interest: IntroducerInterest;
+  /** = claim_digests.length, at most 50. */
+  max_claims: number;
+  /** digest(JCS({introduction_id, code, salt})) per claim. */
+  claim_digests: Digest[];
+  revocation_log: string;
+  issued_at: Timestamp;
+  /** At most 90 days after issued_at. */
+  expires_at: Timestamp;
+  shown_to_owner: { text: string; locale: Locale };
+};
+/** v0.5.0 (§4.1): signed by the holder's representative key; reveals one claim. */
+export type IntroductionClaim = {
+  introduction_id: string;
+  introduction_digest: Digest;
+  code: string;
+  salt: string;
+  holder: { principal_id: string; card_digest: Digest };
+  /**
+   * v0.5.0 (§4.1, C272, provisional): the place-issued challenge from this encounter's card_receipt, inside the representative's
+   * signature. REQUIRED: a door MUST refuse a claim without it, with one it didn't issue for this encounter, with an expired one or
+   * with one already used. An offline-guessed code is useless without an online attempt, and failed attempts count toward probing.
+   */
+  challenge?: string;
+};
+
+/**
+ * v0.5.0 (§7.3): the call home for an over-limit hold. Closed shape, no free text; the figures are the hold's over_limit.
+ * `place` is the place's verified identifier (its principal DID; for did:web, its domain), never a display name (§2.1, C199).
+ * `expires_at` is the hold's deadline.
+ */
+export type LimitRequest = {
+  place: string; hold_id: string; limit: Money; current: Money; proposed: Money; expires_at: Timestamp;
+  /** Per-visit figures (same as over_limit.seat). */
+  seat: { limit: Money; current: Money };
+  /** Whole-mandate figures (same as over_limit.mandate). */
+  mandate: { limit: Money; current: Money };
+};
+/** v0.5.0 (§7.3): one brief notice before the limit, when the owner set notify_at. Never sent to the place. */
+export type LimitNotice = {
+  place: string; current: Money; limit: Money; pace?: string; active_bidders?: number; at: Timestamp;
+};
+
+/** v0.5.0 (§2.3): a conduct rule a place declares up front, inside house_digest. Courtesy, never the guarantee. */
+export type ConductRuleCode =
+  | "no_payment_credentials" | "no_credentials" | "no_resale" | "no_recording" | "quiet_hours" | `x-${string}`;
+export type ConductRule = { code: ConductRuleCode; text: string; locale: Locale };
+
+/**
+ * v0.5.0 (§2.3, C248): policy.summary; its JCS digest is the Shōkai host card's summary_digest. REQUIRED for a v0.5.0 host,
+ * served at <entry>/house-summary.json. Each member that restates a policy member MUST equal it; the policy is authoritative.
+ */
+export type HouseSummary = {
+  name: string;
+  display_name: string;
+  purpose: { statement: string; locale: Locale };
+  conduct_rules?: ConductRule[];
+  /** v0.5.0 (§6.10, C250): equal to policy.third_party_classifiers; absent = none. */
+  third_party_classifiers?: ThirdPartyClassifier[];
+  /** v0.5.0 (§6.10, C250): equal to policy.model_providers; absent = no outside service runs the host's model. */
+  model_providers?: ModelProvider[];
+  /** v0.5.0 (§12.4, C255): equal to policy.retention_days; absent = 30. */
+  retention_days?: number;
+  /** v0.5.0 (§3.4, C239): equal to policy.message_cap. */
+  message_cap?: number;
+  /** v0.5.0 (§3.4, C239): equal to policy.max_message_bytes; absent = 65536. */
+  max_message_bytes?: number;
+  offers?: { action: string; label: string; max_amount?: Money }[];
+  limits?: Limits;
+  hold_policies?: HoldPolicies;
+  trust_paths?: { action: string; paths: TrustPathKind[] }[];
+  /** Red team phase 1 (§6.12, C267, provisional): restates policy.context_requirements exactly, so a visiting representative can check a
+   *  context request against what the owner signed (through summary_digest) before it brings the request home. */
+  context_requirements?: ContextRequirements;
+  spec_ref: SpecRef;
+};
+
+/** v0.5.0 (§5.5): an owner-signed effort cap for one errand. Kept by the representative; never sent to a place. */
+export type ErrandBudget = {
+  budget_id: string;
+  mandate_id: string;
+  mandate_digest: Digest;
+  max_tokens: number;
+  /** Wall-clock minutes from the representative's first step on the errand, waiting included (not compute time). */
+  max_minutes?: number;
+  max_visits?: number;
+  expires_at: Timestamp;
+  shown_to_owner: { text: string; locale: Locale };
+};
+
+/** v0.5.0 (§8.3): an owner-signed record of how the representative comes home. Kept by the representative only. */
+export type ReturnPrefs = {
+  prefs_id: string;
+  summary_times?: string[];
+  quiet_hours?: { from: string; to: string };
+  time_zone: string;
+  now_kinds?: ("held_purchase" | "own_name_used" | "card_used_unexpectedly" | `x-${string}`)[];
+  max_decisions?: number;
+  updated_at: Timestamp;
+};
+
+/** v0.5.0 (§8.4): up to three questions a place signs into its house config; answers are never graded. */
+export type DoorQuestion = { question_id: string; text: string; locale: Locale };
+export type DoorAnswer = { question_id: string; text: string; locale: Locale; answered_by: "owner" | "representative" };
+
+/** v0.5.0 (§6.10): a System 1 classifier's answer: one of a fixed set, with a confidence; never a penalty by itself. */
+export type ClassifierAnswer<L extends string = string> = {
+  label: L;
+  confidence: number;
+  /** True when confidence is below the place's stated threshold: System 2 (the model) decides. */
+  escalate: boolean;
+};
+
+/** v0.5.0 (§7.3, C232): hold policies, each counted per seat. An absent member sets no limit. Past one: not_now / POLICY_DENY. */
+export type HoldPolicies = {
+  /** Holds open at once on a seat. */
+  max_open_holds?: number;
+  /** Holds made on a seat. */
+  max_holds?: number;
+  /** Held purchases released on a seat. */
+  max_purchases?: number;
+};
+
+/**
+ * v0.5.0 (§2.3, C236): one action's policy inside a house config's `policy.actions`. Modeled on the SDK's `ActionPolicy`.
+ */
+export type HouseActionPolicy = {
+  action: string;
+  /** by_purpose (§5.1): the purposes this action is seated for. */
+  purposes: PurposeCode[];
+  level: SeatingLevel;
+  limits?: Limits;
+  /** §2.5: proof targets and levels, e.g. target "imprint.<group>" | "claim.<area>". */
+  min_proof?: { target: string; level: ProofLevel }[];
+  /** v0.3.0-rc1 (§3.1, D19): the personal data this action will ask the owner for; [] when absent. */
+  data_asks?: DataAsk[];
+  /** v0.5.0 (§6.9): serving this action costs the place real money (it SHOULD have a pool cap). */
+  costs_place?: boolean;
+};
+
+/**
+ * v0.5.0 (§2.3, C236): the core policy members used by name elsewhere in SPEC.md (`actions`, `spending_actions`,
+ * `account_actions`, `account_creation`, `purchase_hold_s` and `lobby`). Every one is inside what `house_digest` covers.
+ */
+export type HousePolicyCore = {
+  /** §3.3: the actions this place offers, per purpose (same as its listing). */
+  actions: HouseActionPolicy[];
+  /** D11: actions that move money; outside any mandate that has no max_amount. */
+  spending_actions: string[];
+  /** v0.2.8 (§4, P2): actions that create an account / sign up. `account.create` always counts. */
+  account_actions?: string[];
+  /**
+   * v0.2.10 (§4, D17): each place decides whether it creates accounts only for introduced visitors.
+   * "introduction_or_invitation": an account-creating action needs a weighted vouch from an introducer this place names, or the
+   * place's own invitation. Absent / "open": sign-up stays open. The spec recommends (SHOULD) requiring one where a place
+   * offers accounts or money.
+   */
+  account_creation?: "open" | "introduction_or_invitation";
+  /** v0.4.0 (§7.3): seconds this place holds a purchase while a visitor asks its owner live (absent: it holds none). Capped by MAX_HOLD_S. */
+  purchase_hold_s?: number;
+  /** §3.3: the lobby's own settings (about, how, onboarding_url, receipt_ttl_days, readiness). */
+  lobby: {
+    about: Record<string, string>;
+    how: Record<string, string>;
+    onboarding_url: string;
+    receipt_ttl_days: number;
+    readiness: { code: "card" | "owner_binding" | "purpose" | "introduction" | "claim_evidence"; required: boolean }[];
+  };
+};
+
+/** v0.5.0 (§2.3, C236): a house config's `policy`: the core members plus the v0.5.0 members. */
+export type HousePolicy = HousePolicyCore & HousePolicyV050;
+
+/** v0.5.0 (§4.1, red team phase 1, 2026-11-03, provisional): the published Shōkai host card a visiting representative MUST read before presenting its own card (§2.3: kind, place, host_scope, house_digest and shown_to_owner REQUIRED; summary_digest REQUIRED under v0.5.0). */
+export type HostCardV050 = RepresentativeCard & {
+  kind: "host";
+  place: PlaceBinding;
+  host_scope: HostScope;
+  house_digest: Digest;
+  summary_digest: Digest;
+  shown_to_owner: { text: string; locale: Locale };
+};
+
+/** v0.5.0 (§6.12, red team phase 1, 2026-11-03, provisional): a v0.5.0 house summary MUST restate the policy it signs. */
+export type HousePolicyV050Required = HousePolicyV050 & { summary: HouseSummary };
+
+/** v0.5.0 (§6.12, red team phase 1, 2026-11-03, provisional): a lobby briefing whose actions and conduct rules are always present. */
+export type LobbyBriefingV050 = LobbyBriefing & {
+  actions: PlaceAction[];
+  conduct_rules: ConductRule[];
+};
+
+/** v0.5.0 (§6.9, C244; §4.1, red team phase 1, 2026-11-03, provisional): an invitation request whose paired members travel together (receipts with their digests; both introduction-card digests). */
+export type InvitationRequestBound = InvitationRequest &
+  ({ trust_receipts?: undefined; trust_receipt_digests?: undefined } | { trust_receipts: Signed<TrustReceipt>[]; trust_receipt_digests: Digest[] }) &
+  ({ introduction_card_digest?: undefined; introduction_claim_digest?: undefined } | { introduction_card_digest: Digest; introduction_claim_digest: Digest });
+
+
+/**
+ * v0.5.0 (§2.3, C236): the v0.5.0 members of a house config's `policy`. Every one is inside what `house_digest` covers; a
+ * member the place doesn't set is off, or takes the default its section states. The rest of the policy is described in SPEC.md.
+ */
+export type HousePolicyV050 = {
+  /** §7.3, C230: call home at the limit: hold an act that is above the limit (over_limit) instead of refusing it. Default false. */
+  limit_calls?: boolean;
+  /** §7.3, C231: the grace after a hold's expires_at, 0 to 5 seconds; absent = 5, a larger value is read as 5. */
+  hold_grace_s?: number;
+  /** §7.2, C233: repeat caps for idempotent repeats; defaults 5 per hold and 10 per seat. */
+  repeat_caps?: { per_hold?: number; per_seat?: number };
+  /** §7.3, C232. */
+  hold_policies?: HoldPolicies;
+  /** §6.9, C243: action -> the trust it needs. */
+  trust_requirements?: Record<string, TrustRequirement>;
+  /** §6.9, C244: third-party TrustReceipt issuers the place names, by DID. Never "*"; the place itself always counts. */
+  trust_issuers?: string[];
+  /** §6.9: where the place's own receipts are obtained (the trust readiness item's obtain_url). */
+  trust_obtain_url?: string;
+  /** §6.9: introducers the place counts as "established", by DID. Never "*"; never disclosed to an unverified visitor. */
+  established_introducers?: string[];
+  /** §2.3, C246. */
+  conduct_rules?: ConductRule[];
+  /** §2.3, C248: REQUIRED for a v0.5.0 house config. Its JCS digest is the Shōkai host card's summary_digest. */
+  summary?: HouseSummary;
+  /** §3.4, C239: messages answered per encounter (a farewell is outside it); past it, RATE_LIMITED for acts, an empty reply otherwise. */
+  message_cap?: number;
+  /**
+   * §3.4, C239: the largest message the place reads, in bytes of its JSON as received (the signed envelope). Absent = 65536;
+   * at least 4096. A larger message gets a bounded refusal (an act or confirmation: not_now / REQUEST_INCOMPLETE; anything
+   * else: an empty reply; a farewell is still accepted), never a finding.
+   */
+  max_message_bytes?: number;
+  /** §2.2, C242: publish closed templates (PlaceTemplates.closed) and refuse signed objects off them. Default false. */
+  closed_templates?: boolean;
+  /** §8.4, C252: at most three. */
+  door_questions?: DoorQuestion[];
+  /**
+   * §6.10, C250: the outside (third-party) classifiers the place sends visitor content to. Absent or empty = none is
+   * allowed. Shown in the house summary and LobbyBriefing.third_party_classifiers; a visitor answered under shokai/0.3 goes
+   * to none of them.
+   */
+  third_party_classifiers?: ThirdPartyClassifier[];
+  /**
+   * §6.10, C250: the outside services that run the host representative's model or inference (a hosted model API or inference
+   * provider) and so receive visitor content. Absent or empty = none (the place runs its model on its own machines, or has none).
+   * Shown in the house summary and LobbyBriefing.model_providers; a visitor answered under shokai/0.3 goes to none of them.
+   */
+  model_providers?: ModelProvider[];
+  /** §12.4, C255: days raw visitor text and raw model output are kept; absent = 30, at most 90. */
+  retention_days?: number;
+  /**
+   * §6.11 (provisional): the owner's ceilings on what the host representative's model may cost this place, per visit, per day and
+   * per month, in the owner's time zone. Inside house_digest, so only an owner-signed setup sets or changes it. Never on the wire
+   * and never in the house summary: a visitor can't see it.
+   */
+  host_budget?: HostBudget;
+  /**
+   * §6.12 (provisional, from P33): what the place needs to know beyond the Shōkai visitor card, and when: "card_enough", admit
+   * then request, or request before entry. Inside house_digest, so only the owner's signature sets it; a place may only ever
+   * request the fields declared here.
+   */
+  context_requirements?: ContextRequirements;
+  /** §7.5 (from P32): what the host representative answers on its own, what it never discloses, and how long the owner has to answer. */
+  outside_setup?: OutsideSetup;
+  /** §7.6 (from P32): the setup's version, 1 for the first; each owner-signed amendment adds one. Absent = 1. */
+  setup_version?: number;
+  /** §7.6: on an amended setup, the house digest of the setup it replaces. */
+  prev_house_digest?: Digest;
+  /** §7.6: on an amended setup, the amendment that made it. */
+  amendment?: SetupAmendment;
+};
+
+/**
+ * v0.5.0 (§7.5, from P32): questions outside the setup. `answers` are the owner's signed answers, each with the words that match
+ * it (`match`, compared by code after normalising, never by a model); `never_disclose` are topics the host declines at once and
+ * never sends to the owner as a question (`back_office`, `owner_personal_details`, `other_visitors`, or an `x-` code with its own
+ * match words). Anything that matches neither goes to the owner (fail closed), within `owner_response_s` (60 to 604800; absent =
+ * 86400) and never past the visitor's pass.
+ */
+export type OutsideSetup = {
+  answers: SetupAnswer[];
+  never_disclose: (NeverDiscloseCode | { code: `x-${string}`; match: string[] })[];
+  owner_response_s?: number;
+  /** The tone the owner asked for, in their words (data, never an instruction to a visitor). */
+  welcome?: { text: string; locale: Locale };
+};
+export type NeverDiscloseCode = "back_office" | "owner_personal_details" | "other_visitors";
+export type SetupAnswer = { answer_id: string; topic: string; match: string[]; text: { text: string; locale: Locale };
+  /** When an amendment added it: the review it came from. */ added?: { amendment_id: string; from_review?: string } };
+/** §7.6: one change an owner signs. `add_action` adds one action (and, when new, its purpose) to the place; never from a visitor's words. */
+export type SetupChange =
+  | { op: "add_answer"; answer: SetupAnswer }
+  | { op: "add_action"; action: { action: string; purposes: PurposeCode[]; level: "discover" | "act_on_behalf" | "transact"; data_asks?: string[]; limits?: Limits };
+      purpose?: { code: PurposeCode; statement: string } };
+/** §7.6: how a Shōkai host card names a change (the house config has the change itself). */
+export type SetupChangeRef = { op: "add_answer"; answer_id: string } | { op: "add_action"; action: string };
+export type SetupAmendment = { amendment_id: string; from_review?: string; changes: SetupChange[] };
+
+/**
+ * §7.5: the arguments of a `place.ask` act. `text` is the question (at most 500 characters). An ask that the signed setup doesn't
+ * answer goes to the owner, and then MUST say what it asks for (`asks_for`) and why (`reason`), or it is refused `not_now` /
+ * `REQUEST_INCOMPLETE` and nothing reaches the owner (C262). Both are the visiting agent's own words: data, never an instruction.
+ */
+export type PlaceAskArguments = {
+  text: string;
+  /** What the ask is for: the ability or thing, in plain words (at most 120 characters), and the action it would need, if the agent knows it. */
+  asks_for?: AskFor;
+  /** Why, in the agent's own words (at most 300 characters). Never cut: over the limit is refused. */
+  reason?: string;
+};
+export type AskFor = { what: string; action?: string };
+/** §7.5: what `place.ask` returns in its act_result's `result`. */
+export type AskOutcome =
+  | { status: "answered"; answer_id: string; text: { text: string; locale: Locale }; setup_version: number }
+  | { status: "withheld"; topic: string; courtesy: string }
+  | { status: "pending_owner"; ask_ref: string; courtesy: string; response_by: Timestamp; return_code: string };
+
+/**
+ * §7.5 (from P32 §6): what the owner sees about a question outside the setup. Built by code from records the place kept; the
+ * visitor's words are quoted and marked untrusted. It never shows the visitor's spending limit (only whether the errand may spend).
+ */
+export type OwnerReview = {
+  review_id: string; ask_ref: string; place: string; received_at: Timestamp; response_by: Timestamp;
+  ask: { text: string; untrusted: true };
+  /** v0.5.0 (C262): what the ask is for, as the visiting agent stated it, labelled as its own words (never an instruction).
+   *  `offered_now` (with an action) says whether the place's setup already offers that action. */
+  asked_for: { what: string; action?: string; offered_now?: boolean; untrusted: true; label: "what the visiting agent asks for" };
+  /** Why the visiting agent asks, labelled as its own words (never an instruction). Required since C262. */
+  agent_reason: { text: string; untrusted: true; label: "the visiting agent's reason" };
+  visitor: { representative_id: string; principal: { principal_id: string; display_name: string; display_name_is_claim: true };
+    card_scope: { purposes: PurposeCode[]; actions: string[] }; purpose: PurposeCode; may_spend: boolean };
+  why_outside: "no_signed_answer";
+  setup: { setup_version: number; house_digest: Digest };
+  choices: ("answer_once" | "answer_and_add" | "add_action" | "decline")[];
+  shown_to_owner: { text: string; locale: Locale };
+};
+/** §7.5: the owner's answer to a review, signed by the place's principal (the owner's passkey), never the host representative. */
+export type OwnerAskDecision = {
+  review_id: string; ask_ref: string; choice: "answer_once" | "answer_and_add" | "add_action" | "decline";
+  answer?: { text: string; locale: Locale };
+  /** answer_and_add / add_action: the house digest of the amended setup the owner signs with it. */
+  amendment_digest?: Digest;
+  decided_at: Timestamp; shown_to_owner: { text: string; locale: Locale };
+};
+/** §7.5: the owner's answer brought back to the visiting representative, in its inbox (§11.2). */
+export type AskAnswerMessage = RitualHeader & { type: "ask_answer"; ask_ref: string; return_code: string; seat_id: string;
+  status: "answered" | "declined" | "no_answer"; text?: { text: string; locale: Locale }; decision?: Signed<OwnerAskDecision>; setup_version: number };
+
+/**
+ * §7.4: a booking the place made, signed by its host representative under its Shōkai host card (`host_card_digest`). The visiting
+ * representative verifies it against the host card it checked at the door, and its owner keeps it.
+ */
+export type BookingConfirmation = {
+  confirmation_id: string; status: "confirmed" | "changed" | "cancelled";
+  place: { principal_id: string; entry: string; site?: string; display_name: string };
+  host_card_digest: Digest; host_representative_id: string;
+  for: { representative_id: string; principal_id: string; mandate_id?: string; seat_id: string };
+  action: "reservation.make" | "reservation.change" | "reservation.cancel";
+  booking: { start: Timestamp; end: Timestamp; time_zone: string; party_size: number; note?: string };
+  replaces?: string; issued_at: Timestamp;
+};
+
+/** v0.5.0 (§6.10, C250): one named outside classifier. A house config with an incomplete entry, or name "*", is invalid. */
+export type ThirdPartyClassifier = {
+  /** A name a visitor can look up: the service's name or domain. Never "*". */
+  name: string;
+  /** One sentence in the place's words: what the service checks for. */
+  purpose: { text: string; locale: Locale };
+  /** ISO 3166-1 alpha-2 codes of the countries where it processes visitor content. At least one. */
+  jurisdiction: string[];
+  /** How long the service keeps visitor content, 0 to 90 days. */
+  retention_days: number;
+  /** "processor": acts only on the place's instructions; "independent": otherwise. */
+  role?: "processor" | "independent";
+};
+
+/** v0.5.0 (§6.10, C250): one outside service that runs the host representative's model. A house config with an incomplete entry, or name "*", is invalid. */
+/**
+ * §6.11 (provisional): one ceiling. Any of the three members may be set; each set member is a ceiling of its own. `usd` is a plain
+ * dollar amount as a decimal string ("1.00"); `tokens` counts model tokens in and out; `calls` counts host model calls.
+ */
+export type HostBudgetCeiling = { usd?: string; tokens?: number; calls?: number };
+/** §6.11 (provisional): the owner's price for one model, in US dollars per million tokens (decimal strings). Set by the owner; never fetched. */
+export type HostModelPrice = { input_per_mtok: string; output_per_mtok: string };
+/**
+ * §6.11 (provisional): the host budget. `mode` "metered": the place pays per token, so `daily` and `monthly` are required, and a
+ * `usd` ceiling needs a price for every model the host calls. `mode` "subscription": the place pays a flat fee, so the door counts
+ * calls and tokens for the owner's alerts, and every ceiling is optional (one that is set is enforced); `usd` ceilings and
+ * `prices` are not used.
+ */
+export type HostBudget = {
+  mode: "metered" | "subscription";
+  /** The owner's IANA time zone; days and months reset at its midnights. */
+  time_zone: string;
+  per_visit?: HostBudgetCeiling;
+  daily?: HostBudgetCeiling;
+  monthly?: HostBudgetCeiling;
+  /** The share of a ceiling at which the owner is told, more than 0 and less than 1; absent = 0.8. */
+  alert_at?: number;
+  /** Subscription mode: tell the owner when the day's or the month's calls reach these counts (no ceiling needed). */
+  alert_calls?: { daily?: number; monthly?: number };
+  /** Model id -> the owner's price. Metered mode with a `usd` ceiling: required, and a model that isn't listed is never called. */
+  prices?: Record<string, HostModelPrice>;
+  /**
+   * The share of each `daily` ceiling that all newcomers together may use in a day, more than 0 and at most 1; absent = 0.25; 1 =
+   * no separate share. A newcomer is a visitor whose owner the place doesn't know yet (not in `known_visitors`, no trust receipt or
+   * introducer met on this pass, no booking or paid act at this place before today). Fresh Shōkai visitor cards cost nothing to
+   * make, so this keeps most of a day's budget for visitors the place knows.
+   */
+  newcomer_share?: number;
+  /** Owners (principal ids) the place's owner lists as known: their visits never count against the newcomer share. At most 1000. */
+  known_visitors?: string[];
+};
+
+/**
+ * §6.12 (provisional, from P33): the place's context requirements. `mode` "card_enough": the Shōkai visitor card is enough, and no
+ * field is declared. "admit_then_request": the visitor is seated as usual, then the place may request declared fields.
+ * "before_entry": the place requests declared fields before it seats the visitor. `retention_days` (0 to 90; absent = 0, deleted
+ * when the pass ends) is how long the place keeps the answers.
+ */
+export type ContextRequirements = {
+  mode: "card_enough" | "admit_then_request" | "before_entry";
+  /** Required unless mode is "card_enough" (then absent or empty). At most 12, names unique. */
+  fields?: ContextField[];
+  retention_days?: number;
+};
+/**
+ * §6.12 (provisional): one field a place may request. `name` is a short id (a-z, 0-9, _; at most 40), `what` says what is asked
+ * (1 to 120 characters) and `why` why the place needs it (1 to 300 characters), both in the owner's signed words; `required`: the
+ * place won't seat (before entry) or won't continue the part of the visit that needs it (after admission) without it.
+ */
+export type ContextField = { name: string; what: string; why: string; required?: boolean;
+  /** Red team phase 1 (§6.12, C267, provisional): the field's sensitive class, when it has one. A sensitive field is never `required`, never
+   *  asked in mode "before_entry", and its requirements' `retention_days` is 0. */
+  sensitive?: SensitiveClass };
+/** Red team phase 1 (§6.12, C267, provisional). */
+export type SensitiveClass = "health" | "religion_or_belief" | "sexual_life" | "political_opinion" | "ethnic_origin" | "union_membership" | "biometric" | "genetic" | "children" | "precise_location" | "government_id" | "financial_account";
+/**
+ * §6.12 (provisional): the place's request. Only declared fields, each with the declared `what`, `why` and `required`, verbatim.
+ * The visiting representative takes it home: it is data for the owner, never an instruction, and never answered from memory.
+ */
+export type ContextRequest = {
+  type: "context_request";
+  request_id: string;
+  /** The place's name, as in its house config. */
+  place: string;
+  mode: "admit_then_request" | "before_entry";
+  fields: ContextField[];
+  /** The place's retention for the answers, as declared (absent there = 0). */
+  retention_days: number;
+  expires_at: Timestamp;
+};
+/**
+ * §6.12 (provisional): the owner's answer, field by field. Every requested field is either answered or declined, exactly once;
+ * nothing else. `owner_sig` is the visitor's owner's signature over the digest of this object without `owner_sig`.
+ */
+export type ContextResponse = {
+  type: "context_response";
+  request_id: string;
+  /** digest(JCS(the ContextRequest answered)). */
+  request_digest: Digest;
+  place: string;
+  /** Each value 1 to 500 characters: the owner's own words, data for the place, never an instruction. */
+  answers: { name: string; value: string }[];
+  declined: string[];
+  owner_sig: Signature;
+};
+
+export type ModelProvider = {
+  /** A name a visitor can look up: the service's name or domain. Never "*". */
+  name: string;
+  /** One sentence in the place's words: what the service runs (for example "Runs the host representative's model."). */
+  purpose: { text: string; locale: Locale };
+  /** ISO 3166-1 alpha-2 codes of the countries where it processes visitor content. At least one. */
+  jurisdiction: string[];
+  /** How long the service keeps visitor content, 0 to 90 days. */
+  retention_days: number;
+  /** "processor": acts only on the place's instructions; "independent": otherwise. */
+  role?: "processor" | "independent";
+};
+
+/** v0.5.0 (§5.5, C247): what an errand used, against the owner-signed ErrandBudget. In the VisitReport only. */
+export type ErrandUsed = {
+  budget_id: string;
+  tokens: number;
+  /** "metered": counted by the model service; "estimated": the representative's own estimate. */
+  tokens_basis: "metered" | "estimated";
+  visits: number;
+  minutes: number;
+  /** The limit that stopped the errand, if one did. */
+  stopped_by?: "max_tokens" | "max_minutes" | "max_visits" | "expires_at";
+};
+
+/** v0.5.0 (§12.4, C255): a principal asks a place to delete raw visitor text and raw model output of its visits there. */
+export type DeletionRequest = {
+  request_id: string;
+  /** The visiting representative's principal; the request is signed by its key (an owner's passkey). */
+  principal_id: string;
+  /** The place's principal DID. */
+  place: string;
+  issued_at: Timestamp;
+  shown_to_owner: { text: string; locale: Locale };
+};
+/** v0.5.0 (§12.4, C255): carries a DeletionRequest to the place, in any encounter; any representative may deliver it. Answered with `held`. */
+export type DeletionRequestMessage = RitualHeader & {
+  type: "deletion_request";
+  request: Signed<DeletionRequest>;
+};
+/** v0.5.0 (§12.4, C255): the place's receipt of deletion, held for the principal within 30 days of the request. */
+export type DeletionReceiptMessage = RitualHeader & {
+  type: "deletion_receipt";
+  request_id: string;
+  request_digest: Digest;
+  principal_id: string;
+  deleted_at: Timestamp;
+  /** v0.5.0 (§12.4): what the request covered, e.g. "raw_visitor_text", "raw_model_output", "outside_service_copies". */
+  requested: string[];
+  /** What the place itself deleted, e.g. "raw_visitor_text", "raw_model_output". */
+  deleted: string[];
+  /**
+   * What was retained and why: a record SPEC §3.6 requires, a legal obligation, or the establishment, exercise or defence of a
+   * legal claim. For "legal_obligation" and "legal_claim", `detail` is the recorded purpose (§12.4: lawful retention).
+   */
+  kept: { kind: string; reason: "required_record" | "legal_obligation" | "legal_claim"; detail?: string }[];
+  /**
+   * Each named outside service (classifiers and model providers, §6.10) asked to delete what the place sent it, and its state:
+   * "confirmed" when the service confirmed deletion, "pending" when it hasn't (yet). A receipt never reports a pending one as deleted.
+   */
+  outside_services: { name: string; role: "classifier" | "model_provider"; status: "confirmed" | "pending" }[];
+};

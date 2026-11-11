@@ -1,0 +1,6 @@
+{
+  "name": "kettle-node-site",
+  "private": true,
+  "type": "module",
+  "description": "A sample plain Node (node:http) site for a fictional tea shop, before a Shōkai door is added."
+}

@@ -11,11 +11,12 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { Door, readBody, digestOf, type Visit } from "./index.js";
 import { isTimestamp } from "./core/crypto.js";
+import { parseStrictJson, canonicalAmount, canonicalJson } from "./strict-json.js";
 
 export type JsonRpcRequest = { jsonrpc: "2.0"; id?: string | number | null; method: string; params?: any };
 export type JsonRpcError = { code: number; message: string; data?: unknown };
 export type Headers = Record<string, string | string[] | undefined>;
-export type GateVerdict = { allow: true; seatId?: string; tool?: string; act?: { from: string; msgId: string } } | { allow: false; error: JsonRpcError };
+export type GateVerdict = { allow: true; seatId?: string; tool?: string; act?: { from: string; msgId: string }; arguments?: Record<string, unknown> } | { allow: false; error: JsonRpcError };
 /** Anything that decides whether one JSON-RPC request may reach the MCP server. */
 export interface GateAdapter { check(req: JsonRpcRequest, headers: Headers): GateVerdict; }
 
@@ -27,7 +28,7 @@ export const SEAT_HEADER = "shokai-seat";
  * `data.shokai` says it in fields: `refused_by` ("door", "gate" or "representative"), `reason_code`, and for a door's refusal of
  * a signed act its `act_decision`.
  */
-export const SHOKAI_NOT_SEATED = -32040;
+export const SHOKAI_NOT_SEATED = -32012;
 /** The same code under a name that says what it means. */
 export const SHOKAI_REFUSED = SHOKAI_NOT_SEATED;
 const fmtMoney = (m: any) => (m && typeof m === "object" && typeof m.value === "string" && typeof m.currency === "string" ? `${m.value} ${m.currency}` : null);
@@ -80,7 +81,6 @@ const DEFAULT_OPEN = (m: string) => m === "server/discover" || m === "initialize
 
 /** The reference gate: a Shōkai door decides every tools/call. */
 export class ShokaiGate implements GateAdapter {
-  private used = new Map<string, number>();
   constructor(readonly door: Door, readonly opts: GateOptions = {}) {}
   private refuse(message: string, extra: Record<string, unknown> = {}): GateVerdict {
     return { allow: false, error: { code: SHOKAI_NOT_SEATED, message, data: { shokai: { refused_by: "gate", decision: "deny", disposition: "not_now", door: this.door.base + "/places", entry: this.door.entry,
@@ -91,7 +91,9 @@ export class ShokaiGate implements GateAdapter {
     if (req.method !== "tools/call") return this.refuse(`${req.method} needs a seat at this door`, { reason_code: "CREDENTIAL_REQUIRED" });
     const raw = one(headers[ACT_HEADER]);
     if (!raw) return this.refuse("This MCP server is behind a Shōkai door: get a seat first, then send each tools/call with a signed act (Shokai-Act header)", { reason_code: "CREDENTIAL_REQUIRED", readiness: ["card", "owner_binding", "purpose"] });
-    let act: any; try { act = JSON.parse(Buffer.from(raw, "base64url").toString("utf8")); } catch { return this.refuse("Shokai-Act is not base64url JSON", { reason_code: "REQUEST_INCOMPLETE" }); }
+    let act: any;
+    { let text: string; try { text = new TextDecoder("utf-8", { fatal: true }).decode(Buffer.from(raw, "base64url")); } catch { return this.refuse("Shokai-Act is not base64url UTF-8", { reason_code: "REQUEST_INCOMPLETE" }); }
+      const sj = parseStrictJson(text); if (!sj.ok) return this.refuse(`Shokai-Act is not base64url I-JSON with one reading (${sj.why})`, { reason_code: "REQUEST_INCOMPLETE" }); act = sj.value; }
     const p = act?.payload;
     if (!p || p.type !== "act" || typeof p.from !== "string" || typeof p.msg_id !== "string") return this.refuse("Shokai-Act is not a signed act", { reason_code: "REQUEST_INCOMPLETE" });
     const name = req.params?.name; const args = req.params?.arguments ?? {};
@@ -100,14 +102,18 @@ export class ShokaiGate implements GateAdapter {
     if (!same) return this.refuse("the call's arguments are not the ones the act signed", { reason_code: "SEAT_SCOPE_EXCEEDED" });
     const skew = (this.opts.skewSeconds ?? 300) * 1000;
     if (!isTimestamp(p.sent_at) || Math.abs(Date.parse(p.sent_at) - nowMs()) > skew) return this.refuse("the act is stale or from the future", { reason_code: "RITUAL_ORDER" });
-    const key = p.from + "|" + p.msg_id; if (this.used.has(key)) return this.refuse("the act was already used (single use)", { reason_code: "RITUAL_ORDER" });
-    for (const [k, t] of this.used) if (t < nowMs() - 2 * skew) this.used.delete(k);
+    const used = this.door.usedActs; const key = p.from + "|" + p.msg_id; if (used.has(key)) return this.refuse("the act was already used (single use)", { reason_code: "RITUAL_ORDER" });
+    for (const [k, t] of used) if (t < nowMs() - 2 * skew) used.delete(k);
     const seat = typeof p.seat_id === "string" ? this.door.seat(p.seat_id) : undefined;
     const r = this.door.authorizeAct(act);
     if (!r.ok) return this.refuse(actRefusalMessage(String(name), r.decision, seat, args && typeof args === "object" ? args : {}),
       { refused_by: "door", disposition: r.decision?.disposition ?? "not_now", ...(r.decision?.reason_code ? { reason_code: r.decision.reason_code } : {}), act_decision: r.decision });
-    this.used.set(key, nowMs());
-    return { allow: true, seatId: p.seat_id, tool: name, act: { from: p.from, msgId: p.msg_id } };
+    // §2.2 (C284): an amount is counted only in canonical form; one that doesn't canonicalise is refused and counts nothing.
+    const amount = p.arguments && typeof p.arguments === "object" ? p.arguments.amount : undefined;
+    if (amount !== undefined) { const c = canonicalAmount(amount); if (!c.ok) { this.door.host.releaseAct(p.from, p.msg_id);
+      return this.refuse(`${String(name)}: arguments.amount isn't canonical Money (${c.why}): value a plain decimal string such as "6.00", currency an ISO 4217 code`, { reason_code: "REQUEST_INCOMPLETE" }); } }
+    used.set(key, nowMs());
+    return { allow: true, seatId: p.seat_id, tool: name, act: { from: p.from, msgId: p.msg_id }, arguments: p.arguments ?? {} };
   }
 }
 
@@ -136,21 +142,36 @@ export function shokaiGate(door: Door, mcp: McpHttpHandler, opts: GateOptions & 
       if (path !== mcpPath) { res.writeHead(404, { "content-type": "application/json" }); res.end(JSON.stringify(door.pointer())); return; }
       if (req.method !== "POST") return void (await mcp(req, res, undefined));
       const text = await readBody(req); let body: any;
-      try { body = JSON.parse(text); } catch { res.writeHead(400, { "content-type": "application/json" }); res.end(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error" } })); return; }
+      const sj = parseStrictJson(text);
+      if (!sj.ok) { res.writeHead(400, { "content-type": "application/json" }); res.end(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error" } })); return; }
+      body = sj.value;
       const msgs: JsonRpcRequest[] = Array.isArray(body) ? body : [body];
       const errors: unknown[] = []; let seatFilter: string | undefined; let listing = false; const acts = new Map<string, { from: string; msgId: string }>();
-      for (const m of msgs) {
+      const verified = new Map<JsonRpcRequest, Record<string, unknown>>();
+      const checkAll = () => { for (const m of msgs) {
         const v = gate.check(m, req.headers);
         if (!v.allow) errors.push({ jsonrpc: "2.0", id: m.id ?? null, error: v.error });
-        else if (v.act && m.method === "tools/call") acts.set(JSON.stringify(m.id ?? null), v.act);
+        else if (v.act && m.method === "tools/call") { acts.set(JSON.stringify(m.id ?? null), v.act); if (v.arguments) verified.set(m, v.arguments); }
         else if (m.method === "tools/list" && v.seatId) { seatFilter = v.seatId; listing = true; }
+      } };
+      // v0.4.0: a door with a `store` checks against the latest state and writes the counts before any tool runs; if another
+      // instance wrote first, every call in the batch is refused with a retry (fail closed), never let through on stale counts.
+      if ((await door.withStore(checkAll)).ok === false) {
+        const busy = msgs.map((m) => ({ jsonrpc: "2.0", id: m.id ?? null, error: { code: SHOKAI_REFUSED, message: "the door is busy: please retry in a second", data: { shokai: { refused_by: "door", reason_code: "HOST_BUSY", retry_after_s: 1 } } } }));
+        res.writeHead(200, { "content-type": "application/json", "retry-after": "1" }); res.end(JSON.stringify(Array.isArray(body) ? busy : busy[0])); return;
       }
       if (errors.length) { res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify(Array.isArray(body) ? errors : errors[0])); return; }
       if (listing && seatFilter) filterToolsList(res, door.seat(seatFilter)?.tool_allowlist ?? []);
       const releaseOn = opts.releaseOn ?? "rpc-or-tool-error";
-      if (releaseOn !== "never" && acts.size) watchCallOutcome(res, acts, releaseOn, (a) => door.host.releaseAct(a.from, a.msgId));
-      try { await mcp(req, res, body); }
-      catch (e) { if (releaseOn !== "never" && !res.headersSent) for (const a of acts.values()) door.host.releaseAct(a.from, a.msgId); throw e; }
+      const release = (a: { from: string; msgId: string }) => { if (door.opts.store) void door.withStore(() => door.host.releaseAct(a.from, a.msgId)).catch(() => {}); else door.host.releaseAct(a.from, a.msgId); };
+      if (releaseOn !== "never" && acts.size) watchCallOutcome(res, acts, releaseOn, release);
+      try {
+        // §11.3 (C284): the tool server gets the JCS re-serialisation of the verified request, never the received bytes.
+        const fwd = msgs.map((m) => { const a = verified.get(m); return a === undefined ? m : { ...m, params: { ...m.params, arguments: a } }; });
+        const forwarded = JSON.parse(canonicalJson(Array.isArray(body) ? fwd : fwd[0]));
+        await mcp(req, res, forwarded);
+      }
+      catch (e) { if (releaseOn !== "never" && !res.headersSent) for (const a of acts.values()) release(a); throw e; }
     } catch (e) {
       if (!res.headersSent) { res.writeHead(500, { "content-type": "application/json" }); res.end(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32603, message: "gate error" } })); }
     }

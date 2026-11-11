@@ -244,6 +244,32 @@ v(L(["JA-jp"], ["en-US", "ja-JP"]) === "ja-JP/exact", "case-insensitive exact ma
   v(DATA_STRINGS.join() === "email,address,phone,marketing_consent,account", "§10: the data strings a gift may never cost");
 }
 
+// --- review 4 R4-04: audience-bound possession proofs (shokai/0.5, §2.4, C292) and the recorded G1-v05 opening, byte-exact.
+{
+  const P = TV.possession_proof_v05; const k = (lbl: string) => ed25519FromLabel(lbl);
+  v(k(P.labels.visitor_representative).id === P.ids.visitor_representative && k(P.labels.door_representative).id === P.ids.door_representative && k(P.labels.other_door).id === P.ids.other_door, "A.2 possession_proof_v05: every id derives from its public label");
+  const cardOf = (signer: string) => { const s = signer === P.ids.visitor_representative ? k(P.labels.visitor_representative) : k(P.labels.door_representative);
+    return { representative_id: s.id, representative_key: { key_id: s.key_id, alg: "Ed25519", public_key: b64u(s.pubRaw) } } as any; };
+  for (const c of P.cases) {
+    const signer = k(c.proof.signer === P.ids.visitor_representative ? P.labels.visitor_representative : P.labels.door_representative);
+    const regen = b64u(nodeSign(null, Buffer.from(c.digest.slice(8), "base64url"), signer.priv));
+    v(jcs(c.payload) === c.jcs && digestOf(c.payload) === c.digest && regen === c.proof.value, `A.2 possession_proof_v05 ${c.name}: JCS, digest and Ed25519 signature byte-exact`);
+    const enc = c.payload.encounter_id, nonce = c.payload.nonce;
+    // The verifier's rule (§2.4): the proof object's audience MUST equal its own id, and the signature MUST verify over its own id.
+    const accepted = c.proof.audience === c.verifier_audience && rv.possession(c.proof, cardOf(c.proof.signer), enc, nonce, c.verifier_audience);
+    v(accepted === (c.expect === "accept"), `A.2 possession_proof_v05 ${c.name}: ${c.expect === "accept" ? "accepted" : "refused (" + c.expect.reason_code + ", " + c.expect.readiness + ")"}`);
+  }
+  const G = JSON.parse(fs.readFileSync(new URL("../../../../conformance/golden-v05-g1.json", import.meta.url), "utf8"));
+  const msgs = G.messages as any[]; const ids = [P.ids.visitor_representative, P.ids.door_representative];
+  v(msgs.length === 4 && msgs.every((m) => m.payload.protocol === "shokai/0.5" && digestOf(m.payload) === m.payload_digest && rv.signed(m, m.payload.from) === m.payload_digest), "G1-v05: four shokai/0.5 messages, every payload_digest = digest(JCS(payload)) and every signature verifies");
+  v(msgs.every((m) => { const s = k(m.payload.from === ids[0] ? P.labels.visitor_representative : P.labels.door_representative); return b64u(nodeSign(null, Buffer.from(m.payload_digest.slice(8), "base64url"), s.priv)) === m.signatures[0].value; }), "G1-v05: every envelope signature regenerates byte-for-byte from its label key");
+  const [g1, g2, c1, c2] = msgs.map((m) => m.payload);
+  v(c1.to === ids[1] && c2.to === ids[0] && rv.signed(c1.card) !== null && rv.signed(c2.card) !== null, "G1-v05: both cards verify; every message after the greeting carries `to` (C292)");
+  v(rv.possession(c1.possession_proof, c1.card.payload, g1.encounter_id, g2.nonce, ids[1]) && c1.possession_proof.audience === ids[1] && !rv.possession(c1.possession_proof, c1.card.payload, g1.encounter_id, g2.nonce), "G1-v05: the visitor's proof verifies over the door's id, over the door's greeting nonce, and not without its audience");
+  v(rv.possession(c2.possession_proof, c2.card.payload, g1.encounter_id, g1.nonce, ids[0]) && c2.possession_proof.audience === ids[0], "G1-v05: the door's proof verifies over the visitor's id and the visitor's greeting nonce");
+  v(!("crit" in c1.card.payload) && c1.card.payload.owner_prompts === "purchase_only" && !("crit" in c2.card.payload) && !!c2.card.payload.place.site, "G1-v05: owner_prompts and place.site ride outside crit (R4-01)");
+}
+
 console.log("Test vectors (byte-exact where the bundle supplies the bytes):");
 for (const r of rows) console.log(r);
 console.log(`\n${pass} vectors pass, ${fail} fail`);

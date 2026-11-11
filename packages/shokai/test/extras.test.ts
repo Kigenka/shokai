@@ -16,7 +16,7 @@ const USD = (value: string) => ({ value, currency: "USD" });
 const b64 = (x: unknown) => Buffer.from(JSON.stringify(x)).toString("base64url");
 
 function start(): Promise<{ server: http.Server; base: string; door: ReturnType<typeof createDoor> }> {
-  const door = createDoor({ name: "kettle", displayName: "Kettle & Leaf", category: "store",
+  const door = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "kettle", displayName: "Kettle & Leaf", category: "store",
     purposes: [{ code: "purchase", statement: "Ordering tea." }],
     actions: [{ action: "menu.view", purposes: ["purchase"], level: "discover", data_asks: [] },
               { action: "tea.ask", purposes: ["purchase"], level: "discover", data_asks: [] },
@@ -115,11 +115,11 @@ async function main() {
   check(v2.broughtBack[0]?.verified === false && /did NOT verify/.test(v2.report().outcome_rendered.text), "a stamp signed by another key is kept as unverified and flagged in the report");
   server.close();
   // v0.3.0-rc4 (§3.3): the leaflet's setup link defaults to the door's own local quickstart page, never a placeholder address.
-  { const d = createDoor({ name: "leaf", displayName: "Leaf & <Co>", purposes: [{ code: "inquiry", statement: "Questions." }], actions: [{ action: "ask", purposes: ["inquiry"], level: "discover", data_asks: [] }],
+  { const d = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "leaf", displayName: "Leaf & <Co>", purposes: [{ code: "inquiry", statement: "Questions." }], actions: [{ action: "ask", purposes: ["inquiry"], level: "discover", data_asks: [] }],
       baseUrl: "http://127.0.0.1:9/shokai" });
     const u = d.listing().places[0].onboarding_url;
     check(u === "http://127.0.0.1:9/shokai/start" && !/shokai\.example\/start/.test(JSON.stringify(d.listing())), "the default onboarding_url is the door's own /start page, not a placeholder");
-    const d2 = createDoor({ name: "leaf2", displayName: "Leaf", purposes: [{ code: "inquiry", statement: "Questions." }], actions: [{ action: "ask", purposes: ["inquiry"], level: "discover", data_asks: [] }], onboardingUrl: "https://setup.example.org/rep" });
+    const d2 = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "leaf2", displayName: "Leaf", purposes: [{ code: "inquiry", statement: "Questions." }], actions: [{ action: "ask", purposes: ["inquiry"], level: "discover", data_asks: [] }], onboardingUrl: "https://setup.example.org/rep" });
     check(d2.listing().places[0].onboarding_url === "https://setup.example.org/rep", "onboardingUrl sets the leaflet's link");
     const srv = http.createServer((q, r) => { void d.handleHttp(q, r); }); await new Promise<void>((r) => srv.listen(0, "127.0.0.1", r));
     const port = (srv.address() as any).port; const res = await fetch(`http://127.0.0.1:${port}/shokai/start`); const html = await res.text(); srv.close();

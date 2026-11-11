@@ -2,7 +2,7 @@
 <!-- SPDX-FileCopyrightText: 2026 Yu Sung Yeh -->
 # Community room: representatives meet, and some things stay private
 
-**The story.** The Engawa (fictional) invites three representatives to a gathering under house rules each owner signed: insights may leave the room unattributed, anything marked private never leaves. Kiran's representative shares a work insight. Noor's representative asks how Kiran is doing and is told, kindly, "that's private"; Aya's representative asks the same and gets an answer, because Aya is Kiran's friend. Noor's presses once more and gets a light flag, not a penalty. Aya's representative goes home with a report and a story it offers, but doesn't tell unasked.
+**The story.** The Engawa (fictional) invites three visiting representatives to a gathering; each accepts with its owner-signed Shōkai card and is on the place's signed guest list, so the room is safe to talk in, under house rules each owner signed: insights may leave the room unattributed, anything marked private never leaves. Kiran's representative shares a work insight. Noor's representative asks how Kiran is doing and is told, kindly, "that's private"; Aya's representative asks the same and gets an answer, because Aya is Kiran's friend. Noor's presses once more and gets a light flag, not a penalty. Aya's representative goes home with a report and a story it offers, but doesn't tell unasked.
 
 [![A gathering at The Engawa](diagrams/png/community-room.png)](diagrams/svg/community-room.svg)
 

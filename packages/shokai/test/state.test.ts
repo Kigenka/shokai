@@ -5,19 +5,19 @@
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createDoor, createRepresentative, type Door, type Transport } from "../src/index.js";
+import { createDoor, createRepresentative, inProcess, type Door, type Transport } from "../src/index.js";
 import { newEd25519 } from "../src/core/crypto.js";
 
 let pass = 0, fail = 0;
 const check = (c: boolean, what: string) => { if (c) { pass++; console.log("  PASS " + what); } else { fail++; console.log("  FAIL " + what); } };
 const USD = (value: string) => ({ value, currency: "USD" });
 const keys = { rep: newEd25519(), principal: newEd25519() };
-const shop = (stateFile?: string) => createDoor({ name: "kettle", displayName: "Kettle & Leaf", category: "store", keys, ...(stateFile ? { stateFile } : {}),
+const shop = (stateFile?: string) => createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "kettle", displayName: "Kettle & Leaf", category: "store", keys, ...(stateFile ? { stateFile } : {}),
   purposes: [{ code: "purchase", statement: "Ordering tea." }],
   actions: [{ action: "menu.list", purposes: ["purchase"], level: "discover", data_asks: [] },
             { action: "order.place", purposes: ["purchase"], level: "act_on_behalf", data_asks: [] }],
   spendingActions: ["order.place"] });
-const direct = (d: Door): Transport => async (_u, body) => (await d.post(body)).envelope;
+const direct = (d: Door): Transport => inProcess(d);
 const ask = (d: Door) => ({ purpose: "purchase" as const, actions: ["menu.list", "order.place"], limits: { max_amount: USD("10.00") }, transport: direct(d) });
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

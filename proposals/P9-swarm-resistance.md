@@ -59,7 +59,7 @@ Shōkai's answer is **two doors**:
 ## 4. What this can't solve
 - **One determined person with many devices** can still make many owners (T2) unless the place requires an attestation (M4), and attestations have their own costs, exclusion risks and privacy trade-offs.
 - **Colluding real people** who vouch for each other's fakes are slowed by standing and penalties, not stopped.
-- **Agents that skip the agent door** and pose as humans in the human door are a site-security problem (bot detection, Web Bot Auth). Shōkai only makes the honest path easier and more valuable.
+- **Agents that skip the agent door** and pose as humans in the human door are a site-security problem (detecting agents that pose as people, Web Bot Auth). Shōkai only makes the honest path easier and more valuable.
 - **Cross-place slow drips** (T5) stay hard while misconduct stays local by design.
 - Shōkai doesn't judge whether a review's *content* is honest. It judges who sent it, for whom, and with whose backing.
 

@@ -1,0 +1,90 @@
+{
+  "trace": "A1-v05-allowance-hold",
+  "protocol": "shokai/0.5",
+  "spec": "0.5.0",
+  "note": "Byte-exact artefacts for an ordinary purchase hold under an under_allowance mandate (SPEC §5.2, §7.3). No over_limit member: a place MUST NOT hold above the limit under an allowance. Keys from labels; time 2026-11-01T09:00:00Z. Digests and signatures regenerate identically.",
+  "labels": {
+    "visitor_representative": "test-vector-1",
+    "visitor_owner": "test-vector-visitor-owner",
+    "door_representative": "test-vector-door"
+  },
+  "mandate": {
+    "payload": {
+      "mandate_id": "m-tv-allow-1",
+      "principal_id": "did:key:z6Mkfdm42NASQRM4De2L6Mia5anu82ifWNgF1Das8dtJbFpP",
+      "representative_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+      "card_id": "card-tv-visitor",
+      "purpose": {
+        "code": "purchase",
+        "statement": "Buying tea at Kettle & Leaf.",
+        "locale": "en-US"
+      },
+      "allowed_actions": [
+        "tea.order"
+      ],
+      "limits": {
+        "max_amount": {
+          "value": "50.00",
+          "currency": "USD"
+        }
+      },
+      "under_allowance": {
+        "allowance_id": "allow-tv-05",
+        "allowance_digest": "sha-256:eO6CArKVyqH9gbPtzjqcdogjF3ye_BvSdmIQHzxEugI",
+        "grant_digest": "sha-256:1zkBQs_j_kvHMzUiMQQ4vCHv1Bp-e4DEGh3XmAqGRXQ"
+      },
+      "valid_from": "2026-11-01T09:00:00Z",
+      "expires_at": "2026-11-01T12:00:00Z",
+      "shown_to_owner": {
+        "text": "Buy tea at Kettle & Leaf under today's allowance, up to USD 50.00.",
+        "locale": "en-US"
+      }
+    },
+    "payload_digest": "sha-256:hjdQGoAGu1ktm_IOfoq5MjL8ZHvTgz1fzlLEy_gSizw",
+    "signatures": [
+      {
+        "alg": "Ed25519",
+        "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+        "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+        "signed_at": "2026-11-01T09:00:00Z",
+        "value": "5MytiO87wi_ifmHoHpDH2Ld9jnZj0LJB7uuvBkwdvTYasHn5nsYHV3ZBkxVOZe1iQFCJKU3R-5IbWTFbfSpkBQ"
+      }
+    ]
+  },
+  "act_held": {
+    "payload": {
+      "type": "act_held",
+      "protocol": "shokai/0.5",
+      "encounter_id": "tv-05-allow-1",
+      "msg_id": "tv-05-allow-1-h1",
+      "sent_at": "2026-11-01T09:00:00Z",
+      "from": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+      "to": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+      "in_reply_to": "tv-05-allow-1-v5",
+      "seat_id": "seat-tv-allow-1",
+      "tool": "tea.order",
+      "amount": {
+        "value": "12.00",
+        "currency": "USD"
+      },
+      "hold_id": "hold-tv-allow-1",
+      "act_digest": "sha-256:VjndU52mfBA_H17YFHK9tRPqTxMeWBB3PIghKd5UWVU",
+      "expires_at": "2026-11-01T09:05:00Z"
+    },
+    "payload_digest": "sha-256:Hf6LqQd5FuB4BfSPEk8TwRRqscHglIkadYRaJ5zw8g0",
+    "signatures": [
+      {
+        "alg": "Ed25519",
+        "key_id": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks#z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "signer": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "signed_at": "2026-11-01T09:00:00Z",
+        "value": "FgDxJP4X-r0CegbBqCvyebU61_wboDrfmAApoUkepMgUF_beAlo3DdR-0k3tgbvdh1ywNXcqr0USZr-SStRUCw"
+      }
+    ]
+  },
+  "checks": {
+    "under_allowance": true,
+    "over_limit_absent": true,
+    "act_digest_matches": true
+  }
+}

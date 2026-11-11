@@ -1,6 +1,6 @@
 # Door policy
 
-**The receiver decides the door rules.** A bank's gatekeeper evaluates against its policy: which purposes it serves, which actions, which introducers it trusts for what, minimum proof levels, and what goes to a person inside. The policy is versioned and named in every decision's `basis`, so a decision can be replayed.
+**The receiver decides the door rules.** A bank's host representative evaluates against its policy: which purposes it serves, which actions, which introducers it trusts for what, minimum proof levels, and what goes to a person inside. The policy is versioned and named in every decision's `basis`, so a decision can be replayed.
 
 ## A person's own door
 

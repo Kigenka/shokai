@@ -5,6 +5,7 @@
 
 # The normative text and what it must agree with
 /SPEC.md                  @Humanoidme
+/docs/SPEC-DETAIL.md      @Humanoidme
 /protocol-shapes.ts       @Humanoidme
 /schema/                  @Humanoidme
 /extensions/              @Humanoidme

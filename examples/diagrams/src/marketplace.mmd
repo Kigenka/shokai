@@ -1,6 +1,6 @@
 sequenceDiagram
-  title Marketplace: turned away with the leaflet, then back prepared and seated at Mossgate Commons (rc4 simulated-team round 2, recorded wire log)
-  participant V as A plain agent, then prepared (simulated)
+  title Marketplace: turned away with the leaflet, then back prepared and granted a pass at Mossgate Commons (rc4 simulated-team round 2, recorded wire log)
+  participant V as A plain agent, then a visiting representative (simulated)
   participant D as Mossgate Commons (simulated team, Python) door
   participant G as Mossgate Commons (simulated team, Python) MCP gate
   Note over V,D: [1] harness readiness probe GET /shokai/places → 200
@@ -18,7 +18,7 @@ sequenceDiagram
   D-->>V: card_receipt (digest ✓, sig ✓)
   V->>D: [6] introduction vouch=null (self-introduction) (digest ✓, sig ✓)
   V->>D: [7] invitation_request purpose=visitation actions=stalls.browse, mandate owner sig: digest ✓, sig ✓ (digest ✓, sig ✓)
-  D-->>V: 200 invitation_response grant seat=[stalls.browse] (digest ✓, sig ✓)
-  D-->>V: farewell outcome=seated (digest ✓, sig ✓)
+  D-->>V: 200 invitation_response grant pass=[stalls.browse] (digest ✓, sig ✓)
+  D-->>V: farewell outcome=pass (digest ✓, sig ✓)
   V->>D: [8] farewell outcome=completed (digest ✓, sig ✓)
   Note over V,G: Signatures re-verified with the reference crypto

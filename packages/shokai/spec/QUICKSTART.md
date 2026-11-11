@@ -1,28 +1,53 @@
 # Quickstart: put a Shōkai door in front of an MCP server
 
-In about ten minutes you will run an MCP server behind a Shōkai door (your place, with its own agent as the host at the door), send a representative to it, watch it introduce itself and get seated, call tools within its seat, make a visit that spends within a limit, and run the conformance checks. Everything runs on your machine; nothing is sent anywhere.
+In about ten minutes you will run an MCP server behind a Shōkai door (your place, with its own host representative), send a visiting representative to it, watch it introduce itself and get a pass, call tools within its pass, make a visit that spends within a limit, and run the conformance checks. Everything runs on your machine; nothing is sent anywhere.
 
-You need Node.js 20 or later.
+## Pass vs `seat` (canonical) {#pass-vs-seat}
 
-**Only visiting a place someone else runs?** Do step 1, then go to [step 6, the visitor path](#6-visiting-a-place-someone-else-runs-the-visitor-path). Steps 2 to 5 build a place of your own to visit.
+**One rule:** in prose, these docs say **pass**. On the wire and in the SDK the field is **`seat`**. They name the same grant: the tools and limits the door gave this visit, never wider than policy ∩ mandate ∩ request.
+
+| Layer | Name | Notes |
+|---|---|---|
+| **Prose / diagrams (human)** | **pass** | The place's grant: tools and limits no wider than policy ∩ mandate ∩ request |
+| **Wire / SDK / JSON** | **`seat`** | Field name on the invitation response and related messages |
+| **Report line home** | *admitted me with a pass* | The same grant, in the words the representative takes home |
+| **Door messages, some code comments** | *seat* ("Your seat is ready", "within this seat") | The door's own courtesy texts still use the wire word |
+
+Samples that print `seat:` are showing the field name. Prefer **pass** / “admitted with a pass” in new prose. The wire name stayed `seat` so existing implementations and traces keep working. How versions relate is on the compatibility page and in [CHANGELOG.md](CHANGELOG.md).
+
+
+You need Node.js 22 or later.
+
+**Where a Shōkai visit works.** A visiting representative can make a Shōkai visit only at a place that runs a Shōkai door. Anywhere else it is treated like any other agent, and is often turned away. There is no public demo place yet, so today that means the door you run yourself in steps 2 to 4, or a door someone else has set up.
+
+**Two paths.** Everyone starts with step 1.
+
+- **Run a place (host representative):** steps 2 to 5. You put a door, with its host representative, in front of an MCP server, visit it, and check it against the protocol.
+- **Send a visiting representative:** [step 6](#6-visiting-a-place-someone-else-runs-the-visiting-representative-path). You visit a place someone else runs, with no server of your own.
 
 **Two addresses, not to mix up.** A door's **base URL** ends in `/shokai` (for example `http://127.0.0.1:3000/shokai`): it's what `findPlace` and `shokai-conformance` take. Its **place listing** is that base plus `/places` (`http://127.0.0.1:3000/shokai/places`): the JSON you can read to see what the place offers. The listing is the place's agent front, not the door itself; the door is where the listing's `entry` points. Write the base URL without a trailing slash; `findPlace` and `shokai-conformance` accept `…/shokai/` too, and a listing's own `door` field may show it with one. Both name the same door.
 
 ## 1. Make a project (1 minute)
 
+**Tested with** (November 5, 2026): Debian GNU/Linux 13 (Linux 6.12), Node.js 24.22.1, npm 11.21.1, `@modelcontextprotocol/sdk` 1.32.2, `zod` 4.6.7, and `@kigenka/shokai@0.5.0`. The versions above are pinned to what was tested. **macOS is untested** (the commands are standard POSIX and should work, but nobody has run them there yet). The stated minimum is **Node.js 22** (`engines`); CI runs Node 22 and 24.
+
 ```sh
 mkdir shokai-quickstart && cd shokai-quickstart
 npm init -y && npm pkg set type=module
-npm install @kigenka/shokai @modelcontextprotocol/sdk zod
+npm install @kigenka/shokai@0.5.0 @modelcontextprotocol/sdk@1.32.2 zod@4.6.7
 ```
 
-> **From a package file instead** (if you were given one, or can't reach the npm registry):
-> - If you were given the package as a `.tgz` file: `npm install /path/to/kigenka-shokai-0.3.0.tgz @modelcontextprotocol/sdk zod`.
-> - If you have the source repository: run `cd packages/shokai && npm install && npm pack` there, then install the `.tgz` it makes, as above.
+This walkthrough uses **Zod 4** (`zod@4.6.7`), required by the pinned MCP SDK — not Zod 3.
 
-## 2. The server: your MCP server, plus a door (3 minutes)
+The published package digest is recorded in [release/kigenka-shokai-0.5.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.5.0/release/kigenka-shokai-0.5.0.sha256).
 
-Save this as `server.mjs`. The MCP part is the official MCP TypeScript SDK, unchanged. The door says which purposes the place serves, which actions a seated visitor may take, which of them spend money (`spendingActions`), and what personal data each action will ask the owner for (`data_asks`, so a representative can look before it joins).
+## Run a place (host representative)
+
+Steps 2 to 5: your place, its door and its host representative, then a visit and a check.
+
+### 2. The server: your MCP server, plus a door (3 minutes)
+
+Save this as `server.mjs`. The MCP part is the official MCP TypeScript SDK, unchanged. The door says which purposes the place serves, which actions a visiting representative with a pass may take, which of them spend money (`spendingActions`), and what personal data each action will ask the owner for (`data_asks`, so a representative can look before it joins).
 
 ```js file=server.mjs
 // server.mjs: an MCP server with two tools, behind a Shōkai door.
@@ -47,8 +72,9 @@ function buildServer() {
   return server;
 }
 
-// The door: who may sit down, for what, which actions spend, and what each action will ask the owner for.
+// The door: who may be admitted, for what, which actions spend, and what each action will ask the owner for.
 const door = createDoor({
+  approvedBy: { name: "Ren Okabe", role: "Owner" },   // the person who approved this door's Shōkai host card
   name: "tea-shop", displayName: "Kettle & Leaf", category: "store",
   purposes: [{ code: "visitation", statement: "Looking at the menu." }, { code: "purchase", statement: "Ordering tea." }],
   actions: [
@@ -71,12 +97,12 @@ Start it and leave it running:
 node server.mjs
 ```
 
-## 3. The visitor: a representative arrives (3 minutes)
+### 3. A visiting representative arrives (3 minutes)
 
 In a second terminal, in the same folder, save this as `visit.mjs`:
 
 ```js file=visit.mjs
-// visit.mjs: Aya Linden's representative arrives, is seated, and uses the MCP server within its seat.
+// visit.mjs: Aya Linden's representative arrives, gets a pass (wire: seat), and uses the MCP server within it.
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { createRepresentative, findPlace } from "@kigenka/shokai";
@@ -84,7 +110,7 @@ import { shokaiFetch } from "@kigenka/shokai/mcp";
 
 const base = process.env.BASE ?? "http://127.0.0.1:3000";
 
-// 1. Without a seat, a tool call is refused, with directions to the door.
+// 1. Without a pass (wire: seat), a tool call is refused, with directions to the door.
 const stranger = new Client({ name: "stranger", version: "1.0.0" });
 await stranger.connect(new StreamableHTTPClientTransport(new URL(base + "/mcp")));
 await stranger.callTool({ name: "menu.view", arguments: {} }).catch((e) => console.log("stranger:", e.message));
@@ -104,7 +130,7 @@ console.log("place checked:", visit.placeCheck.ok, "| decision:", visit.decision
 // 5. The same MCP client, with a fetch that signs an act for each tool call.
 const client = new Client({ name: "aya-representative", version: "1.0.0" });
 await client.connect(new StreamableHTTPClientTransport(new URL(base + "/mcp"), { fetch: shokaiFetch(visit) }));
-console.log("tools in my seat:", (await client.listTools()).tools.map((t) => t.name));
+console.log("tools in my pass (wire: seat):", (await client.listTools()).tools.map((t) => t.name));
 console.log("menu.view:", (await client.callTool({ name: "menu.view", arguments: {} })).content[0].text);
 await client.callTool({ name: "order.place", arguments: { tea: "sencha", amount: { value: "6.00", currency: "USD" } } })
   .catch((e) => console.log("order.place:", e.message));
@@ -124,21 +150,21 @@ node visit.mjs
 You should see:
 
 ```text output=visit.mjs
-stranger: MCP error -32040: This MCP server is behind a Shōkai door: get a seat first, then send each tools/call with a signed act (Shokai-Act header)
+stranger: MCP error -32012: This MCP server is behind a Shōkai door: get a seat first, then send each tools/call with a signed act (Shokai-Act header)
 listing: menu.view asks for nothing
 listing: order.place (spends) asks for nothing
 place checked: true | decision: grant | seat: [ 'menu.view' ]
-tools in my seat: [ 'menu.view' ]
+tools in my pass (wire: seat): [ 'menu.view' ]
 menu.view: sencha 6.00, hojicha 5.50, genmaicha 5.00
-order.place: MCP error -32040: not sent: order.place is not in this seat (it allows menu.view)
-report: The place with key …h5YFQaB5 (claims to be "Kettle & Leaf"; not verified) seated me for "menu.view", no spending. I did 1 action; 1 was refused.
+order.place: MCP error -32012: not sent: order.place is not in this seat (it allows menu.view)
+report: The place with key …h5YFQaB5 (claims to be "Kettle & Leaf"; not verified) admitted me with a pass for "menu.view", no spending. I did 1 action; 1 was refused.
 ```
 
 The report names the place by what the visit verified, its key (new on every run, so yours ends differently), and its display name only as a claim ("claims to be"): a door can call itself anything (SPEC §2.1, C199).
 
-`order.place` was refused because it wasn't in the seat: a `visitation` visit is for looking and never spends. `not sent:` means Aya's own representative stopped it before sending, because it checks the seat's tools first; sent anyway (`visit.checkSeatLocally = false`), the door refuses it with `order.place is not in your seat (it allows menu.view)`.
+`order.place` was refused because it wasn't in the pass: a `visitation` visit is for looking and never spends. `not sent:` means Aya's own representative stopped it before sending, because it checks the pass's tools first; sent anyway (`visit.checkSeatLocally = false`), the door refuses it with `order.place is not in your seat (it allows menu.view)`.
 
-## 4. A visit that spends, and a second visit (2 minutes)
+### 4. A visit that spends, and a second visit (2 minutes)
 
 To spend, the owner signs a mandate for purpose `purchase` with a spending limit (`max_amount`), and each spending act states its amount. The limit is for the whole errand, not for each visit: a second visit for the same errand presents the same mandate, and what's left carries over. Save this as `spend.mjs`:
 
@@ -191,7 +217,7 @@ no amount: the door refused it (REQUEST_INCOMPLETE)
 6.00 USD: ordered sencha for 6.00 USD
 visit 2: grant | same mandate: true
 6.00 more: not sent: 6.00 USD is more than the 4.00 USD left of the mandate
-report: The place with key …h5YFQaB5 (claims to be "Kettle & Leaf"; not verified) seated me for "menu.view" and "order.place", up to 10.00 USD. I did 0 actions; 1 was refused. This was visit 2 under the mandate you signed. Earlier: here, 1 action done, 1 refused, 6.00 USD spent. In all under this mandate: 1 action done, 2 refused; spent 6.00 USD of the 10.00 USD allowed, 4.00 USD left.
+report: The place with key …h5YFQaB5 (claims to be "Kettle & Leaf"; not verified) admitted me with a pass for "menu.view" and "order.place", up to 10.00 USD. I did 0 actions; 1 was refused. This was visit 2 under the mandate you signed. Earlier: here, 1 action done, 1 refused, 6.00 USD spent. In all under this mandate: 1 action done, 2 refused; spent 6.00 USD of the 10.00 USD allowed, 4.00 USD left.
 ```
 
 What happened:
@@ -201,29 +227,84 @@ What happened:
 - **One report for the errand.** The report home covers every visit and act under the mandate (`under_mandate` in the report), so the earlier visit isn't lost (§8.2).
 - **Across runs.** The ledger lives in memory unless you pass `ledger: fileLedger("ledger.json")` to `createRepresentative`. The development passkey is new each run, so each run of this script is, to the door, a new owner with a new mandate; a real owner signs once on their device and the representative keeps that mandate and its ledger.
 
-Other limits work the same way: `max_operations`, `max_session_s` (per seat), and `max_amount_scope: "per_operation"` with `session_max_amount`.
+Other limits work the same way: `max_operations`, `max_session_s` (per pass), and `max_amount_scope: "per_operation"` with `session_max_amount`.
 
-## 5. Check conformance (1 minute)
+### 5. Check your own door against the protocol (1 minute)
+
+This checks **your own door**, the host side: your place and its host representative, against the protocol. It sends deliberate attacks, so run it only against a door you run, never against a place someone else runs.
 
 With the server still running:
 
 ```sh
-npx shokai-conformance http://127.0.0.1:3000/shokai --ext visit-receipts --vectors
+npx --no-install shokai-conformance http://127.0.0.1:3000/shokai --ext visit-receipts --vectors
 ```
 
-The runner visits your door as a stranger and as a prepared representative, checks the place against its listing the way a visitor must, and tries the attacks every revision must refuse (a request before the card, a reused nonce, a message changed after signing, someone else's card). Extension levels are opt-in with `--ext` (`visit-receipts`, `signed-listings`, or `all`).
+(`--no-install` makes `npx` use the copy you installed in this folder and never fetch a package of that name from the registry.)
 
-`--vectors` runs the normative test vectors. Against a URL they run on the **runner's own crypto**, because a door's crypto can't be reached over HTTP; the output says so. A passing vectors section then says nothing about the door: only the core and extension checks are about the door. To test your own implementation's crypto, pass a module instead of a URL: `npx shokai-conformance ./my-door.js --vectors`, where the module exports `door` (or `createDoor` or `handler`) and `implementation` (its digest, signature, timestamp, money, locale and did:jwk functions).
+You should see, at the end (abridged; captured from @kigenka/shokai@0.5.0 against the step 2 server):
 
-## 6. Visiting a place someone else runs (the visitor path)
+```text output=conformance
+Shōkai conformance: http://127.0.0.1:3000/shokai  (spec 0.5.0, wire shokai/0.5)
+core
+  → 38 pass, 0 fail, 0 warn, 2 skip, 0 N/A
+core: the MCP binding (§11.3; only where the place serves MCP)
+  → 8 pass, 0 fail, 0 warn, 0 skip, 0 N/A
+core: v0.5.0 (C230–C255; a place on spec 0.5.0)
+  → 21 pass, 0 fail, 0 warn, 5 skip, 12 N/A
+extension: visit-receipts (optional; doesn't affect the core verdict)
+  → 1 pass, 0 fail, 0 warn, 0 skip, 0 N/A
+vectors (run against this runner's own crypto, NOT the door …)
+  → 8 pass, 0 fail, 0 warn, 0 skip, 0 N/A
+Core: all core checks that ran passed; 7 skipped, 12 not applicable (with their basis above).
+```
+
+**What this result lets you claim.** Exit status `0` with "all core checks that ran passed" is the runner's **black-box core verdict** for this door. It is **not** yet a named conformance claim. Named claims are optional; the box below explains them.
+
+<details><summary>Going further: named conformance claims (<code>--claim</code>), which print NOT ESTABLISHED here by design</summary>
+
+Named claims are conformance classes (SPEC §0.1, C290: for example `Core Door`, or the presets `browse` and `shop`), measured with `--claim`. For example:
+
+```sh
+npx --no-install shokai-conformance http://127.0.0.1:3000/shokai --claim browse
+```
+
+Against the step 2 server this prints `Claim: NOT ESTABLISHED`, and that is expected. Some checks in each class run only **in process** (host farewell, revocation under storage pressure, passkey counters, config refusals). A black-box URL run can't see those, so the claimant has to pass `--evidence <file>` **and** `--accept-evidence-exec` (or set `SHOKAI_ACCEPT_EVIDENCE_EXEC=1`), naming its own tests for them. Warning: the runner then executes the commands in that file on your machine; use it only in an environment you trust. The file is JSON: each in-process check names a PATH program and a test file inside the implementation directory. A pass is that command's exit 0, not an independent verification. For example (illustrative; the test names are yours):
+
+```json
+{ "implementation": "my-door 1.2.0",
+  "checks": { "v050.host_farewell": { "command": "node", "test": "test/farewell.test.js" },
+              "v050.config_refusals": { "command": "node", "test": "test/config.test.js" } } }
+```
+
+Skipped checks never count as passes. A complete established run, on the reference door with its real evidence file, is shown on [Compatibility and versioning](https://shokaiprotocol.com/releases/compatibility#named-claim). So after this step a door may say only what ran: **"passed every Shōkai 0.5.0 core check that ran black-box (7 skipped, 12 not applicable)"**, with the counts from its own run, and **"conforms to Core Door"** (or `browse`, `shop`) only when `--claim` prints `Claim: ESTABLISHED`.
+
+</details>
+
+Schemas for non-TypeScript implementers: [JSON Schema v0.5.0](https://shokaiprotocol.com/raw/schema.json) · [TypeScript shapes](https://shokaiprotocol.com/raw/protocol-shapes.ts) · [golden traces](https://shokaiprotocol.com/examples/#downloads).
+
+**Reading skip and N/A.** *Skip* means the check needs something this run didn't provide: the two running-total checks need `--spend` (below), and the hold and trust checks need a door configured with holds or trust requirements, which the step 2 server isn't. *N/A* means the feature isn't declared by this door (for example closed templates, errand budgets, a site binding), so there is nothing to test. Each line in the full output names its basis. Neither counts as a pass.
+
+The runner visits your door as an anonymous visiting representative and as a prepared visiting representative, checks the place against its listing the way a visiting representative must, and tries the attacks every revision must refuse (a request before the Shōkai card, a reused nonce, a message changed after signing, someone else's Shōkai card). Extension levels are opt-in with `--ext` (`visit-receipts`, `signed-listings`, or `all`).
+
+`--vectors` runs the normative test vectors. Against a URL they run on the **runner's own crypto**, because a door's crypto can't be reached over HTTP; the output says so. A passing vectors section then says nothing about the door: only the core and extension checks are about the door. To test your own implementation's crypto, pass a module instead of a URL: `npx --no-install shokai-conformance ./my-door.js --vectors`, where the module exports `door` (or `createDoor` or `handler`) and `implementation` (its digest, signature, timestamp, money, locale and did:jwk functions).
+
+## Send a visiting representative
+
+Step 6: the visiting representative side, at a place someone else runs.
+
+> **Practice places are coming.** Two public practice places are planned: one without Shōkai, and one with a Shōkai door, so a visiting representative can see the difference. They aren't open yet; until then, use your own door from steps 2 to 4, or a door someone has set up.
+
+### 6. Visiting a place someone else runs (the visiting representative path)
 
 You don't need a server of your own to visit a place. You need its door's base URL (ending in `/shokai`) and, if the door lists more than one place, the place's `name`.
 
 - **`name` vs `display_name`.** Each listing entry has a `name`, a short machine slug (`tea-shop`), and a `display_name` for people ("Kettle & Leaf"). `findPlace(base, name)` takes the base URL and the `name`; leave the name out to get the listing's first place.
 - **Its actions are its own.** A place lists its own actions (`menu.view`, `tea.ask`, `order.place`, ...), what each spends and what it will ask for. Read them from the listing; don't assume the names in this quickstart.
-- **Card scope vs mandate.** `createRepresentative({ purposes, actions })` sets the scope of the representative's **card**: everything it may ever ask for on its owner's behalf, signed once. Each `visit()` carries a **mandate**: one purpose, the actions for this errand (within the card's scope) and its limits, signed for this errand. A visit can ask for less than the card allows, never more; a mandate beyond its card is refused (`MANDATE_INVALID`). The script below builds both from the listing only to stay short.
+- **Shōkai card scope vs mandate.** `createRepresentative({ purposes, actions })` sets the scope of the representative's **Shōkai card**: everything it may ever ask for on its owner's behalf, signed once. Each `visit()` carries a **mandate**: one purpose, the actions for this errand (within the Shōkai card's scope) and its limits, signed for this errand. A visit can ask for less than the Shōkai card allows, never more; a mandate beyond its Shōkai card is refused (`MANDATE_INVALID`). The script below builds both from the listing only to stay short.
 
-Save this as `visitor.mjs`; it reads any door's listing, asks for a seat for the actions that spend nothing, and lists the tools in its seat:
+- **Test owner: local or test doors only.** `createRepresentative({ ownerName })` with no `owner` or `card` signs with `developmentPasskey()`, a software stand-in whose `rp_id` is the reserved `owners.example`. A door on loopback (like step 2's) or in the test profile admits it. A correctly configured public door (https, not loopback) refuses it before any pass: the visit ends `not_now` and the door's log says `rp_id owners.example is an RFC 2606 reserved name (a development passkey)`. To visit a public door, the owner signs the Shōkai card with a real passkey (the signing page, [SIGNING.md](SIGNING.md)) and you pass it in: `createRepresentative({ card, ... })`, or `createRepresentative({ owner, ... })` with the owner's passkey signer ([docs/build-a-visitor.md](https://github.com/Kigenka/shokai/blob/v0.5.0/docs/build-a-visitor.md)). `shokai visit <url>` uses the test owner too, so it is for demo and test doors only.
+
+Save this as `visitor.mjs`; it reads any door's listing, asks for a pass for the actions that spend nothing, and lists the tools in its pass:
 
 ```js file=visitor.mjs
 // visitor.mjs: visit a place that's already running. Usage: node visitor.mjs <base URL ending in /shokai> [place name]
@@ -240,6 +321,10 @@ for (const a of place.actions) console.log(`listing: ${a.action} (${a.purposes.j
 
 // Ask for the actions that spend nothing and need no introduction, under one purpose they share.
 const free = place.actions.filter((a) => !a.spends && !a.creates_account && !a.requires_introduction && (a.needs ?? "standard") === "standard");
+if (!free.length) {
+  console.error("This place lists no free (unpaid, no-introduction) actions a visitor can try without spending. Pick a different place, or ask the owner for a mandate that covers a spending action.");
+  process.exit(1);
+}
 const purpose = free.some((a) => a.purposes.includes("visitation")) ? "visitation" : free[0].purposes[0];
 const actions = free.filter((a) => a.purposes.includes(purpose)).map((a) => a.action);
 const aya = createRepresentative({ ownerName: "Aya Linden", purposes: [purpose], actions });
@@ -252,7 +337,7 @@ const origin = new URL(place.entry).origin;
 const hint = place.links?.find((l) => l.rel === "mcp-server" && new URL(l.href).origin === origin)?.href;
 const client = new Client({ name: "aya-representative", version: "1.0.0" });
 await client.connect(new StreamableHTTPClientTransport(new URL(hint ?? origin + "/mcp"), { fetch: shokaiFetch(visit) }));
-console.log("tools in my seat:", (await client.listTools()).tools.filter((t) => visit.seat?.tool_allowlist.includes(t.name)).map((t) => t.name));
+console.log("tools in my pass (wire: seat):", (await client.listTools()).tools.filter((t) => visit.seat?.tool_allowlist.includes(t.name)).map((t) => t.name));
 
 await visit.farewell(); await client.close();
 console.log("report:", visit.report().outcome_rendered.text);
@@ -271,26 +356,29 @@ place: name=tea-shop display_name="Kettle & Leaf"
 listing: menu.view (visitation, purchase), asks for nothing
 listing: order.place (purchase) spends, asks for nothing
 place checked: true | decision: grant | seat: [ 'menu.view' ]
-tools in my seat: [ 'menu.view' ]
-report: The place with key …h5YFQaB5 (claims to be "Kettle & Leaf"; not verified) seated me for "menu.view", no spending. I did 0 actions; none were refused.
+tools in my pass (wire: seat): [ 'menu.view' ]
+report: The place with key …h5YFQaB5 (claims to be "Kettle & Leaf"; not verified) admitted me with a pass for "menu.view", no spending. I did 0 actions; none were refused.
 ```
 
-**When a call is refused.** Every refused `tools/call` is JSON-RPC error `-32040`; the message says why in words and `data.shokai` says it in fields: `refused_by` (`representative`, `door` or `gate`), `reason_code`, and the door's `act_decision`. Only a call with no seat is told "get a seat first". A tool outside the seat says so and lists what the seat allows; a spending act with no amount is asked for one; an amount in another currency, or past what's left of the limit, says that. Messages that start with `not sent:` come from your own representative, which checks the seat's tools and what remains of the mandate before sending (set `visit.checkSeatLocally = false` or `visit.checkMandateLocally = false` only to test a door's own enforcement).
+**When a call is refused.** Every refused `tools/call` is JSON-RPC error `-32012`; the message says why in words and `data.shokai` says it in fields: `refused_by` (`representative`, `door` or `gate`), `reason_code`, and the door's `act_decision`. Only a call with no pass is told "get a seat first" (the message uses the wire word). A tool outside the seat says so and lists what the seat allows; a spending act with no amount is asked for one; an amount in another currency, or past what's left of the limit, says that. Messages that start with `not sent:` come from your own representative, which checks the seat's tools and what remains of the mandate before sending (set `visit.checkSeatLocally = false` or `visit.checkMandateLocally = false` only to test a door's own enforcement).
 
 **Things a place gives you.** If a tool returns something signed, such as a visit stamp, the representative keeps it, checks it against the listing's `principal_id`, and lists it in the report under `brought_back` (with the envelope, or `report("en-US", { broughtBack: "reference" })` for only its digest); the readable report says what it brought back and whether it verified.
 
-From here: `client.listTools()` shows each tool's `inputSchema`, so you know what arguments to pass; to spend, ask for purpose `purchase` with a limit, as in step 4. Some places give seated visitors something to take home, such as a signed visit stamp; see *Visit stamps* in the docs (Concepts). To check the door you visited, run step 5's command with its base URL; with a URL, `--vectors` checks the runner's own crypto, not the door's.
+From here: `client.listTools()` shows each tool's `inputSchema`, so you know what arguments to pass; to spend, ask for purpose `purchase` with a limit, as in step 4. Some places give admitted visiting representatives something to take home, such as a signed visit stamp; see *Visit stamps* in the docs (Concepts). Step 5's checks are for your own door; don't run them against a place you only visit.
 
 ## What just happened
 
-1. **Arrive.** Any arrival gets an answer. A caller with no seat gets `not_now` and the door's address, never a bare refusal (§3).
-2. **Check the place.** Before asking anything, the representative checked that every reply was signed by the representative the listing names, and that the place's card was signed by the listing's principal and proved possession of its key in this visit (§3.1, "Pointers are hints"). A mismatch would have ended the visit with nothing asked.
-3. **Introduce itself and ask.** The representative greeted, introduced itself with a card its owner signed with a passkey (no vouch: a self-introduction, the normal case), proved it holds the card's key, and asked for `menu.view` inside a mandate its owner signed (§3.2, §4, §5).
-4. **Answer.** The door decided on signed facts only (prose never reaches the decision) and seated it for exactly what it asked, no wider (§6, §7).
-5. **Act within limits.** Each MCP `tools/call` carried a signed act for that seat. The gate checked the signature, the seat, the tool, the arguments, freshness and single use, and counted each spending act's `amount` against the seat's cap (§7.2).
-6. **Report home.** The representative wrote its owner a report from machine fields: what it did, what it spent, and what it shared (its card, the mandate, the acts' arguments), quoting anything the place said as untrusted (§8.2).
+Seven steps, in order. Each is tagged with the side that acts: the **visiting representative** (your visiting representative from step 3) or the **host representative** (your door from step 2). Shōkai has rules for both.
 
-The development passkey in `createRepresentative` stands in for the owner's real passkey. In production the owner signs cards and mandates on their own device, and the representative never holds the owner's key (Appendix A.1).
+1. **Window** · *visiting representative.* It read the place's public listing: what the place is, what it offers, and what each action asks for. Reading it needs no Shōkai card, key, signature or account. The host representative takes no action and identifies no one, like a passer-by reading a shop window; the place keeps nothing about the reader beyond ordinary rate limits (§3.1).
+2. **Knock and introduce** · *visiting representative.* It greeted the door, presented the Shōkai card its owner signed (here with the development passkey), proved it holds the Shōkai card's key, introduced itself (no vouch: a self-introduction, the normal case), and stated its purpose and the limits its owner signed, asking for `menu.view` inside its mandate: a proper introduction (§2.4, §3.2, §4, §5). It also checked the place: every reply was signed by the representative the listing names, and the place's Shōkai host card proved possession of its key in this visit. A mismatch would have ended the visit with nothing asked (§3.1, "Pointers are hints").
+3. **Check** · *host representative.* Its first step, after greeting back. It read the Shōkai card: whose representative this is, a person or an organization. It verified the owner's signature, the proof of possession, that the Shōkai card isn't withdrawn, the purpose and limits in the mandate, and any vouch (§2.4, §2.6, §4, §5). A visiting representative without a Shōkai card would have been asked for one, through the place's leaflet and a kind `not_now` (§3.3).
+4. **Decide and explain** · *the door.* It answered `grant`. The other answers are `conditional`, `deny` (with a reason and a way to retry) and `considering` (taken inside to a person). The door decides on signed facts and its own policy; prose never reaches the decision (§6).
+5. **Pass** · *host representative.* It admitted the visiting representative for exactly what was asked and allowed, nothing more: the pass is *policy ∩ mandate ∩ request* (§7.1). A tool call with no pass gets `not_now` and the door's address, never a bare refusal.
+6. **Work within limits** · *visiting representative.* Each MCP `tools/call` carried a signed act for that pass. The host side checked the signature, the pass, the tool, the arguments, freshness and single use, and counted each spending act's `amount` against the pass's cap (§7.2).
+7. **Both report** · *both.* The visiting representative wrote its owner a report from machine fields: what it did, what it spent, and what it shared (its Shōkai card, the mandate, the acts' arguments), quoting anything the place said as untrusted (§8.2). The host representative recorded the visit at its door, in its own record for its place: the encounter, the decision and the outcome (§9.1).
+
+The development passkey in `createRepresentative` stands in for the owner's real passkey. In production the owner signs Shōkai cards and mandates on their own device, and the representative never holds the owner's key (Appendix A.1).
 
 Section numbers (§3.1, §7.2, Appendix A.1) and check ids (C104, C174) refer to the specification. You have it wherever you have Shōkai:
 

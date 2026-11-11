@@ -1,4 +1,4 @@
-# P11. Prompt-injection surface: cards, meaning notes, house rules, introductions
+# P11. Prompt-injection surface: Shōkai cards, meaning notes, house rules, introductions
 
 *Section numbers in this proposal are those of the draft it was written against; SPEC Appendix D maps them to v0.3.0.*
 

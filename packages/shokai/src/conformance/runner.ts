@@ -6,12 +6,20 @@
 // their results never change the core verdict.
 import { readFileSync } from "node:fs";
 import { createRepresentative, verifySigned, makeSignedRaw, signRaw, Visit, httpTransport, PROTOCOL, SPEC_VERSION, type Representative } from "./internals.js";
+import { visitorRep, createPresignedRep, skipNeedOwnerSign, skipNeedMandate, skipNeedProbe, type PresignedMaterial } from "./presigned.js";
+export type { PresignedMaterial, MandateRole, PresignedLoad } from "./presigned.js";
+export { loadPresigned, MANDATE_ROLES, PRESIGNED_NO_OWNER_SIGN, skipNeedOwnerSign, skipNeedMandate, skipNeedProbe } from "./presigned.js";
 import { randomId } from "../core/crypto.js";
-import { SPEC_RC_SAME_WIRE } from "../core/version.js";
+import { SPEC_EARLIER_ON_LEGACY_TAG } from "../core/version.js";
+import { v050Checks, type EndSeatHook, type TryConfigHook } from "./v050.js";
+import { v050H4Checks } from "./v050-h4.js";
+import { loadClasses } from "./claims.js";
 
-export type Level = "core" | "mcp" | "visit-receipts" | "signed-listings" | "vectors";
-export type Result = { id: string; level: Level; title: string; ref: string; status: "pass" | "fail" | "warn" | "skip"; detail?: string };
-export type Report = { target: string; spec: string; protocol: string; started_at: string; results: Result[]; summary: Record<string, { pass: number; fail: number; warn: number; skip: number }>;
+export type Level = "core" | "mcp" | "v050" | "visit-receipts" | "signed-listings" | "vectors";
+export type Result = { id: string; level: Level; title: string; ref: string; status: "pass" | "fail" | "warn" | "skip" | "na"; detail?: string;
+  /** R4-03: why a check is not applicable (SPEC §0.1): class | role | informative | in-process | precondition. */ na_basis?: NaBasis };
+export type NaBasis = "class" | "role" | "informative" | "in-process" | "precondition";
+export type Report = { target: string; spec: string; protocol: string; started_at: string; results: Result[]; summary: Record<string, { pass: number; fail: number; warn: number; skip: number; na: number }>;
   /** What the test vectors ran against: an implementation module's own functions, or this runner's own crypto (a door's crypto
    *  can't be reached over HTTP, so with a URL target the vectors say nothing about the door). */
   vectors_against?: string };
@@ -35,28 +43,34 @@ export type Implementation = {
 };
 export const EXTENSIONS: Level[] = ["visit-receipts", "signed-listings"];
 /** Levels whose failures make a door NOT CONFORMANT to the core (the MCP binding is core where the place serves MCP, §11.3). */
-export const CORE_LEVELS: Level[] = ["core", "mcp"];
+export const CORE_LEVELS: Level[] = ["core", "mcp", "v050"];   // v050: the v0.5.0 checks (C230–C255), for a place on spec 0.5.0
 
-const vectorsPath = new URL("../../../conformance-data/test-vectors.json", import.meta.url);
+// SHOKAI_CONFORMANCE_VECTORS: another vectors file (for the runner's own exit-status regression test with a deliberately failing control).
+const vectorsPath: string | URL = process.env.SHOKAI_CONFORMANCE_VECTORS || new URL("../../../conformance-data/test-vectors.json", import.meta.url);
 
-type Ctx = { base: string; results: Result[]; place?: any; listing?: any; rep?: Representative };
+export type Ctx = { base: string; results: Result[]; place?: any; listing?: any; rep?: Representative;
+  /** When set, the runner presents this owner-signed card and mandates and never mints a development owner. */
+  presigned?: PresignedMaterial };
 /** The frozen scenario each black-box check belongs to (scenarios/CATALOG): door and lobby SC-L0, the ritual SC-S1, seats SC-S1,
  *  tamper / order / nonce SC-R1, a copied card SC-M1. */
 const SCENARIO: Record<string, string> = { door: "SC-L0", lobby: "SC-L0", inbox: "SC-L0", body: "SC-L0", ritual: "SC-S1", seat: "SC-S1", request: "SC-L0", mandate: "SC-A1", lifecycle: "SC-R1",
   "neg.order": "SC-R1", "neg.tamper": "SC-R1", "neg.nonce": "SC-R1", "neg.bad_signature": "SC-R1", "neg.copied_card": "SC-M1", "neg.probing": "SC-M1", mcp: "SC-S1" };
-function add(ctx: Ctx, r: Omit<Result, "status"> & { ok: boolean | "warn" | "skip"; detail?: string }) {
+/** R4-03: a check not applicable on a declared basis (SPEC §0.1); never a pass, never a skip. */
+export const na = (basis: NaBasis) => ({ na: basis }) as const;
+export function add(ctx: Ctx, r: Omit<Result, "status" | "na_basis"> & { ok: boolean | "warn" | "skip" | { na: NaBasis }; detail?: string }) {
   const sc = r.level === "core" || r.level === "mcp" ? (SCENARIO[r.id] ?? SCENARIO[r.id.split(".")[0]]) : undefined; if (sc) r = { ...r, ref: `${sc}; ${r.ref}` };
-  const status = r.ok === true ? "pass" : r.ok === "warn" ? "warn" : r.ok === "skip" ? "skip" : "fail";
-  ctx.results.push({ id: r.id, level: r.level, title: r.title, ref: r.ref, status, ...(r.detail ? { detail: r.detail } : {}) });
+  const nab = typeof r.ok === "object" ? r.ok.na : undefined;
+  const status = nab ? "na" : r.ok === true ? "pass" : r.ok === "warn" ? "warn" : r.ok === "skip" ? "skip" : "fail";
+  ctx.results.push({ id: r.id, level: r.level, title: r.title, ref: r.ref, status, ...(nab ? { na_basis: nab } : {}), ...(r.detail ? { detail: r.detail } : {}) });
 }
-async function getJson(url: string): Promise<{ status: number; body: any; cookie?: boolean }> {
+export async function getJson(url: string): Promise<{ status: number; body: any; cookie?: boolean }> {
   const r = await fetch(url, { redirect: "error" }); let body: any = null; try { body = await r.json(); } catch { body = null; } return { status: r.status, body, cookie: r.headers.has("set-cookie") };
 }
-async function postRaw(url: string, body: string): Promise<{ status: number; body: any; cookie?: boolean }> {
+export async function postRaw(url: string, body: string): Promise<{ status: number; body: any; cookie?: boolean }> {
   const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body, redirect: "error" }); let j: any = null; try { j = await r.json(); } catch { j = null; } return { status: r.status, body: j, cookie: r.headers.has("set-cookie") };
 }
-const msgs = (env: any): any[] => (Array.isArray(env?.messages) ? env.messages : []);
-const pay = (m: any) => m?.payload ?? m;
+export const msgs = (env: any): any[] => (Array.isArray(env?.messages) ? env.messages : []);
+export const pay = (m: any) => m?.payload ?? m;
 /** Every message the place sends verifies (JCS digest, signature) under the representative its listing names. */
 function allSignedBy(env: any, rep: string): { ok: boolean; why?: string } {
   for (const m of msgs(env)) { if (!m?.payload) return { ok: false, why: "unsigned message " + (m?.type ?? "") };
@@ -64,14 +78,23 @@ function allSignedBy(env: any, rep: string): { ok: boolean; why?: string } {
   return { ok: true };
 }
 
-export async function runConformance(base: string, opts: { levels?: Level[]; place?: string; implementation?: Implementation; vectorsAgainst?: string; mcp?: string; spend?: SpendOpt } = {}): Promise<Report> {
+export async function runConformance(base: string, opts: { levels?: Level[]; place?: string; implementation?: Implementation; vectorsAgainst?: string; mcp?: string; spend?: SpendOpt;
+  /** v0.5.0 (C231): the place's hold_grace_s, when the tester knows it (a door doesn't disclose it); checks just inside it. */ holdGrace?: number;
+  /** v0.5.0 (C234): a way to make the host end a seat (the implementation's own hook; off the wire). Without it, v050.host_farewell skips. */ endSeat?: EndSeatHook;
+  /** v0.5.0 (C236): the implementation's start hook (off the wire). Without it, v050.config_refusals skips. */ tryConfig?: TryConfigHook;
+  /** A visitor card and mandates the owner already signed. The runner presents them as-is and never mints a development owner. Checks that need a fresh owner signature report SKIP. */ presigned?: PresignedMaterial } = {}): Promise<Report> {
   const levels = new Set<Level>(["core", "mcp", ...(opts.levels ?? [])]);
   base = base.replace(/\/$/, "");
-  const ctx: Ctx = { base, results: [] }; const started_at = new Date().toISOString().replace(/\.\d+Z$/, "Z");
+  const ctx: Ctx = { base, results: [], ...(opts.presigned ? { presigned: opts.presigned } : {}) }; const started_at = new Date().toISOString().replace(/\.\d+Z$/, "Z");
   if (base) await coreHttp(ctx, opts.place, levels, opts.mcp, opts.spend);
+  if (base && ctx.place) await v050Checks(ctx, { spend: opts.spend, holdGrace: opts.holdGrace, endSeat: opts.endSeat, tryConfig: opts.tryConfig });
+  if (base && ctx.place) await v050H4Checks(ctx);   // red team H4 (C277): §3.1.1 site binding, §6.11 host budget
+  // C186 last: a passing probing check bindNever's that principal for 180 days. A pre-signed probe card is usually
+  // the same owner as the primary sitting card, so running this earlier poisons later checks (C233, C234, C238, C300, C248, C268).
+  if (base && ctx.place) await probingCheck(ctx);
   if (levels.has("vectors")) vectors(ctx, opts.implementation);
   const summary: Report["summary"] = {};
-  for (const r of ctx.results) { const s = (summary[r.level] ??= { pass: 0, fail: 0, warn: 0, skip: 0 }); s[r.status]++; }
+  for (const r of ctx.results) { const s = (summary[r.level] ??= { pass: 0, fail: 0, warn: 0, skip: 0, na: 0 }); s[r.status]++; }
   return { target: base || "(vectors only)", spec: SPEC_VERSION, protocol: PROTOCOL, started_at, results: ctx.results, summary,
     ...(levels.has("vectors") ? { vectors_against: opts.vectorsAgainst ?? (opts.implementation ? "the implementation passed in" : "nothing (no implementation)") } : {}) };
 }
@@ -94,15 +117,17 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
     ok: listing.status === 200 && listing.body?.type === "place_listing" && listing.body?.protocol === PROTOCOL && places.length > 0, detail: `status ${listing.status}, ${places.length} place(s)` });
   const place = placeName ? places.find((p) => p.name === placeName) : places[0]; ctx.place = place;
   if (!place) { add(ctx, { id: "door.place", level: L, ref: "§3.1", title: "the place to test is listed", ok: false, detail: placeName ? `no place named ${placeName}` : "no places" }); return; }
-  add(ctx, { id: "door.entry", level: L, ref: "§3.1, §11.1", title: "the listing entry names entry, lobby, inbox, representative_id, spec_ref and actions",
-    ok: ["entry", "lobby", "inbox", "representative_id"].every((k) => typeof place[k] === "string") && typeof place.spec_ref?.version === "string" && Array.isArray(place.actions),
+  add(ctx, { id: "door.entry", level: L, ref: "§3.1, §11.1, C119", title: "the listing entry names entry, lobby, inbox, principal_id, representative_id, spec_ref and actions (R4-05)",
+    ok: ["entry", "lobby", "inbox", "principal_id", "representative_id"].every((k) => typeof place[k] === "string") && typeof place.spec_ref?.version === "string" && Array.isArray(place.actions),
     detail: `place ${place.name}, spec_ref ${place.spec_ref?.version}` });
   // §3.1 (compatibility, informative): v0.3.0 changes nothing on the wire from its release candidate 0.3.0-rc4, so a door naming
   // "0.3.0-rc4" passes with a note; any other version is a warning (the verdict comes from the checks, not from the label).
   const sv = place.spec_ref?.version;
-  add(ctx, { id: "door.spec_ref", level: L, ref: "§3.1", title: `spec_ref.version is "${SPEC_VERSION}" (or its release candidate "${SPEC_RC_SAME_WIRE}", the same wire)`,
-    ok: sv === SPEC_VERSION || sv === SPEC_RC_SAME_WIRE ? true : "warn",
-    detail: sv === SPEC_RC_SAME_WIRE ? `${sv}: the release candidate of ${SPEC_VERSION}, with no wire change; update the label when convenient` : String(sv) });
+  // v0.5.0 (§11.1): 0.3.0 and 0.4.0 speak shokai/0.3, which a v0.5.0 peer accepts (and answers in kind) during the transition window.
+  const earlier = (SPEC_EARLIER_ON_LEGACY_TAG as readonly string[]).includes(String(sv));
+  add(ctx, { id: "door.spec_ref", level: L, ref: "§3.1, §11.1", title: `spec_ref.version is "${SPEC_VERSION}" (or ${SPEC_EARLIER_ON_LEGACY_TAG.map((x) => `"${x}"`).join(" / ")}, on shokai/0.3 during the transition window)`,
+    ok: sv === SPEC_VERSION || earlier ? true : "warn",
+    detail: earlier ? `${sv}: an earlier version on shokai/0.3; it lacks ${SPEC_VERSION}\'s additions (answered in shokai/0.3, §11.1)` : String(sv) });
   const actions: any[] = place.actions ?? [];
   add(ctx, { id: "door.data_asks", level: L, ref: "§3.1 (SHOULD), C172", title: "each listed action declares data_asks (the personal data it will ask the owner for)",
     ok: actions.length && actions.every((a) => Array.isArray(a.data_asks)) ? true : "warn", detail: actions.filter((a) => !Array.isArray(a.data_asks)).map((a) => a.action).join(", ") || undefined });
@@ -146,8 +171,12 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
   const usable = actions.filter((a) => !a.spends && (a.needs ?? "standard") === "standard" && !a.creates_account && !a.requires_introduction);
   if (!usable.length) { add(ctx, { id: "ritual.grant", level: L, ref: "§3.2", title: "a prepared visitor can be seated for a listed non-spending action", ok: "skip", detail: "the place lists no plain non-spending action" }); return; }
   const target = usable[0]; const purpose = target.purposes?.[0];
-  const rep = createRepresentative({ ownerName: "Aya Linden (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) }); ctx.rep = rep;
-  const visit = await rep.visit(place, { purpose, actions: [target.action], why: "Conformance run: checking the ritual." });
+  const rep = visitorRep(ctx.presigned, { ownerName: "Aya Linden (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) }); ctx.rep = rep;
+  if (ctx.presigned && !ctx.presigned.mandates.browse) {
+    add(ctx, { id: "ritual.grant", level: L, ref: "§3.2", title: "a prepared visitor can be seated for a listed non-spending action", ok: "skip", detail: skipNeedMandate("browse", "a non-spending mandate for the ritual") });
+    return;
+  }
+  const visit = await rep.visit(place, { purpose, actions: [target.action], why: "Conformance run: checking the ritual.", ...(ctx.presigned?.mandates.browse ? { useMandate: ctx.presigned.mandates.browse } : {}) });
   // The runner tests the door, so its own representative-side checks (§5.1 ledger, the local seat check) are off: every act goes out.
   visit.checkSeatLocally = false; visit.checkMandateLocally = false;
   const inbound = visit.transcript.filter((t) => t.dir === "in").map((t) => t.message);
@@ -189,7 +218,8 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
   // non-spending action, so nothing is bought: one act in a first visit, then the same mandate presented again in a second visit.
   if (visit.seat) {
     const lim = { max_operations: 1 };
-    const m = rep.mandate({ purpose, actions: [target.action], limits: lim, validSeconds: 600 });
+    const m = ctx.presigned ? ctx.presigned.mandates.ops1 : rep.mandate({ purpose, actions: [target.action], limits: lim, validSeconds: 600 });
+    if (ctx.presigned && !m) { add(ctx, { id: "seat.mandate_across", level: L, ref: "§5.1, C175", title: "a mandate's limits bind across visits: an act past them in a new seat under the same mandate is refused", ok: "skip", detail: skipNeedMandate("ops1", "a mandate with max_operations 1 on the non-spending action") }); } else if (m) {
     const va = await rep.visit(place, { purpose, actions: [target.action], limits: lim, useMandate: m, why: "Conformance run: a mandate used across two visits." });
     const sendAct = async (v: Visit) => (await v.send(v.message("act", { seat_id: v.seat!.seat_id, tool: target.action, arguments: {} }))).find((x: any) => x.type === "act_result" || x.type === "act_decision");
     const first = va.seat ? await sendAct(va) : undefined; await va.farewell().catch(() => undefined);
@@ -201,6 +231,7 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
         ok: vb.seat ? second?.type === "act_decision" && second?.decision === "deny" : vb.decision === "deny",
         detail: vb.seat ? `second visit's act: ${second?.type}/${second?.reason_code ?? ""}` : `second visit not seated (${vb.decision}/${vb.response?.reason_code ?? ""})` });
     }
+    }
   }
   // ---- §5.1, §7.2 (C175): money caps are enforced by the door, not only promised. A door that seats a spending limit and then
   // lets acts past it through is not conformant. The first check moves no money at a conformant door: the seat's cap is 0.01 and the
@@ -208,11 +239,15 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
   const spendAct = actions.find((a) => a.spends && (a.needs ?? "standard") === "standard" && !a.creates_account && !a.requires_introduction);
   const cur = spendOpt.currency ?? "USD"; const sargs = spendOpt.args ?? {};
   const capTitle = "a seat's max_amount is enforced: an act asking for more than the seat's cap is refused by the door, not carried out";
-  if (!spendAct) add(ctx, { id: "seat.max_amount", level: L, ref: "§5.1, §7.2", title: capTitle, ok: "skip", detail: "the place lists no plain spending action" });
+  if (!spendAct) add(ctx, { id: "seat.max_amount", level: L, ref: "§5.1, §7.2, C73, C175", title: capTitle, ok: na("precondition"), detail: "the place lists no spending action (classes.json applicability)" });
   else {
     const sp = spendAct.purposes?.[0];
-    const rs = createRepresentative({ ownerName: "Bo Ferreira (conformance test owner)", purposes: [sp], actions: [spendAct.action] });
-    const vs = await rs.visit(place, { purpose: sp, actions: [spendAct.action], limits: { max_amount: { value: "0.01", currency: cur } }, why: "Conformance run: a cap of 0.01." });
+    const cap001 = ctx.presigned?.mandates.cap001;
+    if (ctx.presigned && !cap001) {
+      add(ctx, { id: "seat.max_amount", level: L, ref: "§5.1, §7.2, C73, C175", title: capTitle, ok: "skip", detail: skipNeedMandate("cap001", "a spending mandate whose max_amount is 0.01") });
+    } else {
+    const rs = visitorRep(ctx.presigned, { ownerName: "Bo Ferreira (conformance test owner)", purposes: [sp], actions: [spendAct.action] });
+    const vs = await rs.visit(place, { purpose: sp, actions: [spendAct.action], limits: { max_amount: { value: "0.01", currency: cur } }, why: "Conformance run: a cap of 0.01.", ...(cap001 ? { useMandate: cap001 } : {}) });
     vs.checkSeatLocally = false; vs.checkMandateLocally = false;
     if (!vs.seat) add(ctx, { id: "seat.max_amount", level: L, ref: "§5.1, §7.2", title: capTitle, ok: "skip", detail: `not seated with a 0.01 ${cur} cap (${vs.decision ?? "no decision"}${vs.response?.reason_code ? "/" + vs.response.reason_code : ""})` });
     else {
@@ -222,6 +257,7 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
         detail: `1.00 ${cur} under a 0.01 ${cur} seat: ${r?.type}/${(r as any)?.reason_code ?? ""}${r?.type === "act_result" ? " (the door let it through)" : ""}` });
     }
     await vs.farewell().catch(() => undefined);
+    } // cap001 present or development owner
     // Totals, opt-in (--spend <amount>): a conformant door admits exactly one act of that amount. The mandate and the seat each allow
     // just under two; a second act in the same seat, then one in a new seat under the same mandate, must both be refused.
     const t1 = "a seat's max_amount is a running total: a second act that would take the seat past its cap is refused";
@@ -231,8 +267,13 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
       add(ctx, { id: "seat.max_amount_total", level: L, ref: "§5.1, §7.2", title: t1, ok: "skip", detail: why }); add(ctx, { id: "mandate.max_amount_total", level: L, ref: "§5.1, C175", title: t2, ok: "skip", detail: why }); }
     else {
       const amount = { value: spendOpt.value!, currency: cur }; const cap = { value: fromUnits(one.u * 2n - 1n, one.d), currency: cur };
-      const rt = createRepresentative({ ownerName: "Bo Ferreira (conformance test owner)", purposes: [sp], actions: [spendAct.action] });
-      const m = rt.mandate({ purpose: sp, actions: [spendAct.action], limits: { max_amount: cap }, validSeconds: 600 });
+      const underTwo = ctx.presigned?.mandates.under_two;
+      if (ctx.presigned && !underTwo) {
+        const why = skipNeedMandate("under_two", `a spending mandate whose max_amount is ${cap.value} ${cur} (just under two ${amount.value} orders)`);
+        add(ctx, { id: "seat.max_amount_total", level: L, ref: "§5.1, §7.2", title: t1, ok: "skip", detail: why }); add(ctx, { id: "mandate.max_amount_total", level: L, ref: "§5.1, C175", title: t2, ok: "skip", detail: why });
+      } else {
+      const rt = visitorRep(ctx.presigned, { ownerName: "Bo Ferreira (conformance test owner)", purposes: [sp], actions: [spendAct.action] });
+      const m = underTwo ?? rt.mandate({ purpose: sp, actions: [spendAct.action], limits: { max_amount: cap }, validSeconds: 600 });
       const va = await rt.visit(place, { purpose: sp, actions: [spendAct.action], limits: { max_amount: cap }, useMandate: m, why: "Conformance run: one order under a cap of just under two." });
       va.checkSeatLocally = false; va.checkMandateLocally = false;
       const first = va.seat ? await va.act(spendAct.action, { ...sargs, amount }) : undefined;
@@ -248,6 +289,7 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
         add(ctx, { id: "mandate.max_amount_total", level: L, ref: "§5.1, C175", title: t2, ok: vb.seat ? third?.type === "act_decision" && third?.decision === "deny" && (third as any)?.refused_by !== "representative" : vb.decision === "deny",
           detail: vb.seat ? `${amount.value} ${cur} in a new seat under the same ${cap.value} mandate: ${third?.type}/${(third as any)?.reason_code ?? ""}` : `the new seat was refused (${vb.decision}/${vb.response?.reason_code ?? ""})` });
       }
+      } // under_two present or development owner
     }
   }
   // ---- §11.3 the MCP binding (C179–C182), with the seat of the first visit
@@ -278,36 +320,87 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
   }
   // ---- §5.3 (C185) and §5.1 (C188), each with a fresh owner so honest rejections never add up to probing (B.7)
   {
-    const r1 = createRepresentative({ ownerName: "Ines Calloway (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) });
+    const r1 = visitorRep(ctx.presigned, { ownerName: "Ines Calloway (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) });
     const inc = await requestAfterIntro(r1, place, { card_digest: r1.card.payload_digest, proposal: proposal([target.action]) });
     add(ctx, { id: "request.incomplete", level: L, ref: "§5.3, C185", title: "a request with no mandate gets deny / not_now / REQUEST_INCOMPLETE with retry with_credential [signed_mandate]",
       ok: inc?.decision === "deny" && inc?.disposition === "not_now" && inc?.reason_code === "REQUEST_INCOMPLETE" && inc?.retry?.kind === "with_credential" && JSON.stringify(inc?.retry?.credentials) === '["signed_mandate"]',
       detail: `${inc?.decision ?? "nothing"}/${inc?.disposition ?? ""}/${inc?.reason_code ?? ""} ${JSON.stringify(inc?.retry ?? null)}` });
+    const inv = (r: any) => r?.decision === "deny" && r?.disposition === "not_now" && r?.reason_code === "MANDATE_INVALID";
+    if (ctx.presigned) {
+      const cc = ctx.presigned.probes.cross_card, cp = ctx.presigned.probes.cross_place;
+      if (!cc || !cp) add(ctx, { id: "mandate.cross", level: L, ref: "§5.1, C188", title: "a mandate for another card_id, or whose counterparties leave out this place, is deny / not_now / MANDATE_INVALID", ok: "skip", detail: skipNeedProbe("a well-signed mandate for another card_id, and one whose counterparties leave out this place") });
+      else {
+        const r2 = visitorRep(ctx.presigned, { ownerName: "Ines Calloway (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) });
+        const wrongCard = await requestAfterIntro(r2, place, { card_digest: r2.card.payload_digest, mandate: cc, proposal: proposal([target.action]) });
+        const wrongPlace = await requestAfterIntro(r2, place, { card_digest: r2.card.payload_digest, mandate: cp, proposal: proposal([target.action]) });
+        add(ctx, { id: "mandate.cross", level: L, ref: "§5.1, C188", title: "a mandate for another card_id, or whose counterparties leave out this place, is deny / not_now / MANDATE_INVALID",
+          ok: inv(wrongCard) && inv(wrongPlace), detail: `card_id → ${wrongCard?.decision ?? "nothing"}/${wrongCard?.reason_code ?? ""}; counterparties → ${wrongPlace?.decision ?? "nothing"}/${wrongPlace?.reason_code ?? ""}` });
+      }
+    } else {
     const r2 = createRepresentative({ ownerName: "Ines Calloway (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) });
     const base = r2.mandate({ purpose, actions: [target.action] }).payload;
     const other = signRaw({ ...base, mandate_id: randomId("mand"), card_id: "card-" + randomId("another") }, r2.owner);
     const wrongCard = await requestAfterIntro(r2, place, { card_digest: r2.card.payload_digest, mandate: other, proposal: proposal([target.action]) });
     const elsewhere = signRaw({ ...base, mandate_id: randomId("mand"), counterparties: ["did:web:another-place.example"] }, r2.owner);
     const wrongPlace = await requestAfterIntro(r2, place, { card_digest: r2.card.payload_digest, mandate: elsewhere, proposal: proposal([target.action]) });
-    const inv = (r: any) => r?.decision === "deny" && r?.disposition === "not_now" && r?.reason_code === "MANDATE_INVALID";
     add(ctx, { id: "mandate.cross", level: L, ref: "§5.1, C188", title: "a mandate for another card_id, or whose counterparties leave out this place, is deny / not_now / MANDATE_INVALID",
       ok: inv(wrongCard) && inv(wrongPlace), detail: `card_id → ${wrongCard?.decision ?? "nothing"}/${wrongCard?.reason_code ?? ""}; counterparties → ${wrongPlace?.decision ?? "nothing"}/${wrongPlace?.reason_code ?? ""}` });
+    }
   }
   // ---- §2.6 (C191): a card its principal revoked, delivered as card_revocation, is refused as not_now with no reason code
   {
+    const scoreRevoked = (after: any) => {
+      const ar = after.response;
+      return { ok: !after.seat && ar?.decision === "deny" && ar?.disposition === "not_now" && !ar?.reason_code && ar?.retry?.kind === "with_credential" && JSON.stringify(ar?.retry?.credentials) === '["signed_card"]',
+        detail: `${ar?.decision ?? after.decision ?? "nothing"}/${ar?.disposition ?? ""}/${ar?.reason_code ?? ""} ${JSON.stringify(ar?.retry ?? null)}` };
+    };
+    if (ctx.presigned) {
+      const pack = ctx.presigned.probes.revoked;
+      if (!pack) add(ctx, { id: "card.revoked", level: L, ref: "§2.6, C191", title: "a card whose principal delivered a signed card_revocation is refused: deny / not_now, no reason code, retry with_credential [signed_card]", ok: "skip", detail: skipNeedProbe("a distinct visitor card, a mandate bound to it, and an owner-signed card_revocation of that card") });
+      else {
+        const rr = createPresignedRep(ctx.presigned, { purposes: [purpose], actions: actions.map((a) => a.action), card: pack.card });
+        const d = new Visit(rr, place.entry, place.representative_id, httpTransport);
+        await d.send(d.message("greeting", { locales: ["en-US"], nonce: randomId("n") }));
+        await d.send(d.message("card_revocation", { revocation: pack.revocation }));
+        const after = await rr.visit(place, { purpose, actions: [target.action], why: "Conformance run: a revoked card.", ...(pack.mandate ? { useMandate: pack.mandate } : {}) });
+        const sc = scoreRevoked(after);
+        add(ctx, { id: "card.revoked", level: L, ref: "§2.6, C191", title: "a card whose principal delivered a signed card_revocation is refused: deny / not_now, no reason code, retry with_credential [signed_card]",
+          ok: sc.ok, detail: sc.detail });
+      }
+    } else {
     const rr = createRepresentative({ ownerName: "Rowan Achterberg (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) });
     const d = new Visit(rr, place.entry, place.representative_id, httpTransport);
     await d.send(d.message("greeting", { locales: ["en-US"], nonce: randomId("n") }));
     const revocation = signRaw({ card_id: rr.card.payload.card_id, card_digest: rr.card.payload_digest, principal_id: rr.owner.id, revoked_at: new Date().toISOString().replace(/\.\d+Z$/, "Z"), reason: "superseded" }, rr.owner);
     await d.send(d.message("card_revocation", { revocation }));
     const after = await rr.visit(place, { purpose, actions: [target.action], why: "Conformance run: a revoked card." });
-    const ar = after.response;
+    const sc = scoreRevoked(after);
     add(ctx, { id: "card.revoked", level: L, ref: "§2.6, C191", title: "a card whose principal delivered a signed card_revocation is refused: deny / not_now, no reason code, retry with_credential [signed_card]",
-      ok: !after.seat && ar?.decision === "deny" && ar?.disposition === "not_now" && !ar?.reason_code && ar?.retry?.kind === "with_credential" && JSON.stringify(ar?.retry?.credentials) === '["signed_card"]',
-      detail: `${ar?.decision ?? after.decision ?? "nothing"}/${ar?.disposition ?? ""}/${ar?.reason_code ?? ""} ${JSON.stringify(ar?.retry ?? null)}` });
+      ok: sc.ok, detail: sc.detail });
+    }
   }
   // ---- §2.6 (C198): revoking a card ends every open seat it holds; the next act in a seat opened before the revocation is refused
   {
+    if (ctx.presigned) {
+      const pack = ctx.presigned.probes.revoked_seat;
+      if (!pack) add(ctx, { id: "card.revoked_seat", level: L, ref: "§2.6, C198", title: "revoking a card ends every open seat it holds: the next act in that seat is refused (deny / not_now, no reason code)", ok: "skip", detail: skipNeedProbe("a distinct visitor card, a seating mandate, and an owner-signed card_revocation delivered while that seat is open") });
+      else {
+        const rs = createPresignedRep(ctx.presigned, { purposes: [purpose], actions: actions.map((a) => a.action), card: pack.card });
+        const sv = await rs.visit(place, { purpose, actions: [target.action], why: "Conformance run: a seat, then a revoked card.", useMandate: pack.mandate });
+        if (!sv.seat) add(ctx, { id: "card.revoked_seat", level: L, ref: "§2.6, C198", title: "revoking a card ends every open seat it holds: the next act in that seat is refused (deny / not_now, no reason code)", ok: "skip", detail: `not seated (${sv.decision ?? "no decision"})` });
+        else {
+          sv.checkSeatLocally = false; sv.checkMandateLocally = false;
+          const d = new Visit(rs, place.entry, place.representative_id, httpTransport);
+          await d.send(d.message("greeting", { locales: ["en-US"], nonce: randomId("n") }));
+          await d.send(d.message("card_revocation", { revocation: pack.revocation }));
+          const r: any = await sv.act(target.action, {});
+          await sv.farewell().catch(() => {}); await d.farewell().catch(() => {});
+          add(ctx, { id: "card.revoked_seat", level: L, ref: "§2.6, C198", title: "revoking a card ends every open seat it holds: the next act in that seat is refused (deny / not_now, no reason code)",
+            ok: r?.type === "act_decision" && r?.decision === "deny" && r?.disposition === "not_now" && !r?.reason_code && r?.refused_by !== "representative",
+            detail: `${r?.type ?? "nothing"}/${r?.decision ?? ""}/${r?.disposition ?? ""}/${r?.reason_code ?? ""}` });
+        }
+      }
+    } else {
     const rs = createRepresentative({ ownerName: "Theo Marchetti (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) });
     const sv = await rs.visit(place, { purpose, actions: [target.action], why: "Conformance run: a seat, then a revoked card." });
     if (!sv.seat) add(ctx, { id: "card.revoked_seat", level: L, ref: "§2.6, C198", title: "revoking a card ends every open seat it holds: the next act in that seat is refused (deny / not_now, no reason code)", ok: "skip", detail: `not seated (${sv.decision ?? "no decision"})` });
@@ -322,26 +415,17 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
         ok: r?.type === "act_decision" && r?.decision === "deny" && r?.disposition === "not_now" && !r?.reason_code && r?.refused_by !== "representative",
         detail: `${r?.type ?? "nothing"}/${r?.decision ?? ""}/${r?.disposition ?? ""}/${r?.reason_code ?? ""}` });
     }
-  }
-  // ---- §9.3 (C186): probing, with its own fresh owner; skipped where the place declares Appendix B.7's x-test-probing "off"
-  if (place["x-test-probing"] === "off" && place["x-test-profile"]) add(ctx, { id: "neg.probing", level: L, ref: "§9.3, C186, B.7", title: "probing: the Nth distinct rejected shape is answered never and binds the principal", ok: "skip", detail: "the place declares x-test-probing \"off\" (Appendix B.7)" });
-  else {
-    const pr = createRepresentative({ ownerName: "Pell Ostrander (conformance test owner)", purposes: [purpose], actions: actions.map((a) => a.action) });
-    const m1 = pr.mandate({ purpose, actions: [target.action], limits: { max_operations: 1 }, validSeconds: 600 });
-    const answers: any[] = [];
-    for (const n of [2, 3, 4]) answers.push(await requestAfterIntro(pr, place, { card_digest: pr.card.payload_digest, mandate: m1, proposal: proposal([target.action], { max_operations: n }) }));
-    const plain = await requestAfterIntro(pr, place, { card_digest: pr.card.payload_digest, mandate: m1, proposal: proposal([target.action], { max_operations: 1 }) }, true);
-    const never = (r: any) => r?.decision === "deny" && r?.disposition === "never" && !r?.reason_code && r?.retry?.kind === "never";
-    const counted = answers.slice(0, 2).every((r) => r?.decision === "conditional" || (r?.decision === "deny" && r?.reason_code === "MANDATE_SCOPE_EXCEEDED"));
-    add(ctx, { id: "neg.probing", level: L, ref: "§9.3, C186", title: "probing: the 3rd distinct shape beyond the mandate is answered deny / never (no code), and the principal stays bound at this place",
-      ok: counted ? never(answers[2]) && never(plain) : "skip", detail: counted ? `answers: ${answers.map((r) => `${r?.decision ?? "nothing"}/${r?.disposition ?? ""}`).join(", ")}; then a request inside the mandate → ${plain?.decision ?? "nothing"}/${plain?.disposition ?? ""}`
-        : `the place didn't reject requests beyond the mandate as §6.7 says (${answers.map((r) => `${r?.decision ?? "nothing"}/${r?.reason_code ?? ""}`).join(", ")}); not a probing test` });
+    }
   }
   // ---- negative checks that stay refused in every revision (Conventions; §2.2, §2.4, §3.2)
   const early = new Visit(rep, place.entry, place.representative_id, httpTransport);
   await early.send(early.message("greeting", { locales: ["en-US"], nonce: randomId("n") }));
-  const er = await early.send(early.message("invitation_request", { card_digest: rep.card.payload_digest, mandate: rep.mandate({ purpose, actions: [target.action] }), proposal: { request: { actions: [target.action] }, value_to_counterparty: { text: "skip ahead", locale: "en-US" }, etiquette_register: "first_meeting" } }));
+  const earlyMand = ctx.presigned?.mandates.browse ?? (!ctx.presigned ? rep.mandate({ purpose, actions: [target.action] }) : undefined);
+  if (!earlyMand) { add(ctx, { id: "neg.order", level: L, ref: "§3.2", title: "a request before the card is refused explicitly (deny), never seated", ok: "skip", detail: skipNeedMandate("browse", "a mandate to present before the card") }); }
+  else {
+  const er = await early.send(early.message("invitation_request", { card_digest: rep.card.payload_digest, mandate: earlyMand, proposal: { request: { actions: [target.action] }, value_to_counterparty: { text: "skip ahead", locale: "en-US" }, etiquette_register: "first_meeting" } }));
   add(ctx, { id: "neg.order", level: L, ref: "§3.2", title: "a request before the card is refused explicitly (deny), never seated", ok: er.some((m: any) => m.type === "invitation_response" && m.decision === "deny") && !er.some((m: any) => m.seat) });
+  }
   const nonce = randomId("n-reuse");
   const g1 = new Visit(rep, place.entry, place.representative_id, httpTransport); await g1.send(g1.message("greeting", { locales: ["en-US"], nonce }));
   const g2 = new Visit(rep, place.entry, place.representative_id, httpTransport); const r2 = await g2.send(g2.message("greeting", { locales: ["en-US"], nonce }));
@@ -353,8 +437,8 @@ async function coreHttp(ctx: Ctx, placeName: string | undefined, levels: Set<Lev
   const mallory = createRepresentative({ ownerName: "Mallory Quist (conformance)", purposes: [purpose], actions: [target.action] });
   const c = new Visit(mallory, place.entry, place.representative_id, httpTransport);
   await c.send(c.message("greeting", { locales: ["en-US"], nonce: randomId("n") }));
-  const proof = makeSignedRaw({ encounter_id: c.encounterId, nonce: c.lastHostNonce }, mallory).signatures[0];
-  const cr = await c.send(c.message("card_presentation", { card: rep.card, possession_proof: { ...proof, key_id: rep.card.payload.representative_key.key_id, signer: rep.card.payload.representative_id } }));
+  const proof = makeSignedRaw({ encounter_id: c.encounterId, nonce: c.lastHostNonce, ...(c.audience() ? { audience: c.audience() } : {}) }, mallory).signatures[0];
+  const cr = await c.send(c.message("card_presentation", { card: rep.card, possession_proof: { ...proof, ...(c.audience() ? { audience: c.audience() } : {}), key_id: rep.card.payload.representative_key.key_id, signer: rep.card.payload.representative_id } }));
   add(ctx, { id: "neg.copied_card", level: L, ref: "§2.4", title: "someone else's card with a proof by another key is refused", ok: cr.some((m: any) => m.type === "invitation_response" && m.decision === "deny") });
   const poll = await postRaw(place.inbox, JSON.stringify({ type: "inbox_poll" }));
   add(ctx, { id: "inbox.unsigned", level: L, ref: "§11.2", title: "an unsigned inbox poll gets 403 and nothing", ok: poll.status === 403 && msgs(poll.body).length === 0, detail: `status ${poll.status}` });
@@ -382,24 +466,36 @@ function vectors(ctx: Ctx, impl: Implementation | undefined) {
 }
 
 /** The verdict: core (with the MCP binding where it applies) decides conformance; extensions are reported on their own. */
+/** R4-03: the class of a result's checks (classes.json). A core-level result whose every cited check belongs to an extension class
+ *  is that extension's, so it never changes the core verdict (§0.1); a result citing no check, or a core one, is core. */
+function extensionOf(x: Result): string | undefined {
+  const tags = x.ref.match(/C\d+/g) ?? []; if (!tags.length) return undefined;
+  let cl: any; try { cl = loadClasses(); } catch { return undefined; }
+  const cs = tags.map((c) => cl.checks[c]?.class).filter(Boolean) as string[];
+  return cs.length && cs.every((c) => c !== "core" && c !== "informative") ? cs[0] : undefined;
+}
 export function verdict(r: Report): { core: "pass" | "fail"; coreFails: number; extensionFails: Record<string, number> } {
-  const coreFails = r.results.filter((x) => CORE_LEVELS.includes(x.level) && x.status === "fail").length;
-  const extensionFails: Record<string, number> = {};
-  for (const x of r.results) if (!CORE_LEVELS.includes(x.level) && x.level !== "vectors" && x.status === "fail") extensionFails[x.level] = (extensionFails[x.level] ?? 0) + 1;
+  const extensionFails: Record<string, number> = {}; let coreFails = 0;
+  for (const x of r.results) { if (x.status !== "fail" || x.level === "vectors") continue;
+    const ext = CORE_LEVELS.includes(x.level) ? extensionOf(x) : x.level;
+    if (ext) extensionFails[ext] = (extensionFails[ext] ?? 0) + 1; else coreFails++; }
   return { core: coreFails ? "fail" : "pass", coreFails, extensionFails };
 }
 export function formatReport(r: Report): string {
   const lines = [`Shōkai conformance: ${r.target}  (spec ${r.spec}, wire ${r.protocol})`, ""];
-  const order: Level[] = ["core", "mcp", "visit-receipts", "signed-listings", "vectors"];
-  const head: Record<string, string> = { core: "core", mcp: "core: the MCP binding (§11.3; only where the place serves MCP)" };
+  const order: Level[] = ["core", "mcp", "v050", "visit-receipts", "signed-listings", "vectors"];
+  const head: Record<string, string> = { core: "core", mcp: "core: the MCP binding (§11.3; only where the place serves MCP)", v050: "core: v0.5.0 (C230–C255; a place on spec 0.5.0)" };
   for (const lv of order) { const rs = r.results.filter((x) => x.level === lv); if (!rs.length) continue;
     lines.push(lv === "vectors" && r.vectors_against ? `vectors (run against ${r.vectors_against})` : head[lv] ?? `extension: ${lv} (optional; doesn't affect the core verdict)`);
-    for (const x of rs) lines.push(`  ${x.status.toUpperCase().padEnd(4)} ${x.id.padEnd(20)} ${x.title} [${x.ref}]${x.detail && x.status !== "pass" ? "\n         " + x.detail : ""}`);
-    const s = r.summary[lv]; lines.push(`  → ${s.pass} pass, ${s.fail} fail, ${s.warn} warn, ${s.skip} skip`, ""); }
+    for (const x of rs) lines.push(`  ${(x.status === "na" ? "N/A" : x.status.toUpperCase()).padEnd(4)} ${x.id.padEnd(20)} ${x.title} [${x.ref}]${x.detail && x.status !== "pass" ? "\n         " + (x.na_basis ? `(${x.na_basis}) ` : "") + x.detail : ""}`);
+    const s = r.summary[lv]; lines.push(`  → ${s.pass} pass, ${s.fail} fail, ${s.warn} warn, ${s.skip} skip, ${s.na} N/A`, ""); }
   const v = verdict(r); const warn = r.results.some((x) => CORE_LEVELS.includes(x.level) && x.status === "warn");
   const vecFails = r.results.filter((x) => x.level === "vectors" && x.status === "fail").length;
-  const ranCore = r.results.some((x) => CORE_LEVELS.includes(x.level) && x.status !== "skip");
-  lines.push(v.core === "fail" ? `Core: NOT CONFORMANT: ${v.coreFails} failing core check(s).` : ranCore ? `Core: all core checks that ran passed${warn ? " (with warnings on SHOULDs)" : ""}.` : "Core: no core checks ran (no door was tested).");
+  const ranCore = r.results.some((x) => CORE_LEVELS.includes(x.level) && (x.status === "pass" || x.status === "fail" || x.status === "warn"));
+  const skips = r.results.filter((x) => CORE_LEVELS.includes(x.level) && x.status === "skip").length, nas = r.results.filter((x) => CORE_LEVELS.includes(x.level) && x.status === "na").length;
+  // R4-03: a vectors-only run (no door) says so plainly and makes no class claim.
+  lines.push(v.core === "fail" ? `Core: NOT CONFORMANT: ${v.coreFails} failing core check(s).` : ranCore ? `Core: all core checks that ran passed${warn ? " (with warnings on SHOULDs)" : ""}; ${skips} skipped, ${nas} not applicable (with their basis above). A class claim is measured with --claim.`
+    : r.target === "(vectors only)" ? "Vectors only: no door was tested in this run, so it supports no class claim." : "Core: NOT ESTABLISHED: no core check ran.");
   for (const [lv, n] of Object.entries(v.extensionFails)) lines.push(`Extension ${lv}: ${n} failing check(s). Extensions are optional; this doesn't change the core verdict.`);
   if (vecFails) lines.push(`Vectors: ${vecFails} failing (against ${r.vectors_against ?? "the implementation"}).`);
   return lines.join("\n");
@@ -408,13 +504,40 @@ export function formatReport(r: Report): string {
 // ---------- helpers for the rc3 checks ----------
 const proposal = (acts: string[], limits?: Record<string, unknown>) => ({ request: { actions: acts, ...(limits ? { limits } : {}) }, value_to_counterparty: { text: "Conformance run.", locale: "en-US" }, etiquette_register: "first_meeting" });
 /** A different but well-formed signature value (same length), so only the signature fails, never the digest. */
-function flipSig(v: string): string { const c = v[10] === "A" ? "B" : "A"; return v.slice(0, 10) + c + v.slice(11); }
+export function flipSig(v: string): string { const c = v[10] === "A" ? "B" : "A"; return v.slice(0, 10) + c + v.slice(11); }
 /** A fresh encounter up to the introduction (greeting, card with its possession proof, vouch: null), then one request; its answer. */
+/** §9.3 (C186). Run last: a pass binds the principal (deny / never) for 180 days. The development path mints a fresh owner; a pre-signed probe card is usually the same principal as the sitting card. */
+async function probingCheck(ctx: Ctx): Promise<void> {
+  const place = ctx.place; if (!place) return;
+  const L: Level = "core";
+  const actions: any[] = place.actions ?? [];
+  const target = actions.find((a: any) => !a.spends && (a.needs ?? "standard") === "standard" && !a.creates_account && !a.requires_introduction) ?? actions[0];
+  if (!target) { add(ctx, { id: "neg.probing", level: L, ref: "§9.3, C186", title: "probing: the 3rd distinct shape wholly outside the mandate is answered deny / never (no code), and the principal stays bound at this place", ok: "skip", detail: "the place lists no action the runner can request" }); return; }
+  const purpose = target.purposes?.[0] ?? "visitation";
+  if (place["x-test-probing"] === "off" && place["x-test-profile"]) { add(ctx, { id: "neg.probing", level: L, ref: "§9.3, C186, B.7", title: "probing: the Nth distinct rejected shape is answered never and binds the principal", ok: "skip", detail: "the place declares x-test-probing \"off\" (Appendix B.7)" }); return; }
+  if (ctx.presigned && !ctx.presigned.probes.probing) { add(ctx, { id: "neg.probing", level: L, ref: "§9.3, C186", title: "probing: the 3rd distinct shape wholly outside the mandate is answered deny / never (no code), and the principal stays bound at this place", ok: "skip", detail: skipNeedProbe("a distinct visitor card and mandate whose only action is unlisted (x-conformance.other)") }); return; }
+  const pack = ctx.presigned?.probes.probing;
+  const pr = pack
+    ? createPresignedRep(ctx.presigned!, { purposes: [purpose], actions: ["x-conformance.other"], card: pack.card })
+    : createRepresentative({ ownerName: "Pell Ostrander (conformance test owner)", purposes: [purpose], actions: ["x-conformance.other"] });
+  const m1 = pack?.mandate ?? pr.mandate({ purpose, actions: ["x-conformance.other"], limits: { max_operations: 1 }, validSeconds: 600 });
+  const answers: any[] = [];
+  for (const n of [1, 2, 3]) answers.push(await requestAfterIntro(pr, place, { card_digest: pr.card.payload_digest, mandate: m1, proposal: proposal([target.action], { max_operations: n }) }));
+  const inside = await requestAfterIntro(pr, place, { card_digest: pr.card.payload_digest, mandate: m1, proposal: proposal(["x-conformance.other"], { max_operations: 1 }) }, true);
+  const never = (r: any) => r?.decision === "deny" && r?.disposition === "never" && !r?.reason_code && r?.retry?.kind === "never";
+  const counted = answers.slice(0, 2).every((r) => r?.decision === "deny" && r?.reason_code === "MANDATE_SCOPE_EXCEEDED" && r?.retry?.credentials?.[0] === "signed_card");
+  const samePrincipal = !!(ctx.presigned && pack && pack.card.payload.principal?.principal_id === ctx.presigned.card.payload.principal?.principal_id);
+  const bindNote = samePrincipal ? " This pre-signed probe card is the same principal as the sitting card: a pass bindNever's that principal for 180 days, which is why this check runs last." : "";
+  add(ctx, { id: "neg.probing", level: L, ref: "§9.3, C186", title: "probing: the 3rd distinct shape wholly outside the mandate is answered deny / never (no code), and the principal stays bound at this place",
+    ok: counted ? never(answers[2]) && never(inside) : "skip", detail: (counted ? `answers: ${answers.map((r) => `${r?.decision ?? "nothing"}/${r?.disposition ?? ""}`).join(", ")}; then a request inside the mandate → ${inside?.decision ?? "nothing"}/${inside?.disposition ?? ""}` : `the place didn't reject requests beyond the mandate as §6.7 says (${answers.map((r) => `${r?.decision ?? "nothing"}/${r?.reason_code ?? ""}`).join(", ")}); not a probing test`) + bindNote });
+}
+
 async function requestAfterIntro(rep: Representative, place: any, body: Record<string, unknown>, firstAnswer = false): Promise<any> {
+
   const v = new Visit(rep, place.entry, place.representative_id, httpTransport); const seen: any[] = [];
   seen.push(...await v.send(v.message("greeting", { locales: ["en-US"], nonce: randomId("n") })));
-  const proof = makeSignedRaw({ encounter_id: v.encounterId, nonce: v.lastHostNonce }, rep).signatures[0];
-  seen.push(...await v.send(v.message("card_presentation", { card: rep.card, possession_proof: { ...proof, key_id: rep.card.payload.representative_key.key_id, signer: rep.card.payload.representative_id } })));
+  const proof = makeSignedRaw({ encounter_id: v.encounterId, nonce: v.lastHostNonce, ...(v.audience() ? { audience: v.audience() } : {}) }, rep).signatures[0];
+  seen.push(...await v.send(v.message("card_presentation", { card: rep.card, possession_proof: { ...proof, ...(v.audience() ? { audience: v.audience() } : {}), key_id: rep.card.payload.representative_key.key_id, signer: rep.card.payload.representative_id } })));
   seen.push(...await v.send(v.message("introduction", { vouch: null })));
   const out = await v.send(v.message("invitation_request", body)); seen.push(...out);
   return (firstAnswer ? seen : out).map(pay).find((m: any) => m.type === "invitation_response");
@@ -432,20 +555,24 @@ async function mcpChecks(ctx: Ctx, place: any, rep: Representative, visit: Visit
   const M: Level = "mcp";
   const link = (place.links ?? []).find((l: any) => l?.rel === "mcp-server");
   const url: string | undefined = forced ?? link?.href;
-  if (!url) { add(ctx, { id: "mcp.endpoint", level: M, ref: "§11.3, C179", title: "the MCP binding applies when the place serves MCP (links rel mcp-server)", ok: "skip", detail: "the place advertises no MCP endpoint; pass --mcp <url> to test one anyway" }); return; }
+  if (!url) { add(ctx, { id: "mcp.endpoint", level: M, ref: "§11.3, C179", title: "the MCP binding applies when the place serves MCP (links rel mcp-server)", ok: na("class"), detail: "ext-mcp-binding not offered: the place advertises no MCP endpoint (pass --mcp <url> to test one anyway)" }); return; }
   let sameOrigin = false; try { sameOrigin = new URL(url).origin === new URL(place.entry).origin; } catch { sameOrigin = false; }
   add(ctx, { id: "mcp.endpoint", level: M, ref: "§11.3, C179", title: "the listing names the MCP endpoint (links rel mcp-server) on the entry's origin",
     ok: !!link && sameOrigin, detail: link ? (sameOrigin ? undefined : `${link.href} is not on ${new URL(place.entry).origin}`) : `no mcp-server link in the listing; testing ${url} because it was named` });
-  const H: Record<string, string> = { "mcp-protocol-version": "2025-06-18" };
-  const init = await mcpPost(url, { jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "shokai-conformance", version: SPEC_VERSION } } }, H).catch((e) => ({ status: 0, json: null, err: String(e) }) as any);
+  // RR-12: MCP 2026-07-28 has no handshake: probe with server/discover first; fall back to initialize only for an earlier revision.
+  const meta = { protocolVersion: "2026-07-28", clientCapabilities: {}, clientInfo: { name: "shokai-conformance", version: SPEC_VERSION } };
+  const disc = await mcpPost(url, { jsonrpc: "2.0", id: 1, method: "server/discover", params: { _meta: meta } }, { "mcp-protocol-version": "2026-07-28", "mcp-method": "server/discover" }).catch((e) => ({ status: 0, json: null, err: String(e) }) as any);
+  const modern = disc.status === 200 && !!disc.json?.result;
+  const H: Record<string, string> = { "mcp-protocol-version": modern ? "2026-07-28" : "2025-06-18" };
+  const init = modern ? disc : await mcpPost(url, { jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "shokai-conformance", version: SPEC_VERSION } } }, H).catch((e) => ({ status: 0, json: null, err: String(e) }) as any);
   if (init.session) H["mcp-session-id"] = init.session;
   const initOk = init.status === 200 && !!init.json?.result;
-  add(ctx, { id: "mcp.initialize", level: M, ref: "§11.3, C180", title: "initialize is answered without a seat or an act", ok: initOk, detail: `status ${init.status}${init.json?.error ? ", error " + init.json.error.code : ""}${(init as any).err ? ", " + (init as any).err : ""}` });
+  add(ctx, { id: "mcp.initialize", level: M, ref: "§11.3, C180", title: "server/discover (MCP 2026-07-28; initialize for an earlier revision) is answered without a seat or an act", ok: initOk, detail: `${modern ? "server/discover" : "initialize (fallback)"}: status ${init.status}${init.json?.error ? ", error " + init.json.error.code : ""}${(init as any).err ? ", " + (init as any).err : ""}` });
   if (!initOk) return;
-  await mcpPost(url, { jsonrpc: "2.0", method: "notifications/initialized" }, H).catch(() => undefined);
+  if (!modern) await mcpPost(url, { jsonrpc: "2.0", method: "notifications/initialized" }, H).catch(() => undefined);
   const seatId = visit.seat!.seat_id; const allowed = visit.seat!.tool_allowlist;
   let n = 10; const call = (name: string, args: Record<string, unknown>, extra: Record<string, string> = {}) => mcpPost(url, { jsonrpc: "2.0", id: ++n, method: "tools/call", params: { name, arguments: args } }, { ...H, ...extra });
-  const refused = (x: McpReply) => x.json?.error?.code === -32040;
+  const refused = (x: McpReply) => x.json?.error?.code === -32012;
   const sh = (x: McpReply) => x.json?.error?.data?.shokai;
   const list0 = await mcpPost(url, { jsonrpc: "2.0", id: 2, method: "tools/list", params: {} }, H);
   const list1 = await mcpPost(url, { jsonrpc: "2.0", id: 3, method: "tools/list", params: {} }, { ...H, "shokai-seat": seatId });
@@ -455,7 +582,7 @@ async function mcpChecks(ctx: Ctx, place: any, rep: Representative, visit: Visit
     detail: `without a seat: ${list0.json?.error ? "error " + list0.json.error.code : (list0.json?.result?.tools?.length ?? "?") + " tool(s)"}; with the seat: ${names1.join(", ") || "none"} (seat allows ${allowed.join(", ")})` });
   const none = await call(tool, {});
   const s0 = sh(none);
-  add(ctx, { id: "mcp.refusal", level: M, ref: "§11.3, C181", title: "a tools/call without a signed act is refused: HTTP 200, JSON-RPC -32040, data.shokai {refused_by, decision deny, disposition, reason_code, door, entry}",
+  add(ctx, { id: "mcp.refusal", level: M, ref: "§11.3, C181", title: "a tools/call without a signed act is refused: HTTP 200, JSON-RPC -32012, data.shokai {refused_by, decision deny, disposition, reason_code, door, entry}",
     ok: none.status === 200 && refused(none) && s0?.decision === "deny" && typeof s0?.disposition === "string" && typeof s0?.door === "string" && typeof s0?.entry === "string" && s0?.refused_by === "gate" && s0?.reason_code === "CREDENTIAL_REQUIRED",
     detail: `status ${none.status}, ${none.json?.error ? `error ${none.json.error.code}, data.shokai ${JSON.stringify(s0 ?? null).slice(0, 160)}` : "no error: the call went through"}` });
   const a1 = visit.signAct(tool, {}); const hdr1 = { "shokai-seat": seatId, "shokai-act": b64act(a1) };
@@ -468,7 +595,7 @@ async function mcpChecks(ctx: Ctx, place: any, rep: Representative, visit: Visit
   const a3 = visit.signAct(tool, {}); const otherTool = await call(outside, {}, { "shokai-seat": seatId, "shokai-act": b64act(a3) });
   const stalePayload = { ...visit.message("act", { seat_id: seatId, tool, arguments: {} }), sent_at: new Date(Date.now() - 3600e3).toISOString().replace(/\.\d+Z$/, "Z") };
   const stale = await call(tool, {}, { "shokai-seat": seatId, "shokai-act": b64act(makeSignedRaw(stalePayload, rep)) });
-  add(ctx, { id: "mcp.gate", level: M, ref: "§11.3, C179", title: "the gate refuses a replayed act, changed arguments, another tool than the act names, and a stale act (-32040)",
+  add(ctx, { id: "mcp.gate", level: M, ref: "§11.3, C179", title: "the gate refuses a replayed act, changed arguments, another tool than the act names, and a stale act (-32012)",
     ok: [replay, changed, otherTool, stale].every(refused), detail: `replay ${refused(replay) ? "refused" : "PASSED"}, changed arguments ${refused(changed) ? "refused" : "PASSED"}, other tool ${refused(otherTool) ? "refused" : "PASSED"}, stale ${refused(stale) ? "refused" : "PASSED"}` });
   const a4 = visit.signAct(outside, {}); const out = await call(outside, {}, { "shokai-seat": seatId, "shokai-act": b64act(a4) }); const s4 = sh(out);
   add(ctx, { id: "mcp.door_refusal", level: M, ref: "§11.3, C181, C189", title: "a signed act for a tool outside the seat is refused by the door: refused_by door, its act_decision, SEAT_SCOPE_EXCEEDED",

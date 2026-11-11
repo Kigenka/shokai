@@ -1,0 +1,100 @@
+// SPDX-License-Identifier: Apache-2.0
+// SPDX-FileCopyrightText: 2026 Yu Sung Yeh
+// v0.5.0 expert-review follow-ups in the reference place server, ported from the SDK (packages/shokai/src/allowance-cap.ts, critical.ts):
+//  - C286 (SPEC §5.2): the place's own ledger of spending drawn from one standing-allowance grant, per period window and per seat.
+//  - C289 (SPEC Conventions): must-understand members (`crit`) inside a signed payload.
+import { windowStart } from "./crypto.js";
+
+export type Period = "P1D" | "P7D" | "P1M";
+export interface GrantSpendUnits { currency: string; per_seat?: bigint; per_period?: { units: bigint; period: Period } }
+export interface AllowanceRef { allowance_id: string; grant_digest: string; valid_from: string; spend?: GrantSpendUnits }
+export type CapVerdict = { ok: true; remainingUnits: bigint | null } | { ok: false; which: "no_spend" | "currency" | "per_seat" | "per_period"; remainingUnits: bigint; retryAfter?: string };
+/** JSON-safe, including each period window's end so expired totals can be discarded on restore. */
+export type AllowanceLedgerState = { spent: [string, string, string][]; seat_spent: [string, string][] };
+
+/** C286: the one place-side ledger. All amounts use millionths of the major unit (Amt.units). */
+export class AllowanceLedger {
+  private spent = new Map<string, { units: bigint; until: string }>();
+  private seatSpent = new Map<string, bigint>();
+  private key(a: AllowanceRef, ws: string) { return `${a.allowance_id}|${a.grant_digest}|${ws}`; }
+  /** Pure accounting check (apart from dropping expired windows); null remainder means no numeric cap. */
+  check(a: AllowanceRef, seatId: string, units: bigint, currency: string, now: string): CapVerdict {
+    if (units < 0n) throw new Error("negative allowance spend");
+    this.prune(now);
+    if (!a.spend) return { ok: false, which: "no_spend", remainingUnits: 0n };
+    if (a.spend.currency !== currency) return { ok: false, which: "currency", remainingUnits: 0n };
+    let remaining: bigint | null = null;
+    if (a.spend.per_seat !== undefined) {
+      remaining = a.spend.per_seat - (this.seatSpent.get(seatId) ?? 0n);
+      if (units > remaining) return { ok: false, which: "per_seat", remainingUnits: remaining > 0n ? remaining : 0n };
+    }
+    if (a.spend.per_period) {
+      const ws = windowStart(a.valid_from, a.spend.per_period.period, now), k = this.key(a, ws);
+      const rem = a.spend.per_period.units - (this.spent.get(k)?.units ?? 0n);
+      if (units > rem) return { ok: false, which: "per_period", remainingUnits: rem > 0n ? rem : 0n, retryAfter: nextWindow(ws, a.valid_from, a.spend.per_period.period) };
+      remaining = remaining === null || rem < remaining ? rem : remaining;
+    }
+    return { ok: true, remainingUnits: remaining === null ? null : remaining - units };
+  }
+  /** Check and record in one step; the door's store CAS makes this atomic across instances. */
+  spend(a: AllowanceRef, seatId: string, units: bigint, currency: string, now: string): CapVerdict {
+    const verdict = this.check(a, seatId, units, currency, now); if (!verdict.ok) return verdict;
+    if (a.spend!.per_seat !== undefined) this.seatSpent.set(seatId, (this.seatSpent.get(seatId) ?? 0n) + units);
+    if (a.spend!.per_period) {
+      const per = a.spend!.per_period, ws = windowStart(a.valid_from, per.period, now), k = this.key(a, ws);
+      this.spent.set(k, { units: (this.spent.get(k)?.units ?? 0n) + units, until: nextWindow(ws, a.valid_from, per.period) });
+    }
+    return verdict;
+  }
+  /** C194: the service refused; release in the original act's window, never the new one. */
+  release(a: AllowanceRef, seatId: string, units: bigint, at: string): void {
+    if (units < 0n) throw new Error("negative allowance release");
+    const seat = this.seatSpent.get(seatId);
+    if (seat !== undefined) this.seatSpent.set(seatId, seat > units ? seat - units : 0n);
+    if (a.spend?.per_period) {
+      const k = this.key(a, windowStart(a.valid_from, a.spend.per_period.period, at)), used = this.spent.get(k);
+      if (used) used.units = used.units > units ? used.units - units : 0n;
+    }
+  }
+  forgetSeat(seatId: string): void { this.seatSpent.delete(seatId); }
+  prune(now: string, liveSeats?: ReadonlySet<string>): void {
+    for (const [k, v] of this.spent) if (Date.parse(v.until) <= Date.parse(now)) this.spent.delete(k);
+    if (liveSeats) for (const id of this.seatSpent.keys()) if (!liveSeats.has(id)) this.seatSpent.delete(id);
+  }
+  snapshot(now: string): AllowanceLedgerState {
+    this.prune(now);
+    return { spent: [...this.spent].map(([k, v]) => [k, v.units.toString(), v.until]), seat_spent: [...this.seatSpent].map(([k, v]) => [k, v.toString()]) };
+  }
+  restore(state: AllowanceLedgerState | undefined, now: string): void {
+    this.spent = new Map((state?.spent ?? []).map(([k, units, until]) => [k, { units: BigInt(units), until }]));
+    this.seatSpent = new Map((state?.seat_spent ?? []).map(([k, units]) => [k, BigInt(units)]));
+    this.prune(now);
+  }
+}
+
+function nextWindow(ws: string, anchor: string, p: Period): string {
+  let t = Date.parse(ws);
+  for (let i = 0; i < 32; i++) { t += 86400e3; const s = windowStart(anchor, p, new Date(t).toISOString()); if (s !== ws) return s; }
+  return new Date(t).toISOString();
+}
+
+/** C289: the narrowing members this reference implements (it reads every one of them). */
+/** `min_protocol` (Editor decision H1(c), C297/C298): a mandate's owner opt-out of shokai/0.3, listed in `crit`; this door reads it (H1(d)). */
+export const IMPLEMENTED_CRITICAL = ["owner_prompts", "place.site", "max_claims", "supersedes.hold", "fields[].sensitive", "limits.booking", "customer_link", "min_protocol"] as const;
+
+const has = (o: unknown, path: string): boolean => {
+  // C289 (fix check): a segment ending in "[]" addresses every element of an array; the path is present when one element carries it.
+  const walk = (cur: any, segs: string[]): boolean => { if (!segs.length) return true; const [k, ...rest] = segs; const arr = k.endsWith("[]"), key = arr ? k.slice(0, -2) : k;
+    if (cur === null || typeof cur !== "object" || !(key in cur)) return false; const v = cur[key]; return arr ? Array.isArray(v) && v.some((x) => walk(x, rest)) : walk(v, rest); };
+  return walk(o, path.split("."));
+};
+
+/** null when the payload's `crit` is absent or fully understood; otherwise why it is refused. */
+export function critProblem(payload: unknown, implemented: Iterable<string> = IMPLEMENTED_CRITICAL): string | null {
+  if (!payload || typeof payload !== "object" || !("crit" in (payload as object))) return null;
+  const c = (payload as { crit: unknown }).crit; const impl = new Set(implemented);
+  if (!Array.isArray(c) || c.length === 0 || !c.every((x) => typeof x === "string" && x.length > 0) || new Set(c).size !== c.length) return "crit_malformed";
+  if ((c as string[]).some((m) => !has(payload, m))) return "crit_names_absent_member";
+  const unknown = (c as string[]).filter((m) => !impl.has(m));
+  return unknown.length ? `crit_unknown:${unknown.join(",")}` : null;
+}

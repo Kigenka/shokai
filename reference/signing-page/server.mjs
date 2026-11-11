@@ -20,7 +20,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomBytes, timingSafeEqual, createHash } from "node:crypto";
 import { verifyRegistration, verifyAssertion, digestBytes, digestOf, b64u } from "./webauthn.mjs";
-import { buildItems, checkItems, iso } from "./items.mjs";
+import { buildItems, checkItems, iso, itemsLanguage } from "./items.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT ?? 8797), RP_ID = process.env.RP_ID, TOKEN = process.env.TOKEN;
@@ -38,6 +38,7 @@ const DATA = process.env.DATA_DIR ?? join(HERE, "run-data");   // run-data/ is g
 mkdirSync(join(DATA, "signed"), { recursive: true, mode: 0o700 }); chmodSync(DATA, 0o700);
 const SESSION = JSON.parse(readFileSync(process.env.ITEMS ?? join(HERE, "items.example.json"), "utf8"));
 const problems = checkItems(SESSION); if (problems.length) { console.error("items not ready:\n  " + problems.join("\n  ")); process.exit(2); }
+const LANG = itemsLanguage(SESSION), OWNER_TAG = LANG === "ja" ? "（Shōkaiの持ち主）" : " (Shōkai owner)";
 const CRED = join(DATA, "owner-credential.json"), FROZEN = join(DATA, "frozen-items.json"), DECISIONS = join(DATA, "decisions.json");
 const J = (f) => JSON.parse(readFileSync(f, "utf8")), W = (f, x) => writeFileSync(f, JSON.stringify(x, null, 2) + "\n", { mode: 0o600 });
 const log = (...a) => console.log(iso(), ...a);
@@ -46,7 +47,10 @@ const decisions = () => existsSync(DECISIONS) ? J(DECISIONS) : {};
 
 function items() {
   const c = loadCred(); if (!c) return null;
-  if (!existsSync(FROZEN)) { const it = buildItems(SESSION, c.owner_did, RP_ID); W(FROZEN, { owner_did: c.owner_did, rp_id: RP_ID, built_at: iso(), items: it }); log("items frozen", it.map((x) => `${x.name} ${x.digest_short}`).join(", ")); }
+  if (!existsSync(FROZEN)) { const it = buildItems(SESSION, c.owner_did, RP_ID);
+    // checked again with the real owner key: an item the page can't show in full, or a raise whose figures don't match, is never offered
+    const bad = it.flatMap((x) => x.problems.map((m) => `${x.name}: ${m}`)); if (bad.length) throw new Error("items not ready: " + bad.join("; "));
+    W(FROZEN, { owner_did: c.owner_did, rp_id: RP_ID, built_at: iso(), items: it }); log("items frozen", it.map((x) => `${x.name} ${x.digest_short}`).join(", ")); }
   const f = J(FROZEN); if (f.owner_did !== c.owner_did || f.rp_id !== RP_ID) throw new Error("frozen items belong to another passkey; start a fresh DATA_DIR");
   return f.items;
 }
@@ -88,7 +92,7 @@ const render = (file) => { const raw = readFileSync(join(HERE, "public", file));
   return t.replaceAll("{{RP_ID}}", RP_ID).replaceAll("{{NOTICE_DAYS}}", String(NOTICE_DAYS)); };
 /** What the page shows for an item: `summary` (alias `facts`) is built on the server from the payload's machine fields
  *  (describe.mjs); `quoted` is free text written by someone else, which the page shows as a marked quote. */
-const pub = (it) => it && { name: it.name, title: it.title, kind: it.kind, summary: it.facts, facts: it.facts, quoted: it.quoted, own_tap: it.own_tap, digest_short: it.digest_short };
+const pub = (it) => it && { name: it.name, title: it.title, kind: it.kind, summary: it.facts, facts: it.facts, main: it.main, details: it.details, details_label: it.details_label, decision: it.decision, quoted: it.quoted, detail_quoted: it.detail_quoted, own_tap: it.own_tap, digest_short: it.digest_short };
 
 const srv = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://x");
@@ -98,13 +102,13 @@ const srv = http.createServer(async (req, res) => {
     if (req.method === "GET" && STATIC[sub]) return send(res, 200, STATIC[sub][1], render(STATIC[sub][0]));
     if (req.method === "GET" && sub === "/api/state") {
       const c = loadCred(), it = c ? items() : null, d = decisions();
-      return json(res, 200, { registered: !!c, rp_id: RP_ID, total: it?.length ?? SESSION.items.length, done: it ? it.filter((x) => d[x.name]).map((x) => ({ name: x.name, title: x.title, decision: d[x.name].decision, via: d[x.name].via })) : [],
+      return json(res, 200, { registered: !!c, lang: LANG, rp_id: RP_ID, total: it?.length ?? SESSION.items.length, done: it ? it.filter((x) => d[x.name]).map((x) => ({ name: x.name, title: x.title, decision: d[x.name].decision, via: d[x.name].via })) : [],
         current: pub(c ? nextItem() : null), pending: c ? pendingItems().map(pub) : [], max_batch: MAX_BATCH,
         notice: NOTICE === "test-stage" ? { kind: "test-stage", days: NOTICE_DAYS, about: "about" } : null });
     }
     if (req.method === "POST" && sub === "/api/register/options") {
       if (loadCred()) return json(res, 409, { error: "A passkey is already set up for this page." });
-      return json(res, 200, { challenge: newChallenge("reg"), rp: { id: RP_ID, name: "Shōkai owner passkey" }, user: { id: b64u(randomBytes(16)), name: `${SESSION.owner_display_name} (Shōkai owner)`, displayName: `${SESSION.owner_display_name} (Shōkai owner)` },
+      return json(res, 200, { challenge: newChallenge("reg"), rp: { id: RP_ID, name: "Shōkai owner passkey" }, user: { id: b64u(randomBytes(16)), name: `${SESSION.owner_display_name}${OWNER_TAG}`, displayName: `${SESSION.owner_display_name}${OWNER_TAG}` },
         pubKeyCredParams: [{ type: "public-key", alg: -7 }], authenticatorSelection: { residentKey: "preferred", userVerification: "required" }, attestation: "none", timeout: 120000 });
     }
     if (req.method === "POST" && sub === "/api/register/verify") {

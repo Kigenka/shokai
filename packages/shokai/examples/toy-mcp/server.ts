@@ -2,7 +2,7 @@
 import http from "node:http";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { createDoor } from "../../src/index.js";
+import { createDoor, type DoorOptions } from "../../src/index.js";
 import { shokaiGate, statelessMcp } from "../../src/mcp.js";
 
 const notes = new Map<string, string>([["tea", "Sencha at 70°C for one minute."], ["kiln", "Bisque firing on Thursday."]]);
@@ -17,11 +17,11 @@ export function buildNotesServer() {
   return server;
 }
 
-export const createNotesDoor = () => createDoor({ name: "notes", displayName: "Lantern Notes", category: "x-tools",
+export const createNotesDoor = (o: Partial<DoorOptions> = {}) => createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "notes", displayName: "Lantern Notes", category: "x-tools",
     purposes: [{ code: "inquiry", statement: "Reading and searching notes." }, { code: "x-editing", statement: "Adding notes." }],
     actions: [{ action: "notes.search", purposes: ["inquiry"], level: "discover", limits: { max_operations: 20 } },
               { action: "notes.read", purposes: ["inquiry"], level: "discover" },
-              { action: "notes.add", purposes: ["x-editing"], level: "act_on_behalf", data_asks: [] }] });
+              { action: "notes.add", purposes: ["x-editing"], level: "act_on_behalf", data_asks: [] }], ...o });
 
 export function startGatedServer(port = 0): Promise<{ server: http.Server; base: string; door: ReturnType<typeof createDoor> }> {
   // ---- the gate: a Shōkai door in front of the MCP server -------------------------------------------------------------

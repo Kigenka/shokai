@@ -6,6 +6,13 @@ name: release
 on:
   push:
     tags: ["v*"]
+  # Run by hand on a version tag to publish under another dist-tag (for example `latest` when promoting is not wanted by hand).
+  workflow_dispatch:
+    inputs:
+      dist_tag:
+        description: "npm dist-tag (empty: release/release-status.json dist_tag)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -45,16 +52,29 @@ jobs:
       - name: Every suite
         if: steps.published.outputs.already == 'false'
         run: npm test
-      - name: Quickstart, as written, in a fresh directory
+      - name: Links, versions and release status agree (release/release-status.json is the one source of truth)
         if: steps.published.outputs.already == 'false'
-        run: bash tools/verify-quickstart.sh
-      - name: The packed package runs the demo in an empty folder
+        run: node tools/check-links-versions.mjs
+      - name: Quickstart, as written, in a fresh directory, against the committed release tarball (the bytes this job publishes)
+        if: steps.published.outputs.already == 'false'
+        run: SHOKAI_QUICKSTART_TGZ="release/kigenka-shokai-$(node -p "require('./packages/shokai/package.json').version").tgz" bash tools/verify-quickstart.sh
+      - name: The release tarball is the one the site hosts (byte-identical; release/<name>.tgz + .sha256)
         if: steps.published.outputs.already == 'false'
         run: |
-          cd packages/shokai && npm pack --pack-destination "$RUNNER_TEMP" && cd "$RUNNER_TEMP" && mkdir try && cd try \
-            && npx --yes --package="$RUNNER_TEMP"/kigenka-shokai-*.tgz shokai demo
-      - name: Publish (provenance; dist-tag from publishConfig)
+          v="$(node -p "require('./packages/shokai/package.json').version")"
+          cd release && sha256sum -c "kigenka-shokai-$v.sha256"
+          tar xzOf "kigenka-shokai-$v.tgz" package/package.json | node -e 'const p=JSON.parse(require("fs").readFileSync(0,"utf8"));if(p.private||p.version!==process.argv[1])process.exit(1)' "$v"
+      - name: The release tarball runs the demo in an empty folder
         if: steps.published.outputs.already == 'false'
-        working-directory: packages/shokai
-        # package.json keeps "private": true in git so nothing is published by accident; only this approved job removes it.
-        run: npm pkg delete private && npm publish --provenance --access public
+        run: |
+          v="$(node -p "require('./packages/shokai/package.json').version")"
+          mkdir "$RUNNER_TEMP/try" && cd "$RUNNER_TEMP/try" && npx --yes --package="$GITHUB_WORKSPACE/release/kigenka-shokai-$v.tgz" shokai demo
+      - name: Publish that exact tarball (provenance; dist-tag from the input or release/release-status.json)
+        if: steps.published.outputs.already == 'false'
+        env:
+          DIST_TAG_INPUT: ${{ inputs.dist_tag }}
+        run: |
+          v="$(node -p "require('./packages/shokai/package.json').version")"
+          tag="${DIST_TAG_INPUT:-$(node -p "require('./release/release-status.json').dist_tag")}"
+          case "$tag" in latest|next|beta|rc) ;; *) echo "unexpected dist-tag '$tag'"; exit 1;; esac
+          npm publish "release/kigenka-shokai-$v.tgz" --provenance --access public --tag "$tag"

@@ -1,10 +1,12 @@
 # Visit stamps (a place pattern)
 
-Some places give a seated visitor something signed to take home: a **visit stamp**, like the ink stamp (*goshuin*) a temple gives a visitor. A stamp isn't part of the Shōkai core or an extension. It's a pattern a place can build from core pieces: a tool behind its door that returns an object signed with the place's principal key. Because it's place-specific, its type and its link carry an `x-` prefix.
+Some places give a visiting representative that has a pass something signed to take home: a **visit stamp**, like the ink stamp (*goshuin*) a temple gives a visiting representative. A stamp isn't part of the Shōkai core or an extension. It's a pattern a place can build from core pieces: a tool behind its door that returns an object signed with the place's principal key. Because it's place-specific, its type and its link carry an `x-` prefix.
 
-This page describes the pattern as a fictional tea house might offer it (its names, like `stamp.collect`, are examples), so a visitor knows what to expect and a place knows what to get right.
+**Proof of visitation.** A representative comes home admitted with a pass and, where the place offers one, a stamp: signed proof that it was there, when, and for what purpose. Its report lists the stamp in `brought_back` (§8.2), so over time an owner can browse where their representative has been and why, and collect the places, like badges. Whether the owner asked for a visit or the representative found the place itself isn't recorded yet (proposed for a later version).
 
-## How a visitor finds it
+This page describes the pattern as a fictional tea house might offer it (its names, like `stamp.collect`, are examples), so a visiting representative knows what to expect and a place knows what to get right.
+
+## How a visiting representative finds it
 
 The place's listing carries a `links` hint (`rel: "x-visit-stamp"`) to a small JSON description, for example:
 
@@ -15,11 +17,11 @@ The place's listing carries a `links` hint (`rel: "x-visit-stamp"`) to a small J
   "data_asked": [] }
 ```
 
-The stamp itself comes from a tool in the visitor's seat (for example `stamp.collect`), listed like any other action with `data_asks: []`.
+The stamp itself comes from a tool in the visiting representative's pass (for example `stamp.collect`), listed like any other action with `data_asks: []`.
 
 ## Collecting it
 
-Call the tool once you've done something in the seat. It takes one optional argument:
+Call the tool once you've done something in the pass. It takes one optional argument:
 
 - **`agent_name`** (string, at most 60 characters): a name your representative declares for itself, printed on the stamp as self-declared (`agent_name_source: "self-declared"`). Leave it out and the stamp names no agent. The place never takes a name from anywhere else (not from the MCP client's `clientInfo.name`).
 
@@ -44,10 +46,10 @@ A stamp's payload records only what the visit already carried:
 
 | Field | What |
 |---|---|
-| `type`, `version`, `serial`, `serial_label` | The stamp type and its number ("No. 001"). Serials count **place-wide**, across every visitor and mandate, so a stamp's number shows how many stamps the place has given, not how many you have |
+| `type`, `version`, `serial`, `serial_label` | The stamp type and its number ("No. 001"). Serials count **place-wide**, across every visiting representative and mandate, so a stamp's number shows how many stamps the place has given, not how many you have |
 | `place` | `name`, `display_name` and `principal_id` of the place |
 | `visited_at`, `visited_at_local`, `time_zone` | When, in UTC and in the place's time zone |
-| `visitor` | `representative_id`, the owner's display name from the card, the card's digest; `agent_name` only if the representative declared one when collecting it, marked `agent_name_source: "self-declared"` |
+| `visitor` | `representative_id`, the owner's display name from the Shōkai card, the Shōkai card's digest; `agent_name` only if the representative declared one when collecting it, marked `agent_name_source: "self-declared"` |
 | `visit` | `purpose`, `mandate_id`, how many acts were done, what was ordered |
 | `data_asked` | Always `[]`: never data for a gift |
 
@@ -64,7 +66,7 @@ A stamp that names a principal is only as good as the check against the listing:
 
 ## One stamp per mandate
 
-A stamp marks an errand, not a connection. A good default, and the one this pattern uses, is **one stamp per mandate per place**: a later visit under the same mandate is welcomed and shown the stamp it already earned (`again: true`), not a new one. A visit under a new mandate the owner signs earns its own. Doing at least one thing in the seat comes first; a stamp before any act is refused.
+A stamp marks an errand, not a connection. A good default, and the one this pattern uses, is **one stamp per mandate per place**: a later visit under the same mandate is welcomed and shown the stamp it already earned (`again: true`), not a new one. A visit under a new mandate the owner signs earns its own. Doing at least one thing in the pass comes first; a stamp before any act is refused.
 
 ## For places offering one
 

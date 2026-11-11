@@ -23,11 +23,15 @@
  *  R6 Homes (D18): every check, scenario and trace homed in a document is cited in that document (by a tag, as R5 counts it).
  *  R7 Every check, scenario and trace has a home in conformance/homes.json, and every home names a document or
  *     "informative" / "deferred".
+ *  R8 Conformance classes (SPEC §0.1, v0.5.0): every check has exactly one known class (Core Door / Core Visitor or a named
+ *     extension), every normative line of SPEC.md sits in a section that has a class, and conformance/classes.json and SPEC.md
+ *     Appendix F are current (tools/conformance-classes.mjs); each check's class is the class of a section citing it and its role matches who the citing MUSTs bind; homes.json "checks" is generated from classes.json and must match it exactly (R3-02); a check is cited only in sections of one status; a stable preset bundles only stable classes.
  * Ignored: fenced code blocks, and lines containing "lint:ignore" (e.g. the RFC 2119 conventions line).
  */
 import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { compute as computeClasses, appendixF, summaryProblems } from "./conformance-classes.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -45,7 +49,7 @@ const docs = single ? { [single]: single } : homes ? homes.docs : { core: "SPEC.
 const sc = new Map(); // id -> deferred?
 for (const m of catalog.matchAll(/^\|\s*(SC-[A-Z0-9]+)\s*\|[^\n]*$/gm)) sc.set(m[1], /DEFERRED/.test(m[0]));
 const tr = new Map();
-for (const m of traces.matchAll(/^#{2,3}\s+(?:Trace\s+)?((?:G|M|L|H|GA|PA|FA)\d+[ab]?)\b[^\n]*$/gm)) tr.set(m[1], false);
+for (const m of traces.matchAll(/^#{2,3}\s+(?:Trace\s+)?((?:G|M|L|H|GA|PA|FA|K)\d+[ab]?)\b[^\n]*$/gm)) tr.set(m[1], false);
 for (const id of ["H1", "H2"]) if (tr.has(id)) tr.set(id, true); // deferred per catalog (SC-H1/H2)
 const checks = new Set([...traces.matchAll(/^- \[ \] (C\d+)\b/gm)].map((m) => m[1]));
 const decisions = new Set(["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21", "D22", "D23", "D24", "D25", "D26"]);
@@ -106,6 +110,27 @@ if (homes) {
   }
 }
 
+// --- conformance classes (R8) ---
+let classLine = "";
+if (homes && !single) {
+  const g = computeClasses();
+  gaps.push(...summaryProblems(g.checks));
+  for (const p of g.problems) gaps.push(`R8 ${p}`);
+  const known = new Set(["core", "informative", ...Object.keys(g.cfg.extensions), ...Object.keys(g.cfg.documents).filter((d) => d !== "_note").map((d) => "ext-" + d)]);
+  for (const id of checks) { const c = g.checks[id]; if (!c) gaps.push(`R8 ${id} has no conformance class`); else if (!known.has(c.class)) gaps.push(`R8 ${id} has unknown class "${c.class}"`); }
+  const file = JSON.parse(readFileSync(join(root, "conformance/classes.json"), "utf8"));
+  if (JSON.stringify(file.checks) !== JSON.stringify(g.checks) || JSON.stringify(file.tests) !== JSON.stringify(g.tests) || JSON.stringify(file.vectors) !== JSON.stringify(g.vectors))
+    gaps.push("R8 conformance/classes.json is stale (run node tools/conformance-classes.mjs)");
+  // R3-02: homes.json "checks" is generated from classes.json (one source of truth); any drift fails.
+  if (JSON.stringify(homes.checks) !== JSON.stringify(g.homeChecks) && JSON.stringify(Object.entries(homes.checks).sort()) !== JSON.stringify(Object.entries(g.homeChecks).sort()))
+    gaps.push("R8 conformance/homes.json checks disagree with classes.json (run node tools/conformance-classes.mjs)");
+  const coreSpecRel = (homes?.docs?.core) || "docs/SPEC-DETAIL.md";
+  const specText = readFileSync(join(root, coreSpecRel), "utf8"); const m = /<!-- BEGIN check-map[\s\S]*?<!-- END check-map -->/.exec(specText);
+  if (!m || m[0] !== appendixF(g.checks, g.cfg)) gaps.push(`R8 ${coreSpecRel} Appendix F is stale (run node tools/conformance-classes.mjs)`);
+  const v = Object.values(g.checks); const n = (f) => v.filter(f).length;
+  classLine = `  classes: ${v.length} checks: Core Door ${n((c) => c.class === "core" && c.role !== "visitor")}, Core Visitor ${n((c) => c.class === "core" && c.role !== "door")}, stable extensions ${n((c) => c.class !== "core" && c.status === "stable")}, provisional extensions ${n((c) => c.status === "provisional")}; ${Object.keys(g.tests).length} test files and ${Object.keys(g.vectors).length} vector groups labelled`;
+}
+
 console.log(`trace-lint: ${Object.values(docs).join(", ")}`);
 let total = 0;
 for (const [k, { rel, normative }] of Object.entries(counts)) { total += normative; console.log(`  ${k.padEnd(22)} ${String(normative).padStart(4)} normative statements  (${rel})`); }
@@ -113,5 +138,6 @@ if (Object.keys(counts).length > 1) console.log(`  ${"total".padEnd(22)} ${Strin
 console.log(`  known: ${[...sc.keys()].length} scenarios (${[...sc].filter(([, d]) => d).length} deferred), ${tr.size} traces, ${checks.size} checks`);
 console.log(`  cited: ${[...cited].filter((t) => sc.has(t)).length} scenarios, ${[...cited].filter((t) => tr.has(t)).length} traces, ${[...cited].filter((t) => checks.has(t)).length} checks`);
 if (homes) console.log(`  homes: ${Object.entries(byHome).map(([h, ids]) => `${h} ${ids.filter((i) => checks.has(i)).length}c/${ids.filter((i) => sc.has(i)).length}s/${ids.filter((i) => tr.has(i)).length}t`).join(", ")}`);
+if (classLine) console.log(classLine);
 if (gaps.length) { console.log(`  GAPS: ${gaps.length}`); for (const g of gaps) console.log(`   - ${g}`); process.exit(1); }
 console.log("  GAPS: 0 ✓");

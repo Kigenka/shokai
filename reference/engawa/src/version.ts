@@ -1,9 +1,16 @@
-// The protocol and specification version this implementation speaks (v0.3.0; the rc1 layout is D19).
+// The protocol and specification version this implementation speaks: v0.5.0 on the shokai/0.5 wire tag (§11.1), still answering
+// shokai/0.3 in shokai/0.3 during the transition window (90 days after the v0.5.0 release; the rc1 layout is D19).
 import type * as S from "./shapes.js";
-export const PROTOCOL = "shokai/0.3" as const;
-export const SPEC_VERSION = "0.3.0";
-/** §3.1 (compatibility, informative): the release candidate of SPEC_VERSION with no wire change from it; a peer naming it speaks this text. */
-export const SPEC_RC_SAME_WIRE = "0.3.0-rc4";
+import { WIRE_TAG, LEGACY_WIRE_TAG } from "./shapes.js";
+/** What this implementation emits on everything it starts (§11.1, C254). */
+export const PROTOCOL = WIRE_TAG;
+/** The earlier tag, accepted (and answered in kind) during the transition window. */
+export const LEGACY_TAG = LEGACY_WIRE_TAG;
+export const SPEC_VERSION = "0.5.0";
+/** §3.1 (compatibility, informative): earlier versions a peer may name. v0.3.0 and v0.4.0 speak shokai/0.3; a v0.5.0 receiver
+ *  answers them in shokai/0.3 without any v0.5.0 member, message or code (§11.1). */
+export const SPEC_RC_SAME_WIRE = "0.3.0";
+export const SPEC_EARLIER_ON_LEGACY_TAG = ["0.3.0", "0.4.0"] as const;
 export const SPEC_REF: S.SpecRef = { version: SPEC_VERSION, url: `https://shokai.example/spec/v${SPEC_VERSION}` };
 /** Appendix B: the conformance test-profile identifier. */
 export const TEST_PROFILE = "shokai-b/0.3";

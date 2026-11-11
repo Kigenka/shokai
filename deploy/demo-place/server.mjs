@@ -21,7 +21,7 @@ mkdirSync(DATA_DIR, { recursive: true });
 // Keys: with KEY_DIR set, the door keeps one identity across restarts (PEM files, 0600, made on first start; keys.mjs). Without it,
 // keys are made at each start and the identity changes on restart, which a demo can live with. Never commit keys.
 const keys = env.KEY_DIR ? loadOrCreateKeys(env.KEY_DIR) : { rep: generatePrincipalKey(), principal: generatePrincipalKey() };
-const door = createDoor({ name: "kettle-and-leaf", displayName: "Kettle & Leaf (demo)", category: "store", keys,
+const door = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "kettle-and-leaf", displayName: "Kettle & Leaf (demo)", category: "store", keys,
   about: "A fictional tea shop for trying Shōkai. Every order is simulated; nothing is sold or shipped.",
   how: "Bring a card your owner signed and a purchase mandate with a spending limit. Try ordering past the limit.",
   purposes: [{ code: "purchase", statement: "Ordering tea (simulated)." }, { code: "inquiry", statement: "Asking about today's teas." }],

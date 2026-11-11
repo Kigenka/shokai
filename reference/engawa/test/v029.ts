@@ -319,7 +319,7 @@ scenario("V29-D11 privacy: unadvertised door, pairwise identifiers, single-use c
 scenario("V29-P5 a penalised introducer can't restore itself; the place or a named reviewer can (C164; red team E7)", () => {
   const ck = clockAt(NOW); const h = makeHost(fernwood, newKeys(), new Map(), ck.now);
   const intro = newEd25519(); h.introducers.set(intro.id, [{ grade: "suspended", purposes: ["inquiry"], notice_ref: "mn-x", until: "2027-04-01T00:00:00Z", from: NOW, days: 180 } as any]);
-  const send = (rv: S.Signed<S.IntroducerReview>, from = intro.id) => h.handle(makeSigned({ protocol: "shokai/0.3", encounter_id: "rv", msg_id: "rv-" + Math.random(), sent_at: NOW, from, to: h.cfg.principal_id, type: "introducer_review", review: rv }, intro, NOW));
+  const send = (rv: S.Signed<S.IntroducerReview>, from = intro.id) => h.handle(makeSigned({ protocol: "shokai/0.3", encounter_id: "rv", msg_id: "rv-" + Math.random().toString(36).slice(2), sent_at: NOW, from, to: h.cfg.principal_id, type: "introducer_review", review: rv }, intro, NOW));
   const body = (x: Partial<S.IntroducerReview>) => ({ review_id: "rv-" + Math.random().toString(36).slice(2, 6), introducer_id: intro.id, notice_ref: "mn-x", statement: { text: "All good now.", locale: "en-US" }, issued_at: NOW, ...x });
   send(makeSigned(body({}), intro, NOW));
   check(!h.introducers.get(intro.id)![0].restored_by_review && h.appeals.length === 1, "self-signed review (no reviewer_id) → kept as an appeal, standing unchanged (E7 holds)");

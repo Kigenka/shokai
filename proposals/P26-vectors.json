@@ -1,0 +1,828 @@
+{
+  "note": "P26 amendment A (draft, not normative): site-binding vectors. No keys: the Shōkai host card fields are given as already verified (SPEC §3.1). Origins are made-up .example names; every person and place is fictional. Verified by tools/p26-sketch.mjs against the SDK's bindToSite(), siteOrigin() and shokaiLinks().",
+  "limits": {
+    "max_discovery_bytes": 65536,
+    "max_shokai_links": 4,
+    "cache_max_s": 3600
+  },
+  "bind_to_site": [
+    {
+      "name": "same-origin door, listed, card names the site",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-owner-pia"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "site": "https://lanternmoss.example",
+        "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry"
+      }
+    },
+    {
+      "name": "a second door on the same site (several doors per site)",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-owner-pia"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "site": "https://lanternmoss.example",
+        "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry"
+      }
+    },
+    {
+      "name": "fake Lanternmoss door on a look-alike origin, card claims the real site",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-someone-else"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-someone-else",
+          "entry": "https://lanternmoss-tea.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "not_listed_by_site"
+      }
+    },
+    {
+      "name": "card honestly names its own look-alike site",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-someone-else"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-someone-else",
+          "entry": "https://lanternmoss-tea.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss-tea.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "card_names_another_site"
+      }
+    },
+    {
+      "name": "card names the site in a non-canonical form",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-owner-pia"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example/"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "card_names_another_site"
+      }
+    },
+    {
+      "name": "v0.5.0 card with no site",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-owner-pia"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "no_site_on_card"
+      }
+    },
+    {
+      "name": "cross-origin door pinned by principal",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-owner-pia"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "site": "https://lanternmoss.example",
+        "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry"
+      }
+    },
+    {
+      "name": "cross-origin door, another principal",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-someone-else"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-someone-else",
+          "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "principal_mismatch"
+      }
+    },
+    {
+      "name": "cross-origin door, file doesn't pin a principal",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-owner-pia"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "principal_not_named"
+      }
+    },
+    {
+      "name": "pointer reached through a redirect off the site",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss-tea.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss-tea.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss-tea.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss-tea.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss-tea.example/start"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss-tea.example/.well-known/shokai",
+        "site": null
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-someone-else"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-someone-else",
+          "entry": "https://lanternmoss-tea.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "not_the_sites_file"
+      }
+    },
+    {
+      "name": "pointer from a head link to another origin's file",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss-tea.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss-tea.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss-tea.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss-tea.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss-tea.example/start"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "link",
+        "url": "https://lanternmoss-tea.example/.well-known/shokai",
+        "site": null
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-someone-else"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-someone-else",
+          "entry": "https://lanternmoss-tea.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "not_the_sites_file"
+      }
+    },
+    {
+      "name": "discovery of another site used for this one",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss-tea.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss-tea.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss-tea.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss-tea.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss-tea.example/start"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss-tea.example/.well-known/shokai",
+        "site": "https://lanternmoss-tea.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-someone-else"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-someone-else",
+          "entry": "https://lanternmoss-tea.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "not_the_sites_file"
+      }
+    },
+    {
+      "name": "no discovery at all",
+      "site": "https://lanternmoss.example",
+      "discovery": null,
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-owner-pia"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "not_the_sites_file"
+      }
+    },
+    {
+      "name": "card principal differs from its place.principal_id",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss-events",
+              "entry": "https://tea-platform.example/shokai/places/lanternmoss-events/entry",
+              "lobby": "https://tea-platform.example/shokai/places/lanternmoss-events/lobby",
+              "inbox": "https://tea-platform.example/shokai/places/lanternmoss-events/inbox",
+              "onboarding_url": "https://tea-platform.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            },
+            {
+              "name": "lanternmoss-shop",
+              "entry": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/entry",
+              "lobby": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/lobby",
+              "inbox": "https://lanternmoss.example/shop/shokai/places/lanternmoss-shop/inbox",
+              "onboarding_url": "https://lanternmoss.example/start",
+              "principal_id": "did:jwk:p26-test-owner-pia"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-someone-else"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "principal_mismatch"
+      }
+    },
+    {
+      "name": "the same entry listed twice",
+      "site": "https://lanternmoss.example",
+      "discovery": {
+        "pointer": {
+          "type": "door_pointer",
+          "protocol": "shokai/0.5",
+          "place_listing": "https://lanternmoss.example/shokai/places",
+          "places": [
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            },
+            {
+              "name": "lanternmoss",
+              "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+              "lobby": "https://lanternmoss.example/shokai/places/lanternmoss/lobby",
+              "inbox": "https://lanternmoss.example/shokai/places/lanternmoss/inbox",
+              "onboarding_url": "https://lanternmoss.example/start"
+            }
+          ],
+          "start_with": "greeting",
+          "spec_ref": {
+            "version": "0.5.0",
+            "url": "https://spec.example/shokai"
+          }
+        },
+        "via": "well-known",
+        "url": "https://lanternmoss.example/.well-known/shokai",
+        "site": "https://lanternmoss.example"
+      },
+      "host_card": {
+        "principal": {
+          "principal_id": "did:jwk:p26-test-owner-pia"
+        },
+        "place": {
+          "principal_id": "did:jwk:p26-test-owner-pia",
+          "entry": "https://lanternmoss.example/shokai/places/lanternmoss/entry",
+          "site": "https://lanternmoss.example"
+        }
+      },
+      "expect": {
+        "ok": false,
+        "why": "entry_mismatch"
+      }
+    }
+  ],
+  "site_origin": [
+    {
+      "input": "https://LanternMoss.EXAMPLE:443/tea?x=1#y",
+      "expect": "https://lanternmoss.example"
+    },
+    {
+      "input": "https://lanternmoss.example:8443/",
+      "expect": "https://lanternmoss.example:8443"
+    },
+    {
+      "input": "https://bücher.example/",
+      "expect": "https://xn--bcher-kva.example"
+    },
+    {
+      "input": "https://user:pw@lanternmoss.example/",
+      "expect": null
+    },
+    {
+      "input": "ftp://lanternmoss.example/",
+      "expect": null
+    },
+    {
+      "input": "not a url",
+      "expect": null
+    }
+  ],
+  "shokai_links": [
+    {
+      "html": "<html><head><link rel=\"shokai\" href=\"/.well-known/shokai\"></head><body></body></html>",
+      "expect": [
+        "/.well-known/shokai"
+      ]
+    },
+    {
+      "html": "<html><head><title>t</title></head><body><link rel=\"shokai\" href=\"https://lanternmoss-tea.example/.well-known/shokai\"></body></html>",
+      "expect": []
+    },
+    {
+      "html": "<LINK href='/a' REL=\"Shokai\"><link rel=icon href=/b><link rel=\"me shokai\" href=\"https://x.example/.well-known/shokai\">",
+      "expect": [
+        "/a",
+        "https://x.example/.well-known/shokai"
+      ]
+    },
+    {
+      "html": "<head><link rel=\"alternate shokai\" href=\"/shokai/\"><link rel=\"stylesheet\" href=\"/s.css\"></head>",
+      "expect": [
+        "/shokai/"
+      ]
+    }
+  ]
+}

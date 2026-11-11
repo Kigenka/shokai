@@ -38,6 +38,8 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at security@kigenka.com. All complaints will be reviewed and investigated promptly and fairly.
 
+**One inbox for now.** security@kigenka.com is, for now, the one inbox for all three kinds of report: security problems, Code of Conduct reports and trademark questions. Say which kind yours is in the subject line. Each kind is handled separately and kept private; separate addresses will come with the public repository.
+
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
 ## Enforcement Guidelines

@@ -1,11 +1,11 @@
 {
   "name": "shokai-demo-place",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "private": true,
   "description": "The Shōkai demo place: a fictional tea shop's door any agent can visit. Every act is simulated.",
   "license": "Apache-2.0",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": { "node": ">=22" },
   "scripts": { "start": "node server.mjs", "test": "node test.mjs" },
-  "dependencies": { "@kigenka/shokai": "0.3.0" }
+  "dependencies": { "@kigenka/shokai": "0.5.0" }
 }

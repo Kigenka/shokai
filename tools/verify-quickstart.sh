@@ -8,11 +8,31 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 T0=$(date +%s.%N)
 TMP="$(mktemp -d /tmp/shokai-quickstart-XXXXXX)"; PORT="${PORT:-$((20000 + RANDOM % 20000))}"
 echo "quickstart in $TMP (port $PORT)"
-( cd "$ROOT/packages/shokai" && npm pack --silent --pack-destination "$TMP" >/dev/null )
+# SHOKAI_QUICKSTART_TGZ=<file>: run the walkthrough against that exact file (release.yml passes the committed release tarball,
+# the bytes it publishes); otherwise a fresh `npm pack` of the source tree.
+if [ -n "${SHOKAI_QUICKSTART_TGZ:-}" ]; then cp "$SHOKAI_QUICKSTART_TGZ" "$TMP/"; echo "quickstart against $SHOKAI_QUICKSTART_TGZ ($(sha256sum "$SHOKAI_QUICKSTART_TGZ" | cut -c1-12)…)"
+else ( cd "$ROOT/packages/shokai" && npm pack --silent --pack-destination "$TMP" >/dev/null ); fi
 TGZ="$(ls "$TMP"/kigenka-shokai-*.tgz)"
 cd "$TMP" && mkdir shokai-quickstart && cd shokai-quickstart
 npm init -y >/dev/null && npm pkg set type=module
-npm install --no-audit --no-fund --silent "$TGZ" @modelcontextprotocol/sdk zod
+# The dependency pins come from QUICKSTART.md itself (its `npm install @kigenka/shokai@0.5.0 …` line). The test still installs a local package file so it does not need the registry:
+# the test installs exactly what the reader is told to install, and fails if the document stops pinning them.
+PINS="$(python3 - "$ROOT/QUICKSTART.md" <<'PY'
+import re,sys
+doc=open(sys.argv[1]).read()
+m=re.search(r"^npm install @kigenka/shokai@0\.5\.0 ((?:\S+@\d\S*\s*)+)$", doc, re.M)
+assert m, "QUICKSTART.md: no pinned `npm install @kigenka/shokai@0.5.0 <deps@version>` line"
+pins=m.group(1).split()
+need={"@modelcontextprotocol/sdk","zod"}
+have={p.rsplit("@",1)[0] for p in pins}
+assert need<=have, f"QUICKSTART.md install line doesn't pin {need-have}"
+for p in pins: assert re.search(r"@\d+\.\d+\.\d+$", p), f"not an exact pin: {p}"
+print(" ".join(pins))
+PY
+)"
+echo "quickstart pins (from QUICKSTART.md): $PINS"
+npm install --no-audit --no-fund --silent --save-exact "$TGZ" $PINS
+for P in $PINS; do N="${P%@*}"; V="${P##*@}"; GOT="$(node -p "JSON.parse(require('fs').readFileSync('node_modules/$N/package.json','utf8')).version")"; [ "$GOT" = "$V" ] || { echo "installed $N $GOT, QUICKSTART.md pins $V"; exit 1; }; done
 T1=$(date +%s.%N)
 python3 - "$ROOT/QUICKSTART.md" <<'PY'
 import re,sys
@@ -24,7 +44,7 @@ trap 'kill $SRV 2>/dev/null || true' EXIT
 for i in $(seq 1 50); do grep -q "door:" server.log 2>/dev/null && break; sleep 0.1; done
 # Every expected-output block is marked "```text output=<script>": run each script and compare, line for line.
 for f in $(python3 -c "import re,sys;print(' '.join(re.findall(r'\\x60\\x60\\x60text output=(\\S+)', open(sys.argv[1]).read())))" "$ROOT/QUICKSTART.md"); do
-  BASE="http://127.0.0.1:$PORT" node "$f" | tee "$f.out"
+  case "$f" in *.mjs) BASE="http://127.0.0.1:$PORT" node "$f" | tee "$f.out" ;; esac   # non-script blocks (conformance) are checked below
 done
 npx --no-install shokai-conformance "http://127.0.0.1:$PORT/shokai" --ext visit-receipts --vectors | tee conformance.out | tail -3
 T2=$(date +%s.%N)
@@ -35,6 +55,15 @@ assert blocks, "no expected-output blocks in QUICKSTART.md"
 # A report names a did:key place by the end of its key, which is new on every run: compare that part as <key>.
 K=lambda t: re.sub(r"([Tt]he place with key) …[1-9A-HJ-NP-Za-km-z]{8}", r"\1 …<key>", t)   # keeps the case: a report starts "The place …"
 for name, want in blocks:
+    if name == "conformance":   # an abridged block: its lines must appear in this order in the real run (port shown as 3000)
+        got=[re.sub(r"127\.0\.0\.1:\d+", "127.0.0.1:3000", l).rstrip() for l in open("conformance.out").read().splitlines()]
+        i=0
+        for line in [l.rstrip() for l in want.splitlines() if l.strip()]:
+            same=lambda g: g == line or g.startswith(line + " ") or ("…" in line and g.startswith(line.split("…")[0].rstrip()))
+            while i < len(got) and not same(got[i]): i+=1
+            assert i < len(got), f"conformance: expected line not found in order: {line!r}"
+            i+=1
+        print("conformance: abridged output matches QUICKSTART.md"); continue
     got=K(open(name+".out").read()).splitlines()
     assert got==K(want).splitlines(), f"{name}: output differs from QUICKSTART.md:\n"+"\n".join(got)
     print(f"{name}: output matches QUICKSTART.md exactly")

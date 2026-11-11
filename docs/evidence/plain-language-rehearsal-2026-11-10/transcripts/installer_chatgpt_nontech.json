@@ -1,0 +1,129 @@
+{
+  "id": "installer/chatgpt/nontech",
+  "role": "installer",
+  "skill": "chatgpt",
+  "persona": "nontech",
+  "owner": "Priya Nair",
+  "agent": "ChatGPT",
+  "path": "/workspace/agentic-mcp/repo-export/shokai-0.5-preview/drafts/package-0.5/installer-skills/chatgpt.md",
+  "pass": true,
+  "leaks": [],
+  "turns": [
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Hi, I heard I can have an assistant greet people who visit my shop on my behalf. I run Cedar & Steam on Shopify. We sell handmade herbal soaps and bath soaks. I'm Priya, I own it. I'm not technical at all — please keep it simple."
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "Hi Priya! Yes, that's exactly what Shōkai does. I can help you design a welcoming experience for your shop and plan how it would work.\n\nHere's what I can do today: help you draft a greeting, decide what visitors can do (like browse your products and suggest orders), and prepare everything so you're ready. I'll keep it in plain language—no technical jargon.\n\nWhat I can't do yet is actually keep the shop running between our chats. That needs a separate service to stay available all the time, and that part isn't built yet. But we can plan it beautifully, and when you're ready, you can hand it off to someone who can keep it going.\n\n**First, may I look at your public Shopify pages?** I'd like to see what shoppers see now—your products, photos, about section—so I can understand Cedar & Steam's feel before we draft the welcome. Nothing on your shop will change.",
+      "usage": {
+        "input_tokens": 71,
+        "cache_creation_input_tokens": 15010,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 15010,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 213,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "That sounds great! Yeah, my website should be up and running—it's cedaresteam.myshopify.com. Feel free to take a look around and let me know what you think. I'm excited to see how this could work for the shop."
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "Thanks, Priya! Let me take a look at your storefront.\n\nI'm trying to open your Shopify pages now, but I'm not able to browse live websites in this conversation. I apologize for that limitation—it means I can't see your products, photos, or the exact tone of your shop right now.\n\n**Here's what would help me most:** Could you describe Cedar & Steam for me? Things like:\n- What does your shop look like? (Rustic, modern, cozy, minimal?)\n- A few of your products—what are people buying?\n- Any photos or colors that feel like \"you\"?\n- How do you want visitors to feel when they arrive?\n\nOr, if it's easier, you could paste a few sentences from your About page or product descriptions—that would give me the real voice of Cedar & Steam.\n\nOnce I understand the place, I can draft a welcome that sounds like *you*, not generic.",
+      "usage": {
+        "input_tokens": 343,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 210,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Oh, I see! Well, Cedar & Steam is pretty cozy and earthy—lots of warm wood tones, soft lighting, that kind of thing. We focus on natural ingredients, so everything feels calm and organic. Right now our bestsellers are lavender soaps and eucalyptus bath soaks, but we do seasonal blends too. I want people to feel like they're stepping into a little retreat when they visit, you know? Peaceful and welcoming."
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "That's perfect, Priya—I can really picture it. Cozy, earthy, calm, a little retreat. That's a lovely place.\n\nSo here's what I'm hearing: Cedar & Steam feels like stepping into somewhere peaceful. Natural ingredients, warm wood, soft light. Lavender and eucalyptus are your stars, with seasonal surprises.\n\nBefore I draft a welcome, let me ask one more thing: **When a visitor arrives, what would you like them to be able to do?**\n\nI'm thinking:\n- **Browse your catalog** — they can look through your soaps and soaks, read descriptions, see prices.\n- **Suggest an order** — they can say \"I'd like to try the lavender soap and eucalyptus soak,\" and you'd see the suggestion. Nothing gets ordered in your Shopify store yet; it's just them proposing what they'd like.\n\nDoes that sound right? Or would you want something different?",
+      "usage": {
+        "input_tokens": 655,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 215,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Yeah, that sounds perfect! I'd love for people to just browse and feel the vibe of the shop, and if they want to suggest an order—like, \"I'm interested in this and that\"—that's great too. Nothing too complicated. I just want them to have a nice experience and maybe discover something they love."
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "That's exactly the right approach, Priya. Keep it simple and warm—just like Cedar & Steam itself.\n\nLet me draft a welcome for you. Imagine a visitor arrives:\n\n> Welcome to Cedar & Steam. Take your time and breathe in. Browse our soaps and soaks, and if something calls to you, let me know what you'd like to try.\n\nDoes that feel like your place? Does it sound like you?",
+      "usage": {
+        "input_tokens": 942,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 97,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "I love that—it's calm and inviting without being pushy. Yeah, that definitely feels like Cedar & Steam. It's exactly the kind of greeting I'd give someone walking in."
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "Wonderful. That's your welcome, then.\n\nNow, one practical thing: **you want to keep back-office information private, right?** Things like your supplier costs, inventory counts, other customers' orders—that stays between you and your business. I just want to confirm that's important to you.",
+      "usage": {
+        "input_tokens": 1081,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 67,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    }
+  ],
+  "running_cost_usd": 0.0372
+}

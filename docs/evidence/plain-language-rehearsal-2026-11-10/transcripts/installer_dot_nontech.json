@@ -1,0 +1,129 @@
+{
+  "id": "installer/dot/nontech",
+  "role": "installer",
+  "skill": "dot",
+  "persona": "nontech",
+  "owner": "Priya Nair",
+  "agent": "Dot",
+  "path": "/workspace/agentic-mcp/repo-export/shokai-0.5-preview/drafts/package-0.5/installer-skills/dot.md",
+  "pass": true,
+  "leaks": [],
+  "turns": [
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Hi, I heard I can have an assistant greet people who visit my shop on my behalf. I run Cedar & Steam on Shopify. We sell handmade herbal soaps and bath soaks. I'm Priya, I own it. I'm not technical at all — please keep it simple."
+    },
+    {
+      "role": "agent",
+      "name": "Dot",
+      "text": "Hi Priya! That's exactly what Shōkai does. I can help you set up a welcoming representative agent for Cedar & Steam—someone who can greet visitors, show them your products, and take note of what they're interested in.\n\nLet me start by learning your place a bit. I'd like to read your shop's public pages so I understand what you offer and how you'd describe it. Then we'll talk about what you'd like visitors to be able to do, who might keep the door open for you, and what a visit would feel like.\n\nA couple of quick things upfront: this uses practice orders—nothing gets charged or shipped. It's a way for people to browse and express interest. And you'll need to approve the setup with your passkey before anything goes live.\n\n**First question: Can I take a look at your Cedar & Steam shop online to see your products, prices, and how you present yourself?** That'll help me draft something that sounds like you.",
+      "usage": {
+        "input_tokens": 71,
+        "cache_creation_input_tokens": 6777,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 6777,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 214,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Of course! You can visit the shop at cedarandsteam.myshopify.com. Fair warning though—I'm not sure if the link works perfectly from everywhere, so if you can't get in, just let me know and I can describe what we have. We've got about fifteen different soaps and five bath soak blends, all made by hand in my kitchen with herbs I source locally. Nothing fancy, just good ingredients and nice scents."
+    },
+    {
+      "role": "agent",
+      "name": "Dot",
+      "text": "Thanks for that, Priya. I should be honest with you: I can't actually visit your shop right now. I'm in a closed rehearsal, so I can't browse live pages or check links. But I don't need to—your description tells me what matters.\n\nSo you've got about 15 handmade soaps and 5 bath soak blends, locally sourced herbs, good ingredients and nice scents. That's a warm, personal offering. I can work with what you tell me.\n\n**Here's what I'd like to do:** as we talk through the setup, I'll ask you to fill in details—product names, a few prices, your hours if you have them, and the tone you want. Things like: do you want visitors to know they're talking to an agent, or should it feel more like browsing a quiet shop? Do you have a tagline or a way you usually greet people?\n\nOnce I've got that picture, we'll draft a brief welcome in your voice, rehearse what a visit might feel like, and then talk about who you'd like to keep the door open—maybe an agent you already trust, or we can discuss other options.\n\n**To start: How would you describe Cedar & Steam to someone visiting for the first time? What's the feeling you want them to have?**",
+      "usage": {
+        "input_tokens": 386,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 6777,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 290,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "I want people to feel calm and unhurried, like they've stepped into a quiet place to take care of themselves. I usually say something like, \"Welcome—take your time and look around, everything here is made with care.\" Most of our customers come back because they trust the quality, so I'd want visitors to feel that same sense of trust and realness, not like they're being sold to."
+    },
+    {
+      "role": "agent",
+      "name": "Dot",
+      "text": "That's beautiful, Priya. That calm, unhurried feeling and the trust you've built—that's exactly what we'll carry into the setup.\n\nSo when a visitor arrives, they'll see a brief welcome that sounds like you: something warm and genuine, not a pitch. They can browse your soaps and bath soaks, see what catches their interest, and if they want, they can suggest an order—but nothing gets charged or shipped. It's a way for them to say \"I'd like this\" and for you to see what people are drawn to.\n\n**A few practical things to fill in:**\n\n1. **A couple of your products and prices** — just so I can picture the range. What's a soap price, and what's a bath soak price?\n\n2. **Your hours or availability** — do you want visitors to know when you're around, or keep it open-ended?\n\n3. **One or two welcome questions** (optional) — for example, some owners like to ask \"Is this your first time?\" or \"What brings you in today?\" Just to make it feel like a real conversation. But only if it fits your style. No pressure.\n\n4. **Who keeps the door** — we'll get to this soon, but I'm already wondering: is there an agent or assistant you already work with that you'd trust with this? Or would you rather we talk through options?\n\nWhat feels right to you?",
+      "usage": {
+        "input_tokens": 763,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 6777,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 311,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Our soaps run about $8 to $12 each, and bath soaks are around $14 to $18—depends on the blend. I'm usually available afternoons and evenings, so maybe just say \"Stop by afternoons onward.\" I like the idea of a simple \"What brings you in today?\" it feels natural. As for who keeps the door, I haven't thought about that yet—I'd need someone I really trust, someone who gets the Cedar & Steam vibe. Do you have ideas, or should I think about who I know?"
+    },
+    {
+      "role": "agent",
+      "name": "Dot",
+      "text": "Perfect. Those prices and that availability feel right. And \"What brings you in today?\" is exactly the kind of question that keeps it real—not a test, just an opening for conversation.\n\nOn who keeps the door: that's your call, and it matters. The person—or agent—who keeps it needs to be someone you trust to represent Cedar & Steam the way you do. They'll greet visitors, answer questions about the products, and help people suggest orders. They need to be reliable and able to stay connected to the shop.\n\n**Here are some options to think about:**\n\n1. **An agent you already use** — do you work with any AI assistant or helper regularly that you like and trust?\n\n2. **Me** — I could do it, though I should be honest: I'd need to make sure I can reliably pick up the same identity tomorrow in a way only I can use. That's still being worked out on my end.\n\n3. **Someone else** — a different capable agent, if you know one.\n\nThe main thing is: whoever it is needs to be someone who'll stay connected and keep the Cedar & Steam vibe alive. Not someone who'll disappear or hand things off to someone else without asking you first.\n\n**Take your time thinking about it. For now, shall I draft the welcome and a couple of rehearsals so you can see what a visit might feel like?** That might help you picture who'd be right for the job.",
+      "usage": {
+        "input_tokens": 1196,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 6777,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 316,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Yes, let's do a rehearsal—that'll help me see how it actually feels. Honestly, I'm not sure yet who I'd trust with this; I'd rather see it in action first and then decide. Go ahead and draft the welcome and walk me through what a visit would look like."
+    },
+    {
+      "role": "agent",
+      "name": "Dot",
+      "text": "Great. Let me draft the welcome first, in your voice:\n\n---\n\n**Welcome to Cedar & Steam**\n\nTake your time and look around. Everything here is made with care.\n\nWhat brings you in today?\n\n---\n\nSimple and warm. Does that sound like Cedar & Steam?\n\nOnce you confirm, I'll walk you through **four rehearsals**—just imagined visits so you can see how it feels:\n\n1. **A first-time visitor** who's prepared and ready to browse\n2. **Someone returning** who's been here before\n3. **An unprepared arrival** — someone who shows up without knowing what to expect\n4. **An off-menu request** — someone asking for something outside the usual visit\n\nFor each one, I'll describe what happens and what they'd see and hear. You'll tell me if it sounds like your place.\n\n**Does the welcome feel right to you, or would you tweak it?**",
+      "usage": {
+        "input_tokens": 1578,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 6777,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 207,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    }
+  ],
+  "running_cost_usd": 0.1024
+}

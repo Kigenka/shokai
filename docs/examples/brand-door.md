@@ -1,12 +1,12 @@
-# A friend introduces a brand
+# A friend introduces a brand at your door
 
-**The story:** Noor Halloran (fictional) loves Maison Ardoise, a fictional clothing brand. She thinks her friend Kiran Vale would too. Kiran's representative keeps a door for brands, under rules Kiran signed. Noor chooses to introduce the brand.
+**The story:** Noor Halloran (fictional) loves Maison Ardoise, a fictional clothing brand, and has bought from it for years. She thinks her friend Kiran Vale would like it too. Kiran's representative keeps a door for brands, under rules Kiran signed, and Kiran's rules name Noor as someone whose introductions she welcomes. So Noor is someone known at this door, and she chooses to introduce the brand, herself.
 
 [![Noor introduces Maison Ardoise at Kiran's door](../diagrams/svg/example-maison-ardoise.svg)](../diagrams/svg/example-maison-ardoise.svg)
 
-## 1. The introduction is deliberate
+## 1. Noor signs it herself
 
-Noor and Kiran being friends, or their representatives having met, is **never** an introduction. Noor's representative asks her, and Noor approves `issue_vouch` with her passkey. Before she signs, she is shown the scope, the expiry and what it would cost her standing if the brand misbehaved.
+Noor and Kiran being friends, or their representatives having met, is **never** an introduction. Noor's representative can suggest it and carry the vouch, but it **can't sign it for her**: a vouch in Noor's name signed by any other key, her representative's included, carries no weight ([SPEC §4](../../SPEC.md)). So her representative asks her, and Noor approves `issue_vouch` with her passkey. Before she signs, she is shown the scope, the expiry and what it would cost her standing if the brand misbehaved.
 
 ```json
 { "vouch_id": "v-noor-maison-01",
@@ -20,9 +20,11 @@ Noor and Kiran being friends, or their representatives having met, is **never** 
 ```
 *`introducer_interest: "none"` is a signed statement that Noor gets nothing for this. Had she been offered a referral discount, it would say `"discount"`, Kiran would be told, and by default the introduction would get no more priority than an uninvited brand.*
 
-## 2. Kiran's door policy decides
+## 2. Kiran's door knows Noor
 
-Kiran's policy welcomes `fashion`, `home` and `travel`, prefers introductions, and allows two uninvited brands a month. Noor is one of the introducers it names, so Maison Ardoise is **introduced** and uses no uninvited slot. The brand never learns who else Kiran trusts.
+Kiran's policy welcomes `fashion`, `home` and `travel`, prefers introductions, and allows two uninvited brands a month. Noor is one of the introducers it names, and the door checks her standing in its own record ("yes, Noor: her past introductions went well"), so Maison Ardoise is **introduced** and uses no uninvited slot. The brand never learns who else Kiran trusts.
+
+**What if Noor had only mentioned it?** Say Noor's representative had told Kiran's representative about Maison Ardoise at a gathering of representatives, or the brand had simply said "Noor sent us". That's a recommendation, not a vouch: Maison Ardoise would arrive uninvited and use one of the two uninvited slots, and a claimed introduction that no signed vouch shows counts as misconduct. A structured "how did you hear about us" field, which a door could check against its own record of the person named to shape the welcome (never the decision), is proposed for a later version; it is not in the v0.5.0.
 
 ## 3. One offer, declared up front
 
@@ -35,7 +37,7 @@ Kiran's policy welcomes `fashion`, `home` and `travel`, prefers introductions, a
     "valid_until": "2026-11-12T23:59:59Z",
     "needs_from_owner": ["email"] } } }
 ```
-*An invitation must say why this door. Everything it would need from Kiran is declared: here, her email to confirm the booking.*
+*This offer uses `kind: "invitation"` as an inbound offer kind (presentation, invitation or gift) at a person's door — not a Shōkai invitation card, which 0.5 does not specify. An invitation must say why this door. Everything it would need from Kiran is declared: here, her email to confirm the booking.*
 
 ## 4. The ceiling, then taste
 
@@ -45,7 +47,7 @@ Because the invitation needs something from Kiran, its ceiling is `kept_for_late
 { "type": "offer_outcome", "offer_id": "o-ma-fitting-11", "outcome": "kept_for_later",
   "relationship_ref": "rel-7c1e…", "courtesy": { "text": "Thank you. I'll share this with Kiran.", "locale": "en-US", "locale_match": "exact" } }
 ```
-*`relationship_ref` is pairwise: another brand gets a different one, so brands can't link Kiran by comparing references. The door's own card still names Kiran's owner key, so brands that compare notes can link it to the same owner (SPEC §13 item 20).*
+*`relationship_ref` is pairwise: another brand gets a different one, so brands can't link Kiran by comparing references. The door's own Shōkai host card still names Kiran's owner key, so brands that compare notes can link it to the same owner (SPEC §13 item 20).*
 
 ## 5. Report home
 

@@ -11,13 +11,14 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { createPrivateKey, createPublicKey } from "node:crypto";
-import { fernwood, harborlight, maison, engawa, pair } from "./places.js";
-import { Host, claimLabel, type Out } from "./host.js";
+import { fernwood, fernwoodV05, withHostCard, harborlight, maison, engawa, pair } from "./places.js";
+import { Host, HouseConfigInvalid, claimLabel, type Out } from "./host.js";
 import { RealVerifier } from "./verify.js";
 import { edKeyToRaw, didKeyFragment, didJwkFromKey, newEd25519, ed25519FromLabel, TEST_INTRODUCER_LABEL, newPasskeyOwner, makeOwnerSigned, randomId, sha256, b64u, type Ed25519Signer, type PasskeyOwner } from "./crypto.js";
 import type { FetchCache } from "./trust.js";
 import { doorPointer, ownAddressOf, placeListing, entryUrl, inboxUrl } from "./door.js";
 import { SPEC_VERSION } from "./version.js";
+import * as V5 from "./v050.js";
 import type { PlaceConfig } from "./policy.js";
 import type * as S from "./shapes.js";
 
@@ -55,12 +56,14 @@ const invitees: S.Gathering["invitees"] = fs.existsSync(invFile) ? JSON.parse(fs
 const pairOwner = loadPasskey("pair-owner");
 type Keys = { rep: Ed25519Signer; principal: Ed25519Signer };
 const PROFILE = args["test-profile"] !== "false";   // Appendix B on every place unless --test-profile=false
-const builders: Record<string, (k: Keys) => PlaceConfig> = { fernwood, harborlight, "maison-ardoise": maison, engawa: (k) => engawa(k, invitees, undefined, PROFILE), pair: (k) => pair(k.rep, pairOwner, "Aya (test owner)") };
+const builders: Record<string, (k: Keys) => PlaceConfig> = { fernwood, "fernwood-v05": fernwoodV05, harborlight, "maison-ardoise": maison, engawa: (k) => engawa(k, invitees, undefined, PROFILE), pair: (k) => pair(k.rep, pairOwner, "Aya (test owner)") };
 const hosts: Record<string, Host> = {}; const keysOf: Record<string, Keys> = {};
 for (const [name, b] of Object.entries(builders)) {
   const k = { rep: loadSigner(name + "-rep"), principal: loadSigner(name + "-principal") }; keysOf[name] = k;
   // v0.2.8 (Appendix B.5): in a conformance run every place names the test introducer for money / account-creating requests.
-  const cfg = b(k); if (PROFILE) cfg.policy = { ...cfg.policy, commitment_introducers: [ed25519FromLabel(TEST_INTRODUCER_LABEL).id] };
+  let cfg = b(k); if (PROFILE) cfg.policy = { ...cfg.policy, commitment_introducers: [ed25519FromLabel(TEST_INTRODUCER_LABEL).id] };
+  // v0.5.0 fixture: its Shōkai host card (with the house summary's digest) is signed over the final policy, so house_digest holds.
+  if (name === "fernwood-v05") cfg = withHostCard(cfg, k.principal, entryUrl(BASE, name), { duties: ["seat", "issue_passes", "receipts", "consider", "misconduct_notices", "hold_purchases"] });
   hosts[name] = new Host(cfg, k.rep, name === "pair" ? null : k.principal, new RealVerifier(), undefined,
     { fetched, entryUrl: entryUrl(BASE, name), inboxUrl: inboxUrl(BASE, name), testProfile: PROFILE, ...(name === "pair" && PROFILE ? { testOwner: pairOwner } : {}), ...(name === "harborlight" && PROFILE ? { testDecider: true } : {}) });
 }
@@ -102,7 +105,7 @@ function urlsIn(raw: any): { url: string; kind: "json" | "bytes" }[] {
 }
 const isLoopback = (u: string) => { try { const h = new URL(u).hostname; return h === "127.0.0.1" || h === "localhost" || h === "[::1]"; } catch { return false; } };
 async function prefetch(raw: any, h: Host) {
-  for (const { url, kind } of urlsIn(raw)) {
+  for (const { url, kind } of [...urlsIn(raw), ...h.actRevocationUrls(raw).map((url) => ({ url, kind: "json" as const }))]) {   // C265: an open seat's card list
     const at = nowIso(); let scheme = ""; try { scheme = new URL(url).protocol; } catch { /* bad url */ }
     const allowed = scheme === "https:" ? (REMOTE_FETCH || isLoopback(url)) : scheme === "http:" ? (h.testProfile && isLoopback(url)) : false;   // B.1
     if (!allowed) { fetched.set(url, { ok: false, at }); continue; }
@@ -132,6 +135,17 @@ function consoleCmd(c: any): unknown {
           expires_at: new Date(Date.now() + 86400e3).toISOString().replace(/\.\d+Z$/, "Z") }, pairOwner, now);
       const decided = c.decision === "grant" ? { decision: "grant" as const, approve_actions: c.approve_actions, limits: c.limits } : { decision: "deny" as const, disposition: c.disposition ?? "not_now" };
       const outs = h.resolveConsideration(c.ref, decided, c.text ?? "Thank you for your patience.", consent); holdAll(h, outs); return outs.map((o) => o.message);
+    }
+    // v0.5.0 (door.endSeat, §6.10 guard 14): the host ends a live seat; its closing farewell is held for the visitor's inbox (C234).
+    case "end_seat": { const n = h.outbox.length; const ended = h.endSeat(String(c.seat_id ?? "")); const outs = h.outbox.splice(n); holdAll(h, outs); return { ended, held: outs.length }; }
+    // v0.5.0 (§2.3, C236): would a door start with this place's house config changed by `patch` (policy members; null removes one)?
+    // The summary is rebuilt from the changed policy unless the patch changes `summary` itself. Nothing is started or kept.
+    case "try_config": {
+      const P = { ...h.cfg.policy } as Record<string, unknown>; const patch = (c.patch ?? {}) as Record<string, unknown>;
+      for (const [k, v] of Object.entries(patch)) if (k !== "summary") { if (v === null) delete P[k]; else P[k] = v; }
+      const cfg = { ...h.cfg, policy: P } as PlaceConfig; const sum = h.cfg.policy.summary;
+      if (sum) P.summary = patch.summary && typeof patch.summary === "object" ? { ...sum, ...(patch.summary as object) } : V5.houseSummaryOf(cfg as any, sum.purpose, sum.spec_ref);
+      try { new Host(cfg, null, null); return { problems: [] }; } catch (e) { return { problems: e instanceof HouseConfigInvalid ? e.problems : ["threw: " + (e as Error).message] }; }
     }
     case "extend": { const outs = h.extendConsideration(c.ref, c.response_by); holdAll(h, outs); return outs.map((o) => o.message); }
     case "peer_invite": {
@@ -181,11 +195,20 @@ const srv = http.createServer((req, res) => {
       const u = new URL(req.url ?? "/", "http://x"); parts = u.pathname.split("/").filter(Boolean);
       if (req.method === "GET" && u.pathname === "/") return send(200, doorPointer(BASE, all()));   // §11.1 door root (v0.2.4)
       if (req.method === "GET" && u.pathname === "/places") return send(200, placeListing(BASE, all(), nowIso()));
+      // v0.5.0 (§2.3, C248): GET <entry>/house-summary.json, cacheable while the host card's summary_digest is unchanged.
+      if (req.method === "GET" && parts[0] === "places" && parts.length === 4 && parts[2] === "entry" && parts[3] === "house-summary.json" && Object.hasOwn(hosts, parts[1])) {
+        const r = hosts[parts[1]].houseSummary(); res.writeHead(r.status, { "content-type": "application/json; charset=utf-8", ...r.headers }); return res.end(JSON.stringify(r.body));
+      }
+      // Red team phase 1 (§3.2, C268, provisional): GET <entry>/host-card.json, the signed Shōkai host card, readable before the ritual.
+      if (req.method === "GET" && parts[0] === "places" && parts.length === 4 && parts[2] === "entry" && parts[3] === "host-card.json" && Object.hasOwn(hosts, parts[1])) {
+        const r = hosts[parts[1]].hostCardPublic(); res.writeHead(r.status, { "content-type": "application/json; charset=utf-8", ...r.headers }); return res.end(JSON.stringify(r.body));
+      }
       const h = parts[0] === "places" && parts.length === 3 ? hosts[parts[1]] : undefined;
       if (!h || req.method !== "POST") return door404();
       if (parts[2] === "entry" || parts[2] === "lobby") {
         let m: unknown = body; try { m = JSON.parse(body); } catch { /* prose: the lobby */ }
-        writeWire(typeof m === "string" ? { prose: m } : m, "in", h.cfg.name);
+        // v0.5.0 (§5.4, C235): a body carrying a payment instrument is never written to the wire log (only that it arrived).
+        writeWire(typeof m === "string" ? (V5.luhnLike(m) ? { prose: "[withheld: payment instrument]" } : { prose: m }) : V5.carriesInstrument(m) ? { withheld: "payment instrument" } : m, "in", h.cfg.name);
         await prefetch(m, h);
         let env: S.ReplyEnvelope;
         try { env = h.entryPost(m); } catch { env = h.entryPost(String(body)); }   // anything that breaks the ritual parser is malformed → lobby
@@ -203,7 +226,7 @@ const srv = http.createServer((req, res) => {
   });
 });
 srv.listen(PORT, "127.0.0.1", () => {
-  console.log(`Shōkai reference host (shokai/0.3, spec v${SPEC_VERSION}, §11 HTTP binding${PROFILE ? ", test profile shokai-b/0.3" : ""}) on ${BASE}  (wire log: ${WIRE}; console: ${CONSOLE})`);
+  console.log(`Shōkai reference host (shokai/0.5, answering shokai/0.3 in kind, spec v${SPEC_VERSION}, §11 HTTP binding${PROFILE ? ", test profile shokai-b/0.3" : ""}) on ${BASE}  (wire log: ${WIRE}; console: ${CONSOLE})`);
   for (const h of all()) console.log(`  ${h.cfg.name.padEnd(15)} entry=${entryUrl(BASE, h.cfg.name)} rep=${h.cfg.rep_id}`);
   if (hosts.engawa.place && invitees.length) holdAll(hosts.engawa, hosts.engawa.place.invitations());
   save();

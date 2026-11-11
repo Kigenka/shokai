@@ -1,11 +1,20 @@
 // The gate: a pure, deterministic function of verified artifacts, structured request fields, policy version,
 // host context and evaluation time (SPEC §6.4). Prose is never read here (§6.5). Amounts are exact (D10).
-import type { Limits, Mandate, RepresentativeCard, Vouch, SeekingDeclaration, RelationshipRecord, Condition, Retry,
+import type { Limits, BookingLimits, Mandate, RepresentativeCard, Vouch, SeekingDeclaration, RelationshipRecord, Condition, Retry,
   ReasonCode, SeatGrant, ProofLevel, ConsiderationRoute, PurposeCode, ReadinessRequirement, RevisitHint, Disposition, Digest, MinProof, Money } from "./shapes.js";
 import type { PlacePolicy, ActionPolicy } from "./policy.js";
 import { parseMoney, moneyOf } from "./crypto.js";
 
 export type VouchWeight = "full" | "reduced" | "suspended" | "none";
+/** C276 (§4, provisional; red team H3): at an accept-anyone place (trusted_introducers "*"), a vouch from an introducer the place does
+ *  not itself name (commitment_introducers, established_introducers) or its own invitation is "open only": it admits at most, at
+ *  reduced weight. It never counts toward known status or any trust threshold beyond plain admission, so a ring of strangers
+ *  vouching each other cannot raise a visitor's standing. */
+export function openOnlyVouch(policy: { trusted_introducers: "*" | readonly string[]; commitment_introducers?: readonly string[]; established_introducers?: readonly string[] }, introducer: string, hostPrincipal: string, same: (a: string, b: string) => boolean = (a, b) => a === b): boolean {
+  if (policy.trusted_introducers !== "*" || same(introducer, hostPrincipal)) return false;
+  return ![...(policy.commitment_introducers ?? []), ...(policy.established_introducers ?? [])].some((x) => same(x, introducer));
+}
+export function capOpenOnly(weight: VouchWeight, openOnly: boolean): VouchWeight { return openOnly && weight === "full" ? "reduced" : weight; }
 export type Approval = { consideration_ref: string; actions: string[]; limits?: Limits; until: string };
 
 export type GateCtx = {
@@ -69,6 +78,8 @@ export function limitsExceeding(req: Limits | undefined, bound: Limits | undefin
   for (const k of ["max_operations", "rate_per_hour", "max_session_s"] as const)
     if (req[k] !== undefined && bound[k] !== undefined && req[k]! > bound[k]!) out.push(k);
   if (req.data_classes && bound.data_classes && req.data_classes.some((d) => !bound.data_classes!.includes(d))) out.push("data_classes");
+  // v0.5.0 (§7.4): a booking window that starts earlier or ends later than the bound's, or a larger party, is over.
+  if (req.booking && bound.booking && !bookingWithin(req.booking, bound.booking)) out.push("booking");
   return out;
 }
 /** Intersection of limits: the tighter value of each field present. Currency mismatch ⇒ zero (fail safe). */
@@ -85,6 +96,7 @@ export function intersectLimits(...ls: (Limits | undefined)[]): Limits {
     for (const k of ["max_operations", "rate_per_hour", "max_session_s"] as const)
       if (l[k] !== undefined) r[k] = r[k] === undefined ? l[k] : Math.min(r[k]!, l[k]!);
     if (l.data_classes) r.data_classes = r.data_classes ? r.data_classes.filter((d) => l.data_classes!.includes(d)) : [...l.data_classes];
+    if (l.booking) r.booking = r.booking ? intersectBooking(r.booking, l.booking) : { ...l.booking };   // v0.5.0 (§7.4)
   }
   return r;
 }
@@ -93,6 +105,7 @@ function lowerLimit(m: Limits, over: (keyof Limits)[], reqCurrency?: string): Li
   for (const k of over) {
     if (k === "max_amount") p.max_amount = m.max_amount ? { value: m.max_amount.value, currency: m.max_amount.currency } : { value: "0", currency: reqCurrency ?? "USD" };
     else if (k === "data_classes") p.data_classes = m.data_classes;
+    else if (k === "booking") { if (m.booking) p.booking = { ...m.booking }; }
     else if (k === "session_max_amount") { const c = sessionCapOf(m) ?? m.max_amount; if (c) p.session_max_amount = { value: c.value, currency: c.currency }; }
     else (p as Record<string, unknown>)[k] = m[k];
   }
@@ -233,11 +246,30 @@ export function gate(i: GateCtx): GateResult {
     if (sc) limits.session_max_amount = sc;
   }
   const levels = [...new Set(aps.map((a) => a.level))];
-  // Seat lifetime: the session limit if any, else the place's seat TTL (default one day, as in L0b/G7/PA2), never past the mandate.
-  let expires = minIso(m.expires_at, addSec(i.now, P.seat_ttl_s ?? 86400));
-  if (limits.max_session_s) expires = minIso(expires, addSec(i.now, limits.max_session_s));
+  // Seat lifetime: the session limit if any, else the place's seat TTL (default one day, as in L0b/G7/PA2), never past the mandate;
+  // C281: a card with no revocation_url gets at most NO_REVOCATION_SEAT_TTL_S.
+  const expires = seatExpiry(i.now, m.expires_at, P.seat_ttl_s, limits.max_session_s,
+    (i.card as unknown as { revocation_url?: unknown }).revocation_url);
   return { decision: "grant", seat: { seat_id: i.seat_id, levels, tool_allowlist: [...req.actions], access_mode: P.access_mode,
     brand: { label: i.card.role || `${i.card.principal.display_name} representative`, vendor_warranted: true }, expires_at: expires, mandate_id: m.mandate_id, limits } };
+}
+
+/**
+ * Red team finding 2a (§2.6, C281, provisional): the longest a seat may stay open under a card that names no `revocation_url`.
+ * Such a card can only be revoked by a delivered `card_revocation` (C198), so its seat is kept short.
+ */
+export const NO_REVOCATION_SEAT_TTL_S = 3600;
+
+/**
+ * A seat's `expires_at`: the place's seat TTL (default one day), never past the mandate or the session limit, and (C281) at most
+ * NO_REVOCATION_SEAT_TTL_S when the card names no `revocation_url`. Cards with one keep the longer lifetime and re-check the list (C265).
+ */
+export function seatExpiry(now: string, mandateExpires: string, seatTtlS: number | undefined,
+  maxSessionS: number | undefined, revocationUrl: unknown): string {
+  let expires = minIso(mandateExpires, addSec(now, seatTtlS ?? 86400));
+  if (maxSessionS) expires = minIso(expires, addSec(now, maxSessionS));
+  if (typeof revocationUrl !== "string" || !revocationUrl) expires = minIso(expires, addSec(now, NO_REVOCATION_SEAT_TTL_S));
+  return expires;
 }
 
 /** §6.8 eligibility by policy alone. */
@@ -253,3 +285,39 @@ function considering(i: GateCtx): GateResult {
     response_by: addDays(i.now, i.policy.considering.response_days) };
 }
 export type { Digest, PurposeCode, Money };
+
+// ---------- v0.5.0 (§7.4): booking limits, checked by code ----------
+const instant = (t: unknown): number => (typeof t === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/.test(t) ? Date.parse(t) : NaN);
+/** §7.4: whether booking limits are well formed: two instants with an offset, start before end, a whole party size of at least 1. */
+export function bookingLimitsOk(b: BookingLimits | undefined): boolean {
+  if (!b || typeof b !== "object") return false;
+  const s = instant(b.window_start), e = instant(b.window_end);
+  return Number.isFinite(s) && Number.isFinite(e) && s < e && Number.isInteger(b.party_size_max) && b.party_size_max >= 1 && b.party_size_max <= 1000;
+}
+/** §7.4: `inner` asks for no more than `outer` allows (its window inside, its party no larger). Malformed = not within. */
+export function bookingWithin(inner: BookingLimits, outer: BookingLimits): boolean {
+  if (!bookingLimitsOk(inner) || !bookingLimitsOk(outer)) return false;
+  return instant(inner.window_start) >= instant(outer.window_start) && instant(inner.window_end) <= instant(outer.window_end) && inner.party_size_max <= outer.party_size_max;
+}
+/** §7.4: the tighter of two booking limits (a later start, an earlier end, the smaller party). An empty window can't book anything. */
+export function intersectBooking(a: BookingLimits, b: BookingLimits): BookingLimits {
+  const s = instant(a.window_start) >= instant(b.window_start) ? a.window_start : b.window_start;
+  const e = instant(a.window_end) <= instant(b.window_end) ? a.window_end : b.window_end;
+  return { window_start: s, window_end: e, ...(a.time_zone ?? b.time_zone ? { time_zone: a.time_zone ?? b.time_zone } : {}), party_size_max: Math.min(a.party_size_max, b.party_size_max) };
+}
+export type BookingProblem = "booking_malformed" | "outside_window" | "party_too_large" | "no_booking_limits";
+/**
+ * §7.4: whether one booking (start, end, party size) fits every limit given (the seat's and the mandate's). Every limit must
+ * be present and well formed (fail closed); the start must be an instant with an offset inside each window (the end, when given,
+ * an instant no earlier than the start: how long a booking lasts is the place's to say), and the party no larger than allowed.
+ */
+export function bookingProblem(bk: { start?: unknown; end?: unknown; party_size?: unknown }, ...limits: (BookingLimits | undefined)[]): BookingProblem | null {
+  if (!limits.length || limits.some((l) => !bookingLimitsOk(l))) return "no_booking_limits";
+  const s = instant(bk.start), e = bk.end === undefined ? s : instant(bk.end);
+  if (!Number.isFinite(s) || !Number.isFinite(e) || e < s || !Number.isInteger(bk.party_size) || (bk.party_size as number) < 1) return "booking_malformed";
+  for (const l of limits as BookingLimits[]) {
+    if (s < instant(l.window_start) || s > instant(l.window_end)) return "outside_window";   // the start is in the window; the place sets the length
+    if ((bk.party_size as number) > l.party_size_max) return "party_too_large";
+  }
+  return null;
+}

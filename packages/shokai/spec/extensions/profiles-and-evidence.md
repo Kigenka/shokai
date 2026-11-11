@@ -2,11 +2,11 @@
 <!-- SPDX-FileCopyrightText: 2026 Yu Sung Yeh -->
 # Shōkai extension: Profiles and evidence
 
-**Status: stable** (in the reference with its own tests; within 0.3, it changes only for fixes). *Extension `profiles-and-evidence`, version 0.3.0, tied to the core [SPEC.md](../SPEC.md) v0.3.0 (wire `shokai/0.3`). Normative for implementations that claim this extension. Section references without a document name are to the core.*
+**Status: stable** (in the reference with its own tests; within 0.5, it changes only for fixes). *Extension `profiles-and-evidence`, version 0.5.0, tied to the core [SPEC.md](../SPEC.md) v0.5.0 (wire `shokai/0.5`, with `shokai/0.3` still accepted during the transition window, SPEC §11.1). **Applies to v0.5.0 (unchanged since v0.4.0).** Normative for implementations that claim this extension. Section references without a document name are to the core.*
 
 *© 2026 Yu Sung Yeh. Licensed under the [Apache License 2.0](../LICENSE). Patent commitment (draft): [PATENTS.md](../PATENTS.md). Names and logo: [TRADEMARKS.md](../TRADEMARKS.md).*
 
-**Conformance level: Profiles and evidence.** An implementation conforms to this extension when it conforms to the core and meets every requirement below for the roles it plays (card issuer, receiver, gatekeeper using `min_proof`). An implementation that doesn't support it never uses the messages, members or actions below, and the core is complete without it. A card shows it uses the extension by carrying a `PrincipalImprint` or `EvidenceRef`s with a `content_digest`.
+**Conformance level: Profiles and evidence.** An implementation conforms to this extension when it conforms to the core and meets every requirement below for the roles it plays (card issuer, receiver, host representative using `min_proof`). An implementation that doesn't support it never uses the messages, members or actions below, and the core is complete without it. A card shows it uses the extension by carrying a `PrincipalImprint` or `EvidenceRef`s with a `content_digest`.
 
 **Requires:** the core. Tests: see `conformance/homes.json` (home `profiles-and-evidence`).
 

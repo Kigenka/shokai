@@ -24,7 +24,7 @@ const mcp = async (_req: http.IncomingMessage, res: http.ServerResponse, body: a
 };
 
 async function shop(opts: GateOptions = {}) {
-  const door = createDoor({ name: "kettle", displayName: "Kettle & Leaf", category: "store", purposes: [{ code: "purchase", statement: "Ordering tea." }],
+  const door = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "kettle", displayName: "Kettle & Leaf", category: "store", purposes: [{ code: "purchase", statement: "Ordering tea." }],
     actions: [{ action: "order.place", purposes: ["purchase"], level: "act_on_behalf", data_asks: [] }], spendingActions: ["order.place"] });
   const server = http.createServer(shokaiGate(door, mcp, opts)); await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
   const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`; door.setBaseUrl(base + "/shokai");

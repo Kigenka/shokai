@@ -19,7 +19,37 @@ const r1v = await runConformance(`http://127.0.0.1:${good.port}/shokai`, { level
 check(/NOT the door/.test(r1v.vectors_against ?? ""), "with a URL target the report says the vectors ran against the runner's own crypto, not the door");
 check(r1.results.some((x) => x.id === "seat.mandate_across" && x.status === "pass"), "the runner checks that a mandate's limits bind across visits (seat.mandate_across, C175)");
 check(r1.results.some((x) => x.id === "door.404_here" && x.status === "pass"), "GET <entry> at a conformant door: a 404 pointer that names the door in `here` (door.404_here, C200)");
+// v0.5.0 (C230–C255): the v050 level runs for a place on spec 0.5.0 and counts in the core verdict.
+const v5 = (id: string) => r1.results.find((x) => x.id === id)?.status;
+// Provisional sections (§3.2 C268, §6.12 C267): the new checks must be present and must not fail (pass or skip).
+for (const id of ["v050.host_card_served", "v050.context_request_declared"]) check(["pass", "skip", "na"].includes(String(v5(id))), `the runner reports ${id} (${v5(id) ?? "missing"})`);
+check(!!r1.summary.v050 && r1.summary.v050.fail === 0 && ["v050.tags", "v050.summary", "v050.idempotent", "v050.instrument", "v050.one_card", "v050.deletion_held", "v050.deletion_receipt", "v050.deletion_ledgers"].every((id) => v5(id) === "pass"),
+  `a v0.5.0 door passes the v0.5.0 black-box checks (${r1.summary.v050?.pass ?? 0} pass, ${r1.summary.v050?.skip ?? 0} skip)`);
+check(v5("v050.hold_over_limit") === "skip" && v5("v050.hold_release") !== "pass", "a door without purchase holds skips the hold checks (C230–C232), and nothing is released without --spend");
 good.s.close();
+
+// A v0.5.0 door whose served house summary isn't the one its Shōkai host card names (C248): NOT CONFORMANT.
+const doorSum = createNotesDoor();
+const badSum = await listen(async (req, res) => {
+  // The door's own summary with one member changed (fetched from the door itself, marked so that fetch is passed straight through).
+  if (req.method === "GET" && !req.headers["x-pass"] && /\/house-summary\.json$/.test(new URL(req.url ?? "/", "http://x").pathname)) {
+    const mine = await (await fetch(`http://127.0.0.1:${badSum.port}${req.url}`, { headers: { "x-pass": "1" } }).catch(() => null))?.json().catch(() => null);
+    res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify({ ...(mine ?? {}), conduct_rules: [] })); return; }
+  if (!(await doorSum.handleHttp(req, res))) { res.writeHead(404); res.end(); } });
+doorSum.setBaseUrl(`http://127.0.0.1:${badSum.port}/shokai`);
+const rSum = await runConformance(`http://127.0.0.1:${badSum.port}/shokai`);
+check(rSum.results.find((x) => x.id === "v050.summary")?.status === "fail" && verdict(rSum).core === "fail", "a served house summary that isn't the card's summary_digest fails v050.summary and the core verdict (C248)");
+badSum.s.close();
+
+// A v0.5.0 door with a body cap at the front (HTTP 413, no ReplyEnvelope, for a body over 60 000 bytes, below the default max_message_bytes): a bounded refusal (C239), never a fail.
+const doorCap = createNotesDoor();
+const capped = await listen(async (req, res) => {
+  if (req.method === "POST" && Number(req.headers["content-length"] ?? 0) > 60_000) { req.resume(); res.writeHead(413, { "content-type": "application/json" }); res.end(JSON.stringify({ error: "too_large" })); return; }
+  if (!(await doorCap.handleHttp(req, res))) { res.writeHead(404); res.end(); } });
+doorCap.setBaseUrl(`http://127.0.0.1:${capped.port}/shokai`);
+const rCap = await runConformance(`http://127.0.0.1:${capped.port}/shokai`);
+check(rCap.results.find((x) => x.id === "v050.size")?.status === "pass", "a door that refuses an oversized body at the front (HTTP 413) passes v050.size (C239)");
+capped.s.close();
 
 // A pre-C200 door: GET <entry> gets the bare pointer (no `here`). v0.3.0: a warning only; the door stays CONFORMANT (MUST in v0.4).
 const doorC200 = createNotesDoor();
@@ -31,14 +61,14 @@ const rC200 = await runConformance(`http://127.0.0.1:${noHere.port}/shokai`);
 check(rC200.results.some((x) => x.id === "door.404_here" && x.status === "warn") && verdict(rC200).core === "pass", "a door whose GET <entry> pointer doesn't name it gets a door.404_here warning and stays CONFORMANT (SHOULD in v0.3.0)");
 noHere.s.close();
 
-// v0.3.0 (§3.1, compatibility): a door whose listing still names its release candidate "0.3.0-rc4" (no wire change) passes
+// v0.4.0 (§3.1, compatibility): a door whose listing still names "0.3.0" (the same wire tag; v0.4.0 is additive) passes
 // door.spec_ref with a note; one that names another version gets a warning; neither changes the verdict.
-for (const [label, want] of [["0.3.0-rc4", "pass"], ["0.2.9", "warn"]] as const) {
+for (const [label, want] of [["0.4.0", "pass"], ["0.3.0", "pass"], ["0.2.9", "warn"]] as const) {
   const d = createNotesDoor();
   const srv = await listen(async (req, res) => {
     if (req.method === "GET" && /\/places$/.test(new URL(req.url ?? "/", "http://x").pathname)) {
       const end = res.end.bind(res) as any;
-      (res as any).end = (body?: any, ...rest: any[]) => end(typeof body === "string" || Buffer.isBuffer(body) ? String(body).replaceAll('"version":"0.3.0"', `"version":"${label}"`) : body, ...rest);
+      (res as any).end = (body?: any, ...rest: any[]) => end(typeof body === "string" || Buffer.isBuffer(body) ? String(body).replaceAll('"version":"0.5.0"', `"version":"${label}"`) : body, ...rest);
     }
     if (!(await d.handleHttp(req, res))) { res.writeHead(404); res.end(); } });
   d.setBaseUrl(`http://127.0.0.1:${srv.port}/shokai`);
@@ -72,11 +102,12 @@ minting.s.close();
 // S1 (adversarial review, 2026-10-28): money caps. A tea door that seats a spending limit honestly, and the same door with its caps
 // switched off after seating (every seat's and mandate's max_amount raised before each message), like the review's broken-cap door.
 const { createDoor } = await import("../src/index.js");
-const teaDoor = () => createDoor({ name: "tea-shop", displayName: "Kettle & Leaf", category: "store",
+const teaDoor = () => createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "tea-shop", displayName: "Kettle & Leaf", category: "store",
   purposes: [{ code: "visitation", statement: "Looking at the menu." }, { code: "purchase", statement: "Ordering tea." }],
   actions: [{ action: "menu.view", purposes: ["visitation", "purchase"], level: "discover", data_asks: [] },
             { action: "order.place", purposes: ["purchase"], level: "act_on_behalf", data_asks: [] }],
-  spendingActions: ["order.place"] });
+  // Two full conformance runs share this fixture within one minute; C278 has its own exhausted-address tests.
+  anonRatePerAddr: 1000, spendingActions: ["order.place"] });
 const honestTea = teaDoor();
 const ht = await listen(async (req, res) => { if (!(await honestTea.handleHttp(req, res))) { res.writeHead(404); res.end(); } });
 honestTea.setBaseUrl(`http://127.0.0.1:${ht.port}/shokai`);
@@ -122,7 +153,7 @@ bad.s.close();
 // v0.3.0-rc3: the rc3 core checks pass at the reference door (C183–C186, C188–C190).
 for (const id of ["body.batch", "lobby.bad_signature", "neg.bad_signature", "request.incomplete", "mandate.cross", "seat.unknown", "lifecycle.again", "neg.probing", "act.order", "card.revoked", "card.revoked_seat"])
   check(r1.results.some((x) => x.id === id && x.status === "pass"), `the reference door passes ${id}`);
-check(r1.results.some((x) => x.id === "mcp.endpoint" && x.status === "skip") && !r1.results.some((x) => x.level === "mcp" && x.status === "fail"), "a door with no MCP endpoint skips the MCP binding (mcp.endpoint skip), never fails it");
+check(r1.results.some((x) => x.id === "mcp.endpoint" && x.status === "na" && x.na_basis === "class") && !r1.results.some((x) => x.level === "mcp" && x.status === "fail"), "a door with no MCP endpoint skips the MCP binding (mcp.endpoint skip), never fails it");
 // v0.3.0-rc3: the verdict is core only; a requested extension that fails is reported apart and never prints NOT CONFORMANT.
 const fake = { ...r1, results: [...r1.results.filter((x) => x.level === "core"), { id: "ext.visit_receipt", level: "visit-receipts" as const, title: "x", ref: "x", status: "fail" as const }] };
 const txt = formatReport(fake);
@@ -146,7 +177,8 @@ const f5 = new Set(r5.results.filter((x) => x.status === "fail").map((x) => x.id
 check(f5.has("mcp.refusal") && f5.has("mcp.gate") && verdict(r5).core === "fail", "a gate that doesn't check acts is caught (mcp.refusal, mcp.gate) and the door is NOT CONFORMANT");
 loose.s.close();
 // A gate that skips the freshness window is caught by mcp.gate. (A replay is refused by the door too: an act's (from, msg_id) is single use there.)
-const door6 = createNotesDoor(); const real = new ShokaiGate(door6, { skewSeconds: 1e9 });
+// The SDK's door also discards messages more than 900 s old (v0.4.0), which would hide this gate's fault: off here, to test the gate alone.
+const door6 = createNotesDoor({ maxMessageAgeS: false }); const real = new ShokaiGate(door6, { skewSeconds: 1e9 });
 const reuse = await listen(shokaiGate(door6, statelessMcp(buildNotesServer), { adapter: real }));
 door6.setBaseUrl(`http://127.0.0.1:${reuse.port}/shokai`);
 const r6 = await runConformance(`http://127.0.0.1:${reuse.port}/shokai`);

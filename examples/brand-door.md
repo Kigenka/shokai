@@ -2,11 +2,15 @@
 <!-- SPDX-FileCopyrightText: 2026 Yu Sung Yeh -->
 # Brand door: a friend introduces a brand at a person's own door
 
-**The story.** Kiran Vale (fictional) has a door of her own, where brands may present things to her under rules she signed. Her friend Noor (fictional) loves Maison Ardoise (a fictional clothing brand) and chooses to introduce it, declaring that nobody paid her to. The brand's representative is seated, presents a travel coat (kept for Kiran's digest) and offers a scarf as a gift (accepted, as a claim ticket, never an address). The brand learns only those outcome codes.
+**The story.** Kiran Vale (fictional) has a door of her own, where brands may present things to her under rules she signed. Her friend Noor (fictional) loves Maison Ardoise (a fictional clothing brand) and chooses to introduce it, declaring that nobody paid her to. The brand's representative receives a pass, presents a travel coat (kept for Kiran's digest) and offers a scarf as a gift (accepted, as a claim ticket, never an address). The brand learns only those outcome codes.
 
 [![Noor introduces Maison Ardoise at Kiran's door](diagrams/png/brand-door.png)](diagrams/svg/brand-door.svg)
 
-**Where the diagram comes from.** A run of the reference implementation ([traces/brand-door.mjs](traces/brand-door.mjs)), mirroring its conformance scenario V29-D2, with fresh fictional keys; [traces/brand-door.trace.json](traces/brand-door.trace.json) lists every message in order (5/5 checks).
+::: tip Diagram honesty
+**Reference / SDK run** (repeatable from the linked trace). Node labels on this site say **pass** (v0.5 prose). The recorded run still used the v0.3 word seat/seated in places; the wire field remains `seat`. The trace was **not** re-recorded as a fresh v0.5 run.
+:::
+
+**Where the diagram comes from.** A run of the reference implementation ([traces/brand-door.mjs](traces/brand-door.mjs)), mirroring its conformance scenario V29-D2, with fresh fictional keys; [traces/brand-door.trace.json](traces/brand-door.trace.json) lists every message in order (5/5 checks). Diagram node labels on this site say **pass** (v0.5 wording). The underlying v0.3 run still recorded "seated"; the wire field remains `seat`. The trace was not re-recorded.
 
 **What it shows**
 - A person can be a place's principal: their representative keeps their door (§10).

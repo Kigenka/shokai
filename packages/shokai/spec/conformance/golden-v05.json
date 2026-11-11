@@ -1,0 +1,83 @@
+{
+  "trace": "G9",
+  "wire": "shokai/0.5",
+  "note": "Recorded by reference/engawa/test/v050.ts (GOLDEN_V05_WRITE=1 rewrites it). Shapes only: types, tags, decisions, codes and over-limit figures; signatures and keys are fresh per run.",
+  "steps": [
+    [
+      "GET host-card.json",
+      200,
+      "host"
+    ],
+    [
+      "GET house-summary.json",
+      200
+    ],
+    [
+      "greeting",
+      "shokai/0.5",
+      null,
+      null,
+      null
+    ],
+    [
+      "card_presentation",
+      "shokai/0.5",
+      null,
+      null,
+      null
+    ],
+    [
+      "card_receipt",
+      "shokai/0.5",
+      null,
+      null,
+      null
+    ],
+    [
+      "invitation_response",
+      "shokai/0.5",
+      "grant",
+      null,
+      null
+    ],
+    [
+      "farewell",
+      "shokai/0.5",
+      "seated",
+      null,
+      null
+    ],
+    [
+      "act_result",
+      "shokai/0.5",
+      true,
+      null,
+      null
+    ],
+    [
+      "act_result",
+      "shokai/0.5",
+      true,
+      null,
+      null
+    ],
+    [
+      "act_held",
+      "shokai/0.5",
+      null,
+      null,
+      [
+        "50.00",
+        "20.00",
+        "60.00"
+      ]
+    ],
+    [
+      "act_result",
+      "shokai/0.5",
+      true,
+      null,
+      null
+    ]
+  ]
+}

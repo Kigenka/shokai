@@ -4,7 +4,7 @@
 // module (Appendix A.1), here with a software authenticator standing in for the browser. Fictional place and owner only.
 import { createDoor, createRepresentative, signCardRevocation, signOwnerLink, passkeyRequest, signedFromPasskeyAssertion, verifySigned,
   developmentPasskey, digestOf as nodeDigest, exportRepresentativeKey, importRepresentativeKey, generateRepresentativeKey, sign as sdkSign, signCard,
-  type Door, type Transport } from "../src/index.js";
+  inProcess, type Door, type Transport } from "../src/index.js";
 import { jcs as browserJcs, digestOf as browserDigest, signWithPasskey } from "../src/browser.js";
 import { newEd25519, signPasskey, b64u, sha256, jcs } from "../src/core/crypto.js";
 import { verifyOwnerLink } from "../src/core/trust.js";
@@ -14,9 +14,9 @@ import { sign as nodeSign } from "node:crypto";
 let pass = 0, fail = 0;
 const check = (c: boolean, what: string) => { if (c) { pass++; console.log("  PASS " + what); } else { fail++; console.log("  FAIL " + what); } };
 const keys = { rep: newEd25519(), principal: newEd25519() };
-const shop = (): Door => createDoor({ name: "kettle", displayName: "Kettle & Leaf", category: "store", keys,
+const shop = (): Door => createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "kettle", displayName: "Kettle & Leaf", category: "store", keys,
   purposes: [{ code: "visitation", statement: "Looking at the menu." }], actions: [{ action: "menu.view", purposes: ["visitation"], level: "discover", data_asks: [] }] });
-const direct = (d: Door): Transport => async (_u, body) => (await d.post(body)).envelope;
+const direct = (d: Door): Transport => inProcess(d);
 
 async function main() {
   console.log("SDK owner helpers (@kigenka/shokai)");

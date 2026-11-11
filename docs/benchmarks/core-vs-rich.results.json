@@ -1,0 +1,106 @@
+{
+  "kind": "in-process-microbenchmark",
+  "not": [
+    "load test",
+    "production capacity estimate",
+    "proof that every configuration is optimal",
+    "measurement of external store, payment provider, or public network latency"
+  ],
+  "protocol": "shokai/0.5",
+  "package": "@kigenka/shokai",
+  "package_version": "0.5.0",
+  "measured_at": "2026-11-05T19:25:37.284Z",
+  "environment": {
+    "node": "v24.22.1",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu_count": 8,
+    "total_mem_bytes": 16779640832
+  },
+  "methodology": {
+    "warmup_iterations": 25,
+    "measured_iterations": 200,
+    "concurrency": 1,
+    "transport": "inProcess(door) — no TCP listen, no external network",
+    "timing": "performance.now() per full path iteration; percentiles from sorted samples",
+    "memory": "process.memoryUsage().heapUsed delta around the measured loop (indicative only)",
+    "event_loop": "monitorEventLoopDelay during measured loop"
+  },
+  "paths": {
+    "minimal_browse": {
+      "description": "Browse-only door: visitation seat + tea.browse + farewell",
+      "capabilities": [
+        "greeting",
+        "self-introduction",
+        "visitation seat",
+        "non-spending act"
+      ]
+    },
+    "rich_composed": {
+      "description": "Spending door with holds/limit_calls, dual visit under one mandate, over-limit handling, memoryStore",
+      "capabilities": [
+        "self-introduction (vouch: null)",
+        "purchase purpose",
+        "per-visit seat spend",
+        "whole-mandate ledger across visits",
+        "purchaseHoldSeconds + policy.limit_calls",
+        "over-limit hold or refuse",
+        "memoryStore (shared-store shape for multi-instance)"
+      ],
+      "verified_by_existing_tests": [
+        "packages/shokai/test/v050.test.ts (holds / limit_calls)",
+        "packages/shokai/test/mandate.test.ts (C175/C176 across visits)",
+        "packages/shokai/test/instances.test.ts (shared store / holds)"
+      ]
+    }
+  },
+  "results": {
+    "minimal": {
+      "label": "minimal_browse",
+      "iterations": 200,
+      "warmup": 25,
+      "latency_ms": {
+        "min": 5.327167000000145,
+        "p50": 5.8298919999999725,
+        "p95": 6.860084000000143,
+        "p99": 7.036315000000059,
+        "max": 7.431183000000033,
+        "mean": 5.921846649999997
+      },
+      "throughput_ops_per_s": 168.83420877880397,
+      "wall_ms": 1184.594055,
+      "heap_used_delta_bytes": -137944,
+      "event_loop_delay_ms": {
+        "mean": null,
+        "max": 0,
+        "p99": 0.000511
+      }
+    },
+    "rich": {
+      "label": "rich_composed",
+      "iterations": 200,
+      "warmup": 25,
+      "latency_ms": {
+        "min": 11.42479000000003,
+        "p50": 12.183337999999821,
+        "p95": 15.046480999999858,
+        "p99": 19.87751900000012,
+        "max": 23.188576000000012,
+        "mean": 12.593933249999965
+      },
+      "throughput_ops_per_s": 79.39735212022046,
+      "wall_ms": 2518.975692,
+      "heap_used_delta_bytes": 9355872,
+      "event_loop_delay_ms": {
+        "mean": null,
+        "max": 0,
+        "p99": 0.000511
+      }
+    }
+  },
+  "ratio": {
+    "rich_over_minimal_p50_latency": 2.089805094159528,
+    "rich_over_minimal_mean_latency": 2.1266902022868104
+  },
+  "invitation": "Re-run on your store, runtime, and traffic shape. Share results with environment + methodology. One box does not generalize."
+}

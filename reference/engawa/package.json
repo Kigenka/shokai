@@ -1,10 +1,10 @@
 {
   "name": "shokai-reference-engawa",
-  "version": "0.3.0",
-  "description": "Shōkai v0.3.0 reference place server (The Engawa): HTTP binding, gate, host, inbound door and tests.",
+  "version": "0.5.0",
+  "description": "Shōkai v0.5.0 reference place server (The Engawa): HTTP binding, gate, host, inbound door and tests.",
   "scripts": {
     "build": "node node_modules/typescript/bin/tsc -p .",
-    "test": "node node_modules/typescript/bin/tsc -p . && node dist/test/vectors.js && node dist/test/golden.js && node dist/test/scenarios.js && node dist/test/v028.js && node dist/test/v029.js && node dist/test/v0210.js && node dist/test/v030.js && node dist/test/v030rc3.js && node dist/test/v030rc4.js && node dist/test/pilot-persist.js",
+    "test": "node node_modules/typescript/bin/tsc -p . && node dist/test/vectors.js && node dist/test/golden.js && node dist/test/scenarios.js && node dist/test/v028.js && node dist/test/v029.js && node dist/test/v0210.js && node dist/test/v030.js && node dist/test/v030rc3.js && node dist/test/v030rc4.js && node dist/test/v040.js && node dist/test/v050.js && node dist/test/ext050.js && node dist/test/pilot-persist.js",
     "serve": "node node_modules/typescript/bin/tsc -p . && node dist/src/server.js",
     "test:press": "node dist/test/http-press.js",
     "test:msgid": "node dist/test/http-msgid.js"

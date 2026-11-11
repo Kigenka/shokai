@@ -15,14 +15,14 @@
       "who": "Maru's representative",
       "at": "room",
       "seated": true,
-      "placeSigner": "YSY's key",
-      "repKey": "Edu's key",
+      "placeSigner": "Kiran's key",
+      "repKey": "Noor's key",
       "acts": [
         "room.post"
       ]
     },
     {
-      "who": "Edu (card 2)",
+      "who": "Noor (card 2)",
       "at": "tea shop",
       "seated": true,
       "acts": [
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "who": "YSY",
+      "who": "Kiran",
       "at": "tea shop",
       "sent": "card_revocation of card 2",
       "effect": "old seat's next act: act_decision/deny"
@@ -50,7 +50,7 @@
     },
     {
       "ok": true,
-      "what": "Maru's representative checked the room's card (signed by YSY's key, naming Edu) and was seated"
+      "what": "Maru's representative checked the room's card (signed by Kiran's key, naming Noor) and was seated"
     },
     {
       "ok": true,
@@ -58,7 +58,7 @@
     },
     {
       "ok": true,
-      "what": "Edu, with card 2, is seated at the tea shop"
+      "what": "Noor, with card 2, is seated at the tea shop"
     },
     {
       "ok": true,
@@ -66,19 +66,19 @@
     },
     {
       "ok": true,
-      "what": "both cards name the same representative key (Edu)"
+      "what": "both cards name the same representative key (Noor)"
     },
     {
       "ok": true,
-      "what": "Edu looks at the menu"
+      "what": "Noor looks at the menu"
     },
     {
       "ok": true,
-      "what": "Edu orders a 12.00 USD sencha, within the 15.00 USD limit"
+      "what": "Noor orders a 12.00 USD sencha, within the 15.00 USD limit"
     },
     {
       "ok": true,
-      "what": "after YSY revokes card 2, Edu's open seat under it is ended"
+      "what": "after Kiran revokes card 2, Noor's open seat under it is ended"
     },
     {
       "ok": true,
@@ -137,7 +137,7 @@
         "type": "farewell"
       }
     ],
-    "edu_shop": [
+    "noor_shop": [
       {
         "dir": "out",
         "type": "greeting"

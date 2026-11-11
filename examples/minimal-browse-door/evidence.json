@@ -1,0 +1,26 @@
+{
+ "implementation": "examples/minimal-browse-door/door.mjs",
+ "note": "The in-process tests of this door's own code, run by inprocess.test.mjs (via check.mjs part 3). The runner executes that file; a bare string is no longer accepted.",
+ "checks": {
+  "v050.host_farewell": {
+   "command": "node",
+   "test": "inprocess.test.mjs"
+  },
+  "v050.revocation_pressure": {
+   "command": "node",
+   "test": "inprocess.test.mjs"
+  },
+  "v050.config_refusals": {
+   "command": "node",
+   "test": "inprocess.test.mjs"
+  },
+  "v050.passkey_counter": {
+   "command": "node",
+   "test": "inprocess.test.mjs"
+  },
+  "v050.classifier_before_request": {
+   "command": "node",
+   "test": "inprocess.test.mjs"
+  }
+ }
+}

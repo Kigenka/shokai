@@ -14,3 +14,8 @@ ol.items{padding-left:22px}ol.items>li{margin:12px 0;padding:10px 12px;border:1p
 blockquote.quote{margin:10px 0;padding:8px 12px;border-left:4px solid #bbb;background:#f3f0ea;color:#444}
 .quote__from{font-size:13px;color:#666;margin:0 0 4px}.quote__text{margin:0;white-space:pre-line;font-style:italic}
 ul.facts li{word-break:break-word}
+h3.headline{font-size:1.25em;margin:8px 0}
+table.figures{border-collapse:collapse;margin:6px 0;width:100%}table.figures th,table.figures td{border-bottom:1px solid #ddd;padding:6px 4px;text-align:left}table.figures td{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+p.warn{padding:8px 12px;border-left:4px solid #b54708;background:#fff4e5}
+blockquote.signed{margin:10px 0;padding:8px 12px;border-left:4px solid #2e6b3a;background:#eef6ef}
+details.details{margin:12px 0}details.details summary{cursor:pointer}

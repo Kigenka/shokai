@@ -1,0 +1,21 @@
+sequenceDiagram
+  autonumber
+  participant IM as Ines (student, owner)
+  participant R as Ines's visiting representative
+  participant C as Campus host representative (admissions, registrar)
+  participant D as Course host representative (Dr. Ellery's agent)
+  participant HE as Dr. Ellery (faculty, owner)
+  IM->>R: Signs the card once with a passkey
+  R->>C: Reads the window, then card, purpose: enrol, and the offer of admission (the university's own signed invitation)
+  Note over C: Checks the owner's signature, the offer, the purpose<br/>and what enrolment asks (name, email, date of birth)
+  C->>R: grant, seat [campus.look, enrolment.confirm]
+  R->>C: act enrolment.confirm
+  R->>D: card, purpose: attend DS 210 (data_access)
+  Note over D: Pass = policy ∩ mandate ∩ request
+  D->>R: grant, seat [course.materials.read, assignment.submit, grades.view_own, office_hours.book]
+  R->>D: acts within the pass (week 3 materials, assignment 2, own grades, Thursday office hours)
+  R->>D: act grades.view_all
+  D->>R: act_decision deny: outside the seat
+  Note over D: Records the visit (SPEC §9.1)
+  D-->>HE: The office-hours booking reaches Dr. Ellery (the course's own service)
+  R->>IM: Report home: seated for four tools, four acts done, one refused

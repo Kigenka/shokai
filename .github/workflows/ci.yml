@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [20, 22, 24]
+        node: [22, 24]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -36,6 +36,8 @@ jobs:
         run: npm run check-schema
       - name: Reference place server, prototype and HTTP suites
         run: bash tools/run-all-suites.sh
+      - name: Enforcement suite (attacks on a real local door, plain-words report)
+        run: npm run enforce
       - name: SDK (core in sync with the reference, unit tests, MCP gate, conformance self-test)
         run: npm --prefix packages/shokai test
       - name: Quickstart, as written, in a fresh directory

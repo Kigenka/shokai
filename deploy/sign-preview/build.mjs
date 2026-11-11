@@ -11,11 +11,23 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url)), SRC = join(HERE, "..", "..", "reference", "signing-page", "public"), OUT = join(HERE, "site");
 const RP_ID = "sign.kigenka.com", DAYS = 90;   // the intended production address, shown in the notice text only
 const BANNER = `<p class="preview" role="note"><strong>Preview only. Signing is turned off here.</strong> This copy shows how the signing page will look at ${RP_ID}. Please don't create a passkey on this address: a passkey works only on the address it was made on, so one made here could never sign at the real one. This preview has no script, and the browser's passkey feature is switched off.</p>`;
+const DISABLE_IDS = ["reg", "signAll", "oneByOne", "sign", "decline"];
+const buttonOpen = (id) => new RegExp(`<button\\b([^>]*\\bid=["']${id}["'][^>]*)>`, "gi");
+const disableButtons = (html) => {
+  let t = html;
+  for (const id of DISABLE_IDS) {
+    t = t.replace(buttonOpen(id), (full, attrs) => /\bdisabled\b/i.test(attrs) ? full : `<button${attrs} disabled>`);
+  }
+  for (const id of DISABLE_IDS) {
+    const tags = [...t.matchAll(buttonOpen(id))];
+    if (tags.some((m) => !/\bdisabled\b/i.test(m[1]))) throw new Error(`preview build: button #${id} is not disabled`);
+  }
+  return t;
+};
 const render = (html) => {
   let t = html.replace(/<!--notice-->([\s\S]*?)<!--\/notice-->/g, "$1").replaceAll("{{RP_ID}}", RP_ID).replaceAll("{{NOTICE_DAYS}}", String(DAYS));
   t = t.replace('<script src="app.js"></script>', "").replace(/<main( class="[^"]*")?>/, (m) => m + "\n" + BANNER);
-  t = t.replace('<button id="reg" class="big">', '<button id="reg" class="big" disabled>');
-  for (const id of ["signAll", "oneByOne", "sign", "decline"]) t = t.replace(`<button id="${id}" `, `<button id="${id}" disabled `);
+  t = disableButtons(t);
   if (t.includes("{{") || /<script/.test(t)) throw new Error("preview build: placeholder or script left");
   return t;
 };

@@ -1,5 +1,5 @@
 flowchart TB
-  B["A brand's representative knocks<br/>at a person's door"]
+  B["A brand's visiting representative knocks<br/>at a person's door"]
   P{"Door policy the owner signed<br/>introduced? uninvited allowance left?<br/>caps per brand, introducer, day"}
   B --> P
   P -- "over the allowance, or introductions only" --> X1["not_now, retry after the next window<br/>no slot used, nothing recorded"]
@@ -7,7 +7,7 @@ flowchart TB
   N --> Q{"Hard rules first"}
   Q -- "instructions to the agent, impersonation,<br/>unbacked urgency or scarcity, claimed consent" --> R1["declined_reported<br/>a misconduct notice"]
   Q -- "needs something from the owner, or hidden text" --> CEIL["ceiling: at most kept_for_later"]
-  Q -- "clean" --> T["Taste: the owner's private likes,<br/>held only by the representative"]
+  Q -- "clean" --> T["Taste: the owner's private likes,<br/>held only by the host representative"]
   CEIL --> T
   T --> O1["accepted"]
   T --> O2["kept_for_later"]

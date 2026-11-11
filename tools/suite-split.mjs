@@ -34,6 +34,9 @@ for (const l of lines("reference.txt")) { const m = l.match(/^(PASS|FAIL)\s+(C\d
 for (const f of ["http-e2e", "http-press", "http-msgid"]) for (const l of lines(f + ".txt")) { const m = l.match(/^  (PASS|FAIL)\s+(.*)$/); if (!m) continue;
   const ids = [...m[2].matchAll(/\bC(\d+)\b/g)].map((x) => H.checks["C" + x[1]]).filter((h) => h && h !== "core" && h !== "informative");
   add(f === "http-e2e" ? "e2e" : f, ids[0] ?? resolve("core*", m[2]), m[1] === "PASS", m[2]); }
+// enforcement suite (tools/enforce): every check of every attack case; a known gap is listed as skipped, never as a pass
+if (existsSync(join(dir, "enforce.json"))) for (const c of JSON.parse(readFileSync(join(dir, "enforce.json"), "utf8")).cases ?? [])
+  for (const x of c.checks ?? []) { if (!x.ok && x.known) { skipped["enforce (known gap)"] = (skipped["enforce (known gap)"] ?? 0) + 1; continue; } add("enforce", "core", x.ok, `${c.id}: ${x.what}`); }
 // print
 const homes = new Set(); for (const s of Object.values(tally)) for (const h of Object.keys(s)) homes.add(h);
 const order = ["core", ...[...homes].filter((h) => h !== "core").sort()];
@@ -45,6 +48,31 @@ for (const [suite, hs] of Object.entries(tally)) {
   console.log(`  ${suite.padEnd(11)} ${String(ok).padStart(4)}/${String(all).padEnd(4)}  ${parts.join(", ")}`);
 }
 console.log("  totals:     " + order.filter((h) => tot[h]).map((h) => `${h} ${tot[h].pass}/${tot[h].pass + tot[h].fail}`).join(", "));
-const sk = Object.entries(skipped); if (sk.length) console.log("  skipped (not run, not counted above): " + sk.map(([s, n]) => `${s} ${n}`).join(", "));
+const sk = Object.entries(skipped); if (sk.length) console.log("  skipped or known gaps (not counted above): " + sk.map(([s, n]) => `${s} ${n}`).join(", "));
+console.log("  The totals above are in-process suite homes only. Official HTTP runner rows (including C300/C301) are not added into those totals.");
+// Official HTTP conformance runner (blackbox-v050.txt): reported separately, never mixed into the in-process totals.
+const bb = lines("blackbox-v050.txt");
+if (bb.some((l) => l.length)) {
+  const row = { pass: 0, fail: 0, skip: 0, na: 0, warn: 0 };
+  for (const l of bb) {
+    const m = l.match(/^  (PASS|FAIL|SKIP|N\/A|WARN)\s+\S+/);
+    if (!m) continue;
+    const st = m[1] === "N/A" ? "na" : m[1].toLowerCase();
+    if (row[st] !== undefined) row[st]++;
+  }
+  console.log("  Official HTTP conformance runner (black-box fernwood; not in the in-process totals): "
+    + `${row.pass} pass, ${row.fail} fail, ${row.warn} warn, ${row.skip} skip, ${row.na} N/A result rows.`);
+  const pick = (id) => {
+    const hit = [...bb].reverse().find((l) => new RegExp(String.raw`\b${id}\b`).test(l) && /^\s+(PASS|FAIL|SKIP|N\/A|WARN)\s/.test(l));
+    return hit ? hit.trim().replace(/\s+/g, " ").slice(0, 180) : `${id} not present`;
+  };
+  console.log("  C300 official HTTP row: " + pick("C300"));
+  console.log("  C301 official HTTP row: " + pick("C301"));
+  const claims = bb.filter((l) => /^\s+(HOLDS|FAILS) /.test(l));
+  if (claims.length) {
+    console.log("  HTTP runner claims (unique check ids, not rows):");
+    for (const c of claims) console.log("    " + c.trim());
+  }
+}
 if (process.argv.includes("--moved")) { console.log("\nRe-homed checks:"); for (const m of moved) console.log("  " + m); }
 process.exit(fails ? 1 : 0);

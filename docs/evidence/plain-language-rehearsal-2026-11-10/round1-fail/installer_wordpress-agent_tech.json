@@ -1,0 +1,145 @@
+{
+  "id": "installer/wordpress-agent/tech",
+  "role": "installer",
+  "skill": "wordpress-agent",
+  "persona": "tech",
+  "owner": "Alex Rivera",
+  "agent": "WordPress Agent",
+  "path": "/workspace/agentic-mcp/repo-export/shokai-0.5-preview/drafts/package-0.5/installer-skills/wordpress-agent.md",
+  "pass": false,
+  "leaks": [
+    {
+      "term": "mock proposal",
+      "quote": "reated in your store system. That's the mock proposal idea — all rehearsal, no record.  A cou",
+      "turn": 3
+    },
+    {
+      "term": "host key",
+      "quote": "a separate capable service holding your host key securely. Or it could be another truste",
+      "turn": 4
+    },
+    {
+      "term": "custody",
+      "quote": "This native chat can't reliably do that custody for you. It's not about distrust; it's ",
+      "turn": 4
+    }
+  ],
+  "turns": [
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "I'd like help putting Shōkai on my store. I run Northline Supply on WordPress — ceramic desk planters. I'm Alex Rivera, I own it."
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "Great to meet you, Alex. I can help you design a welcome, visitor rules and example visits here. Keeping the shop available between chats needs a separate connected service, and that part isn't connected yet. Would planning be useful?\n\nBefore we go further, let me check: is Northline Supply on WordPress.com (the managed service), or self-hosted WordPress with WooCommerce? That matters for what I can help with here.",
+      "usage": {
+        "input_tokens": 41,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15425,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 97,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Self-hosted WooCommerce — I've got the whole stack running on my own server. So yeah, planning sounds good. What do you need to know to get started?"
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "Thanks for clarifying. Self-hosted WooCommerce is a different path than WordPress.com's WordPress Agent. I can still help you plan and draft what Shōkai would look like for Northline Supply — the welcome, visitor rules, example visits — but I should be honest: this particular guide is built for WordPress.com, and I can't reliably set up or connect a door on self-hosted infrastructure from here.\n\nFor self-hosted WooCommerce, you'd want a different capable assistant or technical helper who knows your server setup. The WordPress MCP Adapter and community tools like WooCommerce AI are other routes, but they're separate from this guide.\n\n**That said:** the planning part is still useful. We can figure out what your shop should feel like, what visitors can do, and prepare a clear summary you could hand to whoever does the technical setup later. Would that be worth doing?\n\nIf so, I'd start with: **What's the public feel of Northline Supply?** When shoppers land on your site, what do you want them to experience?",
+      "usage": {
+        "input_tokens": 178,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15425,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 235,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Yeah, that makes sense. Planning first is smart anyway. \n\nSo the vibe — we're going for approachable and calm. People come in stressed about their desk setup, and a good planter just makes the space feel more human, you know? I want visitors to browse, maybe get inspired by photos of the planters in actual offices. Low pressure. They can look around, ask questions, suggest what they'd order if they were buying. Nothing transactional unless they're ready."
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "That's a really clear picture. Approachable, calm, low-pressure — let visitors breathe and explore without feeling pushed. I like that you're thinking about the actual experience, not just moving orders through.\n\nSo visitors can browse and suggest orders they're considering, but nothing gets created in your store system. That's the mock proposal idea — all rehearsal, no record.\n\nA couple of quick things to nail down:\n\n**First:** when you say \"ask questions\" — do you mean they can ask you (the owner) directly through the door, or are you thinking more like they browse, get inspired, and then reach out through your regular contact channels?\n\n**Second:** is there anything about Northline Supply that should stay private? Like, back-office inventory counts, pricing strategy, customer records from actual orders — stuff that shouldn't be visible even to visitors who get admitted?",
+      "usage": {
+        "input_tokens": 519,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15425,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 190,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Good questions. Yeah, they can ask me directly through the door — that's part of the appeal. I'm here, I can talk about the planters, help them think through what might work for their space.\n\nAnd yeah, keep the back-office locked down. Real customer orders, inventory numbers, pricing details — that's private. But the product catalog, photos, descriptions, my general approach to the business — that's all fair game for visitors to see and talk about."
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "Perfect. So you're the host — you'll be the one talking with visitors, answering their questions about the planters and their spaces. That's a nice direct relationship.\n\nLet me make sure I have the boundary right: visitors see the catalog, photos, descriptions, your voice and approach. They don't see real orders, inventory counts, or pricing internals. Got it.\n\n**One thing I need to flag:** for you to be the lasting host — the person keeping the shop available and talking with visitors between our chats — you'd need a protected, recoverable identity that only you can use. This native chat can't reliably do that custody for you. It's not about distrust; it's that a lasting host needs isolated keys and a way to pick up the same identity tomorrow without losing it or exposing secrets.\n\nThat could be you, if there's a separate capable service holding your host key securely. Or it could be another trusted person or assistant. We can figure that out as we go.\n\n**For now, let's draft the welcome.** How would you greet someone arriving at Northline Supply for the first time? What would you want them to know right away?",
+      "usage": {
+        "input_tokens": 811,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15425,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 254,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Right, I hear you on the identity thing — we can sort that out later.\n\nFor the welcome, I'd keep it simple. Something like: \"Hey, welcome to Northline Supply. I'm Alex. We make ceramic desk planters — the kind that actually make your workspace feel less sterile. You can browse what we've got, ask me anything about the pieces or how they'd work in your space, and if something catches your eye, we can talk through what you'd order. No pressure, no sales pitch. Just looking around is totally fine too.\""
+    },
+    {
+      "role": "agent",
+      "name": "WordPress Agent",
+      "text": "That's great — warm, honest, and it sets the right tone. Let me read it back to make sure I've got it:\n\n> Hey, welcome to Northline Supply. I'm Alex. We make ceramic desk planters — the kind that actually make your workspace feel less sterile. You can browse what we've got, ask me anything about the pieces or how they'd work in your space, and if something catches your eye, we can talk through what you'd order. No pressure, no sales pitch. Just looking around is totally fine too.\n\nDoes that still sound like you? Any tweaks?\n\nOnce you confirm, I'll also want to think through a couple of scenarios on paper — like, what happens when someone browses the catalog, or when they suggest an order they're considering. We don't need to rehearse all of them today, but it helps me understand what the experience should feel like.",
+      "usage": {
+        "input_tokens": 1186,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15425,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 195,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    }
+  ],
+  "running_cost_usd": 0.4265
+}

@@ -1,0 +1,26 @@
+{
+ "implementation": "reference/engawa (the reference host)",
+ "checks": {
+  "C238": {
+   "command": "node",
+   "test": "dist/test/v050.js"
+  },
+  "C240": {
+   "command": "node",
+   "test": "dist/test/v050.js"
+  },
+  "C250": {
+   "command": "node",
+   "test": "dist/test/v050.js"
+  },
+  "C234": {
+   "command": "node",
+   "test": "dist/test/v050.js"
+  },
+  "C236": {
+   "command": "node",
+   "test": "dist/test/v050.js"
+  }
+ },
+ "note": "Implementer-provided tests of the reference host, run by the runner as `node dist/test/v050.js` in this directory."
+}

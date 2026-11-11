@@ -1,0 +1,16 @@
+flowchart TB
+  subgraph T["What happened, 2026-10-28"]
+    direction TB
+    TO["The editor approves<br/>11.08 USD in a chat<br/>with his agent"] --> TA["His agent signs up<br/>as the editor on the<br/>registrar and enters<br/>his card at checkout"]
+    TA --> TS(["Each site sees:<br/>the editor on a new device;<br/>not an agent, not<br/>what the editor approved"])
+    TS -. "looks the same" .- TX["Someone with<br/>the editor's details<br/>and card"]
+  end
+  subgraph S["With a Shōkai door (how it would go)"]
+    direction TB
+    SO["The editor signs a card<br/>and a mandate:<br/>one domain, one year,<br/>up to 15 USD"] --> SA["His visiting<br/>representative<br/>introduces itself"]
+    SA --> SH(["The registrar's host<br/>representative<br/>checks both"])
+    SH -- "grant" --> SS["A pass for that job only:<br/>policy ∩ mandate<br/>∩ request.<br/>Both sides keep a record"]
+    SS ~~~ SX["Someone with<br/>only the editor's password"]
+    SH -. "no signed card" .- SX
+  end
+  TX ~~~ SO

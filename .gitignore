@@ -2,6 +2,9 @@
 node_modules/
 dist/
 *.tgz
+# …except the release artefact release.yml publishes (committed with its sidecar)
+!release/*.tgz
+!release/*.sha256
 
 # local state, keys and secrets (never commit)
 state/
@@ -22,3 +25,9 @@ run/
 
 # serverless signing page: local harness data
 deploy/sign-serverless/run-data/
+tools/attack-harness/results/
+
+# local key stores from demos/workshops (never commit)
+workshop/
+**/desk/*.json
+*.pkcs8

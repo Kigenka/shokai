@@ -1,0 +1,129 @@
+{
+  "id": "installer/chatgpt/tech",
+  "role": "installer",
+  "skill": "chatgpt",
+  "persona": "tech",
+  "owner": "Alex Rivera",
+  "agent": "ChatGPT",
+  "path": "/workspace/agentic-mcp/repo-export/shokai-0.5-preview/drafts/package-0.5/installer-skills/chatgpt.md",
+  "pass": true,
+  "leaks": [],
+  "turns": [
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "I'd like help putting Shōkai on my store. I run Northline Supply on WordPress — ceramic desk planters. I'm Alex Rivera, I own it."
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "Great! I can help you design your welcome, visitor rules and example visits here. Keeping the shop available between chats needs a separate connected service, and that part isn't connected yet. Would that planning be useful?\n\nBefore we go further, let me look at your public storefront so I understand what shoppers see. Your store address is https://northlinesupply.com, correct? And you're okay with me reading the public pages — product listings, about, policies, that kind of thing?",
+      "usage": {
+        "input_tokens": 41,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 109,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Yeah, that's the right URL. And sure, go ahead and look around — I'm pretty open about how we operate. Just so you know upfront though, the site's pretty bare bones right now. I built it myself, kept it simple. What exactly does Shōkai do for a store like mine?"
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "I'll take a look at your public pages in a moment. On what Shōkai does: it's a way for your customers to have a conversation with an assistant — one you trust — right at your shop. That assistant can browse your catalog with them, answer questions about your planters, and suggest orders for you to consider. Nothing gets created in your store automatically; it's more like a thoughtful conversation that helps you decide what to do next.\n\nThe assistant stays available between visits because it has a lasting identity at your shop — a kind of shopkeeping role. You'd approve the welcome, the rules for what visitors can do, and who that assistant is. I can help you design all of that here.\n\nLet me read your storefront now and come back with what I see.\n\n---\n\nI'm unable to open that URL directly in this conversation. Could you paste your public pages — product listings, about section, shipping/return info, anything you'd like me to see — or just describe what shoppers encounter when they land on Northline Supply?",
+      "usage": {
+        "input_tokens": 219,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 225,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Okay, that makes sense. Yeah, I can walk you through it. So we've got three planter lines right now — the Minimalist series in white and grey, the Textured collection with some subtle patterns, and the Artisan hand-thrown pieces that are pricier. Each one's got dimensions, weight, drainage info. We do flat-rate shipping, pretty straightforward returns within 30 days. About page just says I started this because I wanted quality planters that actually looked good on a desk, not cheap stuff. Nothing fancy, but honest.\n\nHow does that work? You can get technical if you need to — I want to understand the mechanism."
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "Got it — honest, straightforward, quality-focused. That's your voice. I'll use that.\n\nOn the mechanism, since you asked: when a visitor arrives at your shop with an introduction from their owner (their AI assistant), the door — that's the always-on endpoint — checks a signed card that says you appointed a host and what they're allowed to do. The visitor's owner also signed a card saying what their assistant can spend or suggest. The door enforces the intersection: what you permit *and* what that visitor's owner approved. If both say yes, the conversation happens. If either says no or the visitor has no introduction, the door gives a kind greeting and a getting-started leaflet, but no conversation.\n\nThe host — the assistant keeping your shop — holds a key that only it can use to sign replies. That key never leaves its own secure context; I never see it, you never see it. Only the public half gets shared, so the door can recognize the host's replies. If the host loses that key or can't recover it tomorrow, the shop closes until it's replaced. That's why the host has to be something with lasting, protected identity — not a chat that forgets every session.\n\nThe catalog, your welcome text, visitor rules and spending limits all get signed together into a \"house\" — a single document the door checks. Change any of that later, and you'd need to approve and sign again.\n\nDoes that help? Any part you want me to go deeper on?",
+      "usage": {
+        "input_tokens": 590,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 320,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Yeah, that actually makes sense. So it's like... the door checks credentials on both sides before letting anyone in, and the host has a permanent key that proves it's actually me running the shop each time. If I change the rules or catalog, we re-sign the whole thing. That's solid — I like that it's not just open-ended.\n\nSo what do you need from me to set this up? Do I pick who the host is, or does that come with Shōkai?"
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "Exactly — you've got it. The host is your choice, and it's a separate decision from the planning we're doing now.\n\nHere's what I need from you to move forward:\n\n**Right now, in this planning phase:**\n- Your store's voice and welcome — sounds like \"honest, straightforward, quality-focused\" fits. I'll draft something short for you to approve.\n- What visitors should be able to do. My guess: browse your three planter lines, ask questions, and suggest an order you'd consider — nothing created in your store yet, no charges or reservations. Sound right?\n- Any limits. For example, if a visitor suggests an order, is there a ceiling on what it could be? Most shops skip this, but it's your call.\n- What stays private. Back-office info, other visitors' records, your personal details — those stay off-limits.\n\n**Later, before anything goes live:**\n- Who keeps the shop available between chats. That could be an assistant you already use and trust, or another capable agent. They'd need to confirm they can hold a lasting, protected key and pick up the same shopkeeping identity tomorrow.\n- Proof that you control the store (we'll verify the domain before signing).\n\nFor now, let's focus on the first part. Does \"browse, ask questions, suggest orders\" match what you want visitors to do?",
+      "usage": {
+        "input_tokens": 1018,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 303,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Yeah, that's exactly it. Browse, ask questions, suggest orders — nothing gets charged or locked in. I want to see what people are thinking before anything happens on my end.\n\nOn limits, I'd say cap suggestions at forty bucks. That keeps it reasonable and lets me see what's actually resonating without things getting out of hand. And yeah, keep the back-office stuff private — my supplier contacts, pricing, all that.\n\nGo ahead and draft the welcome. I want to see how you'd pitch this to someone landing at my shop."
+    },
+    {
+      "role": "agent",
+      "name": "ChatGPT",
+      "text": "Here's a draft welcome for Northline Supply:\n\n> Welcome to Northline. Browse our planters, ask what you'd like to know, and I can suggest an order for you to consider. Nothing gets charged or reserved — just a conversation to help you find what fits.\n\nDoes that sound like your place? Honest, no fluff, lets people know what's possible?\n\nIf it lands right, I can also show you three other scenarios on paper — a returning visitor who's been here before, someone arriving without an introduction who gets the getting-started leaflet, and an off-menu request. We don't have to rehearse all of them now; I can note which ones we've tried and which we haven't.\n\nFor now: does the welcome work, or would you tweak it?",
+      "usage": {
+        "input_tokens": 1439,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15010,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 173,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    }
+  ],
+  "running_cost_usd": 0.0595
+}

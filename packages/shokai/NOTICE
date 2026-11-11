@@ -1,20 +1,25 @@
 Shōkai, the agent introduction protocol
-Copyright 2026 Yu Sung Yeh
+Copyright 2026 Yu Sung Yeh and Shōkai contributors
 
 Kigenka is the project's steward brand. It is not yet a registered legal
 entity, so the copyright holder and licensor is Yu Sung Yeh. The rights may
 be assigned to Kigenka once it is formed; this notice will then be updated.
+Contributors keep the copyright in their own contributions and license them
+under the project's licenses (see CONTRIBUTING.md); a sign-off is not a
+copyright assignment.
 
-The Shōkai specification (SPEC.md, extensions/, conformance/, proposals/,
-protocol-shapes.ts, THREAT-MODEL.md) and all code are licensed under the
-Apache License, Version 2.0 (see LICENSE). Explanatory documentation in
-docs/ is licensed under the Creative Commons Attribution 4.0 International
+The Shōkai specification (SPEC.md, docs/SPEC-DETAIL.md, extensions/, conformance/, SIGNING.md,
+protocol-shapes.ts and the schema/ generated from it), proposals/,
+THREAT-MODEL.md and all code are licensed under the
+Apache License, Version 2.0 (see LICENSE). Other explanatory documentation
+in docs/ is licensed under the Creative Commons Attribution 4.0 International
 license (see LICENSE-docs). REUSE.toml maps every path to its license, and
-the license texts are also in LICENSES/.
+the license texts are also in LICENSES/ in the source repository. LICENSE and LICENSE-docs hold only
+the standard license texts; project status notes live here and in the
+project's policy files.
 
 The royalty-free patent commitment for final versions of the specification
-is in PATENTS.md (a draft, not yet made; its wording is pending legal
-review). Use of the Shōkai and Kigenka names and logo is covered by
+is described in PATENTS.md (not yet made). Use of the Shōkai and Kigenka names and logo is covered by
 TRADEMARKS.md.
 
 Shōkai is an independent project. It is not affiliated with, sponsored by or
@@ -23,4 +28,7 @@ company or standards body whose technology it names. Technology and product
 names are used only to describe compatibility and remain the property of
 their owners. Model Context Protocol and MCP are trademarks of LF Projects,
 LLC. All people, organizations and places in examples and test fixtures are
-fictional.
+fictional. The field-test notes describe the editor's own tests by role,
+not by name. The agents named as tested (Grok Bot, Muse from Meta,
+Hermes Agent and OpenClaw) are real, public agents made by others, not
+agents of this project.

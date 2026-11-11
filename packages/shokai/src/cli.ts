@@ -7,7 +7,7 @@
 import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
 import type { AddressInfo } from "node:net";
-import { createDoor, createRepresentative, findPlace, SPEC_VERSION, PROTOCOL } from "./index.js";
+import { createDoor, createRepresentative, findPlace, secureEntry, SPEC_VERSION, PROTOCOL } from "./index.js";
 
 const tty = process.stdout.isTTY && !process.env.NO_COLOR;
 const c = (code: string) => (s: string) => (tty ? `\x1b[${code}m${s}\x1b[0m` : s);
@@ -21,7 +21,7 @@ async function demo() {
   const t0 = Date.now();
   console.log(bold(`\nShōkai demo`) + dim(`  (${PROTOCOL}, spec ${SPEC_VERSION}; fictional actors, keys made for this run)\n`));
 
-  const door = createDoor({ name: "kettle-and-leaf", displayName: "Kettle & Leaf", category: "store",
+  const door = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "kettle-and-leaf", displayName: "Kettle & Leaf", category: "store",
     about: "A small tea shop. Its door greets visiting representatives.",
     purposes: [{ code: "purchase", statement: "Ordering tea for pickup." }],
     actions: [{ action: "menu.view", purposes: ["purchase"], level: "discover", data_asks: [] },
@@ -58,7 +58,7 @@ async function visitAndPrint(base: string, name: string | undefined, t0: number,
     line(who, `${p.type}${extra}`);
   }
   if (!visit.seated) { line("door", red("not seated: " + (visit.response?.courtesy?.text ?? visit.response?.reason_code ?? visit.decision ?? "no answer"))); process.exitCode = 1; return; }
-  line("seat", `${green("seated")}; tools in the seat: ${visit.seat!.tool_allowlist.join(", ")}`);
+  line("pass", `${green("admitted")}; tools in the pass (wire: seat): ${visit.seat!.tool_allowlist.join(", ")}`);
   await pause(250);
 
   console.log(bold("\n3. It acts within what Aya allowed"));
@@ -86,7 +86,12 @@ async function visitAndPrint(base: string, name: string | undefined, t0: number,
 
 async function visitRemote(url: string, name?: string) {
   const base = url.replace(/\/places\/?.*$/, "").replace(/\/$/, "");
-  if (!/^https:\/\//.test(base) && !/^http:\/\/(127\.0\.0\.1|localhost)(:|\/)/.test(base)) throw new Error("visit needs an https:// door (or http://127.0.0.1 for a local one)");
+  // §11.1 (C269): https, or plain http only on this computer: 127.x.x.x, localhost or [::1] (the same rule as secureEntry()).
+  if (!secureEntry(base)) {
+    let host = "?"; try { host = new URL(base).host; } catch { /* not a URL */ }
+    throw new Error(`visit needs an https:// door, or plain http only on this computer (http://127.0.0.1, http://localhost or http://[::1]). ` +
+      `${host} isn't loopback: for a container or LAN host (for example host.docker.internal), put the door behind https, or run the visit on the door's own machine.`);
+  }
   console.log(bold(`\nShōkai visit`) + dim(`  (${PROTOCOL}, spec ${SPEC_VERSION}; a demo owner "Aya Linden" with keys made for this run)\n`));
   await visitAndPrint(base, name, Date.now(), undefined, "This was a demo owner with keys made for this run; nothing of yours was used. Run your own door: the quickstart in the README.");
 }
@@ -100,4 +105,7 @@ if (cmd === "--version" || cmd === "-v" || cmd === "version") {
 else if (cmd === "demo") demo().catch((e) => { console.error(e); process.exit(1); });
 else if (cmd === "visit" && process.argv[3]) visitRemote(process.argv[3], process.argv[4]).catch((e) => { console.error(red(String(e?.message ?? e))); process.exit(1); });
 else if (cmd === "conformance") { process.argv.splice(2, 1); import("./conformance/cli.js"); }
-else { console.log(`Usage: shokai demo                      a door and a visitor on this machine, printed\n       shokai visit <door-url> [place]  the same visit to a demo door elsewhere (a demo owner, keys made for the run)\n       shokai conformance <url>         run the conformance suites (see shokai-conformance --help)\n       shokai --version                 the package version and the protocol it speaks`); process.exitCode = cmd && cmd !== "--help" && cmd !== "-h" ? 1 : 0; }
+else if (["detect", "house", "init", "host-card", "agent-guide"].includes(cmd ?? "")) {
+  import("./setup-cli.js").then(async ({ setup }) => { process.exitCode = await setup(process.argv.slice(2), { cwd: process.cwd(), out: (s) => console.log(s), err: (s) => console.error(s), env: process.env }); });
+}
+else { console.log(`Usage: shokai demo                      a door and a visitor on this machine, printed\n       shokai visit <door-url> [place]  the same visit to a demo or test door elsewhere (a development owner, keys made for the run; a public https door refuses it: not_now)\n       shokai conformance <url>         run the conformance suites (see shokai-conformance --help)\n       shokai --version                 the package version and the protocol it speaks\n       shokai detect | house | init | host-card | agent-guide   set up a door (shokai house --help)`); process.exitCode = cmd && cmd !== "--help" && cmd !== "-h" ? 1 : 0; }

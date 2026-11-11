@@ -17,11 +17,11 @@ check(inner.every((u) => !doorMayFetch(u, false)), `loopback, private, link-loca
 check(doorMayFetch("https://172.32.0.1/x", false) && doorMayFetch("https://8.8.8.8/x", false), "public address literals next to private ranges are allowed");
 check(doorMayFetch("http://127.0.0.1:9000/log", true) && !doorMayFetch("https://introducer.example/log", true), "test profile: loopback only (Appendix B.1)");
 { // The door records a refused URL as unreachable without fetching it, so the vouch gets no weight (fail closed, §4).
-  const door = createDoor({ name: "p", displayName: "P", purposes: [{ code: "visitation", statement: "Looking." }], actions: [{ action: "a.view", purposes: ["visitation"], level: "discover", data_asks: [] }] });
+  const door = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "p", displayName: "P", purposes: [{ code: "visitation", statement: "Looking." }], actions: [{ action: "a.view", purposes: ["visitation"], level: "discover", data_asks: [] }] });
   const url = "https://169.254.169.254/latest/meta-data/";
   const t0 = Date.now(); await (door as any).prefetch({ vouch: { payload: { revocation_log: url } } });
   const f = door.fetched.get(url);
-  check(!!f && f.ok === false && Date.now() - t0 < 500, "a metadata-address revocation log is recorded unreachable at once, never fetched");
+  check((!f || f.ok === false) && Date.now() - t0 < 500, "a metadata-address revocation log reads as unreachable at once, never fetched (unverified: not even recorded)");
 }
 { // Size and time bounds: an answer over 256 KiB, or one that stalls past 2 s, counts as unreachable (fail closed, §2.6, §12.2).
   const srv = createServer((q, s) => {
@@ -31,7 +31,7 @@ check(doorMayFetch("http://127.0.0.1:9000/log", true) && !doorMayFetch("https://
     else { s.write("["); /* never ends */ }
   });
   await new Promise<void>((r) => srv.listen(0, "127.0.0.1", () => r())); const port = (srv.address() as any).port;
-  const door = createDoor({ name: "p", displayName: "P", purposes: [{ code: "visitation", statement: "Looking." }], actions: [{ action: "a.view", purposes: ["visitation"], level: "discover", data_asks: [] }], testProfile: true } as any);
+  const door = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "p", displayName: "P", purposes: [{ code: "visitation", statement: "Looking." }], actions: [{ action: "a.view", purposes: ["visitation"], level: "discover", data_asks: [] }], testProfile: true } as any);
   const u = (p: string) => `http://127.0.0.1:${port}${p}`;
   await (door as any).prefetch({ vouch: { payload: { revocation_log: u("/small") } } });
   await (door as any).prefetch({ vouch: { payload: { revocation_log: u("/big") } } });

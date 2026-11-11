@@ -12,11 +12,18 @@
 // Handlers take a WHATWG Request and return a Response.
 import { randomBytes, timingSafeEqual, createHash } from "node:crypto";
 import { verifyRegistration, verifyAssertion, digestBytes, digestOf, b64u } from "./webauthn.mjs";
-import { buildItems, checkItems, iso } from "./items.mjs";
+import { buildItems, checkItems, iso, itemsLanguage } from "./items.mjs";
 import { describe } from "./describe.mjs";
 import { PAGES } from "./pages.mjs";
 
 export const MAX_BODY = 100_000, MAX_BATCH = 16, MAX_CHALLENGES = 32, CHALLENGE_S = 300, KEEP_RESULTS_S = 7 * 86400, MAX_TTL_MIN = 30;
+/** Hard-coded display name for the already-registered owner credential on this deployment (never taken from the visitor). */
+export const REGISTERED_OWNER_DISPLAY_NAME = "Yu Sung Yeh";
+export const VISITOR_PREPARE_MAX_BODY = 60_000;
+export const VISITOR_RATE_IP_PER_HOUR = 10;
+export const VISITOR_RATE_GLOBAL_PER_HOUR = 100;
+const DID_KEY_RE = /^did:key:z[1-9A-HJ-NP-Za-km-z]{40,200}$/;
+const B64U_RE = /^[A-Za-z0-9_-]{40,100}$/;
 const HEADERS = { "Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Robots-Tag": "noindex, nofollow", "X-Content-Type-Options": "nosniff",
   "Content-Security-Policy": "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" };
 export const INERT_HTML = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>No signing session is open</title><link rel="stylesheet" href="/style.css"></head><body><main><h1>No signing session is open</h1><p>This page is only used for short, private signing sessions. There is nothing here right now.</p></main></body></html>';
@@ -27,7 +34,7 @@ const err = (status, message) => Object.assign(new Error(message), { status });
 const sha = (s) => createHash("sha256").update(s).digest();
 const TOKEN_RE = /^[A-Za-z0-9_-]{24,128}$/;
 export const sessionId = (token) => sha(token).toString("hex");
-const pub = (it) => it && { name: it.name, title: it.title, kind: it.kind, summary: it.facts, facts: it.facts, quoted: it.quoted, own_tap: it.own_tap, digest_short: it.digest_short };
+const pub = (it) => it && { name: it.name, title: it.title, kind: it.kind, summary: it.facts, facts: it.facts, main: it.main, details: it.details, details_label: it.details_label, decision: it.decision, quoted: it.quoted, detail_quoted: it.detail_quoted, own_tap: it.own_tap, digest_short: it.digest_short };
 const STATIC = { "": ["index", "text/html; charset=utf-8"], "/": ["index", "text/html; charset=utf-8"], "/app.js": ["app", "text/javascript; charset=utf-8"], "/style.css": ["style", "text/css; charset=utf-8"], "/about": ["about", "text/html; charset=utf-8"] };
 
 /** Read a JSON body, refusing more than MAX_BODY bytes at once (by Content-Length, or as soon as the stream grows past it). */
@@ -76,16 +83,19 @@ export function createApp({ store, rpId, notice = "none", noticeDays = 90, admin
     if (!f) {
       // The grants and private parts an item carries are filled in the same way as its payload (same time), and kept, so
       // every later read can re-check the summary against the payload.
-      const t = now(), withExtras = { ...S.meta.items, items: S.meta.items.items.map((it) => ({ ...it, payload: { grants: it.grants ?? null, private: it.private ?? null } })) };
+      const t = now(), withExtras = { ...S.meta.items, items: S.meta.items.items.map((it) => ({ ...it, payload: { grants: it.grants ?? null, private: it.private ?? null, house: it.house ?? null, raise: it.raise ?? null } })) };
       const built = buildItems(S.meta.items, c.owner_did, rpId, t), ex = buildItems(withExtras, c.owner_did, rpId, t);
-      const extras = Object.fromEntries(built.map((it, i) => [it.name, { grants: ex[i].payload.grants ?? undefined, private: ex[i].payload.private ?? undefined }]));
+      const extras = Object.fromEntries(built.map((it, i) => [it.name, { grants: ex[i].payload.grants ?? undefined, private: ex[i].payload.private ?? undefined, house: ex[i].payload.house ?? undefined, raise: ex[i].payload.raise ?? undefined }]));
       await store.setNX(K, { owner_did: c.owner_did, rp_id: rpId, built_at: iso(now()), items: built, extras }, KEEP_RESULTS_S);
       f = await store.get(K); log("items frozen", f.items.map((x) => `${x.name} ${x.digest_short}`).join(", "));
     }
     if (f.owner_did !== c.owner_did || f.rp_id !== rpId) throw err(409, "these items were frozen for another passkey; ask for a new link");
     for (const it of f.items) {
-      const x = f.extras?.[it.name] ?? {}, d = describe(it.payload, { ownerDid: c.owner_did, grants: x.grants, private: x.private });
-      if (digestOf(it.payload) !== it.digest || JSON.stringify(d.facts) !== JSON.stringify(it.facts) || d.own_tap !== it.own_tap || d.problems.length)
+      // v0.4.0 (§2.3): a Shōkai host card is re-described with its house config and that config's digest for this owner.
+      const x = f.extras?.[it.name] ?? {}, houseDigest = x.house ? digestOf({ name: x.house.name, display_name: x.house.display_name, principal_id: c.owner_did, policy: x.house.policy }) : undefined;
+      // re-described in the owner's language, with a raise's context (SIGNING.md §7, §8): every line and the decision screen must match
+      const d = describe(it.payload, { ownerDid: c.owner_did, grants: x.grants, private: x.private, house: x.house, houseDigest, raise: x.raise, lang: itemsLanguage(S.meta.items) });
+      if (digestOf(it.payload) !== it.digest || JSON.stringify([d.facts, d.main, d.details, d.decision]) !== JSON.stringify([it.facts, it.main, it.details, it.decision]) || d.own_tap !== it.own_tap || d.problems.length)
         throw err(409, "a stored item no longer matches what the page showed for it; nothing can be signed on this link");
     }
     return f.items;
@@ -120,7 +130,7 @@ export function createApp({ store, rpId, notice = "none", noticeDays = 90, admin
       const c = await loadCred(), its = await items(S, c), d = its ? await decisions(S, its) : {};
       const pending = its ? its.filter((x) => !d[x.name]) : [], next = pending[0] ?? null;
       if (req.method === "GET" && sub === "/api/state")
-        return json(200, { registered: !!c, rp_id: rpId, total: its?.length ?? S.meta.items.items.length, expires_at: S.meta.expires_at,
+        return json(200, { registered: !!c, lang: itemsLanguage(S.meta.items), rp_id: rpId, total: its?.length ?? S.meta.items.items.length, expires_at: S.meta.expires_at,
           done: its ? its.filter((x) => d[x.name]).map((x) => ({ name: x.name, title: x.title, decision: d[x.name].decision, via: d[x.name].via })) : [],
           current: pub(next), pending: pending.map(pub), max_batch: MAX_BATCH, notice: notice === "test-stage" ? { kind: "test-stage", days: noticeDays, about: "about" } : null });
       if (req.method !== "POST") return send(404, "text/plain", "Not found");
@@ -128,7 +138,7 @@ export function createApp({ store, rpId, notice = "none", noticeDays = 90, admin
       if (sub === "/api/register/options") {
         if (c) return json(409, { error: "A passkey is already set up for this page." });
         const ch = await setChallenge(S, b64u(randomBytes(32)), { kind: "reg" });
-        return json(200, { challenge: ch, rp: { id: rpId, name: "Shōkai owner passkey" }, user: { id: b64u(randomBytes(16)), name: `${S.meta.items.owner_display_name} (Shōkai owner)`, displayName: `${S.meta.items.owner_display_name} (Shōkai owner)` },
+        return json(200, { challenge: ch, rp: { id: rpId, name: "Shōkai owner passkey" }, user: { id: b64u(randomBytes(16)), name: `${S.meta.items.owner_display_name}${itemsLanguage(S.meta.items) === "ja" ? "（Shōkaiの持ち主）" : " (Shōkai owner)"}`, displayName: `${S.meta.items.owner_display_name}${itemsLanguage(S.meta.items) === "ja" ? "（Shōkaiの持ち主）" : " (Shōkai owner)"}` },
           pubKeyCredParams: [{ type: "public-key", alg: -7 }], authenticatorSelection: { residentKey: "preferred", userVerification: "required" }, attestation: "none", timeout: 120000 });
       }
       if (sub === "/api/register/verify") {
@@ -232,5 +242,178 @@ export function createApp({ store, rpId, notice = "none", noticeDays = 90, admin
       return json(400, { error: "unknown op" });
     } catch (e) { return json(e.status ?? 400, { error: String(e.message) }); }
   }
-  return { page, admin };
+
+  /** Sanitize + validate a visitor-prepared items file. Forces owner display name, rp_id, owner_prompts; rejects host cards. Accepts visitor cards, mandates, and card_revocations. */
+  function prepareVisitorItems(body, repDid, repPublicKey) {
+    const problems = [];
+    if (!DID_KEY_RE.test(repDid ?? "")) problems.push("representative_id: a did:key (Ed25519 multibase) is required");
+    if (repPublicKey !== undefined && repPublicKey !== null && !B64U_RE.test(String(repPublicKey))) problems.push("public_key: base64url Ed25519 public key when provided");
+    if (!body || typeof body !== "object") return { problems: ["body: JSON object with items"] };
+    if (!Array.isArray(body.items) || !body.items.length) return { problems: ["items: 1 to 16 items"] };
+    const items = [];
+    for (const [i, raw] of body.items.entries()) {
+      if (!raw || typeof raw !== "object") { problems.push(`items[${i}]: object`); continue; }
+      const payload = raw.payload && typeof raw.payload === "object" ? structuredClone(raw.payload) : null;
+      if (!payload) { problems.push(`items[${i}].payload: required`); continue; }
+      if (raw.house !== undefined || payload.kind === "host") {
+        problems.push(`items[${i}]: host cards are not allowed on the visitor prepare path`);
+        continue;
+      }
+      const isMandate = typeof payload.mandate_id === "string";
+      const isCard = payload.kind === "visitor" || (!isMandate && !!payload.card_id && !!payload.representative_key);
+      const isRevocation = !isMandate && !isCard && !!payload.card_id && !!payload.revoked_at;
+      if (!isCard && !isMandate && !isRevocation) { problems.push(`items[${i}]: only visitor cards, mandates, and card_revocations`); continue; }
+      if (isCard && payload.kind && payload.kind !== "visitor") { problems.push(`items[${i}]: card kind must be visitor`); continue; }
+      if (isCard && isMandate) { problems.push(`items[${i}]: cannot be both a visitor card and a mandate`); continue; }
+      if (isRevocation && (isCard || isMandate)) { problems.push(`items[${i}]: cannot be both a card_revocation and a card or mandate`); continue; }
+      // Force owner identity from the registered credential / deployment — never caller-chosen names.
+      if (isCard) {
+        payload.kind = "visitor";
+        payload.owner_prompts = "purchase_only";
+        payload.principal = {
+          ...(typeof payload.principal === "object" && payload.principal ? payload.principal : {}),
+          principal_id: "$OWNER_DID",
+          kind: "person",
+          display_name: REGISTERED_OWNER_DISPLAY_NAME,
+        };
+        payload.owner_binding = {
+          method: "passkey_webauthn",
+          owner_id: "$OWNER_DID",
+          rp_id: "$RP_ID",
+        };
+        if (repDid) {
+          payload.representative_id = repDid;
+          const frag = repDid.split(":").pop();
+          payload.representative_key = {
+            ...(typeof payload.representative_key === "object" && payload.representative_key ? payload.representative_key : {}),
+            key_id: `${repDid}#${frag}`,
+            alg: "Ed25519",
+            ...(repPublicKey ? { public_key: String(repPublicKey) } : {}),
+          };
+          if (!payload.representative_key.public_key) problems.push(`items[${i}]: visitor card needs representative_key.public_key (or top-level public_key)`);
+        }
+        if (payload.protocol && payload.protocol !== "shokai/0.5") problems.push(`items[${i}]: protocol must be shokai/0.5`);
+        payload.protocol = "shokai/0.5";
+      }
+      if (isMandate) {
+        payload.principal_id = "$OWNER_DID";
+        if (repDid) payload.representative_id = repDid;
+      }
+      if (isRevocation) {
+        payload.principal_id = "$OWNER_DID";
+        if (!payload.revoked_at) problems.push(`items[${i}]: card_revocation needs revoked_at`);
+        if (!payload.card_id) problems.push(`items[${i}]: card_revocation needs card_id`);
+      }
+      // Strip anything that looks like secret material
+      const blob = JSON.stringify(payload);
+      if (/"d"\s*:/.test(blob) || /private_key/i.test(blob) || /SIGN_ADMIN/i.test(blob)) {
+        problems.push(`items[${i}]: looks like private key or admin material; refused`);
+        continue;
+      }
+      items.push({
+        name: raw.name,
+        title: typeof raw.title === "string" ? raw.title : (isCard ? "Your Shōkai visitor card" : isRevocation ? "Revoke a visitor card" : "A mandate for your representative"),
+        summary: Array.isArray(raw.summary) && raw.summary.length ? raw.summary : [isCard ? "A Shōkai visitor card for your representative." : isRevocation ? "You withdraw this visitor card." : "A mandate your representative may use."],
+        payload,
+      });
+    }
+    if (problems.length) return { problems };
+    const file = {
+      note: typeof body.note === "string" ? body.note.slice(0, 500) : "Visitor-prepared Shōkai items for the registered owner to sign.",
+      owner_display_name: REGISTERED_OWNER_DISPLAY_NAME,
+      items,
+    };
+    const more = checkItems(file);
+    return more.length ? { problems: more } : { file };
+  }
+
+  function clientIp(req) {
+    const xff = req.headers.get("x-forwarded-for") ?? "";
+    const first = xff.split(",")[0].trim();
+    return first || req.headers.get("x-real-ip") || "unknown";
+  }
+
+  async function rateLimitVisitor(req) {
+    const ip = clientIp(req).replace(/[^a-zA-Z0-9:._-]/g, "_").slice(0, 80);
+    const ipN = await store.incr(`visitor:rl:ip:${ip}`, 3600);
+    if (ipN > VISITOR_RATE_IP_PER_HOUR) return json(429, { error: "too many prepare requests from this address; try again later" });
+    const gN = await store.incr("visitor:rl:global", 3600);
+    if (gN > VISITOR_RATE_GLOBAL_PER_HOUR) return json(429, { error: "the signing page is busy; try again later" });
+    return null;
+  }
+
+  /** Public visitor API: prepare (POST), results (GET), close (POST). No admin secret. */
+  async function visitor(req, route) {
+    try {
+      if (route === "prepare") {
+        if (req.method !== "POST") return send(405, "text/plain", "Method not allowed");
+        const limited = await rateLimitVisitor(req); if (limited) return limited;
+        if (Number(req.headers.get("content-length") ?? 0) > VISITOR_PREPARE_MAX_BODY) return json(413, { error: "request too large" });
+        // Read with a tighter cap than MAX_BODY by wrapping readJson — still use readJson then check size via stringify length.
+        const b = await readJson(req);
+        if (JSON.stringify(b).length > VISITOR_PREPARE_MAX_BODY) return json(413, { error: "request too large" });
+        // Never echo or accept admin secrets
+        if (b && (b.admin_secret || b.SIGN_ADMIN_SECRET || b.authorization)) return json(400, { error: "unexpected fields" });
+        const cred = await loadCred();
+        if (!cred) return json(503, { error: "owner credential is not loaded on this signing page yet" });
+        const repDid = b.representative_id ?? b.did_key ?? b.didKey;
+        const pubKey = b.public_key ?? b.publicKey ?? null;
+        // Allow items nested or top-level items file
+        const draft = b.items ? b : (b.drafts ?? b);
+        const { file, problems } = prepareVisitorItems(draft, repDid, pubKey);
+        if (problems?.length) return json(400, { error: "items not ready", problems });
+        const ttlMin = MAX_TTL_MIN;
+        const token = b64u(randomBytes(24));
+        const sid = sessionId(token), expires = iso(now() + ttlMin * 60e3);
+        const meta = { created_at: iso(now()), expires_at: expires, items: file, source: "visitor_prepare" };
+        if (!(await store.setNX(`s:${sid}:meta`, meta, ttlMin * 60))) return json(409, { error: "session exists; retry" });
+        const S = await session(token); await items(S, cred);
+        log("visitor session created", sid.slice(0, 12), "until", expires);
+        return json(200, { url: `${ORIGIN}/p/${token}/`, expires_at: expires, ttl_min: ttlMin });
+      }
+      if (route === "results") {
+        if (req.method !== "GET") return send(405, "text/plain", "Method not allowed");
+        const url = new URL(req.url);
+        const token = url.searchParams.get("token") ?? "";
+        const S = await session(token);
+        if (!S) return json(404, { error: "unknown or expired session" });
+        if (S.meta.source !== "visitor_prepare") return json(404, { error: "unknown or expired session" });
+        const names = (S.meta.items?.items ?? []).map((x) => x.name);
+        const out = [];
+        let approved = 0, declined = 0, pending = 0;
+        for (const name of names) {
+          const decision = await store.get(`s:${S.sid}:dec:${name}`);
+          const signed = await store.get(`s:${S.sid}:signed:${name}`);
+          if (!decision) { pending++; out.push({ name, status: "pending" }); continue; }
+          if (decision.decision === "approved") {
+            approved++;
+            out.push({ name, status: "approved", signed: signed?.signed ?? null });
+          } else {
+            declined++;
+            out.push({ name, status: "declined" });
+          }
+        }
+        const status = pending === 0 ? "complete" : approved || declined ? "partial" : "pending";
+        return json(200, {
+          status,
+          expires_at: S.meta.expires_at,
+          counts: { approved, declined, pending, total: names.length },
+          items: out,
+        });
+      }
+      if (route === "close") {
+        if (req.method !== "POST") return send(405, "text/plain", "Method not allowed");
+        const b = await readJson(req);
+        const token = b.token ?? "";
+        const S = await session(token);
+        if (!S || S.meta.source !== "visitor_prepare") return json(404, { error: "unknown or expired session" });
+        await store.del(`s:${S.sid}:meta`);
+        log("visitor session closed by agent", S.sid.slice(0, 12));
+        return json(200, { ok: true });
+      }
+      return send(404, "text/plain", "Not found");
+    } catch (e) { log("visitor error", route, e.message); return json(e.status ?? 400, { error: String(e.message) }); }
+  }
+
+  return { page, admin, visitor };
 }

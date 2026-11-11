@@ -87,6 +87,18 @@ check((await pg("A".repeat(32), "/")).status === 404 && (await pg("short", "/"))
 let st = await J(await pg(TOKEN, "/api/state"));
 check(st.status === 200 && st.body.registered === true && st.body.pending.length === 2 && st.body.notice?.days === 90 && st.body.rp_id === RP, "with the stored credential the owner is already registered: no new passkey, two items waiting, the notice on");
 check((await J(await pg(TOKEN, "/api/register/options", {}))).status === 409, "registering a second passkey is refused");
+// SIGNING.md §7, §8: a Japanese session, and a one-purchase raise in yen, re-checked on every read in the owner's language
+{ const C2 = await import(join(LIB, "webauthn.mjs")); const M = (v) => ({ value: v, currency: "JPY" }), PL = "did:web:teas.example", END = new Date(clock + 15 * 60e3).toISOString().replace(/\.\d+Z$/, "Z"), ACT = "sha-256:act-fixture";
+  const cm = { mandate_id: "m-1", card_id: "card-1", representative_id: "did:key:rep-fixture", principal_id: ownerDid, purpose: { code: "purchase" }, allowed_actions: ["store.buy"], limits: { max_amount: M("3000") }, counterparties: [PL], issued_at: "2026-10-28T09:00:00Z", expires_at: "2026-10-29T09:00:00Z" };
+  const payload = { ...cm, mandate_id: "m-2", limits: { max_amount: M("6000") }, issued_at: "2026-10-28T10:00:00Z", expires_at: END, supersedes: { mandate_id: "m-1", mandate_digest: C2.digestOf(cm), hold: { hold_id: "hold-1", act_digest: ACT } } };
+  const raise = { limit_request: { place: PL, hold_id: "hold-1", limit: M("3000"), current: M("2000"), proposed: M("6000"), expires_at: END }, current_mandate: { payload: cm }, ledger_current: M("2000"), held: { tool: "store.buy_tin", amount: M("4000"), act_digest: ACT }, place_name: "Linden & Pike Teas", time_zone: "Asia/Tokyo" };
+  const jr = await J(await adm({ op: "create", items: { owner_display_name: "Fixture Owner", owner_language: "ja-JP", items: [EX.items[0], { name: "raise", title: "Approve the tea", summary: ["one purchase"], payload, raise }] }, ttl_min: 30 }));
+  const js = await J(await pg(jr.body.token, "/api/state")); const [c0, r0] = js.body.pending ?? [];
+  check(jr.status === 200 && js.status === 200 && js.body.lang === "ja" && /^内容：/.test(c0?.main?.[0] ?? "") && r0?.decision?.headline === "今回の購入（4,000円）だけを承認しますか？" && r0.decision.approve === "今回の購入だけを承認する" && r0.details_label === "詳細",
+    "a Japanese session: the state says ja, items in Japanese, the raise decision first, re-checked on every read");
+  const fr = await mem.get(`s:${jr.body.session_id}:frozen`), f4 = structuredClone(fr); f4.items[1].decision.table[2][1] = "¥400"; await mem.set(`s:${jr.body.session_id}:frozen`, f4);
+  check((await J(await pg(jr.body.token, "/api/state"))).status === 409, "… and a stored decision screen changed after freezing (¥400) is refused");
+  await mem.set(`s:${jr.body.session_id}:frozen`, fr); }
 const html = await (await pg(TOKEN, "/")).text(), ab = await pg(TOKEN, "/about");
 check(/early, test-stage convenience/.test(html) && ab.status === 200 && /About this signing page/.test(await ab.text()) && ab.headers.get("content-security-policy")?.includes("frame-ancestors 'none'"), "the page and /about carry the test-stage notice under the same headers");
 check((await pg(TOKEN, "/api/decline", JSON.stringify({ pad: "x".repeat(200_000) }))).status === 413, "a body over 100 kB gets 413");
@@ -179,5 +191,25 @@ clock += 601e3; check((await adm({ op: "results", session_id: SID })).status ===
   (await import("node:fs")).chmodSync(sf, 0o644); check((await run("results", sid, "--out", join(tmp, "o2"))).status === 2, "admin.mjs refuses an admin secret file others can read");
   srv.close(); delete process.env.KV_REST_API_URL; delete process.env.KV_REST_API_TOKEN;
 }
+// --- 6. visitor prepare: card_revocation is accepted; host cards still refused
+{
+  const visMem = memoryStore(now);
+  const visApp = createApp({ store: visMem, rpId: RP, notice: "test-stage", noticeDays: 90, adminSecret: ADMIN, now });
+  const visAdm = (body) => visApp.admin(new Request("https://x/api/admin", { method: "POST", headers: { Authorization: `Bearer ${ADMIN}`, "content-type": "application/json" }, body: JSON.stringify(body) }));
+  const loaded = await (await visAdm({ op: "credential", credential: oldCred })).json().catch(() => ({}));
+  if (loaded.error) throw new Error("visitor-prepare test could not load owner credential: " + JSON.stringify(loaded));
+  const vis = (body) => visApp.visitor(new Request("https://x/api/visitor/prepare", { method: "POST", headers: { "content-type": "application/json", "content-length": String(JSON.stringify(body).length) }, body: JSON.stringify(body) }), "prepare");
+  const Jv = async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) });
+  const repDid = "did:key:z6MktestConformanceRepEd25519aaaaaaaaaaaaa";
+  const issued = "2026-10-28T10:00:00Z";
+  const revocation = { name: "revocation-probe", title: "Revoke the throwaway probe card", summary: ["WHAT: you withdraw this throwaway test card."], payload: { card_id: "card-kettle-2026-11-10-cos-pip-revoked", card_digest: "sha-256:3JUL-Dl3GTcOp_KFEVMglvrBLB-rIl9cIfFMdEnNE9k", principal_id: "$OWNER_DID", revoked_at: issued, reason: "superseded" } };
+  const badKind = await Jv(await vis({ representative_id: repDid, items: [{ name: "not-a-kind", title: "t", summary: ["s"], payload: { foo: 1 } }] }));
+  check(badKind.status === 400 && /only visitor cards, mandates, and card_revocations/.test((badKind.body.problems ?? []).join("\n")), "visitor prepare refuses an item that is not a visitor card, a mandate, or a card_revocation");
+  const host = await Jv(await vis({ representative_id: repDid, items: [{ name: "host-card", title: "t", summary: ["s"], payload: { kind: "host", card_id: "card-x" } }] }));
+  check(host.status === 400 && (host.body.problems ?? []).some((p) => /host cards are not allowed/.test(p)), "visitor prepare still refuses a host card");
+  const ok = await Jv(await vis({ representative_id: repDid, items: [revocation] }));
+  check(ok.status === 200 && typeof ok.body.url === "string" && typeof ok.body.expires_at === "string", `visitor prepare accepts a card_revocation (${ok.status}: ${JSON.stringify(ok.body).slice(0, 220)})`);
+}
+
 up.srv.close(); rmSync(tmp, { recursive: true, force: true });
 console.log(`sign-serverless: ${pass} pass, ${fail} fail`); process.exit(fail ? 1 : 0);

@@ -2,7 +2,7 @@
 
 The core is complete on its own: **a door can be safe and courteous at its entrance with the core alone.** Everything else is an optional extension.
 
-**The door and the room.** The core is the door: getting into a place. Gatherings and Peer meetings are the room: inside a place, the representatives it let in can meet, like people exchanging business cards at a gathering. The place signs the guest list and checks every card, and every message in the room is signed by whoever said it. Agents meet inside a place, never in the open.
+**The door and the room.** The core is the door: getting into a place. Gatherings and Peer meetings are the room: inside a place, the representatives it let in can meet, like people exchanging business cards at a gathering. The place signs the guest list and checks every Shōkai card, and every message in the room is signed by whoever said it. Agents meet inside a place, never in the open.
 
 [![The core and its optional extensions](./diagrams/svg/core-extensions.svg)](./diagrams/svg/core-extensions.svg)
 
@@ -21,13 +21,13 @@ The core is complete on its own: **a door can be safe and courteous at its entra
 | **Peer meetings** | stable | A room for two: two owners' representatives meeting in a pair place, seeded by an owner-to-owner invitation. |
 | **Teaching visits** | experimental | A representative visiting to learn or teach, with the owner's approval of a lesson. |
 | **Profiles and evidence** | stable | A richer principal profile (expertise, working style, taste) and fetched evidence with digests (the `evidenced` proof level). |
-| **Seeking** | stable | A host publishing what it is looking for, so visitors can say which needs they address. |
+| **Seeking** | stable | A host publishing what it is looking for, so visiting representatives can say which needs they address. |
 | **Visit receipts** | stable | Linking an anonymous lobby visit to a later, identified one, only with a one-time receipt. |
 | **Door gifts** | stable | Gifts at a person's door, claim tickets and gift caps. *"Never data for a gift" stays in the core.* |
 | **Signed place listings** | experimental | A place signing its listing. |
 | **Revocation status** | stable | How an allowance's status is published and re-signed, its one-hour lifetime and stapled statuses. *"A fetched revocation wins" stays in the core.* |
 | **Meaning notes** | stable | Carrying meaning across languages and cultures, beyond the language-neutral core. |
-| **W3C VC mapping** | experimental | Expressing cards, vouches and mandates as W3C Verifiable Credentials. |
+| **W3C VC mapping** | experimental | Expressing Shōkai cards, vouches and mandates as W3C Verifiable Credentials. |
 
 **Stable** means the rules are settled for v0.3 and only fixes are expected. **Experimental** means the extension may change or be dropped after review; don't depend on it yet. Since the feature freeze (October 27, 2026), no new extensions or proposals enter the 0.3 line; they wait for v0.4.
 
@@ -39,7 +39,7 @@ An implementation claims **core** plus the extension levels it implements; each 
 
 | Level | Slug | `shokai-conformance` |
 |---|---|---|
-| Core | `core` | Always runs: the listing and lobby, the ritual (including checking the place against its listing), seats, and the negative checks (a request before the card, a reused nonce, tampering after signing, a copied card). |
+| Core | `core` | Always runs: the listing and lobby, the ritual (including checking the place against its listing), passes, and the negative checks (a request before the Shōkai card, a reused nonce, tampering after signing, a copied Shōkai card). |
 | Visit receipts | `visit-receipts` | `--ext visit-receipts` |
 | Signed place listings | `signed-listings` | `--ext signed-listings` |
 | Test vectors | (normative, Appendix B) | `--vectors`. Against a URL they run on the runner's own crypto; pass a module to test yours. |

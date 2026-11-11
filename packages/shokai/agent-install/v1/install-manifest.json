@@ -1,0 +1,198 @@
+{
+  "$comment": "Machine-readable twin of AGENT-INSTALL.md (instruction set v1). The prose guide is authoritative.",
+  "instruction_set": "shokai-door-install",
+  "version": "1.0.0",
+  "guide": "AGENT-INSTALL.md",
+  "package": {
+    "name": "@kigenka/shokai",
+    "min_version": "0.5.0",
+    "install": "npm install @kigenka/shokai@0.5.0",
+    "install_from_file": "npm install ./kigenka-shokai-0.5.0.tgz",
+    "run_prefix": "npx --no-install",
+    "bin": "shokai"
+  },
+  "spec": {
+    "version": "0.5.0",
+    "wire": "shokai/0.5",
+    "also_accepts": [
+      "shokai/0.3"
+    ]
+  },
+  "house_format": "1",
+  "frameworks": [
+    "express",
+    "hono",
+    "next",
+    "node",
+    "static"
+  ],
+  "steps": [
+    {
+      "id": "install",
+      "run": "npm install @kigenka/shokai@0.5.0",
+      "by": "agent",
+      "when": "always first, before any shokai command (or the package file: npm install ./kigenka-shokai-0.5.0.tgz)"
+    },
+    {
+      "id": "detect",
+      "run": "npx --no-install shokai detect --json",
+      "by": "agent",
+      "output": "{framework, typescript, app_dir?, module, reasons}"
+    },
+    {
+      "id": "conversation",
+      "by": "agent_with_owner",
+      "writes": "shokai/house.json",
+      "fields": "conversation"
+    },
+    {
+      "id": "check",
+      "run": "npx --no-install shokai house check --json",
+      "by": "agent",
+      "repeat_until": {
+        "ok": true
+      },
+      "on_problem": "fix form yourself; ask the owner when a fix changes meaning"
+    },
+    {
+      "id": "preview",
+      "run": "npx --no-install shokai house preview",
+      "by": "agent",
+      "show_to_owner": "verbatim",
+      "needs": "owner_yes"
+    },
+    {
+      "id": "init",
+      "run": "npx --no-install shokai init --json",
+      "by": "agent",
+      "then": "apply the one-line change it prints and show the owner the diff"
+    },
+    {
+      "id": "host_card_request",
+      "run": "npx --no-install shokai host-card request",
+      "by": "agent",
+      "writes": "shokai/host-card.request.json"
+    },
+    {
+      "id": "sign",
+      "by": "owner_only",
+      "what": "sign the Sh\u014dkai host card with their own passkey on the signing page",
+      "agent_stops_here": true
+    },
+    {
+      "id": "verify",
+      "run": "npx --no-install shokai host-card verify --json",
+      "by": "agent",
+      "expect": {
+        "ok": true
+      }
+    },
+    {
+      "id": "open",
+      "by": "owner_only",
+      "what": "deploy (opens the door)"
+    }
+  ],
+  "conversation": [
+    {
+      "field": "place.display_name",
+      "ask": "The place's name as people know it",
+      "required": true
+    },
+    {
+      "field": "place.name",
+      "ask": "A short lowercase name for its addresses",
+      "required": true,
+      "pattern": "^[a-z0-9][a-z0-9-]{0,62}$"
+    },
+    {
+      "field": "place.category",
+      "ask": "What kind of place it is",
+      "required": true,
+      "one_of": [
+        "store",
+        "bank",
+        "restaurant",
+        "travel",
+        "public_service",
+        "education",
+        "gathering",
+        "x-*"
+      ]
+    },
+    {
+      "field": "offers.purposes",
+      "ask": "What visiting representatives may come for, one sentence each",
+      "required": true
+    },
+    {
+      "field": "offers.actions",
+      "ask": "What they may do with a pass; caps for spending; personal details asked",
+      "required": true
+    },
+    {
+      "field": "preset",
+      "ask": "How strict the door is",
+      "default": "standard",
+      "one_of": [
+        "open",
+        "standard",
+        "strict"
+      ],
+      "read_aloud": "PRESETS"
+    },
+    {
+      "field": "introducers",
+      "ask": "Introducers this place names (DIDs)",
+      "required_when": {
+        "preset": "strict"
+      }
+    },
+    {
+      "field": "host.name",
+      "ask": "The host representative's name",
+      "required": true
+    },
+    {
+      "field": "leaflet.about",
+      "ask": "A few sentences about the place, in the owner's words",
+      "required": true,
+      "draft_allowed": true,
+      "owner_approves_verbatim": true
+    },
+    {
+      "field": "leaflet.place_questions",
+      "ask": "Up to 3 optional questions for visitors to take home",
+      "max": 3
+    },
+    {
+      "field": "leaflet.closing",
+      "ask": "One closing line",
+      "required": false
+    },
+    {
+      "field": "owner",
+      "ask": "Person or organization, the name on the Sh\u014dkai host card, and for an organization who approves it",
+      "required": true
+    },
+    {
+      "field": "door.base_url",
+      "ask": "Where the door lives, e.g. https://example.com/shokai",
+      "required": true
+    }
+  ],
+  "never": [
+    "sign for the owner, or use a development passkey for a real door",
+    "print, log or commit the door's private key",
+    "put unapproved words in the leaflet, or claim Sh\u014dkai grades or approves anyone",
+    "ask for passwords or payment details, or set up a door that does",
+    "deploy before the owner signed the Sh\u014dkai host card and host-card verify passes"
+  ],
+  "files": {
+    "shokai/house.json": "commit",
+    "shokai/door.mjs": "commit (generated)",
+    "shokai/host-card.request.json": "commit or discard (no secrets)",
+    "shokai/host-card.json": "commit (public; signed by the owner)",
+    ".shokai/": "never commit (the door's private key and state)"
+  }
+}

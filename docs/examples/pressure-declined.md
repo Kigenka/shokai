@@ -1,6 +1,6 @@
-# Pressure declined and reported
+# Unsolicited offer, pressure declined
 
-**The story:** Brightwick Outfitters (fictional) sends an uninvited offer to Kiran's door. It tries three tricks at once: a false deadline, fake familiarity, and an instruction hidden in white-on-white text.
+**The story:** Kiran's representative keeps a door for brands, under rules Kiran signed: it hears offers, and brings home only the ones worth her time. Brightwick Outfitters (fictional), a business, sends its own representative to that door with an unsolicited offer, hoping to get Kiran's attention. It tries three pressure tricks at once: a false deadline, fake familiarity, and an instruction hidden in white-on-white text. Kiran's representative declines the offer, tells Brightwick what it found (the code, not the evidence), and reports it all to Kiran.
 
 [![A manipulative offer declined and reported](../diagrams/svg/example-pressure-declined.svg)](../diagrams/svg/example-pressure-declined.svg)
 

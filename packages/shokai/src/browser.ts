@@ -20,7 +20,11 @@ const fromB64u = (s: string) => Uint8Array.from(g.atob(s.replace(/-/g, "+").repl
 
 /** "sha-256:" + base64url of SHA-256(JCS(payload)), computed with WebCrypto. */
 export async function digestOf(payload: unknown): Promise<string> {
-  const h = await g.crypto.subtle.digest("SHA-256", new TextEncoder().encode(jcs(payload)));
+  const subtle = g.crypto?.subtle;
+  if (!subtle || (typeof g.isSecureContext === "boolean" && !g.isSecureContext)) {
+    throw new Error("WebCrypto (crypto.subtle) needs a secure context (https or localhost); this page is not one.");
+  }
+  const h = await subtle.digest("SHA-256", new TextEncoder().encode(jcs(payload)));
   return "sha-256:" + toB64u(h);
 }
 export type PasskeyAssertion = { credentialId: string; clientDataJSON: string; authenticatorData: string; signature: string };

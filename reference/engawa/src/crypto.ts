@@ -127,8 +127,29 @@ export function didKeyFragment(id: string): string { return id.startsWith("did:k
 export function signEd(s: Ed25519Signer, digest: Digest, at: string): Signature {
   return { alg: "Ed25519", key_id: s.key_id, signer: s.id, signed_at: at, value: b64u(nodeSign(null, digestBytes(digest), s.priv)) };
 }
-export function makeSigned<T>(payload: T, s: Ed25519Signer, at: string): Signed<T> {
-  const d = digestOf(payload); return { payload, payload_digest: d, signatures: [signEd(s, d, at)] };
+/** C289 (review 4 R4-01): the members a v0.5.0 signer MUST list in `crit` when it uses them. Each is defined by the class that
+ *  defines the artefact it rides on, so every reader that accepts that artefact at all claims the class, and ignoring the member
+ *  would widen what the artefact allows. */
+export const CRITICAL_MEMBERS = ["max_claims", "supersedes.hold", "fields[].sensitive", "limits.booking"] as const;
+/** Kept for callers of the 0.5 drafts: the same list. */
+export const NARROWING_MEMBERS = CRITICAL_MEMBERS;
+/** C289 (R4-01): members of opt-in extensions carried on artefacts that a reader not claiming the extension still accepts.
+ *  A signer MUST NOT list them in `crit`; a reader that doesn't implement one ignores it as an unknown member. */
+export const NEVER_CRITICAL = ["owner_prompts", "place.site", "customer_link"] as const;
+const hasPath = (o: any, path: string): boolean => { const walk = (cur: any, segs: string[]): boolean => { if (!segs.length) return true; const [k, ...rest] = segs; const arr = k.endsWith("[]"), key = arr ? k.slice(0, -2) : k;
+  if (cur === null || typeof cur !== "object" || !(key in cur)) return false; const v = cur[key]; return arr ? Array.isArray(v) && v.some((x) => walk(x, rest)) : walk(v, rest); }; return walk(o, path.split(".")); };
+/** The payload with every critical member it uses listed in `crit`, and no opt-in member listed (nothing else changes). */
+export function withCrit<T>(payload: T): T {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return payload;
+  const have0: unknown = (payload as any).crit; const hadCrit = Array.isArray(have0);
+  const have = hadCrit ? (have0 as string[]).filter((m) => !(NEVER_CRITICAL as readonly string[]).includes(m)) : [];
+  const add = CRITICAL_MEMBERS.filter((m) => hasPath(payload, m) && !have.includes(m));
+  if (!add.length && (!hadCrit || have.length === (have0 as string[]).length)) return payload;
+  const crit = [...have, ...add]; const { crit: _drop, ...rest } = payload as any;
+  return (crit.length ? { ...rest, crit } : rest) as T;
+}
+export function makeSigned<T>(payload0: T, s: Ed25519Signer, at: string): Signed<T> {
+  const payload = withCrit(payload0); const d = digestOf(payload); return { payload, payload_digest: d, signatures: [signEd(s, d, at)] };
 }
 /** Simulated passkey (WebAuthn ES256) owner, for tests. Real authenticators produce the same structure. */
 export type PasskeyOwner = { kind: "passkey"; id: string; key_id: string; priv: KeyObject; pub: KeyObject; rpId: string };
@@ -160,8 +181,8 @@ export function signPasskeyWith(o: PasskeyOwner, digest: Digest, at: string, ext
   return { alg: "ES256", key_id: o.key_id, signer: o.id, signed_at: at, value: b64u(nodeSign("sha256", Buffer.concat([authData, sha256(clientData)]), o.priv)),
     webauthn: { authenticator_data: b64u(authData), client_data_json: b64u(clientData), credential_id: b64u(randomBytes(16)), rp_id: o.rpId } };
 }
-export function makeOwnerSigned<T>(payload: T, o: PasskeyOwner, at: string): Signed<T> {
-  const d = digestOf(payload); return { payload, payload_digest: d, signatures: [signPasskey(o, d, at)] };
+export function makeOwnerSigned<T>(payload0: T, o: PasskeyOwner, at: string): Signed<T> {
+  const payload = withCrit(payload0); const d = digestOf(payload); return { payload, payload_digest: d, signatures: [signPasskey(o, d, at)] };
 }
 
 // ---------- Verification ----------
@@ -247,10 +268,11 @@ export function isTimestamp(s: unknown): s is string {
   const d = new Date(s); return !isNaN(d.getTime()) && d.toISOString().replace(".000Z", "Z") === s;
 }
 export const SKEW_S = 300;
-/** issued_at / valid_from: refuse only when later than now + 300 s. */
-export function notYetValid(ts: string, now: string): boolean { return Date.parse(ts) > Date.parse(now) + SKEW_S * 1e3; }
-/** expires_at: refuse only when earlier than now - 300 s. */
-export function isExpired(ts: string, now: string): boolean { return Date.parse(ts) < Date.parse(now) - SKEW_S * 1e3; }
+/** issued_at / valid_from: refuse only when later than now + 300 s. Fails closed: a missing or unparseable time is "not yet valid"
+ *  (conformance 2026-11-08: Date.parse(undefined) is NaN, and NaN compares false, which read a card with no issued_at as valid). */
+export function notYetValid(ts: string, now: string): boolean { const t = Date.parse(ts); return !Number.isFinite(t) || t > Date.parse(now) + SKEW_S * 1e3; }
+/** expires_at: refuse only when earlier than now - 300 s. Fails closed: a missing or unparseable time is "expired", never "no expiry" (§2.3, C3). */
+export function isExpired(ts: string, now: string): boolean { const t = Date.parse(ts); return !Number.isFinite(t) || t < Date.parse(now) - SKEW_S * 1e3; }
 const TS_KEYS = new Set(["sent_at", "issued_at", "expires_at", "valid_from", "valid_until", "response_by", "signed_at", "revoked_at", "published_at", "next_update",
   "starts_at", "ends_at", "observed_at", "decided_at", "not_before", "until", "visited_at", "since_at", "at", "answer_by"]);
 const isTsKey = (k: string) => TS_KEYS.has(k) || k.endsWith("_at");
@@ -316,4 +338,5 @@ export function lookupLocale(ranges: string[], supported: string[], dflt = suppo
   }
   return { locale: dflt, match: "none" };
 }
-export const randomId = (p: string) => p + "-" + b64u(randomBytes(9));
+/** Review 4 R4-06 (§2.2, §2.4): ids and nonces carry 128 bits from the platform CSPRNG (22 base64url characters). */
+export const randomId = (p: string) => p + "-" + b64u(randomBytes(16));

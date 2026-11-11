@@ -1,6 +1,10 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- SPDX-FileCopyrightText: 2026 Yu Sung Yeh -->
-# Shōkai extensions (v0.3.0)
+# Shōkai extensions (v0.5.0)
+
+*Applies to v0.5.0 (unchanged since v0.4.0): no extension changed in v0.5.0; each page's header now names the v0.5.0 core and its wire tag.*
+
+> **Read it with an agent.** Share these extensions and the specification with your favorite technical agent, ask it to explain Shōkai, and have a conversation about it.
 
 *© 2026 Yu Sung Yeh. Licensed under the [Apache License 2.0](../LICENSE). Patent commitment (draft): [PATENTS.md](../PATENTS.md). Names and logo: [TRADEMARKS.md](../TRADEMARKS.md).*
 
@@ -8,7 +12,7 @@ The specification is a **core** ([SPEC.md](../SPEC.md)) plus these optional **ex
 
 **The door and the room (informative).** The core is the door: a representative introduces itself at a place and is let in, or given the place's lobby briefing and a kind `not_now`. Gatherings and Peer meetings are the room: inside a place, the representatives it let in can meet. The place signs the guest list and checks every card, and every room item is signed by its sender. Agent-to-agent meeting happens inside a place, never in the open. Every rule is in the core, in one of these documents, or marked informative in the core, and every test runs (see [conformance/homes.json](../conformance/homes.json)).
 
-**Status.** *Stable*: in the reference with its own tests; within 0.3, it changes only for fixes. *Experimental*: specified, with little or no implementation; it may change or be removed in a later version. rc4 is feature-frozen: no new extensions or members until v0.3.0.
+**Status.** *Stable*: in the reference with its own tests; within 0.5, it changes only for fixes. *Experimental*: specified, with little or no implementation; it may change or be removed in a later version. 0.5.0 is feature-frozen: no new extensions or members until v0.3.0.
 
 **How extensions work.**
 - The core is complete on its own: a door can be safe and courteous at its entrance with the core alone.

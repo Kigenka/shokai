@@ -30,7 +30,7 @@ The representative greets without a key, under a random identifier:
 ```json
 { "type": "greeting", "from": "urn:shokai:anon:7f3c…", "locales": ["en-US"], "nonce": "…" }
 ```
-*On the lobby path a visitor's messages may be unsigned. The gatekeeper must not require a key before it explains itself, and must never ignore or silently block an unprepared visitor.*
+*On the lobby path a visitor's messages may be unsigned. The host representative must not require a key before it explains itself, and must never ignore or silently block an unprepared visitor.*
 
 ## 3. The lobby briefing
 
@@ -59,4 +59,4 @@ Then a polite `deny` / `not_now`, with readiness items in plain sentences the re
 
 ## What's next: richer data asks (a proposal)
 
-The core already has each action declare what it will ask the owner for (`data_asks`, above). A proposal under discussion would go further: which data is required and which optional, why, and for how long it's kept, so representatives can compare places for their owners. That part is not in the v0.3 core.
+The core already has each action declare what it will ask the owner for (`data_asks`, above). A proposal under discussion would go further: which data is required and which optional, why, and for how long it's kept, so representatives can compare places for their owners. That further part is still a proposal; it is not in the v0.5.0.

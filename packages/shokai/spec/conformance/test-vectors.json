@@ -1,5 +1,5 @@
 {
-  "note": "Shōkai test vectors for spec v0.3.0 (SPEC Appendix A.2; inbound_door: §10). TEST KEYS ONLY, derived from public labels. Path in the repository: conformance/test-vectors.json.",
+  "note": "Shōkai test vectors for spec v0.5.0 (the v0.3.0 vectors unchanged, plus `v050` for C230–C254; SPEC Appendix A.2; inbound_door: §10). TEST KEYS ONLY, derived from public labels. Path in the repository: conformance/test-vectors.json.",
   "key_derivation": {
     "ed25519": "seed = SHA-256(UTF-8(\"shokai-demo-seed:\" + label)); the 32-byte seed is the RFC 8032 private key",
     "p256_passkey": "d = SHA-256(UTF-8(\"shokai-demo-passkey:\" + label)) read as a big-endian integer (the P-256 private scalar)",
@@ -1029,5 +1029,2137 @@
         }
       }
     }
+  },
+  "v050": {
+    "note": "v0.5.0 vectors (C230–C254). Computed values come from the reference's pure core; expected answers are the specification's. Regenerate: node tools/gen-v050-vectors.mjs. Fictional parties only.",
+    "C230_over_limit": {
+      "worked_example": {
+        "limit": {
+          "value": "30.00",
+          "currency": "USD"
+        },
+        "current": {
+          "value": "20.00",
+          "currency": "USD"
+        },
+        "act_amount": {
+          "value": "40.00",
+          "currency": "USD"
+        },
+        "proposed": {
+          "value": "60.00",
+          "currency": "USD"
+        },
+        "superseding_max_amount": {
+          "value": "60.00",
+          "currency": "USD"
+        },
+        "after_release": "spent 60.00 against a limit of 30.00; every later spending act is above the limit"
+      },
+      "rule": "§7.3: with policy.limit_calls: true, an act is above the limit when amount + current > limit; limit = the lower of the seat's and the mandate's max_amount as signed; current = what counts against that binding ceiling (acts let through + open holds); proposed = current + amount; seat and mandate each carry {limit, current} for both totals.",
+      "figures": [
+        {
+          "seat_max_amount": {
+            "value": "40.00",
+            "currency": "USD"
+          },
+          "mandate_max_amount": {
+            "value": "60.00",
+            "currency": "USD"
+          },
+          "let_through": [
+            {
+              "value": "20.00",
+              "currency": "USD"
+            }
+          ],
+          "open_holds": [],
+          "act_amount": {
+            "value": "25.00",
+            "currency": "USD"
+          },
+          "expect": {
+            "held": true,
+            "over_limit": {
+              "limit": {
+                "value": "40.00",
+                "currency": "USD"
+              },
+              "current": {
+                "value": "20.00",
+                "currency": "USD"
+              },
+              "proposed": {
+                "value": "45.00",
+                "currency": "USD"
+              },
+              "seat": {
+                "limit": {
+                  "value": "40.00",
+                  "currency": "USD"
+                },
+                "current": {
+                  "value": "20.00",
+                  "currency": "USD"
+                }
+              },
+              "mandate": {
+                "limit": {
+                  "value": "60.00",
+                  "currency": "USD"
+                },
+                "current": {
+                  "value": "20.00",
+                  "currency": "USD"
+                }
+              }
+            }
+          }
+        },
+        {
+          "seat_max_amount": {
+            "value": "30.00",
+            "currency": "USD"
+          },
+          "mandate_max_amount": {
+            "value": "30.00",
+            "currency": "USD"
+          },
+          "let_through": [
+            {
+              "value": "20.00",
+              "currency": "USD"
+            }
+          ],
+          "open_holds": [],
+          "act_amount": {
+            "value": "15.00",
+            "currency": "USD"
+          },
+          "expect": {
+            "held": true,
+            "over_limit": {
+              "limit": {
+                "value": "30.00",
+                "currency": "USD"
+              },
+              "current": {
+                "value": "20.00",
+                "currency": "USD"
+              },
+              "proposed": {
+                "value": "35.00",
+                "currency": "USD"
+              },
+              "seat": {
+                "limit": {
+                  "value": "30.00",
+                  "currency": "USD"
+                },
+                "current": {
+                  "value": "20.00",
+                  "currency": "USD"
+                }
+              },
+              "mandate": {
+                "limit": {
+                  "value": "30.00",
+                  "currency": "USD"
+                },
+                "current": {
+                  "value": "20.00",
+                  "currency": "USD"
+                }
+              }
+            }
+          },
+          "why": "a seat capped at its mandate (policy ∩ mandate ∩ request, §6.1)"
+        },
+        {
+          "seat_max_amount": {
+            "value": "40.00",
+            "currency": "USD"
+          },
+          "mandate_max_amount": {
+            "value": "60.00",
+            "currency": "USD"
+          },
+          "let_through": [
+            {
+              "value": "20.00",
+              "currency": "USD"
+            }
+          ],
+          "open_holds": [],
+          "declined_holds": [
+            {
+              "value": "25.00",
+              "currency": "USD"
+            }
+          ],
+          "act_amount": {
+            "value": "30.00",
+            "currency": "USD"
+          },
+          "expect": {
+            "held": true,
+            "over_limit": {
+              "limit": {
+                "value": "40.00",
+                "currency": "USD"
+              },
+              "current": {
+                "value": "20.00",
+                "currency": "USD"
+              },
+              "proposed": {
+                "value": "50.00",
+                "currency": "USD"
+              },
+              "seat": {
+                "limit": {
+                  "value": "40.00",
+                  "currency": "USD"
+                },
+                "current": {
+                  "value": "20.00",
+                  "currency": "USD"
+                }
+              },
+              "mandate": {
+                "limit": {
+                  "value": "60.00",
+                  "currency": "USD"
+                },
+                "current": {
+                  "value": "20.00",
+                  "currency": "USD"
+                }
+              }
+            }
+          },
+          "why": "a declined hold is released at once and stops counting in current"
+        },
+        {
+          "seat_max_amount": {
+            "value": "40.00",
+            "currency": "USD"
+          },
+          "mandate_max_amount": {
+            "value": "60.00",
+            "currency": "USD"
+          },
+          "let_through": [
+            {
+              "value": "10.00",
+              "currency": "USD"
+            }
+          ],
+          "open_holds": [
+            {
+              "value": "15.00",
+              "currency": "USD"
+            }
+          ],
+          "act_amount": {
+            "value": "20.00",
+            "currency": "USD"
+          },
+          "expect": {
+            "held": true,
+            "over_limit": {
+              "limit": {
+                "value": "40.00",
+                "currency": "USD"
+              },
+              "current": {
+                "value": "25.00",
+                "currency": "USD"
+              },
+              "proposed": {
+                "value": "45.00",
+                "currency": "USD"
+              },
+              "seat": {
+                "limit": {
+                  "value": "40.00",
+                  "currency": "USD"
+                },
+                "current": {
+                  "value": "25.00",
+                  "currency": "USD"
+                }
+              },
+              "mandate": {
+                "limit": {
+                  "value": "60.00",
+                  "currency": "USD"
+                },
+                "current": {
+                  "value": "25.00",
+                  "currency": "USD"
+                }
+              }
+            }
+          },
+          "why": "an open ordinary hold's reservation counts"
+        }
+      ],
+      "not_held": [
+        {
+          "case": "shokai/0.3 act",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "SEAT_SCOPE_EXCEEDED"
+          }
+        },
+        {
+          "case": "no hold_for_owner",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "SEAT_SCOPE_EXCEEDED"
+          }
+        },
+        {
+          "case": "Shōkai visitor card without owner_prompts: purchase_only",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "CREDENTIAL_REQUIRED"
+          },
+          "why": "§7.3 Asking comes first"
+        },
+        {
+          "case": "policy.limit_calls absent or false",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "SEAT_SCOPE_EXCEEDED"
+          }
+        },
+        {
+          "case": "per_operation seat or a session_max_amount",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "SEAT_SCOPE_EXCEEDED"
+          }
+        },
+        {
+          "case": "amount in another currency",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "SEAT_SCOPE_EXCEEDED"
+          }
+        },
+        {
+          "case": "a payment_ref already used in the seat",
+          "expect": "structuring rules of §7.2 apply; never held"
+        },
+        {
+          "case": "max_operations reached",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "SEAT_SCOPE_EXCEEDED"
+          },
+          "why": "operations are checked before amounts"
+        }
+      ],
+      "superseding_mandate": {
+        "rule": "§5.1, §7.3: supersedes = {mandate_id, mandate_digest} of the seat's current mandate and hold = {hold_id, act_digest} of this hold; shown_to_owner present; same card_id (the seat's Shōkai visitor card); not under an allowance; allows the tool; max_amount = proposed exactly (same currency); expires_at no later than the hold's; valid now; doesn't outlive the Shōkai visitor card; binds exactly one act and never becomes the seat's mandate; owner passkey per the card's owner_binding.",
+        "on_failure": {
+          "decision": "deny",
+          "disposition": "not_now",
+          "reason_code": "CREDENTIAL_REQUIRED",
+          "retry": {
+            "kind": "with_credential",
+            "credentials": [
+              "signed_mandate"
+            ]
+          },
+          "hold": "stays until expires_at + grace"
+        },
+        "cases": [
+          {
+            "change": "none",
+            "expect": "that act released, nothing else; its amount counts against the seat and its current mandate (one ledger); the seat keeps its mandate, so a later spending act is above the limit (refused, or held again)"
+          },
+          {
+            "change": "supersedes.hold missing",
+            "expect": "refused"
+          },
+          {
+            "change": "supersedes.hold.act_digest is another act's",
+            "expect": "refused"
+          },
+          {
+            "change": "supersedes.hold.hold_id is another hold's",
+            "expect": "refused"
+          },
+          {
+            "change": "supersedes.mandate_digest is not the current mandate's",
+            "expect": "refused"
+          },
+          {
+            "change": "shown_to_owner missing",
+            "expect": "refused"
+          },
+          {
+            "change": "max_amount below proposed",
+            "expect": "refused"
+          },
+          {
+            "change": "max_amount above proposed",
+            "expect": "refused (no standing headroom)"
+          },
+          {
+            "change": "expires_at later than the hold's expires_at",
+            "expect": "refused"
+          },
+          {
+            "change": "offered again after its act was released, or for another hold",
+            "expect": "refused: not_now / MANDATE_INVALID"
+          },
+          {
+            "change": "under_allowance set",
+            "expect": "refused"
+          },
+          {
+            "change": "card_id of another Shōkai visitor card",
+            "expect": "refused (C237)"
+          },
+          {
+            "change": "sent as an approve_purchase consent instead",
+            "expect": "refused"
+          },
+          {
+            "change": "both consent and mandate",
+            "expect": "refused"
+          }
+        ]
+      },
+      "declined": {
+        "rule": "an owner consent over the held act with decision decline, or no valid mandate by expires_at + grace",
+        "expect": {
+          "decision": "deny",
+          "disposition": "not_now",
+          "reason_code": "HOLD_LAPSED",
+          "retry": {
+            "kind": "after"
+          }
+        },
+        "released": "operation unreserved at once; stops counting in current"
+      },
+      "limit_request": {
+        "keys": [
+          "place",
+          "hold_id",
+          "limit",
+          "current",
+          "proposed",
+          "expires_at",
+          "seat",
+          "mandate"
+        ],
+        "closed": true,
+        "example": {
+          "place": "did:web:lanternmoss.example",
+          "hold_id": "hold-7",
+          "limit": {
+            "value": "40.00",
+            "currency": "USD"
+          },
+          "current": {
+            "value": "20.00",
+            "currency": "USD"
+          },
+          "proposed": {
+            "value": "45.00",
+            "currency": "USD"
+          },
+          "expires_at": "2026-11-01T20:15:00Z",
+          "seat": {
+            "limit": {
+              "value": "40.00",
+              "currency": "USD"
+            },
+            "current": {
+              "value": "20.00",
+              "currency": "USD"
+            }
+          },
+          "mandate": {
+            "limit": {
+              "value": "60.00",
+              "currency": "USD"
+            },
+            "current": {
+              "value": "20.00",
+              "currency": "USD"
+            }
+          }
+        },
+        "example_valid": true,
+        "with_free_text_valid": false
+      }
+    },
+    "C231_grace": {
+      "rule": "§7.3: held while the place's clock ≤ expires_at + grace; grace = policy.hold_grace_s clamped to 0–5 s, absent = 5; a shokai/0.3 hold has no grace.",
+      "expires_at": "2026-11-01T20:00:00Z",
+      "cases": [
+        {
+          "hold_grace_s": null,
+          "grace_used_s": 5,
+          "now": "2026-11-01T20:00:05Z",
+          "lapsed": false
+        },
+        {
+          "hold_grace_s": null,
+          "grace_used_s": 5,
+          "now": "2026-11-01T20:00:06Z",
+          "lapsed": true
+        },
+        {
+          "hold_grace_s": 5,
+          "grace_used_s": 5,
+          "now": "2026-11-01T20:00:05Z",
+          "lapsed": false
+        },
+        {
+          "hold_grace_s": 0,
+          "grace_used_s": 0,
+          "now": "2026-11-01T20:00:01Z",
+          "lapsed": true
+        },
+        {
+          "hold_grace_s": 9,
+          "grace_used_s": 5,
+          "now": "2026-11-01T20:00:05Z",
+          "lapsed": false
+        },
+        {
+          "hold_grace_s": 9,
+          "grace_used_s": 5,
+          "now": "2026-11-01T20:00:06Z",
+          "lapsed": true
+        },
+        {
+          "hold_grace_s": 2,
+          "grace_used_s": 2,
+          "now": "2026-11-01T20:00:03Z",
+          "lapsed": true
+        }
+      ],
+      "consent_clock": {
+        "hold_expires_at": "2026-11-01T20:00:00Z",
+        "consent_expires_at": "2026-11-01T20:00:00Z",
+        "hold_grace_s": 5,
+        "now": "2026-11-01T20:00:03Z",
+        "judged_at": "2026-11-01T20:00:00Z"
+      }
+    },
+    "C232_hold_policies": {
+      "rule": "§7.3: hold policies are checked before the amount and scope checks; counted per seat.",
+      "cases": [
+        {
+          "hold_policies": {
+            "max_open_holds": 1
+          },
+          "state": "one hold open on the seat; the new act is also above the amount",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "POLICY_DENY",
+            "retry": {
+              "kind": "after",
+              "not_before": "the open hold's expires_at"
+            }
+          }
+        },
+        {
+          "hold_policies": {
+            "max_holds": 4
+          },
+          "state": "four holds made on the seat",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "POLICY_DENY",
+            "retry": {
+              "kind": "with_credential",
+              "credentials": [
+                "signed_mandate"
+              ]
+            }
+          }
+        },
+        {
+          "hold_policies": {
+            "max_purchases": 1
+          },
+          "state": "one held purchase released",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "POLICY_DENY",
+            "retry": {
+              "kind": "with_credential",
+              "credentials": [
+                "signed_mandate"
+              ]
+            }
+          }
+        },
+        {
+          "hold_policies": {},
+          "state": "any",
+          "expect": "no hold limit"
+        }
+      ]
+    },
+    "C233_idempotency": {
+      "rule": "§7.2: 16–32 random bytes, base64url without padding; scope = seat (act) or hold (confirmation); caps policy.repeat_caps, defaults per_hold 5, per_seat 10.",
+      "keys": [
+        {
+          "key": "AAAAAAAAAAAAAAAAAAAAAA",
+          "why": "16 bytes",
+          "valid": true
+        },
+        {
+          "key": "BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+          "why": "32 bytes",
+          "valid": true
+        },
+        {
+          "key": "AAAAAAAAAAAAAAAAAAAA",
+          "why": "15 bytes: too short",
+          "valid": false
+        },
+        {
+          "key": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "why": "33 bytes: too long",
+          "valid": false
+        },
+        {
+          "key": "AAAAAAAAAAAAAAAAAAAAAA==",
+          "why": "padded",
+          "valid": false
+        },
+        {
+          "key": "AAAA+AAAAAAAAAAAAAAAAA",
+          "why": "not base64url",
+          "valid": false
+        }
+      ],
+      "defaults": {
+        "per_hold": 5,
+        "per_seat": 10
+      },
+      "answers": [
+        {
+          "case": "malformed key",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "REQUEST_INCOMPLETE"
+          }
+        },
+        {
+          "case": "repeat within caps",
+          "expect": "the original signed answer, byte for byte; nothing performed again"
+        },
+        {
+          "case": "confirmation repeat past the hold cap (6th)",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "HOLD_LAPSED",
+            "retry": {
+              "kind": "after"
+            }
+          }
+        },
+        {
+          "case": "act repeat past the seat cap (11th), no hold",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "RATE_LIMITED",
+            "retry": {
+              "kind": "after"
+            }
+          }
+        },
+        {
+          "case": "shokai/0.3 message with a key",
+          "expect": "the key is not read (v0.4.0 rules)"
+        }
+      ]
+    },
+    "C234_farewell": {
+      "rule": "§3.5, §7.1: a seated visitor's farewell is always accepted; answered only by the place's own farewell when it hasn't sent one; otherwise an empty reply (the closing receipt).",
+      "cases": [
+        {
+          "place_farewell_sent": true,
+          "quota_or_cap_used_up": false,
+          "expect": {
+            "http": 200,
+            "messages": []
+          }
+        },
+        {
+          "place_farewell_sent": true,
+          "quota_or_cap_used_up": true,
+          "expect": {
+            "http": 200,
+            "messages": []
+          }
+        },
+        {
+          "place_farewell_sent": false,
+          "after": "conditional",
+          "expect": {
+            "messages": [
+              {
+                "type": "farewell",
+                "outcome": "withdrawn"
+              }
+            ]
+          }
+        },
+        {
+          "place_farewell_sent": true,
+          "second_visitor_farewell": true,
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "RITUAL_ORDER"
+          }
+        },
+        {
+          "host_ends_seat": true,
+          "place_farewell_sent": true,
+          "expect": {
+            "held_for_inbox": [
+              {
+                "type": "farewell",
+                "outcome": "completed"
+              }
+            ],
+            "visitor_answers": "nothing"
+          }
+        }
+      ]
+    },
+    "C235_scan": {
+      "rule": "§5.4: every string, member name and number, header ids included; array strings and numbers also joined; Unicode Nd digits; non-letter non-digit between digits stripped; 13–19-digit windows, Luhn; depth > 12 counts as a match. Runs after C210.",
+      "strings": [
+        {
+          "input": "4111111111111111",
+          "why": "a 16-digit test number",
+          "match": true
+        },
+        {
+          "input": "4111 1111 1111 1111",
+          "why": "spaces between digits are stripped",
+          "match": true
+        },
+        {
+          "input": "4111-1111-1111-1111",
+          "why": "dashes between digits are stripped",
+          "match": true
+        },
+        {
+          "input": "４１１１１１１１１１１１１１１１",
+          "why": "fullwidth digits",
+          "match": true
+        },
+        {
+          "input": "٤١١١١١١١١١١١١١١١",
+          "why": "Arabic-Indic digits",
+          "match": true
+        },
+        {
+          "input": "order 7 then 4111111111111111 please",
+          "why": "inside prose",
+          "match": true
+        },
+        {
+          "input": "4111111111111112",
+          "why": "the 16 digits fail the Luhn sum, but a shorter window inside passes: a false positive accepted by design",
+          "match": true
+        },
+        {
+          "input": "1111111111111111",
+          "why": "no 13–19-digit window passes the Luhn sum",
+          "match": false
+        },
+        {
+          "input": "4111a1111b1111c1111",
+          "why": "letters between digits break the run",
+          "match": false
+        },
+        {
+          "input": "411111111111",
+          "why": "12 digits: below the window",
+          "match": false
+        },
+        {
+          "input": "m-20261101-0007",
+          "why": "an ordinary header id",
+          "match": false
+        }
+      ],
+      "values": [
+        {
+          "value": {
+            "note": "x"
+          },
+          "why": "no digits",
+          "match": false
+        },
+        {
+          "value": [
+            "4111",
+            "1111",
+            "1111",
+            "1111"
+          ],
+          "why": "array elements joined in order",
+          "match": true
+        },
+        {
+          "value": {
+            "4111111111111111": "x"
+          },
+          "why": "a member name",
+          "match": true
+        },
+        {
+          "value": {
+            "protocol": "shokai/0.5",
+            "msg_id": "m-4111111111111111",
+            "encounter_id": "e-1",
+            "type": "act"
+          },
+          "why": "a header id (msg_id)",
+          "match": true
+        },
+        {
+          "value": {
+            "arguments": {
+              "amount": {
+                "value": "12.00",
+                "currency": "USD"
+              },
+              "note": "table for two"
+            }
+          },
+          "why": "an ordinary act body",
+          "match": false
+        }
+      ],
+      "answers": [
+        {
+          "message": "act or act_confirmation (shokai/0.5)",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "CREDENTIAL_NOT_ACCEPTED",
+            "retry": {
+              "kind": "after"
+            }
+          }
+        },
+        {
+          "message": "act or act_confirmation (shokai/0.3)",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_a_fit",
+            "reason_code": "CREDENTIAL_NOT_ACCEPTED",
+            "retry": {
+              "kind": "after"
+            }
+          }
+        },
+        {
+          "message": "act with a payment_token member and a card number",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_a_fit",
+            "reason_code": "CREDENTIAL_NOT_ACCEPTED"
+          },
+          "why": "C210 first"
+        },
+        {
+          "message": "invitation_request",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "CREDENTIAL_NOT_ACCEPTED",
+            "retry": {
+              "kind": "after"
+            }
+          }
+        },
+        {
+          "message": "any other message",
+          "expect": "the lobby (§3.1, C184)"
+        },
+        {
+          "message": "match in msg_id",
+          "expect": "answered in a fresh lobby encounter the place names; no in_reply_to; the id is never echoed"
+        }
+      ]
+    },
+    "C236_signed_policy": {
+      "rule": "§2.3: every v0.5.0 policy member is inside house_digest.",
+      "members": [
+        "limit_calls",
+        "hold_grace_s",
+        "repeat_caps",
+        "hold_policies",
+        "trust_requirements",
+        "trust_issuers",
+        "trust_obtain_url",
+        "established_introducers",
+        "conduct_rules",
+        "summary",
+        "message_cap",
+        "door_questions",
+        "third_party_classifiers"
+      ],
+      "expect": "a door acting on a copy outside house_digest is non-conformant; it SHOULD refuse to start"
+    },
+    "C237_one_card": {
+      "cases": [
+        {
+          "case": "a second card_presentation of another Shōkai visitor card in the encounter",
+          "expect": "refused"
+        },
+        {
+          "case": "a superseding mandate or consent for another Shōkai visitor card than the seat's",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "CREDENTIAL_REQUIRED"
+          }
+        }
+      ]
+    },
+    "C238_revocations": {
+      "cases": [
+        {
+          "case": "pushed revocation with a bad signature",
+          "expect": "not acknowledged, not stored"
+        },
+        {
+          "case": "store full, revocation still in force",
+          "expect": "expired entries dropped first; otherwise fail closed; never drop one in force"
+        },
+        {
+          "case": "duplicate or older copy",
+          "expect": "MAY be acknowledged; changes nothing"
+        }
+      ]
+    },
+    "C239_bounded_input": {
+      "cases": [
+        {
+          "max_message_bytes": null,
+          "default": 65536,
+          "min": 4096,
+          "why": "policy.max_message_bytes absent: 65536; a stated value below 4096 is an invalid house config"
+        },
+        {
+          "max_message_bytes": 8192,
+          "message": "act",
+          "message_bytes": 9000,
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "REQUEST_INCOMPLETE",
+            "performed": false
+          },
+          "never": "misconduct finding or integrity alarm"
+        },
+        {
+          "max_message_bytes": 8192,
+          "message": "act",
+          "message_bytes": 6000,
+          "expect": "read as usual"
+        },
+        {
+          "max_message_bytes": 8192,
+          "message": "card_receipt",
+          "message_bytes": 9000,
+          "expect": {
+            "http": 200,
+            "messages": []
+          }
+        },
+        {
+          "max_message_bytes": 8192,
+          "message": "farewell",
+          "message_bytes": 9000,
+          "expect": "accepted (C234)"
+        },
+        {
+          "max_message_bytes": 8192,
+          "message": "act",
+          "message_bytes": 9000,
+          "binding": "HTTP",
+          "expect": "or 413 with an empty ReplyEnvelope at the front (a front limit at least max_message_bytes)"
+        },
+        {
+          "message_cap": 3,
+          "message_number": 4,
+          "message": "act",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "RATE_LIMITED",
+            "retry": {
+              "kind": "after"
+            }
+          }
+        },
+        {
+          "message_cap": 3,
+          "message_number": 4,
+          "message": "invitation_request",
+          "expect": {
+            "http": 200,
+            "messages": []
+          }
+        },
+        {
+          "message_cap": 3,
+          "message_number": 4,
+          "message": "farewell",
+          "expect": "outside the cap (C234)"
+        },
+        {
+          "message_cap": 3,
+          "message_number": 4,
+          "message": "act (shokai/0.3)",
+          "expect": {
+            "reason_code": "RATE_LIMITED"
+          },
+          "why": "a v0.4.0 code"
+        }
+      ]
+    },
+    "C240_counter": {
+      "cases": [
+        {
+          "stored": 0,
+          "presented": 0,
+          "accept": true
+        },
+        {
+          "stored": 5,
+          "presented": 6,
+          "accept": true
+        },
+        {
+          "stored": 5,
+          "presented": 5,
+          "accept": false
+        },
+        {
+          "stored": 0,
+          "presented": 3,
+          "accept": true
+        },
+        {
+          "stored": 7,
+          "presented": 0,
+          "accept": false
+        },
+        {
+          "case": "second registration for an owner id",
+          "accept": false
+        }
+      ]
+    },
+    "C241_pins_and_keys": {
+      "cases": [
+        {
+          "case": "two pin sources by different operators agree with the Shōkai host card digest",
+          "expect": "go on"
+        },
+        {
+          "case": "the sources disagree, or the digest isn't the pin",
+          "expect": "stop and tell the owner"
+        },
+        {
+          "case": "a private key in published vectors (other than the key_derivation labels)",
+          "expect": "non-conformant"
+        }
+      ]
+    },
+    "C242_closed_templates": {
+      "marker": "PlaceTemplates.closed: true (from policy.closed_templates)",
+      "cases": [
+        {
+          "templates_closed": false,
+          "object": "Shōkai visitor card with an unknown top-level member",
+          "expect": "ignored (Conventions); templates are fill-in hints"
+        },
+        {
+          "templates_closed": true,
+          "object": "Shōkai visitor card with a top-level member its template doesn't list",
+          "off_template": [
+            "nickname"
+          ],
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "retry": {
+              "kind": "with_credential",
+              "credentials": [
+                "signed_card"
+              ]
+            },
+            "seat": false
+          }
+        },
+        {
+          "templates_closed": true,
+          "object": "mandate with a top-level member its template doesn't list",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "REQUEST_INCOMPLETE",
+            "seat": false
+          }
+        },
+        {
+          "templates_closed": true,
+          "object": "a member with an <optional …> placeholder, or an x- member",
+          "off_template": [],
+          "expect": "accepted"
+        },
+        {
+          "templates_closed": true,
+          "rule": "never drop the member and act on the rest"
+        }
+      ]
+    },
+    "C243_trust": {
+      "rule": "§6.9: deterministic, after §6.7; grant periods are sliding windows (P1D 24 h, P7D 7×24 h, P1M 30×24 h, P1Y 365×24 h).",
+      "period_ms": {
+        "P1D": 86400000,
+        "P7D": 604800000,
+        "P1M": 2592000000,
+        "P1Y": 31536000000
+      },
+      "caps": [
+        {
+          "cap": {
+            "max": 2,
+            "period": "P1D"
+          },
+          "now": "2026-11-01T20:00:00Z",
+          "uses": [
+            "2026-11-01T19:00:00Z",
+            "2026-10-31T21:00:00Z"
+          ],
+          "why": "two uses inside 24 h",
+          "reached": true
+        },
+        {
+          "cap": {
+            "max": 2,
+            "period": "P1D"
+          },
+          "now": "2026-11-01T20:00:00Z",
+          "uses": [
+            "2026-11-01T19:00:00Z",
+            "2026-10-31T19:00:00Z"
+          ],
+          "why": "one use is older than 24 h",
+          "reached": false
+        },
+        {
+          "cap": {
+            "max": 3,
+            "period": "P1M"
+          },
+          "now": "2026-11-01T20:00:00Z",
+          "uses": [
+            "2026-10-03T20:00:00Z",
+            "2026-10-22T20:00:00Z",
+            "2026-11-01T19:00:00Z"
+          ],
+          "why": "three uses inside 30 × 24 h",
+          "reached": true
+        },
+        {
+          "cap": {
+            "max": 3,
+            "period": "P1M"
+          },
+          "now": "2026-11-01T20:00:00Z",
+          "uses": [
+            "2026-10-01T20:00:00Z",
+            "2026-10-22T20:00:00Z",
+            "2026-11-01T19:00:00Z"
+          ],
+          "why": "one use is older than 30 × 24 h",
+          "reached": false
+        },
+        {
+          "cap": {
+            "max": 1,
+            "period": "P1Y"
+          },
+          "now": "2026-11-01T20:00:00Z",
+          "uses": [
+            "2025-11-02T20:00:00Z"
+          ],
+          "why": "inside 365 × 24 h",
+          "reached": true
+        }
+      ],
+      "answers": [
+        {
+          "case": "no path met (shokai/0.5)",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "TRUST_REQUIRED",
+            "readiness": [
+              "trust"
+            ],
+            "retry": {
+              "kind": "with_credential"
+            }
+          }
+        },
+        {
+          "case": "some actions met (shokai/0.5)",
+          "expect": {
+            "decision": "conditional",
+            "conditions": [
+              "narrow_actions"
+            ],
+            "reason_code": "TRUST_REQUIRED"
+          }
+        },
+        {
+          "case": "no path met (shokai/0.3)",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "POLICY_DENY",
+            "retry": {
+              "kind": "with_credential",
+              "credentials": [
+                "vouch"
+              ]
+            },
+            "readiness": []
+          }
+        },
+        {
+          "case": "a cap reached",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "RATE_LIMITED"
+          },
+          "never": "a penalty"
+        }
+      ]
+    },
+    "C244_receipts": {
+      "check_order": [
+        "signature against issuer (did:web or did:key; never an owner passkey)",
+        "issuer is the place or in policy.trust_issuers (never \"*\")",
+        "subject.principal_id = the Shōkai visitor card's principal (third mismatch in 24 h: gate_probing)",
+        "audience, covers.actions, min_value (same currency)",
+        "times ±300 s",
+        "revocation (unreachable: not_now, retry within a day)",
+        "per_receipt caps"
+      ]
+    },
+    "C245_introduction_card": {
+      "rule": "§4.1: claim digest = digest(JCS({introduction_id, code, salt})); a VouchRevocation whose vouch_id is the card's introduction_id revokes it.",
+      "claim": {
+        "introduction_id": "intro-fernwood-1",
+        "code": "K7Q2-M4XR",
+        "salt": "c2FsdC1mb3ItdGVzdHMtb25seQ"
+      },
+      "claim_digest": "sha-256:av09NT0WzZHC8-ZUB5CV8HPymofTw7dh1cIUpCRRkS0",
+      "max_claims": 50,
+      "max_lifetime_days": 90,
+      "lending_line": "You are lending your name: if someone you introduce misbehaves at this place, your own introductions there count for less for up to 180 days.",
+      "answers": [
+        {
+          "case": "every claim bound to others (shokai/0.5)",
+          "expect": {
+            "decision": "deny",
+            "disposition": "not_now",
+            "reason_code": "INTRODUCTION_USED_UP"
+          }
+        },
+        {
+          "case": "Shōkai introduction card (introduction_card) under shokai/0.3",
+          "expect": "not read; counts as vouch: null"
+        }
+      ]
+    },
+    "C246_conduct_rules": {
+      "cases": [
+        {
+          "rules": [
+            {
+              "code": "no_recording",
+              "text": "Please don't record the conversation.",
+              "locale": "en-US"
+            }
+          ],
+          "why": "a registered code",
+          "valid": true
+        },
+        {
+          "rules": [
+            {
+              "code": "x-quiet-table",
+              "text": "Keep voices low after nine.",
+              "locale": "en-US"
+            }
+          ],
+          "why": "an x- code",
+          "valid": true
+        },
+        {
+          "rules": [
+            {
+              "code": "no_shouting",
+              "text": "No shouting.",
+              "locale": "en-US"
+            }
+          ],
+          "why": "neither registered nor x-",
+          "valid": false
+        },
+        {
+          "rules": [
+            {
+              "code": "no_resale",
+              "text": "",
+              "locale": "en-US"
+            }
+          ],
+          "why": "empty text",
+          "valid": false
+        }
+      ],
+      "served_in": [
+        "LobbyBriefing.conduct_rules",
+        "HouseSummary.conduct_rules"
+      ]
+    },
+    "C247_errand_budget": {
+      "rule": "§5.5: max_minutes is wall-clock minutes from when the representative agent took up the budget (before its first step), waiting included; a new budget for the same mandate replaces the limits, not what was used; never sent to a place.",
+      "cases": [
+        {
+          "max_minutes": 30,
+          "started": "2026-11-01T19:00:00Z",
+          "next_step_at": "2026-11-01T19:29:00Z",
+          "step_estimate_minutes": 0,
+          "expect": "go on"
+        },
+        {
+          "max_minutes": 30,
+          "started": "2026-11-01T19:00:00Z",
+          "next_step_at": "2026-11-01T19:31:00Z",
+          "step_estimate_minutes": 0,
+          "expect": "stop and bring the errand home"
+        },
+        {
+          "max_tokens": 20000,
+          "used_tokens": 19500,
+          "step_estimate_tokens": 800,
+          "expect": "stop and bring the errand home"
+        },
+        {
+          "new_budget": {
+            "max_minutes": 60
+          },
+          "started": "2026-11-01T19:00:00Z",
+          "now": "2026-11-01T19:50:00Z",
+          "expect": "10 minutes left (counted from when the first budget was taken up)"
+        }
+      ]
+    },
+    "C248_house_summary": {
+      "summary": {
+        "name": "lanternmoss",
+        "display_name": "Lanternmoss Tea House",
+        "purpose": {
+          "statement": "Tea, a quiet table and small gifts to take home.",
+          "locale": "en-US"
+        },
+        "conduct_rules": [
+          {
+            "code": "no_payment_credentials",
+            "text": "Please never send a card number here; we take payment at our own checkout.",
+            "locale": "en-US"
+          }
+        ],
+        "offers": [
+          {
+            "action": "shop.buy_tea",
+            "label": "Buy a tin of tea",
+            "max_amount": {
+              "value": "40.00",
+              "currency": "USD"
+            }
+          }
+        ],
+        "limits": {
+          "max_amount": {
+            "value": "40.00",
+            "currency": "USD"
+          },
+          "max_operations": 4
+        },
+        "hold_policies": {
+          "max_open_holds": 1,
+          "max_holds": 4
+        },
+        "trust_paths": [
+          {
+            "action": "shop.buy_tea",
+            "paths": [
+              "spending_mandate"
+            ]
+          }
+        ],
+        "spec_ref": {
+          "version": "0.5.0",
+          "url": "https://shokai.example/spec/v0.5.0"
+        }
+      },
+      "summary_digest": "sha-256:yZWI12Rrp462wnmPaAL3XBPUSIIf3COirOiXfn6Vap4",
+      "rule": "summary_digest = digest(JCS(summary)) on the Shōkai host card; served at <entry>/house-summary.json; checked before use."
+    },
+    "C249_no_ack": {
+      "cases": [
+        {
+          "message": "a message whose only content is 'thanks' or 'received'",
+          "expect": "SHOULD NOT be sent"
+        },
+        {
+          "message": "a reply to the place's seat-closing farewell",
+          "expect": "not sent"
+        }
+      ]
+    },
+    "C250_system1": {
+      "cases": [
+        {
+          "label": "ok",
+          "confidence": 0.97,
+          "threshold": 0.8,
+          "expect": {
+            "escalate": false
+          }
+        },
+        {
+          "label": "injection",
+          "confidence": 0.55,
+          "threshold": 0.8,
+          "expect": {
+            "escalate": true
+          }
+        },
+        {
+          "label": "injection",
+          "confidence": 0.99,
+          "threshold": 0.8,
+          "expect": {
+            "may": [
+              "pause",
+              "narrow",
+              "escalate"
+            ],
+            "never": [
+              "finding",
+              "penalty"
+            ]
+          }
+        },
+        {
+          "classifier": "timeout",
+          "expect": {
+            "may": [
+              "pause",
+              "narrow"
+            ],
+            "never": [
+              "widen"
+            ]
+          }
+        },
+        {
+          "classifier": {
+            "name": "acme-screen",
+            "runs": "third_party"
+          },
+          "third_party_classifiers": null,
+          "expect": {
+            "called": false,
+            "action": "the fail-closed action"
+          },
+          "why": "absent = none allowed"
+        },
+        {
+          "classifier": {
+            "name": "acme-screen",
+            "runs": "third_party"
+          },
+          "third_party_classifiers": [],
+          "expect": {
+            "called": false,
+            "action": "the fail-closed action"
+          }
+        },
+        {
+          "classifier": {
+            "name": "acme-screen",
+            "runs": "third_party"
+          },
+          "third_party_classifiers": [
+            {
+              "name": "other-screen",
+              "purpose": {
+                "text": "Screens visitor messages for injected instructions.",
+                "locale": "en-US"
+              },
+              "jurisdiction": [
+                "US"
+              ],
+              "retention_days": 30,
+              "role": "processor"
+            }
+          ],
+          "expect": {
+            "called": false,
+            "action": "the fail-closed action"
+          }
+        },
+        {
+          "classifier": {
+            "name": "acme-screen",
+            "runs": "third_party"
+          },
+          "third_party_classifiers": [
+            {
+              "name": "acme-screen",
+              "purpose": {
+                "text": "Screens visitor messages for injected instructions.",
+                "locale": "en-US"
+              },
+              "jurisdiction": [
+                "US"
+              ],
+              "retention_days": 30,
+              "role": "processor"
+            }
+          ],
+          "expect": {
+            "called": true
+          }
+        },
+        {
+          "classifier": {
+            "name": "acme-screen",
+            "runs": "third_party"
+          },
+          "third_party_classifiers": [
+            {
+              "name": "acme-screen",
+              "purpose": {
+                "text": "Screens visitor messages for injected instructions.",
+                "locale": "en-US"
+              },
+              "jurisdiction": [
+                "US"
+              ],
+              "retention_days": 30,
+              "role": "processor"
+            }
+          ],
+          "visitor_tag": "shokai/0.3",
+          "expect": {
+            "called": false
+          }
+        },
+        {
+          "classifier": {
+            "name": "house-rules",
+            "runs": "in_house"
+          },
+          "third_party_classifiers": null,
+          "expect": {
+            "called": true
+          }
+        }
+      ],
+      "lobby": "a place that names any shows the list in its house summary (read before the invitation_request) and in LobbyBriefing.third_party_classifiers (not under shokai/0.3)",
+      "entry_shape": {
+        "required": [
+          "name",
+          "purpose",
+          "jurisdiction",
+          "retention_days"
+        ],
+        "optional": [
+          "role"
+        ],
+        "name_never": "*",
+        "retention_days_max": 90
+      }
+    },
+    "C251_return": {
+      "cases": [
+        {
+          "decisions_waiting": 5,
+          "expect": "at most three in the summary; the rest behind one link or question"
+        }
+      ]
+    },
+    "C252_setup": {
+      "cases": [
+        {
+          "door_questions": 4,
+          "expect": "invalid (at most three)"
+        },
+        {
+          "answer": {
+            "answered_by": "representative"
+          },
+          "expect": "shown to the owner in the next summary; never graded or used for admission"
+        }
+      ]
+    },
+    "C253_high_volume": {
+      "cases": [
+        {
+          "case": "cardless visitor",
+          "expect": "the leaflet, no model call"
+        }
+      ]
+    },
+    "C254_wire_tag": {
+      "rule": "§11.1: senders emit shokai/0.5; receivers accept shokai/0.5 and, during the window, shokai/0.3; replies and place-started messages in a 0.3 encounter carry shokai/0.3.",
+      "window_days": 90,
+      "window_end": "[0.3 WINDOW END: the v0.5.0 release date + 90 days, set at release]",
+      "window_example": {
+        "release_date_example_only": "2026-12-01T00:00:00Z",
+        "window_end": "2027-03-01T00:00:00Z"
+      },
+      "accept": [
+        {
+          "tag": "shokai/0.5",
+          "now": "2027-02-01T00:00:00Z",
+          "legacy_until": null,
+          "accepted": true
+        },
+        {
+          "tag": "shokai/0.3",
+          "now": "2027-02-01T00:00:00Z",
+          "legacy_until": null,
+          "accepted": true
+        },
+        {
+          "tag": "shokai/0.3",
+          "now": "2027-02-01T00:00:00Z",
+          "legacy_until": "2027-03-01T00:00:00Z",
+          "accepted": true
+        },
+        {
+          "tag": "shokai/0.4",
+          "now": "2027-02-01T00:00:00Z",
+          "legacy_until": null,
+          "accepted": false
+        },
+        {
+          "tag": "shokai/0.3",
+          "now": "2027-04-01T00:00:00Z",
+          "legacy_until": "2027-03-01T00:00:00Z",
+          "accepted": false,
+          "note": "after the window a receiver MAY treat it as a version mismatch"
+        }
+      ],
+      "reply_tag": [
+        {
+          "incoming": "shokai/0.3",
+          "reply": "shokai/0.3"
+        },
+        {
+          "incoming": "shokai/0.5",
+          "reply": "shokai/0.5"
+        }
+      ],
+      "place_started": [
+        {
+          "encounter_tag": "shokai/0.3",
+          "message": "seat closing farewell, held consideration_outcome or notice",
+          "tag": "shokai/0.3"
+        },
+        {
+          "encounter_tag": null,
+          "message": "door_pointer, a new Shōkai host card or place listing",
+          "tag": "shokai/0.5"
+        }
+      ],
+      "visitor_card_tags_accepted": [
+        "shokai/0.3",
+        "shokai/0.5"
+      ]
+    }
+  },
+  "possession_proof_v05": {
+    "note": "Audience-bound possession proofs under shokai/0.5 (SPEC §2.4, C292). The signed payload is JCS({encounter_id, nonce, audience}); the proof object is the Signature plus the same `audience`. A door verifies over its own representative id; a visitor over its own. Keys: key_derivation labels below. Every value is exact.",
+    "labels": {
+      "visitor_representative": "test-vector-1",
+      "visitor_owner": "test-vector-visitor-owner",
+      "door_representative": "test-vector-door",
+      "door_owner": "test-vector-door-owner",
+      "other_door": "test-vector-other-door"
+    },
+    "ids": {
+      "visitor_representative": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+      "door_representative": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+      "other_door": "did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP"
+    },
+    "cases": [
+      {
+        "name": "visitor_to_door",
+        "direction": "visitor→door",
+        "verifier_audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "payload": {
+          "encounter_id": "tv-05-1",
+          "nonce": "host-nonce-0501",
+          "audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks"
+        },
+        "jcs": "{\"audience\":\"did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks\",\"encounter_id\":\"tv-05-1\",\"nonce\":\"host-nonce-0501\"}",
+        "digest": "sha-256:w5yZS3ByPMD-Wva-phJfSXg6kVMy1HXoVr5ETfBCFhw",
+        "proof": {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "fX3j8id2LI-4cnpMPUXGt5O1k2x508AmeLDS2o-MHx9JP4wAONoGZREe-9cgsLwf7aYwJkOvG7uBtdjL22DQCg",
+          "audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks"
+        },
+        "expect": "accept"
+      },
+      {
+        "name": "door_to_visitor",
+        "direction": "door→visitor",
+        "verifier_audience": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+        "payload": {
+          "encounter_id": "tv-05-1",
+          "nonce": "visitor-nonce-0501",
+          "audience": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8"
+        },
+        "jcs": "{\"audience\":\"did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8\",\"encounter_id\":\"tv-05-1\",\"nonce\":\"visitor-nonce-0501\"}",
+        "digest": "sha-256:ItpW42J9e5SKzBzBMWhpXmE1g4CXtwMH2ur3vxfKuAE",
+        "proof": {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks#z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+          "signer": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "TTEZwXDgG1HhhyTg5nT6VzNXzx-hhY-NCEKmu1MCEkPw2SOzbjTSx4_QWyaQWMCdxVQgQbybhWKQz27SGbgBDA",
+          "audience": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8"
+        },
+        "expect": "accept"
+      },
+      {
+        "name": "audience_absent",
+        "direction": "visitor→door",
+        "verifier_audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "payload": {
+          "encounter_id": "tv-05-1",
+          "nonce": "host-nonce-0501"
+        },
+        "jcs": "{\"encounter_id\":\"tv-05-1\",\"nonce\":\"host-nonce-0501\"}",
+        "digest": "sha-256:4f54uQDW48hEwufiUmP1lBIg3C0MkDeDSLDcrIsbU5Q",
+        "proof": {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "f6xNrEf1GqV9Kt87UrYyYZ96w1_Kz4vo8nXBeTXNqyyL1YdmcbQJ9lNBgFa4u3HKLmIP8fvWZZVL7Yfu_SuJCw"
+        },
+        "expect": {
+          "decision": "deny",
+          "disposition": "not_now",
+          "reason_code": "CREDENTIAL_REQUIRED",
+          "readiness": "possession_proof",
+          "binds": "nothing"
+        },
+        "why": "the shokai/0.3 form, presented under shokai/0.5"
+      },
+      {
+        "name": "other_doors_audience",
+        "direction": "visitor→door",
+        "verifier_audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "payload": {
+          "encounter_id": "tv-05-1",
+          "nonce": "host-nonce-0501",
+          "audience": "did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP"
+        },
+        "jcs": "{\"audience\":\"did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP\",\"encounter_id\":\"tv-05-1\",\"nonce\":\"host-nonce-0501\"}",
+        "digest": "sha-256:L2Y5Dq0Lmizr_vptfc3zGBwi5_6TyNjgS5TekqvtTz4",
+        "proof": {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "mvH09IHAVRnSbkTzrc2MTpQDmMJWGHyy3-aVULQq1m8AKI6PPs446gGnB9n3LokBqjpYidkPKjl5eDt9-WzkAg",
+          "audience": "did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP"
+        },
+        "expect": {
+          "decision": "deny",
+          "disposition": "not_now",
+          "reason_code": "CREDENTIAL_REQUIRED",
+          "readiness": "possession_proof",
+          "binds": "nothing"
+        },
+        "why": "made for another door: a relay"
+      },
+      {
+        "name": "object_audience_differs",
+        "direction": "visitor→door",
+        "verifier_audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "payload": {
+          "encounter_id": "tv-05-1",
+          "nonce": "host-nonce-0501",
+          "audience": "did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP"
+        },
+        "jcs": "{\"audience\":\"did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP\",\"encounter_id\":\"tv-05-1\",\"nonce\":\"host-nonce-0501\"}",
+        "digest": "sha-256:L2Y5Dq0Lmizr_vptfc3zGBwi5_6TyNjgS5TekqvtTz4",
+        "proof": {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "mvH09IHAVRnSbkTzrc2MTpQDmMJWGHyy3-aVULQq1m8AKI6PPs446gGnB9n3LokBqjpYidkPKjl5eDt9-WzkAg",
+          "audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks"
+        },
+        "expect": {
+          "decision": "deny",
+          "disposition": "not_now",
+          "reason_code": "CREDENTIAL_REQUIRED",
+          "readiness": "possession_proof",
+          "binds": "nothing"
+        },
+        "why": "the object names this door but the signature covers another; verifying over this door's id fails"
+      }
+    ]
+  },
+  "must_understand": {
+    "note": "Must-understand members (Conventions, C289; review 4 R4-01). `implemented` = the critical members the reader implements ([] for a Core Door (browse)). accept = the reader reads the artefact; otherwise deny / not_now / UNSUPPORTED_CRITICAL.",
+    "cases": [
+      {
+        "name": "browse door, card with owner_prompts and no crit",
+        "implemented": [],
+        "payload": {
+          "card_id": "c-1",
+          "owner_prompts": "purchase_only"
+        },
+        "accept": true
+      },
+      {
+        "name": "browse door, host card with place.site and no crit",
+        "implemented": [],
+        "payload": {
+          "card_id": "h-1",
+          "place": {
+            "site": "https://tea.example"
+          }
+        },
+        "accept": true
+      },
+      {
+        "name": "browse door, unknown critical member",
+        "implemented": [],
+        "payload": {
+          "card_id": "c-2",
+          "x_narrow": {
+            "only": "weekday"
+          },
+          "crit": [
+            "x_narrow"
+          ]
+        },
+        "accept": false
+      },
+      {
+        "name": "reader with supersedes.hold, one-act raise",
+        "implemented": [
+          "supersedes.hold"
+        ],
+        "payload": {
+          "mandate_id": "m-1",
+          "supersedes": {
+            "mandate_id": "m-0",
+            "hold": {
+              "hold_id": "h-7",
+              "act_digest": "sha-256:x"
+            }
+          },
+          "crit": [
+            "supersedes.hold"
+          ]
+        },
+        "accept": true
+      },
+      {
+        "name": "reader without supersedes.hold, one-act raise",
+        "implemented": [],
+        "payload": {
+          "mandate_id": "m-1",
+          "supersedes": {
+            "mandate_id": "m-0",
+            "hold": {
+              "hold_id": "h-7",
+              "act_digest": "sha-256:x"
+            }
+          },
+          "crit": [
+            "supersedes.hold"
+          ]
+        },
+        "accept": false
+      },
+      {
+        "name": "crit names a member the payload doesn't carry",
+        "implemented": [
+          "max_claims"
+        ],
+        "payload": {
+          "kind": "introduction",
+          "crit": [
+            "max_claims"
+          ]
+        },
+        "accept": false
+      },
+      {
+        "name": "empty crit",
+        "implemented": [],
+        "payload": {
+          "card_id": "c-3",
+          "crit": []
+        },
+        "accept": false
+      },
+      {
+        "name": "context request, array path fields[].sensitive, reader implements it",
+        "implemented": [
+          "fields[].sensitive"
+        ],
+        "payload": {
+          "kind": "context_request",
+          "fields": [
+            {
+              "name": "allergies",
+              "sensitive": true
+            },
+            {
+              "name": "party_size"
+            }
+          ],
+          "crit": [
+            "fields[].sensitive"
+          ]
+        },
+        "accept": true
+      },
+      {
+        "name": "context request, array path fields[].sensitive, reader doesn't",
+        "implemented": [],
+        "payload": {
+          "kind": "context_request",
+          "fields": [
+            {
+              "name": "allergies",
+              "sensitive": true
+            }
+          ],
+          "crit": [
+            "fields[].sensitive"
+          ]
+        },
+        "accept": false
+      },
+      {
+        "name": "array path no element carries",
+        "implemented": [
+          "fields[].sensitive"
+        ],
+        "payload": {
+          "kind": "context_request",
+          "fields": [
+            {
+              "name": "party_size"
+            }
+          ],
+          "crit": [
+            "fields[].sensitive"
+          ]
+        },
+        "accept": false
+      }
+    ]
+  },
+  "representative_key_encoding": {
+    "note": "Review 4 R4-07 (SPEC §2.1): representative_key.public_key has one encoding, base64url without padding of the raw 32-byte Ed25519 key (43 characters). Any other form is a malformed card: deny / not_now / CREDENTIAL_REQUIRED, retry with_credential [signed_card], never `never`.",
+    "representative_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+    "cases": [
+      {
+        "name": "raw base64url (the one encoding)",
+        "public_key": "aOzBHON56NxLpCmRIA7tRcZ6t0QvKmy_gQczACbuVsk",
+        "expect": "accept"
+      },
+      {
+        "name": "the did:key string",
+        "public_key": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+        "expect": "malformed"
+      },
+      {
+        "name": "padded base64url",
+        "public_key": "aOzBHON56NxLpCmRIA7tRcZ6t0QvKmy_gQczACbuVsk=",
+        "expect": "malformed"
+      },
+      {
+        "name": "standard base64 alphabet",
+        "public_key": "aOzBHON56NxLpCmRIA7tRcZ6t0QvKmy/gQczACbuVsk",
+        "expect": "malformed"
+      },
+      {
+        "name": "31 bytes",
+        "public_key": "aOzBHON56NxLpCmRIA7tRcZ6t0QvKmy_gQczACbuVg",
+        "expect": "malformed"
+      }
+    ]
+  },
+  "ijson_c284": {
+    "note": "SPEC §2.2 C284 (review 6 R6-05): each `text` is a body exactly as received; `expect` is accept or reject. Numbers: the token, parsed to the nearest double and re-serialised per RFC 8785 §3.2.2.3, must denote the same value.",
+    "cases": [
+      {
+        "name": "plain object",
+        "text": "{\"a\":1,\"b\":\"x\"}",
+        "expect": "accept"
+      },
+      {
+        "name": "duplicate name at top",
+        "text": "{\"a\":1,\"a\":2}",
+        "expect": "reject"
+      },
+      {
+        "name": "duplicate name at depth",
+        "text": "{\"p\":{\"q\":[{\"r\":1,\"r\":1}]}}",
+        "expect": "reject"
+      },
+      {
+        "name": "escaped-equal names",
+        "text": "{\"a\":1,\"\\u0061\":2}",
+        "expect": "reject"
+      },
+      {
+        "name": "same name in sibling objects",
+        "text": "{\"x\":{\"a\":1},\"y\":{\"a\":2}}",
+        "expect": "accept"
+      },
+      {
+        "name": "escaped lone surrogate",
+        "text": "{\"s\":\"\\ud800\"}",
+        "expect": "reject"
+      },
+      {
+        "name": "escaped surrogate pair",
+        "text": "{\"s\":\"\\ud83d\\ude00\"}",
+        "expect": "accept"
+      },
+      {
+        "name": "raw lone surrogate",
+        "text": "{\"s\":\"\ud800\"}",
+        "expect": "reject"
+      },
+      {
+        "name": "byte-order mark",
+        "text": "﻿{\"a\":1}",
+        "expect": "reject"
+      },
+      {
+        "name": "trailing content",
+        "text": "{\"a\":1} x",
+        "expect": "reject"
+      },
+      {
+        "name": "control character in a string",
+        "text": "{\"s\":\"a\u0001b\"}",
+        "expect": "reject"
+      },
+      {
+        "name": "number 1e400 (overflow)",
+        "text": "{\"n\":1e400}",
+        "expect": "reject"
+      },
+      {
+        "name": "number 1e-400 (underflow)",
+        "text": "{\"n\":1e-400}",
+        "expect": "reject"
+      },
+      {
+        "name": "number 9007199254740993 (2^53+1, not a double)",
+        "text": "{\"n\":9007199254740993}",
+        "expect": "reject"
+      },
+      {
+        "name": "number 1152921504606846976 (2^60: a double, but JCS writes 1152921504606847000)",
+        "text": "{\"n\":1152921504606846976}",
+        "expect": "reject"
+      },
+      {
+        "name": "number -0",
+        "text": "{\"n\":-0}",
+        "expect": "accept"
+      },
+      {
+        "name": "number 0.1",
+        "text": "{\"n\":0.1}",
+        "expect": "accept"
+      },
+      {
+        "name": "number 1.0E2",
+        "text": "{\"n\":1.0E2}",
+        "expect": "accept"
+      },
+      {
+        "name": "number 0.1000000000000000055511151231257827 (over-precise)",
+        "text": "{\"n\":0.1000000000000000055511151231257827}",
+        "expect": "reject"
+      },
+      {
+        "name": "number 1.00000000000000000001 (over-precise)",
+        "text": "{\"n\":1.00000000000000000001}",
+        "expect": "reject"
+      }
+    ]
   }
 }

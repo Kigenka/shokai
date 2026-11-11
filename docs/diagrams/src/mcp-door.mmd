@@ -1,0 +1,12 @@
+flowchart TB
+  subgraph P["Plain MCP, no door"]
+    direction LR
+    PA["An agent:<br/>whose, and why?<br/>The server<br/>can't tell"] --> PT["MCP server<br/>every tool,<br/>to every client"]
+  end
+  subgraph S["With a Shōkai door in front"]
+    direction LR
+    SV["Visiting<br/>representative<br/>1. Introduces itself:<br/>whose it is,<br/>why it came,<br/>which tools"] --> SR(["Host<br/>representative<br/>2. Review<br/>3. Decide"])
+    SR -- "grant" --> SP["4. A pass<br/>(the spec's seat):<br/>only the tools<br/>granted, within<br/>the owner's limits"]
+    SP --> ST["MCP server<br/>only those<br/>tools show;<br/>every call<br/>is checked"]
+  end
+  P ~~~ S

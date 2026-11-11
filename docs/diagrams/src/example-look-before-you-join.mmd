@@ -1,7 +1,7 @@
 sequenceDiagram
   autonumber
-  participant R as A representative, not yet identified
-  participant G as Corsavel's door (a luggage store)
+  participant R as A visiting representative, not yet identified
+  participant G as Corsavel's host representative (a luggage store)
   participant O as Its owner
   R->>G: GET /places (the public place listing)
   G-->>R: actions, purposes, categories. account.create marked creates_account and requires_introduction

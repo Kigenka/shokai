@@ -1,0 +1,129 @@
+{
+  "id": "installer/openclaw/tech",
+  "role": "installer",
+  "skill": "openclaw",
+  "persona": "tech",
+  "owner": "Alex Rivera",
+  "agent": "OpenClaw",
+  "path": "/workspace/agentic-mcp/repo-export/shokai-0.5-preview/drafts/package-0.5/installer-skills/openclaw.md",
+  "pass": true,
+  "leaks": [],
+  "turns": [
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "I'd like help putting Shōkai on my store. I run Northline Supply on WordPress — ceramic desk planters. I'm Alex Rivera, I own it."
+    },
+    {
+      "role": "agent",
+      "name": "OpenClaw",
+      "text": "I can help design your welcome, visitor rules and example visits here. Keeping the shop available between chats needs a separate connected service, and that part isn't connected yet. Would planning be useful?\n\nBefore we go further, I should mention: today's first release is built for Shopify first, with WooCommerce as the sibling chapter. WordPress with WooCommerce is the supported route. If you're running WordPress without WooCommerce, or with a different setup, I can still help you plan and rehearse—but the live connection piece would need a different path that isn't designed yet. What's your WordPress setup?",
+      "usage": {
+        "input_tokens": 41,
+        "cache_creation_input_tokens": 16585,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 16585,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 137,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Hey, thanks for jumping in. Yeah, I'm running WordPress with WooCommerce—that's where my product catalog lives. So sounds like we're on the right track then? I'm interested in how this actually works, but first—what would planning look like? Just want to make sure I understand what we're setting up here."
+    },
+    {
+      "role": "agent",
+      "name": "OpenClaw",
+      "text": "Good—WooCommerce is the right track. Let me be clear about what planning means, since you asked.\n\n**Planning is what we do right now:** I learn about your shop, your voice, what you want visitors to be able to do, and we draft a welcome and visitor rules together. We rehearse a couple of example visits on paper. I prepare a summary you can keep and resume from later. Nothing touches your store, no signatures happen, no door opens.\n\n**What planning doesn't include:** connecting to your catalog, setting up a lasting host (the agent that keeps your shop running between our chats), approving and signing anything, or going live. Those are separate steps that need their own work and approvals.\n\nSo right now I'm asking: does it help to spend time designing the experience—what shoppers see when they arrive, what they can do, how you want to sound—before we figure out the technical pieces? Or would you rather understand the full picture first?\n\nIf you want the full picture: visitors would arrive at a door (an always-on web address), meet a welcome you approve, browse your catalog, and suggest orders that don't create real records in WooCommerce yet—just practice orders. A host agent (could be an assistant you trust, or someone else) keeps that door running and talks with visitors. The signing, hosting, and catalog connection are the parts still being built for this first release. Does that help?",
+      "usage": {
+        "input_tokens": 251,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 16585,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 310,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "How does that work? You can get technical if you need to — I want to understand the mechanism."
+    },
+    {
+      "role": "agent",
+      "name": "OpenClaw",
+      "text": "Sure. Here's how it works end-to-end:\n\n**The door.** It's an always-on HTTPS server—could run on your own WordPress host or external hosting. It receives signed JSON requests from visitor agents, validates them, and returns responses. It's deterministic code, not a language model making decisions.\n\n**Visitor arrival.** A visitor agent (like ChatGPT with a Shōkai skill) shows up with a signed card—a WebAuthn passkey signature proving their owner authorized them for this visit. The door checks that card against your approved host card and house digest (the signed ruleset).\n\n**The house.** That's a JCS-serialized JSON object covering your shop's name, principal ID, policy, lobby text, action allowlist, spending caps, retention rules, and any named external services. It gets hashed and signed by your passkey when you approve setup. The door enforces what's in there—no model judgment, just code.\n\n**Catalog and mock proposals.** The door reads your WooCommerce REST API (read-only for now) to show products and prices. When a visitor suggests an order, the door validates it against your caps and policy, but doesn't write to WooCommerce—it's all mock money and creates no store record.\n\n**The host.** That's a separate agent with its own signing key (different from yours). It receives admitted visitors, has conversations, answers questions about your products. The door decides who gets in; the host does the talking.\n\n**State and holds.** The door keeps durable state across restarts—nonces to prevent replays, spending ledgers, protocol holds (orders awaiting your approval). Local memory doesn't work; it needs real persistence.\n\n**Your approval.** You sign once with your passkey at https://sign.kigenka.com. That signature proves you authorized this host, these rules, this house digest. Changing the",
+      "usage": {
+        "input_tokens": 585,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 16585,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 420,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Okay, that's solid. So the door validates the visitor's passkey signature, enforces the rules I set in the house digest, and the host does the actual conversation—but nothing writes to my WooCommerce until I approve it. The mock orders stay separate. That makes sense.\n\nSo when we do planning, I'm basically defining what goes in that house digest—my welcome message, what visitors can browse, the spending cap, all that. And then I sign it once, and the door runs the policy from there. Right?\n\nWhat I need to know: once we plan this out, what's the timeline to actually get it live? And who runs the host agent—is that me, or do I need to hire someone?"
+    },
+    {
+      "role": "agent",
+      "name": "OpenClaw",
+      "text": "You've got it exactly right on the house digest and signing—that's the core of planning.\n\n**Timeline:** I have to be honest here. Planning—what we're doing now—I can finish. But getting it live has gaps. The door code exists, the house validation exists, the client package exists. What's missing: a tested, supported way to connect your WooCommerce catalog through the door, a verified signing handoff (the approval page works, but the full flow back to a live door isn't wired yet), and a lasting host setup that actually persists and recovers its signing key between sessions. Those are real pieces that need separate work. I can't give you a date because they're not built.\n\n**Who runs the host.** That's the other gap. The host needs to be an agent that can keep a protected signing key, recover it across restarts, and stay available. It could be an assistant you already trust—if it has that custody capability. It could be someone else. But it can't be me in this chat, because I can't reliably pick up the same identity tomorrow in a way only I can use. A lasting host needs that.\n\n**What I can do:** finish planning with you, prepare a summary and a letter you could give to a capable host candidate, and be honest about which pieces are still missing. Then you'd either wait for those pieces to be built, or find a technical helper to wire them together.\n\nDoes it make sense to keep planning anyway? It's useful work—you'll have a clear draft ready to go when the rest lands.",
+      "usage": {
+        "input_tokens": 1166,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 16585,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 340,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Yeah, that's fair. I appreciate you being straight about it. Look, planning is worth doing—I'd rather have a solid blueprint ready than scramble later. Plus, it helps me think through what I actually want the experience to feel like for people browsing my planters.\n\nLet's do it. Where do we start?"
+    },
+    {
+      "role": "agent",
+      "name": "OpenClaw",
+      "text": "Perfect. Let's start with your storefront.\n\n**What's your store's public address?** I'd like to look at what shoppers see—your product pages, about section, policies, that kind of thing. Nothing on your store will change; I'm just getting a feel for Northline Supply's voice and what you're selling.\n\nIf I can't open the URL, I'll let you know and you can paste the public pages or describe what visitors see.",
+      "usage": {
+        "input_tokens": 1578,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 16585,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 102,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    }
+  ],
+  "running_cost_usd": 0.1205
+}

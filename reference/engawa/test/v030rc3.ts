@@ -64,9 +64,16 @@ scenario("RC3-P1 probing: the Nth distinct rejected shape is answered never and 
   // The answer to the visit: the first invitation_response it got (a bound principal is refused at its card, before its request).
   const try1 = (amount: string, rep = pia) => { const s = new Session(h, rep); s.ritual(null, rep === pia ? m : mandate(rep, "purchase", ACTS, { max_amount: USD("10.00") }), { actions: ACTS, limits: { max_amount: USD(amount) } });
     return s.transcript.map((o: any) => o.message?.payload ?? o.message).find((x: any) => x.type === "invitation_response"); };
-  const r1 = try1("11.00"), r2 = try1("12.00"), r2b = try1("12.00");
-  check(r1?.decision === "conditional" && r2?.decision === "conditional" && r2b?.decision === "conditional", "two distinct shapes beyond the mandate are conditional; repeating a counted shape doesn't count again");
-  const r3 = try1("13.00");
+  const c1 = try1("11.00"), c2 = try1("12.00"), c3 = try1("13.00"), c4 = try1("14.00");
+  check([c1, c2, c3, c4].every((r) => r?.decision === "conditional"), "review 3 R3-08: unmet conditionals (stepping an amount down) are ordinary negotiation and never escalate to never");
+  // Only requests wholly outside the visitor's own signed mandate count (deny / MANDATE_SCOPE_EXCEEDED).
+  // Review 6 R6-03: and only actions the place lists (fernwood lists request_quote and join_reviewer_program beyond Pia's card).
+  const out = (a: string | string[]) => { const s = new Session(h, pia); s.ritual(null, m, { actions: Array.isArray(a) ? a : [a] }); return s.transcript.map((o: any) => o.message?.payload ?? o.message).find((x: any) => x.type === "invitation_response"); };
+  const typos = ["store.x_one", "store.x_two", "store.x_three"].map(out);
+  check(typos.every((r) => r?.disposition === "not_now") && !h.isNever(pia.owner.id), "R6-03 three unlisted (guessed) action names never count toward probing");
+  const r1 = out("store.request_quote"), r2 = out("store.join_reviewer_program"), r2b = out("store.join_reviewer_program");
+  check(r1?.reason_code === "MANDATE_SCOPE_EXCEEDED" && r2?.disposition === "not_now" && r2b?.disposition === "not_now", "two distinct out-of-mandate shapes are refused not_now; repeating a counted shape doesn't count again");
+  const r3 = out(["store.request_quote", "store.join_reviewer_program"]);
   check(r3?.decision === "deny" && r3.disposition === "never" && !r3.reason_code && r3.retry?.kind === "never", "the 3rd distinct shape is itself answered as probing: deny / never, no code, retry never");
   const plain = try1("10.00");
   check(plain?.decision === "deny" && plain.disposition === "never", "the principal is now bound here: even a request inside the mandate gets never");

@@ -1,0 +1,7 @@
+{
+  "name": "kettle-express-site",
+  "private": true,
+  "type": "module",
+  "description": "A sample Express site for a fictional tea shop, before a Shōkai door is added.",
+  "dependencies": { "express": "^5.1.0" }
+}

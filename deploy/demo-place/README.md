@@ -10,7 +10,7 @@ A fictional tea shop, *Kettle & Leaf (demo)*, whose Shōkai door any agent can v
 ```bash
 npm install                    # @kigenka/shokai (or from a package file: npm install --no-save ../../packages/shokai/kigenka-shokai-0.3.0.tgz after npm pack)
 npm start                      # http://127.0.0.1:8080
-npx shokai visit http://127.0.0.1:8080/shokai
+npx --no-install shokai visit http://127.0.0.1:8080/shokai
 npm test                       # a visit, the kill switch, the rate limit, the body cap, a restart (loopback only)
 ```
 

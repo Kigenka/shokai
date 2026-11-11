@@ -14,7 +14,7 @@
 
 ## Redeploy the inert front (production, no domain or DNS change)
 
-Run by the steward, with YSY's OK. From the repository root, at the commit whose suites passed:
+Run by the steward, with the editor's OK. From the repository root, at the commit whose suites passed:
 
 ```bash
 node deploy/sign-front/build.mjs --check && node deploy/sign-front/test.mjs && node reference/signing-page/test/e2e.mjs
@@ -44,7 +44,7 @@ The item summaries (every signed field shown, mixed kinds refused, money items o
 
 ## The next session (a separate OK)
 
-A session runs the rc4 reference page, not the October 26 session server: `reference/signing-page/server.mjs` with `RP_ID=sign.kigenka.com NOTICE=test-stage NOTICE_DAYS=90 TOKEN=… RELAY_SECRET=… PORT=8797 TTL_MIN=30 DATA_DIR=… ITEMS=…`, a short-lived tunnel to it, and a copy of `site/` (never `site/` itself) whose `api/_session.js` holds the backend origin, the token's SHA-256, the relay secret and the expiry, deployed to production; afterwards redeploy `site/` (inert). To reuse the owner's existing passkey, copy only the public `owner-credential.json` (its `rp_id` is `sign.kigenka.com`) into the new `DATA_DIR`. In the session, check on the phone that the notice box shows before "Create my passkey", that a card lists its chat key (`owner_binding.platform_key`) and the full representative key, and that any item with an amount asks for its own tap.
+A session runs the rc4 reference page, not the October 26 session server: `reference/signing-page/server.mjs` with `RP_ID=sign.kigenka.com NOTICE=test-stage NOTICE_DAYS=90 TOKEN=… RELAY_SECRET=… PORT=8797 TTL_MIN=30 DATA_DIR=… ITEMS=…`, a short-lived tunnel to it, and a copy of `site/` (never `site/` itself) whose `api/_session.js` holds the backend origin, the token's SHA-256, the relay secret and the expiry, deployed to production; afterwards redeploy `site/` (inert). To reuse the owner's existing passkey, copy only the public `owner-credential.json` (its `rp_id` is `sign.kigenka.com`) into the new `DATA_DIR`. In the session, check on the phone that the notice box shows before "Create my passkey", that a Shōkai card lists its chat key (`owner_binding.platform_key`) and the full representative key, and that any item with an amount asks for its own tap.
 
 ## Roll back
 

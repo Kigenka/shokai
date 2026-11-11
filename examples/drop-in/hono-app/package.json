@@ -1,0 +1,7 @@
+{
+  "name": "kettle-hono-site",
+  "private": true,
+  "type": "module",
+  "description": "A sample Hono site (on Node) for a fictional tea shop, before a Shōkai door is added.",
+  "dependencies": { "hono": "^4.13.0", "@hono/node-server": "^2.1.0" }
+}

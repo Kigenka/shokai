@@ -1,0 +1,39 @@
+{
+  "trace": "R1-v05-relay",
+  "protocol": "shokai/0.5",
+  "spec": "0.5.0",
+  "note": "Byte-exact: a possession proof whose audience is another door (a relay). The verifying door (test-vector-door) MUST refuse it under shokai/0.5 (SPEC §2.4, C292). Keys from key_derivation labels; time 2026-11-01T09:00:00Z.",
+  "labels": {
+    "visitor_representative": "test-vector-1",
+    "door_representative": "test-vector-door",
+    "other_door": "test-vector-other-door"
+  },
+  "ids": {
+    "visitor_representative": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+    "door_representative": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+    "other_door": "did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP"
+  },
+  "verifier_audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+  "signed_payload": {
+    "encounter_id": "tv-05-1",
+    "nonce": "host-nonce-0501",
+    "audience": "did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP"
+  },
+  "jcs": "{\"audience\":\"did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP\",\"encounter_id\":\"tv-05-1\",\"nonce\":\"host-nonce-0501\"}",
+  "digest": "sha-256:L2Y5Dq0Lmizr_vptfc3zGBwi5_6TyNjgS5TekqvtTz4",
+  "proof": {
+    "alg": "Ed25519",
+    "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+    "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+    "signed_at": "2026-11-01T09:00:00Z",
+    "value": "mvH09IHAVRnSbkTzrc2MTpQDmMJWGHyy3-aVULQq1m8AKI6PPs446gGnB9n3LokBqjpYidkPKjl5eDt9-WzkAg",
+    "audience": "did:key:z6MktWLwMDJfrmwk5e2h7AYkP5nJG5UwKQoSnYRw9E2AsDLP"
+  },
+  "expect": {
+    "decision": "deny",
+    "disposition": "not_now",
+    "reason_code": "CREDENTIAL_REQUIRED",
+    "readiness": "possession_proof",
+    "binds": "nothing"
+  }
+}

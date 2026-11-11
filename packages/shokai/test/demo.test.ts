@@ -11,7 +11,7 @@ const t0 = Date.now();
 const r = spawnSync(process.execPath, [cli, "demo"], { encoding: "utf8", env: { ...process.env, NO_COLOR: "1" }, timeout: 20000 });
 const out = r.stdout ?? "";
 check(r.status === 0, "exits 0");
-check(/invitation_response grant/.test(out) && /seated; tools in the seat: menu\.view, order\.place/.test(out), "the visitor is seated for menu.view and order.place");
+check(/invitation_response grant/.test(out) && /admitted; tools in the pass \(wire: seat\): menu\.view, order\.place/.test(out), "the visitor is seated for menu.view and order.place");
 check(/refused by the representative itself/.test(out) && /refused by the door/.test(out), "the overspend is refused by the representative and, sent anyway, by the door");
 check(/Spent 6\.00 USD of the 10\.00 USD allowed/.test(out), "the report home says what was spent of what was allowed");
 check(/no global score, nothing on-chain/.test(out), "it says where conduct records live");

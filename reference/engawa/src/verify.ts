@@ -14,7 +14,7 @@ export interface Verifier {
   /** v0.2.4: `rpId` = the KNOWN card's owner_binding.rp_id, if any; ES256 is checked against the stated webauthn.rp_id, which must equal it when known (§2.1, A.1). */
   signed<T>(s: Signed<T>, signer?: string, key?: { alg: string; public_key: string }, requireAlg?: "ES256" | "Ed25519", rpId?: string): Digest | null;
   /** Possession proof (§2.4): signature by the card key over digest(JCS({encounter_id, nonce})). */
-  possession(proof: Signature, card: RepresentativeCard, encounter_id: string, nonce: string): boolean;
+  possession(proof: Signature, card: RepresentativeCard, encounter_id: string, nonce: string, audience?: string): boolean;
   /** §2.1: representative_key must be the key representative_id resolves to, and key_id a DID URL of it. */
   cardKeyBinds(card: RepresentativeCard): boolean;
   /** Generic: signature over digest(JCS(payload)) by a DID (continuity proofs, §9.1). */
@@ -29,7 +29,9 @@ export function proofWellFormed(proof: Signature | undefined, card: Representati
   return proof.key_id === card.representative_key?.key_id && proof.signer === card.representative_id;
 }
 
-export const possessionPayload = (encounter_id: string, nonce: string) => ({ encounter_id, nonce });
+/** §2.4. Under shokai/0.5 the payload also names its `audience`: the representative id of the door the proof is for (its Shōkai host
+ *  card's `representative_id`), so a proof made for one door can't be relayed to another (R3-01, C292). shokai/0.3 keeps {encounter_id, nonce}. */
+export const possessionPayload = (encounter_id: string, nonce: string, audience?: string) => audience === undefined ? { encounter_id, nonce } : { encounter_id, nonce, audience };
 const didOf = (keyId: string) => keyId.split("#")[0];
 const sameKey = (a: ResolvedKey | null, b: ResolvedKey | null) =>
   !!a && !!b && a.alg === b.alg && jcs(a.key.export({ format: "jwk" })) === jcs(b.key.export({ format: "jwk" }));
@@ -59,10 +61,10 @@ export class RealVerifier implements Verifier {
     }
     return null;
   }
-  possession(proof: Signature, card: RepresentativeCard, encounter_id: string, nonce: string): boolean {
+  possession(proof: Signature, card: RepresentativeCard, encounter_id: string, nonce: string, audience?: string): boolean {
     if (!proof || proof.key_id !== card.representative_key?.key_id || proof.signer !== card.representative_id) return false;
     const k = parsePublicKey(card.representative_key.alg, card.representative_key.public_key);
-    return !!k && verifySig(proof, digestOf(possessionPayload(encounter_id, nonce)), k);
+    return !!k && verifySig(proof, digestOf(possessionPayload(encounter_id, nonce, audience)), k);
   }
   cardKeyBinds(card: RepresentativeCard): boolean {
     const rk = card?.representative_key; if (!rk || didOf(rk.key_id) !== card.representative_id) return false;

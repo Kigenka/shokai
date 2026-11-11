@@ -69,52 +69,67 @@ export function t(locale: Locale, key: Key, vars: Record<string, string> = {}): 
 export function lobbyText(m: Record<string, string>, locale: Locale): string { return m[locale] ?? m[Object.keys(m)[0]]; }
 
 // ---------- Readiness items (§3.3): `detail` for the representative, `owner_text` for its owner (no protocol words) ----------
-type RCode = "card" | "owner_binding" | "purpose" | "introduction" | "claim_evidence" | "possession_proof" | "owner_consent";
+type RCode = "card" | "owner_binding" | "purpose" | "introduction" | "claim_evidence" | "possession_proof" | "owner_consent" | "card_kind" | "customer_link" | "trust";
 const R: Record<string, Record<RCode, [string, string]>> = {
   "en-US": {
-    card: ["A representative card (a signed profile) with your own Ed25519 key, signed by your principal.", "Your assistant needs a profile card that you sign once, saying who it works for."],
+    card: ["A representative card (a signed profile) with your own Ed25519 key, signed by your principal.", "Your agent needs a representative card you sign once, saying who it represents."],
     owner_binding: ["Proof that you represent your owner: your owner signs your card and mandate (or a standing allowance) with their passkey.", "Please confirm with Face ID or your passkey that this assistant really works for you."],
     purpose: ["A stated purpose: what you're here to do, as a structured request within a signed mandate.", "Your assistant needs to say clearly what it is here to do, with your permission for it."],
     introduction: ["An introduction: a signed vouch from someone we know.", "This place asks for an introduction from someone it already knows."],
     claim_evidence: ["Claims backed by evidence we can fetch (with a content digest) or by a vouch, for the parts of this place that require them.", "This place asks for proof of some of the things your profile says about you."],
     possession_proof: ["Start a new visit (a fresh greeting, so a new encounter and nonce) and present your card with a possession proof: your card key's signature over that encounter and our greeting nonce.", "Your assistant needs to show again that its profile card is really its own; it can do this by itself."],
     owner_consent: ["A consent signed by your owner with their passkey (for example accepting the house rules or a meeting invitation).", "This needs your own approval with your passkey before your assistant can come in."],
+    card_kind: ["Start a new visit and present your Shōkai visitor card (kind \"visitor\"). A Shōkai host card keeps a place's door; it is not a visitor's credential.", "This door expects a Shōkai visitor card. You presented a Shōkai host card. Please come back with your Shōkai visitor card, or ask your owner for one."],
+    customer_link: ["This action is served only under a customer link the place made in its own app or website, named in a mandate your owner signed.", "Link your representative in this place's own app or website first."],
+    trust: ["This action needs one of the kinds of trust this place lists for it (trust_paths). It is not a penalty.", "This place asks for a little more trust before this; here are the ways to get it."],
   },
   "es-ES": {
-    card: ["Una tarjeta de representante (un perfil firmado con afirmaciones respaldadas).", "Su asistente necesita una tarjeta de perfil que usted firma una vez, diciendo para quién trabaja."],
+    card: ["Una tarjeta de representante (un perfil firmado con afirmaciones respaldadas).", "Su agente necesita una tarjeta de representante que usted firma una vez, diciendo a quién representa."],
     owner_binding: ["Prueba de que representa a su titular: su titular firma su mandato con su llave de acceso (passkey).", "Confirme con Face ID o su llave de acceso que este asistente trabaja de verdad para usted."],
     purpose: ["Un propósito declarado: lo que viene a hacer, como solicitud estructurada.", "Su asistente debe decir claramente a qué viene, con su permiso para ello."],
     introduction: ["Una presentación: un aval firmado por alguien que conocemos.", "Este lugar pide una presentación de alguien a quien ya conocen."],
     claim_evidence: ["Afirmaciones respaldadas por pruebas que podamos consultar, o por un aval.", "Este lugar pide pruebas de algunas cosas que su perfil dice de usted."],
     possession_proof: ["Empiece una visita nueva (un saludo nuevo, con encuentro y nonce nuevos) y presente su tarjeta con una prueba de posesión firmada con la clave de la tarjeta para ese encuentro.", "Su asistente debe mostrar de nuevo que su tarjeta de perfil es suya; puede hacerlo solo."],
     owner_consent: ["Un consentimiento firmado por su titular con su llave de acceso.", "Esto necesita su aprobación con su llave de acceso antes de que su asistente pueda entrar."],
+    card_kind: ["Empiece una visita nueva y presente su Shōkai visitor card (tipo \"visitor\"). Una Shōkai host card guarda la puerta de un lugar; no es la credencial de un visitante.", "Esta puerta espera una Shōkai visitor card. Usted presentó una Shōkai host card. Vuelva con su Shōkai visitor card, o pida una a su titular."],
+    customer_link: ["Esta acción se ofrece solo con un vínculo de cliente creado en la propia aplicación o web del lugar, nombrado en un mandato firmado por su titular.", "Primero vincule a su representante en la aplicación o la web de este lugar."],
+    trust: ["Esta acción requiere uno de los tipos de confianza que el lugar indica para ella (trust_paths). No es una sanción.", "Este lugar pide un poco más de confianza antes de esto; estas son las formas de obtenerla."],
   },
   "fr-FR": {
-    card: ["Une carte de représentant (un profil signé), avec votre propre clé Ed25519, signée par votre mandant.", "Votre assistant a besoin d'une carte de profil que vous signez une fois, indiquant pour qui il travaille."],
+    card: ["Une carte de représentant (un profil signé), avec votre propre clé Ed25519, signée par votre mandant.", "Votre agent a besoin d'une carte de représentant que vous signez une fois, indiquant qui il représente."],
     owner_binding: ["La preuve que vous représentez votre mandant : il signe votre carte et votre mandat (ou une allocation permanente) avec sa clé d'accès.", "Confirmez avec Face ID ou votre clé d'accès que cet assistant travaille bien pour vous."],
     purpose: ["Un objet déclaré : ce que vous venez faire, sous forme de demande structurée dans un mandat signé.", "Votre assistant doit dire clairement ce qu'il vient faire, avec votre accord."],
     introduction: ["Une recommandation signée par quelqu'un que nous connaissons.", "Ce lieu demande une recommandation de la part de quelqu'un qu'il connaît déjà."],
     claim_evidence: ["Des affirmations étayées par des éléments vérifiables ou par une recommandation.", "Ce lieu demande des preuves de certaines choses que votre profil dit de vous."],
     possession_proof: ["Commencez une nouvelle visite (une nouvelle salutation, donc une nouvelle rencontre et un nouveau nonce) et présentez votre carte avec une preuve de possession signée par la clé de la carte pour cette rencontre.", "Votre assistant doit montrer à nouveau que sa carte de profil est bien la sienne ; il peut le faire seul."],
     owner_consent: ["Un consentement signé par votre mandant avec sa clé d'accès.", "Il faut votre accord, donné avec votre clé d'accès, avant que votre assistant puisse entrer."],
+    card_kind: ["Commencez une nouvelle visite et présentez votre Shōkai visitor card (type \"visitor\"). Une Shōkai host card garde la porte d'un lieu ; ce n'est pas la pièce d'un visiteur.", "Cette porte attend une Shōkai visitor card. Vous avez présenté une Shōkai host card. Revenez avec votre Shōkai visitor card, ou demandez-en une à votre mandant."],
+    customer_link: ["Cette action n'est servie qu'avec un lien client créé dans l'application ou le site du lieu, nommé dans un mandat signé par votre mandant.", "Reliez d'abord votre représentant dans l'application ou le site de ce lieu."],
+    trust: ["Cette action demande l'un des types de confiance que le lieu indique pour elle (trust_paths). Ce n'est pas une sanction.", "Ce lieu demande un peu plus de confiance avant cela ; voici les façons de l'obtenir."],
   },
   "ja-JP": {
-    card: ["ご本人が署名した代理人の名刺（署名済みプロフィール）と、代理人自身の Ed25519 鍵。", "アシスタントには、誰のために働くかを示す、あなたが一度だけ署名するプロフィールカードが必要です。"],
+    card: ["ご本人が署名した代理人の名刺（署名済みプロフィール）と、代理人自身の Ed25519 鍵。", "エージェントには、誰を代理するかを示す、あなたが一度だけ署名する代理人カードが必要です。"],
     owner_binding: ["オーナーを代理している証明：オーナーがパスキーで名刺と委任（または常設の許可）に署名します。", "このアシスタントが本当にあなたのために働いていることを、Face ID またはパスキーで確認してください。"],
     purpose: ["目的の明示：署名された委任の範囲内での、構造化された依頼。", "アシスタントは、何のために来たのかを、あなたの許可とともにはっきり伝える必要があります。"],
     introduction: ["紹介：当方が知っている方の署名入りの推薦。", "こちらでは、すでに知っている方からの紹介をお願いしています。"],
     claim_evidence: ["当方が確認できる証拠、または推薦に裏付けられた主張。", "プロフィールに書かれている内容の一部について、裏付けをお願いしています。"],
     possession_proof: ["新しい訪問（新しい挨拶、つまり新しい面会と nonce）を始め、その面会のための署名による所持証明を添えて名刺を提示してください。", "アシスタントは、プロフィールカードが自分のものであることをもう一度示す必要があります。これは自分でできます。"],
     owner_consent: ["オーナーがパスキーで署名した同意。", "アシスタントが入る前に、パスキーによるあなたの承認が必要です。"],
+    card_kind: ["新しい訪問を始め、Shōkai visitor card（種別 \"visitor\"）を提示してください。Shōkai host card は場所の入口を守るためのもので、訪問者の資格ではありません。", "この入口では Shōkai visitor card が必要です。提示されたのは Shōkai host card でした。Shōkai visitor card を持って改めてお越しいただくか、オーナーに発行を依頼してください。"],
+    customer_link: ["この操作は、この場所自身のアプリまたはサイトで作られ、オーナーが署名した委任に記された顧客リンクがある場合にのみ提供されます。", "まず、この場所のアプリまたはサイトで代理人を連携してください。"],
+    trust: ["この操作には、この場所が示す信頼の種類のいずれかが必要です（trust_paths）。罰則ではありません。", "この場所では、これを行う前にもう少し信頼が必要です。その方法は次のとおりです。"],
   },
   "pt-BR": {
-    card: ["Um cartão de representante (um perfil assinado) com sua própria chave Ed25519, assinado pelo seu principal.", "Seu assistente precisa de um cartão de perfil que você assina uma vez, dizendo para quem ele trabalha."],
+    card: ["Um cartão de representante (um perfil assinado) com sua própria chave Ed25519, assinado pelo seu principal.", "Seu agente precisa de um cartão de representante que você assina uma vez, dizendo quem ele representa."],
     owner_binding: ["Prova de que você representa seu dono: ele assina seu cartão e seu mandato (ou uma permissão permanente) com a chave de acesso.", "Confirme com Face ID ou sua chave de acesso que este assistente trabalha mesmo para você."],
     purpose: ["Um propósito declarado: o que veio fazer, como pedido estruturado dentro de um mandato assinado.", "Seu assistente precisa dizer claramente o que veio fazer, com a sua permissão."],
     introduction: ["Uma apresentação: um aval assinado por alguém que conhecemos.", "Este lugar pede uma apresentação de alguém que já conhece."],
     claim_evidence: ["Afirmações com evidências que possamos consultar, ou com um aval.", "Este lugar pede provas de algumas coisas que seu perfil diz sobre você."],
     possession_proof: ["Comece uma nova visita (uma nova saudação, com novo encontro e nonce) e apresente o cartão com uma prova de posse assinada pela chave do cartão para esse encontro.", "Seu assistente precisa mostrar de novo que o cartão de perfil é dele; ele faz isso sozinho."],
     owner_consent: ["Um consentimento assinado pelo seu dono com a chave de acesso.", "Isto precisa da sua aprovação com a sua chave de acesso antes que seu assistente possa entrar."],
+    card_kind: ["Comece uma nova visita e apresente seu Shōkai visitor card (tipo \"visitor\"). Um Shōkai host card guarda a porta de um lugar; não é a credencial de um visitante.", "Esta porta espera um Shōkai visitor card. Você apresentou um Shōkai host card. Volte com seu Shōkai visitor card, ou peça um ao seu dono."],
+    customer_link: ["Esta ação só é atendida com um vínculo de cliente criado no próprio aplicativo ou site do lugar, citado num mandato que seu dono assinou.", "Primeiro vincule seu representante no aplicativo ou site deste lugar."],
+    trust: ["Esta ação precisa de um dos tipos de confiança que o lugar lista para ela (trust_paths). Não é uma penalidade.", "Este lugar pede um pouco mais de confiança antes disso; estas são as formas de obtê-la."],
   },
 };
 /** v0.2.4 (§3.3, C136): an OPTIONAL item's owner sentence says it would help but isn't needed. */

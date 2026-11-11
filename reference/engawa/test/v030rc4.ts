@@ -265,5 +265,45 @@ scenario("RC4-N1 a visitor claiming the door owner's own name under another key:
   check(!bad("maybe") && !bad("seat") && bad("refuse") && bad("seat_as_stranger"), "only \"refuse\" and \"seat_as_stranger\" are valid own_name_visitors values");
 });
 
+
+scenario("RT-P1 an open seat re-reads its card's revocation list; stale or unreadable fails closed; a listed revocation ends the seat (C265)", () => {
+  const url = "https://owners.example/shokai/cards/rt-p1";
+  const d = visitor("Rhea", "person", { purposes: ["purchase"], actions: ACTS }); const o = d.owner as PasskeyOwner;
+  const rhea = { ...d, card: signBy(o, { ...d.card.payload, revocation_url: url } as S.RepresentativeCard) };
+  const clock = clockAt(NOW); const h = makeHost(fernwood, newKeys(), new Map(), clock.now, {});
+  h.fetched.set(url, { ok: true, at: NOW, body: [] });
+  const s = new Session(h, rhea); s.ritual(null, mandate(rhea, "purchase", ["store.browse_catalog"]), { actions: ["store.browse_catalog"] }); const seat = s.response()?.seat;
+  const act = () => s.send(s.msg("act", { seat_id: seat.seat_id, tool: "store.browse_catalog", arguments: {} })).find((x: any) => x.type === "act_decision" || x.type === "act_result");
+  check(!!seat && act()?.type === "act_result", "a fresh, empty list: the act goes through");
+  check(h.actRevocationUrls({ type: "act", seat_id: seat.seat_id }).length === 0, "a fresh copy: nothing to re-fetch");
+  clock.advance(301);
+  check(h.actRevocationUrls({ type: "act", seat_id: seat.seat_id })[0] === url, "an old copy: the transport is told to re-fetch the list before the act");
+  const stale = act();
+  check(stale?.type === "act_decision" && stale.decision === "deny" && stale.disposition === "not_now" && stale.retry?.kind === "after" && !stale.reason_code, "a list older than 300 s: not_now, retry after (fail closed, no reason told)");
+  h.fetched.set(url, { ok: false, at: clock.now() });
+  check(act()?.decision === "deny", "an unreadable list: refused too");
+  h.fetched.set(url, { ok: true, at: clock.now(), body: [cardRevocation(rhea)] });
+  const r = act();
+  check(isRevokedDeny(r) || (r?.type === "act_decision" && r.decision === "deny" && r.retry?.kind === "with_credential"), "the list now names the card: the seat ends (deny, retry with_credential [signed_card])");
+  h.fetched.set(url, { ok: true, at: clock.now(), body: [] });
+  check(act()?.decision === "deny", "… and stays ended even if the list later looks clean (C198)");
+  check(!h.isNever(rhea.owner.id), "nothing is held against the visitor");
+});
+
+scenario("RT-P1 an idle half-ritual stops counting as live: it is dropped before a newcomer is refused; seats never are (C266)", () => {
+  const clock = clockAt(NOW); const h = makeHost(fernwood, newKeys(), new Map(), clock.now, { maxEncounters: 2 });
+  const a = new Session(h, visitor("Ada", "person", { purposes: ["purchase"], actions: ACTS })); a.greet();
+  const b = visitor("Bo", "person", { purposes: ["purchase"], actions: ACTS }); const sb = new Session(h, b);
+  sb.ritual(null, mandate(b, "purchase", ["store.browse_catalog"]), { actions: ["store.browse_catalog"] });
+  check(!!sb.response()?.seat, "one idle half-ritual and one seated guest fill the door (max 2)");
+  const c1 = new Session(h, visitor("Cy", "person", { purposes: ["purchase"], actions: ACTS })); c1.greet();
+  check(h.capacityRefused === true, "within 120 s, a newcomer is refused (the half-ritual is still live)");
+  clock.advance(121);
+  const c2 = new Session(h, visitor("Di", "person", { purposes: ["purchase"], actions: ACTS })); c2.greet();
+  check(h.capacityRefused === false, "after 120 s idle with no seat, the half-ritual is dropped and the newcomer gets in");
+  const c3 = new Session(h, visitor("Ed", "person", { purposes: ["purchase"], actions: ACTS })); c3.greet(); const refused3 = h.capacityRefused; clock.advance(200);
+  check(refused3 === true && sb.send(sb.msg("act", { seat_id: sb.response()!.seat.seat_id, tool: "store.browse_catalog", arguments: {} })).some((x: any) => x.type === "act_result"), "a seated guest is never dropped, however idle; the newcomer is refused instead");
+});
+
 console.log(`${pass} v0.3.0-rc4 checks passed, ${fail} failed`);
 if (fail) process.exit(1);

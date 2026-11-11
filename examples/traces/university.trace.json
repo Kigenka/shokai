@@ -1,0 +1,365 @@
+{
+  "steps": [
+    {
+      "who": "an anonymous visitor (no card)",
+      "at": "campus door",
+      "got": [
+        "greeting",
+        "lobby_briefing",
+        "invitation_response",
+        "farewell"
+      ]
+    },
+    {
+      "who": "Lio's visiting representative (prospective)",
+      "at": "campus door",
+      "seat": [
+        "campus.look",
+        "programs.ask",
+        "application.submit"
+      ],
+      "refused": "course.materials.read"
+    },
+    {
+      "who": "Ines's visiting representative",
+      "at": "campus door",
+      "seat": [
+        "campus.look",
+        "enrolment.confirm"
+      ]
+    },
+    {
+      "who": "Ines's visiting representative",
+      "at": "course door (Dr. Ellery's host representative)",
+      "seat": [
+        "course.materials.read",
+        "assignment.submit",
+        "grades.view_own",
+        "office_hours.book"
+      ],
+      "refused": "grades.view_all",
+      "host_record": true
+    },
+    {
+      "who": "Tomas's visiting representative",
+      "at": "Ines's study room",
+      "without_vouch": "deny",
+      "with_vouch": "grant"
+    },
+    {
+      "who": "Dr. Ellery's visiting representative",
+      "at": "Fernhill Press",
+      "seated": true
+    },
+    {
+      "who": "Dr. Ellery's visiting representative",
+      "at": "Ines's coursework door (Ines's host representative)",
+      "seat": [
+        "folder.ds_210.read"
+      ],
+      "refused": "folder.personal.read"
+    }
+  ],
+  "checks": [
+    {
+      "ok": true,
+      "what": "an anonymous visitor at the campus door gets the leaflet, not silence"
+    },
+    {
+      "ok": true,
+      "what": "the prospective student's visiting representative checked the campus card and was seated"
+    },
+    {
+      "ok": true,
+      "what": "its seat is narrow: look, ask and apply; nothing of a student's"
+    },
+    {
+      "ok": true,
+      "what": "not yet a student: the host representative refuses course materials outside the seat"
+    },
+    {
+      "ok": true,
+      "what": "Lio's representative applies within its seat (the listing said it would ask for a name and an email)"
+    },
+    {
+      "ok": true,
+      "what": "without an offer of admission, enrolment isn't seated: an explained answer with a reason"
+    },
+    {
+      "ok": true,
+      "what": "with the offer (the university's own signed invitation), Ines's visiting representative is seated for enrolment"
+    },
+    {
+      "ok": true,
+      "what": "enrolment is confirmed within the seat"
+    },
+    {
+      "ok": true,
+      "what": "Ines's visiting representative checked the course card (signed by Dr. Ellery's key) and was seated"
+    },
+    {
+      "ok": true,
+      "what": "the course seat is exactly: materials, submission, own grades, office hours"
+    },
+    {
+      "ok": true,
+      "what": "course.materials.read within the seat"
+    },
+    {
+      "ok": true,
+      "what": "assignment.submit within the seat"
+    },
+    {
+      "ok": true,
+      "what": "grades.view_own within the seat"
+    },
+    {
+      "ok": true,
+      "what": "office_hours.book within the seat"
+    },
+    {
+      "ok": true,
+      "what": "another student's records: refused by the course's host representative, with a reason"
+    },
+    {
+      "ok": true,
+      "what": "Ines's representative writes its report home, rendered from machine fields"
+    },
+    {
+      "ok": true,
+      "what": "the course's host representative keeps its record of the visit (SPEC §9.1)"
+    },
+    {
+      "ok": true,
+      "what": "without an introduction, the study room doesn't seat Tomas's representative (its rule, said in its listing)"
+    },
+    {
+      "ok": true,
+      "what": "with Wen's signed vouch (a warm introduction), Tomas's representative is seated in the study room"
+    },
+    {
+      "ok": true,
+      "what": "Tomas's representative posts within its seat"
+    },
+    {
+      "ok": true,
+      "what": "Dr. Ellery's visiting representative is seated at the publisher"
+    },
+    {
+      "ok": true,
+      "what": "the same agent keeps the course door and goes out for Dr. Ellery (two cards, one key)"
+    },
+    {
+      "ok": true,
+      "what": "Dr. Ellery's representative is seated at Ines's coursework door for the DS 210 folder only, read only"
+    },
+    {
+      "ok": true,
+      "what": "it collects week 3's exercises"
+    },
+    {
+      "ok": true,
+      "what": "the rest of Ines's folders: refused by Ines's host representative"
+    }
+  ],
+  "enrol_without_offer": {
+    "decision": "deny",
+    "disposition": "not_now",
+    "reason_code": "VOUCH_REQUIRED"
+  },
+  "report_home": "The place with key …(this run's key) (claims to be \"DS 210: Data and Society (Dr. Ellery)\"; not verified) seated me for \"course.materials.read\", \"assignment.submit\", \"grades.view_own\" and \"office_hours.book\", no spending. I did 4 actions; 1 was refused.",
+  "trace": {
+    "lio_campus": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_decision",
+        "decision": "deny"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "farewell"
+      }
+    ],
+    "ines_course": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_decision",
+        "decision": "deny"
+      },
+      {
+        "dir": "out",
+        "type": "farewell"
+      }
+    ],
+    "tomas_room_with_vouch": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      }
+    ]
+  },
+  "ok": true
+}

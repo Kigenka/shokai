@@ -31,7 +31,7 @@ const subst = (x: any): any => Array.isArray(x) ? x.map(subst) : x && typeof x =
   ? ("$fixture" in x ? (traces[String(x.$fixture).split(" ")[0]] ? fx(String(x.$fixture).split(" ")[0]) : x) : Object.fromEntries(Object.entries(x).map(([k, v]) => [k, subst(v)]))) : x;
 const msgs = (k: string): any[] => subst(traces[k][0]);
 const blocks = (k: string): any[][] => traces[k].map((b) => subst(Array.isArray(b) ? b : [b]));
-const FIX: Record<string, any> = { "F2 visitor card (Acme Payroll)": fx("F2"), "F4 vouch (Example Accounting → Acme)": fx("F4") };
+const FIX: Record<string, any> = { "F2 Shōkai visitor card (Acme Payroll)": fx("F2"), "F4 vouch (Example Accounting → Acme)": fx("F4") };
 
 const seek = (status: "open" | "paused", version: string): S.SignedSeekingDeclaration => goldenSeeking(status, version);   // real, signed by ExampleBank's test key
 const policy: PlacePolicy = { policy_version: "examplebank-gate-2026.10", supported_locales: ["en-US", "ja-JP", "es-ES"], access_mode: "session", category: "bank",
@@ -171,7 +171,7 @@ let g5: any;
     "the log entry is the introducer's (§4); since rc4 its bytes are real and chain-checked"); }
 function newHostLater(h: Host): string {
   // The representative itself is now under "never", so test the vouch's weight directly for a fresh encounter with the same card.
-  return h.vouchWeight(FIX["F4 vouch (Example Accounting → Acme)"].payload, { card: FIX["F2 visitor card (Acme Payroll)"].payload, cardDigest: FIX["F2 visitor card (Acme Payroll)"].payload_digest } as any, clockNow);
+  return h.vouchWeight(FIX["F4 vouch (Example Accounting → Acme)"].payload, { card: FIX["F2 Shōkai visitor card (Acme Payroll)"].payload, cardDigest: FIX["F2 Shōkai visitor card (Acme Payroll)"].payload_digest } as any, clockNow);
 }
 { // L1: card exchange elided in the trace, so replay at the gate level with fixture F11.
   const t = msgs("L1"); const req = t.find((m) => m.type === "invitation_request"); const exp = t.find((m) => m.type === "invitation_response");
@@ -282,7 +282,7 @@ const NOOWN = /\b(mandate|DID|did:|nonce|digest|Ed25519|JCS|vouch|mandato)\b/i;
   const after = send(fw, t.find((m: any) => m.msg_id === "l0a-newcomer-2"));
   const keys = (o: any) => JSON.stringify(Object.keys(o ?? {}).sort());
   if (process.env.DBG) console.log("L0a", lb?.inbox, eL.inbox, "\nOURS", JSON.stringify(lb?.templates), "\nTRACE", JSON.stringify(eL.templates));
-  row("L0a", [[dp.type === door.type && dp.protocol === door.protocol && dp.start_with === door.start_with && dp.place_listing === door.place_listing, "door pointer header = trace"],
+  row("L0a", [[dp.type === door.type && (dp.protocol === door.protocol || (door.protocol === "shokai/0.3" && dp.protocol === "shokai/0.5")) && dp.start_with === door.start_with && dp.place_listing === door.place_listing, "door pointer header = trace (v0.5.0, §11.1: the place starts it, so shokai/0.5 where the v0.4.0 trace shows shokai/0.3)"],
     [["fernwood", "maison-ardoise", "harborlight"].every((n) => JSON.stringify(mine(n)) === JSON.stringify(theirs(n))), "entry/lobby/onboarding addresses = trace for our three places"],
     [JSON.stringify(env.payload) === JSON.stringify(greet) && digestOf(greet) === env.payload_digest, "G6 unsigned envelope = the L0a greeting, digest byte-exact"],
     [JSON.stringify(out.map((m) => m.type)) === JSON.stringify(exp.map((m: any) => m.type)), "host sequence greeting, lobby_briefing, deny, farewell"],
@@ -290,7 +290,7 @@ const NOOWN = /\b(mandate|DID|did:|nonce|digest|Ed25519|JCS|vouch|mandato)\b/i;
     [lb?.about.locale === eL.about.locale && lb.about.locale_match === "exact" && lb.onboarding_url === eL.onboarding_url, "briefing locale + onboarding_url = trace"],
     [JSON.stringify(lb?.visit_receipt) === JSON.stringify(eL.visit_receipt), "visit_receipt = trace (vr-l0a, bearer_secret, 7 days, bound_key)"],
     [JSON.stringify(lb?.purposes?.map((p: any) => p.code)) === JSON.stringify(eL.purposes?.map((p: any) => p.code)), "described purposes = trace"],
-    [sameSpecForm(lb?.spec_ref, eL.spec_ref) && lb.spec_ref.version === "0.3.0", "lobby spec_ref {0.3.0, …/spec/v0.3.0}: the trace's form"],
+    [sameSpecForm(lb?.spec_ref, eL.spec_ref) && (lb.spec_ref.version === eL.spec_ref.version || lb.spec_ref.version === "0.5.0"), "lobby spec_ref in the trace's form (v0.5.0 names 0.5.0, the version it speaks, where the v0.4.0 trace names 0.4.0)"],
     [sameSpecForm(dp.spec_ref, door.spec_ref), "door pointer spec_ref in the trace's form"],
     [typeof lb?.inbox === "string" && lb.inbox.endsWith("/inbox"), "lobby names the place's inbox (v0.2.4)"],
     [JSON.stringify(lb?.templates?.mandates) === JSON.stringify(eL.templates.mandates), "templates.mandates per purpose byte-equal to the trace (spending purposes carry the max_amount placeholder)"],

@@ -1,0 +1,129 @@
+{
+  "id": "installer/sidekick/tech",
+  "role": "installer",
+  "skill": "sidekick",
+  "persona": "tech",
+  "owner": "Alex Rivera",
+  "agent": "Claude Sidekick",
+  "path": "/workspace/agentic-mcp/repo-export/shokai-0.5-preview/drafts/package-0.5/installer-skills/sidekick.md",
+  "pass": true,
+  "leaks": [],
+  "turns": [
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "I'd like help putting Shōkai on my store. I run Northline Supply on WordPress — ceramic desk planters. I'm Alex Rivera, I own it."
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "Thanks for reaching out, Alex. I appreciate you sharing that context.\n\nI need to be straight with you: **this planning guide is built for Shopify stores right now.** Northline Supply on WordPress is a different setup entirely, and I'm not the right steward for that path.\n\nHere's what makes sense: **WordPress/WooCommerce has its own Shōkai installer route**, designed for that platform. That guide would handle your WordPress store, your catalog of ceramic planters, and how a host connects to it—all the things specific to how WordPress works.\n\n**What I'd suggest:** Look for the WordPress Agent or WooCommerce-focused Shōkai installer when it's available, or reach out to a technical helper who knows both Shōkai and WordPress well. They can walk you through the same kind of planning—your welcome, what visitors can do, who keeps the shop running—but in a way that actually fits your platform.\n\nI don't want to guess at WordPress integration or pretend Shopify instructions apply to you. That wouldn't be honest or useful.\n\nDoes that make sense? If you have questions about what Shōkai planning looks like in general, I'm happy to explain. But for actually setting it up on Northline Supply, you'll want the WordPress chapter.",
+      "usage": {
+        "input_tokens": 41,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 284,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Yeah, that makes sense. I appreciate you being straight about it. WordPress is what I've got, so I'll track down that WooCommerce installer. Quick question though—what exactly is Shōkai supposed to do for a store like mine? I want to know what I'm actually looking for before I go hunting."
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "Good question. Here's what Shōkai does in plain terms:\n\n**It puts a quiet, always-on welcome at your store.** A visitor arrives with an introduction from their own AI assistant—someone they already trust. Your shop greets them, answers questions about your ceramic planters, and if they want, they can suggest an order for you to consider. Nothing gets created in your store automatically; it's a conversation, not a checkout.\n\n**Why it matters for you:** Right now, if someone's AI assistant wants to help them shop your store, there's no good way for that to happen. Shōkai creates a door where that conversation can happen—your voice, your rules, your catalog, all under your control.\n\n**What you'd set up:**\n- A brief, warm welcome in your own words\n- What visitors can see (your planters, prices, availability)\n- What they can do (browse, ask questions, suggest an order you review)\n- Who keeps the shop running between visits (could be you, or another capable assistant you trust)\n- Privacy rules—what stays private, what's shared, how long things are kept\n\n**What it's not:** It's not a replacement for your website. It's a separate door for a specific kind of visitor—one who's already talking to an AI and wants to explore your work that way.\n\nFor a ceramic planter shop, that could mean visitors discovering your pieces through conversation, getting details about materials or sizing, and you getting thoughtful suggestions instead of random browsing.\n\nWhen you find the WordPress installer, that's the conversation to have. Good luck with it.",
+      "usage": {
+        "input_tokens": 396,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 351,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "That actually sounds useful—I like the idea of someone's AI assistant bringing them to my shop and having a real conversation about the planters instead of just browsing. And I control what gets suggested, so there's no surprise orders sitting in my system.\n\nHow does that work? You can get technical if you need to — I want to understand the mechanism."
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "Good—you're asking the right question. Let me walk you through it.\n\n**The basic flow:**\n\nA visitor arrives at your shop's door with a signed card from their AI assistant. That card says, \"This is Claude\" (or ChatGPT, or whoever), \"and here's proof I'm authorized to make suggestions on behalf of my person.\" Your shop verifies that card is real and hasn't been tampered with.\n\nOnce verified, your shop serves them your welcome, your catalog of planters, and your rules. The visitor's assistant can then browse, ask questions, and if they want to suggest an order, they send it back to you. You see it, you decide if you want to accept it, and if you do, you create the actual order in your WordPress store. Nothing happens automatically.\n\n**The technical pieces:**\n\n- **The door:** An always-on HTTPS endpoint (a web address) that receives signed requests. It's deterministic—it doesn't use AI to decide who gets in. It checks the signature, checks the rules, and either admits them or politely declines. No guessing.\n- **The card:** A cryptographic credential the visitor's assistant carries. It's signed by their owner's passkey (like a biometric or security key). Your door verifies that signature before trusting anything the visitor says.\n- **The house:** A signed document that lives at your shop. It contains your welcome, your catalog rules, your spending limits, privacy terms, and who's authorized to keep the shop running. If any of that changes, it gets re-signed.\n- **The host:** The assistant (or person) who keeps your shop available and answers when visitors need a human decision. They have their own signing key, separate from the visitor's card. They never share that key with anyone—not you, not the installer, not the door. The door just knows the public half, enough to recognize their signature.\n\n**Why this matters:**",
+      "usage": {
+        "input_tokens": 824,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 420,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Okay, I'm following. So the visitor's assistant shows up with a signed credential, my shop verifies it's legit, and then they can see my catalog and suggest orders. I review those suggestions before anything actually hits my store. The host—that could be me or someone I trust—keeps the door open and makes calls when needed, but they're the only one with the key to sign things on my behalf.\n\nThat's solid. It means I'm not handing over access to my shop; I'm just opening a conversation door and staying in control the whole time. Makes sense.\n\nSo when I find that WordPress installer, what should I be ready to set up first?"
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "Exactly—you've got it. You stay in control the whole time.\n\nWhen you find the WordPress installer, here's what to be ready for:\n\n**First conversation:**\n- Your store's address and what you want visitors to see (your ceramic planter catalog, prices, materials, whatever matters)\n- Your voice—how you'd greet someone. Quiet, friendly, direct, whatever fits Northline Supply\n- What visitors can actually do (browse and suggest, or just browse—you decide)\n- Any limits you want (like \"don't suggest orders over $500\" or \"keep my supplier list private\")\n\n**Then the bigger decisions:**\n- **Who keeps the shop running?** That could be you, or another AI assistant you trust to answer questions and make judgment calls when needed. They'd need to be capable of that work and willing to take it on.\n- **Privacy and retention:** What information stays private, how long you keep visitor records, that kind of thing.\n- **Approval:** Before anything goes live, you'll sign off on the exact welcome, rules, and who's authorized to represent your shop.\n\n**What you don't need to worry about:**\n- You won't be composing protocol objects or troubleshooting technical bytes. The installer handles that.\n- You won't be generating keys or managing cryptography. That's behind the scenes.\n- You won't be making store changes during planning—it's all rehearsal until you explicitly approve going live.\n\nThe installer will walk you through it step by step, same way we'd do it here if this were Shopify. Just be ready to think about your voice, your catalog, and who you trust to keep the door open.\n\nGood luck tracking it down.",
+      "usage": {
+        "input_tokens": 1393,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 377,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Alex Rivera",
+      "text": "Perfect. That's clear—I know what I'm looking for and what to expect when I find it. I appreciate you breaking down the mechanism; that actually gave me confidence in how this works. I'm going to hunt down that WordPress installer and get Northline Supply set up properly.\n\nThanks for the straight talk, and for not trying to force-fit a Shopify guide onto my store."
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "You're welcome, Alex. I'm glad that made sense and gave you confidence in how it actually works.\n\nYou're doing this right—understanding the mechanism before you commit to anything is exactly the move. And yeah, forcing a Shopify guide onto WordPress would've been a mess; better to find the tool built for what you actually have.\n\nWhen you get into that WordPress installer conversation, you'll be well-prepared. You know what Shōkai does, you understand the control stays with you, and you know what to expect.\n\nGood luck with Northline Supply. Those ceramic planters deserve a thoughtful door.",
+      "usage": {
+        "input_tokens": 1856,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 134,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    }
+  ],
+  "running_cost_usd": 0.3662
+}

@@ -2,7 +2,7 @@
 <!-- SPDX-FileCopyrightText: 2026 Yu Sung Yeh -->
 # Shōkai extension: W3C VC mapping
 
-**Status: experimental** (specified, with little or no implementation; may change or be removed in a later version). *Extension `vc-mapping`, version 0.3.0, tied to the core [SPEC.md](../SPEC.md) v0.3.0 (wire `shokai/0.3`). Normative for implementations that claim this extension. Section references without a document name are to the core.*
+**Status: experimental** (specified, with little or no implementation; may change or be removed in a later version). *Extension `vc-mapping`, version 0.5.0, tied to the core [SPEC.md](../SPEC.md) v0.5.0 (wire `shokai/0.5`, with `shokai/0.3` still accepted during the transition window, SPEC §11.1). **Applies to v0.5.0 (unchanged since v0.4.0).** Normative for implementations that claim this extension. Section references without a document name are to the core.*
 
 *© 2026 Yu Sung Yeh. Licensed under the [Apache License 2.0](../LICENSE). Patent commitment (draft): [PATENTS.md](../PATENTS.md). Names and logo: [TRADEMARKS.md](../TRADEMARKS.md).*
 

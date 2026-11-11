@@ -20,7 +20,7 @@ The deployment's settings are fixed in the build (`api/_lib/config.mjs`): rp_id 
 ## What a session looks like
 
 1. The steward runs `admin.mjs create items.json --link link.txt`. The server checks the items (the same `checkItems` as the reference page: anything it can't show in full is refused, including mixed kinds), mints a 24-byte token, stores the session under the token's SHA-256 with a TTL of at most 30 minutes, and freezes the items for the stored owner credential. The link goes only to `link.txt` (0600).
-2. The owner opens `https://sign.kigenka.com/p/<token>/`. If the owner's passkey is already known (YSY's public credential from October 27, loaded once with `admin.mjs credential`), there's no registration: one tap for the items without amounts, then one tap for each item with an amount.
+2. The owner opens `https://sign.kigenka.com/p/<token>/`. If the owner's passkey is already known (the editor's public credential from October 27, loaded once with `admin.mjs credential`), there's no registration: one tap for the items without amounts, then one tap for each item with an amount.
 3. Two minutes after the last item is decided, or at the TTL, the link is inert. `admin.mjs results <session_id> --out <dir>` saves each signed item and checks it with the reference crypto. Results are kept for 7 days in the store.
 
 ## Store layout
@@ -38,7 +38,7 @@ All keys have the prefix `sign:`. Everything stored is public data:
 
 The token is never stored. Every read re-checks each frozen item: its digest must match its payload, and its summary must match what `describe()` says about that payload now. A stored item that changed is refused.
 
-## What YSY must approve, one by one
+## What the editor must approve, one by one
 
 1. **Storage: add Upstash for Redis from the Vercel Marketplace to the steward's Vercel team, and connect it to project `kigenka-sign`, Production only.** Use the free plan, and the region nearest the functions (`iad1`, US East). This accepts Upstash's terms and adds env vars to the project, named by the integration, among them `KV_REST_API_URL` and `KV_REST_API_TOKEN`. The code also reads `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`, whichever the integration sets.
 2. **One env var: `SIGN_ADMIN_SECRET`** (Production, marked Sensitive). Its value is 32 random bytes, at least 32 characters. Generate it on the steward's machine into a 0600 file, and never paste it into chat:
@@ -48,7 +48,7 @@ The token is never stored. Every read re-checks each frozen item: its digest mus
    vercel env add SIGN_ADMIN_SECRET production --sensitive --scope <team> < ~/kigenka-sign-admin-secret
    ```
 3. **The production deployment** of `site/`. It replaces the inert front, `<inert-front-deployment-id>`. There are no domain, alias or DNS changes.
-4. **The session itself:** loading the public owner credential, and opening one 30-minute session with the 4 test items (Edu and Muse: a card and a Willowfold mandate each; 3 taps).
+4. **The session itself:** loading the public owner credential, and opening one 30-minute session with the 4 test items (for the editor's Grok Bot representative, and the editor's agent on Muse, Meta's personal agent: a Shōkai card and a Willowfold mandate each; 3 taps).
 
 No other settings change. The project keeps its domain and its headers.
 

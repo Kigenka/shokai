@@ -1,0 +1,45 @@
+name: Security finding
+description: A weakness in the specification, SDK, runner or reference code. This preview repo has no GitHub private-advisory form; the issue stays inside this private repository.
+labels: [security, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a **private preview repository**. GitHub private vulnerability reporting is not available here.
+        Opening this issue keeps the report inside the repository (visible to people who already have access).
+        Do **not** file 0.5 draft findings against the public 0.3.0 repository (Kigenka/shokai).
+        Prefer not to include a working exploit or secret material; describe impact and the relevant section or test.
+        You may also contact the maintainer as described in SECURITY.md.
+  - type: input
+    id: where
+    attributes:
+      label: Where?
+      description: SPEC section, check id, or source file.
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - severity:high (MUST violated, or money / revocation / identity bypass)
+        - severity:med (interop split or a documented claim does not match evidence)
+        - severity:low (hardening or clarity with no immediate bypass)
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: What you found
+      description: Impact as you understand it, and how to reproduce without pasting secrets.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Before you submit
+      options:
+        - label: I have removed private keys, tokens, signing links and personal data.
+          required: true
+        - label: I am not publishing this finding on the public Kigenka/shokai repository.
+          required: true

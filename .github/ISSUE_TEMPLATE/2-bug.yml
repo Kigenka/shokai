@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         For a problem in the specification text itself, use "Specification issue or change". For a security problem, use
-        [private vulnerability reporting](https://github.com/Kigenka/shokai/security/advisories/new).
+        [SECURITY.md](../../SECURITY.md).
   - type: dropdown
     id: component
     attributes:
@@ -27,7 +27,7 @@ body:
     attributes:
       label: Version or commit
       description: "`npx @kigenka/shokai --version` prints it."
-      placeholder: "@kigenka/shokai 0.3.0 (shokai/0.3, spec 0.3.0)"
+      placeholder: "@kigenka/shokai 0.5.0 (shokai/0.5, spec 0.5.0)"
     validations:
       required: true
   - type: input

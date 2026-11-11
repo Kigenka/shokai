@@ -2,7 +2,7 @@
 <!-- SPDX-FileCopyrightText: 2026 Yu Sung Yeh -->
 # Shōkai extension: Peer meetings
 
-**Status: stable** (in the reference with its own tests; within 0.3, it changes only for fixes). *Extension `peer-meetings`, version 0.3.0, tied to the core [SPEC.md](../SPEC.md) v0.3.0 (wire `shokai/0.3`). Normative for implementations that claim this extension. Section references without a document name are to the core.*
+**Status: stable** (in the reference with its own tests; within 0.5, it changes only for fixes). *Extension `peer-meetings`, version 0.5.0, tied to the core [SPEC.md](../SPEC.md) v0.5.0 (wire `shokai/0.5`, with `shokai/0.3` still accepted during the transition window, SPEC §11.1). **Applies to v0.5.0 (unchanged since v0.4.0).** Normative for implementations that claim this extension. Section references without a document name are to the core.*
 
 *© 2026 Yu Sung Yeh. Licensed under the [Apache License 2.0](../LICENSE). Patent commitment (draft): [PATENTS.md](../PATENTS.md). Names and logo: [TRADEMARKS.md](../TRADEMARKS.md).*
 
@@ -39,7 +39,7 @@ A peer meeting is one shared encounter in a small private place for two, seeded 
 
 ## The test owner (Appendix B.2)
 - A pair place in a conformance run MAY be run with a **test owner**: a simulated owner whose passkey signs by fixed rules, with no human. The test owner MUST answer a valid `peer_invitation` at once, holding a signed `peer_invitation_answer` for the inviting representative's inbox (and sending `held`): it approves (`accept_invitation`, assurance `passkey`) if and only if every purpose is `collaboration`, `invitation` or `introduction`, the invitation is valid now, it lasts at most 30 days (`expires_at - valid_from`), and `answer_by` hasn't passed; otherwise it declines. An invitation already past `answer_by` gets nothing at all (this extension wins: no `held`, no answer). [SC-P1, PA2, C124, C125, C126]
-- When the pair place's representative answers a commitment `considering` routed to the test owner, the test owner MUST approve at once if and only if the request carries no `max_amount`, with a passkey `approve_commitment` over that considering response, carried in a `consideration_outcome` held for the visitor's inbox; otherwise (a commitment request carrying `max_amount`) it stays silent, which is a decline at `response_by` (D7). [SC-P1, PA2, C124, C110, D7]
+- When the pair place's representative answers a commitment `considering` routed to the test owner, the test owner MUST approve at once if and only if the request carries no `max_amount`, with a passkey `approve_commitment` over that considering response, carried in a `consideration_outcome` held for the visiting representative's inbox; otherwise (a commitment request carrying `max_amount`) it stays silent, which is a decline at `response_by` (D7). [SC-P1, PA2, C124, C110, D7]
 - The test owner's DID and passkey are the place's owner as named on its card; its decisions are visible only through the signed results above. How a real owner decides is out of band. [SC-P1, C124]
 
 ## Open questions (informative)

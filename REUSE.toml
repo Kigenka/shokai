@@ -1,19 +1,31 @@
 # REUSE (https://reuse.software) map of licenses by path. License texts are in LICENSES/.
-# Code and the whole specification: Apache-2.0. Explanatory documentation in docs/: CC-BY-4.0.
-# Copyright holder: Yu Sung Yeh; Kigenka is the steward brand (see NOTICE).
+# Code and the whole specification (SPEC.md and the canonical normative text docs/SPEC-DETAIL.md): Apache-2.0.
+# Explanatory documentation in docs/ (everything else there): CC-BY-4.0.
+# Copyright: Yu Sung Yeh and Shōkai contributors; contributors keep the copyright in their own contributions.
+# Kigenka is the steward brand (see NOTICE). Under precedence = "override" this file wins over a file's own SPDX header,
+# so every file whose header differs from its path's rule has its own annotation below (and must keep the two in agreement).
 version = 1
 
 [[annotations]]
 path = "**"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 Yu Sung Yeh"
+SPDX-FileCopyrightText = "2026 Yu Sung Yeh and Shōkai contributors"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
 path = "docs/**"
 precedence = "override"
-SPDX-FileCopyrightText = "2026 Yu Sung Yeh"
+SPDX-FileCopyrightText = "2026 Yu Sung Yeh and Shōkai contributors"
 SPDX-License-Identifier = "CC-BY-4.0"
+
+# The canonical normative text lives in docs/ but is part of the specification: Apache-2.0, as its own SPDX header says.
+# docs/place-addresses.md (normative addressing detail, Apache-2.0 header) is treated the same way.
+# These later overrides win over the docs/** rule above (REUSE: the last matching annotation applies).
+[[annotations]]
+path = ["docs/SPEC-DETAIL.md", "docs/place-addresses.md"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Yu Sung Yeh and Shōkai contributors"
+SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
 path = "CODE_OF_CONDUCT.md"

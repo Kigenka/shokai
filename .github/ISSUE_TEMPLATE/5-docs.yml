@@ -1,0 +1,47 @@
+name: Documentation or clarity
+description: A README, glossary, example or explanatory document is unclear, misleading or missing. For normative specification text, use the specification template instead.
+labels: [docs, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for explanatory docs (README, REVIEWERS.md, QUICKSTART, glossary, examples).
+        If the normative text in `docs/SPEC-DETAIL.md` is ambiguous, use **Specification issue or change**.
+        For a security problem, see SECURITY.md — do not describe an exploit here.
+  - type: input
+    id: where
+    attributes:
+      label: Where?
+      description: File and section.
+      placeholder: "README.md “Quick start”, or docs/glossary.md “mandate”"
+    validations:
+      required: true
+  - type: textarea
+    id: says
+    attributes:
+      label: What it says now
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is unclear, misleading or missing
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - severity:low (editorial / missing cross-link)
+        - severity:med (a reader could take away the wrong status or procedure)
+        - severity:high (the text would cause an implementer to violate a MUST)
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Before you submit
+      options:
+        - label: Examples use fictional people, businesses and places, and no keys, tokens or personal data.
+          required: true

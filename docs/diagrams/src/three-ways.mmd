@@ -1,13 +1,13 @@
 flowchart LR
-  subgraph W["How a representative arrives"]
+  subgraph W["How a visiting representative arrives"]
     direction TB
     V3["<b>It introduces itself</b><br/>the normal case: card, purpose, limits<br/>(vouch: null)"]
-    V1["<b>Optional: by invitation</b><br/>the place's own signed invitation"]
-    V2["<b>Optional: with a vouch</b><br/>from someone the place trusts.<br/>The introducer answers for it."]
+    V1["<b>Or by invitation</b><br/>the place's own signed invitation"]
+    V2["<b>Introduced by someone known here</b><br/>a vouch the introducer signs.<br/>The introducer answers for it."]
   end
   U["<b>Not ready yet</b><br/>no signed card"]
   M["<b>The same manners</b><br/>signed card · stated purpose · limits up front"]
-  D{"<b>The host at the door decides</b><br/>by its own policy, and explains"}
+  D{"<b>The door decides</b><br/>on signed facts, and explains"}
   L["<b>The leaflet</b><br/>what the place is, what's needed,<br/>a sentence for the owner · not now"]
   V3 --> M
   V1 --> M

@@ -1,11 +1,11 @@
 # Contributing to Shōkai
 
-Thank you for looking at Shōkai. It's at v0.3.0, not 1.0, so review is the most useful contribution right now: read the specification, try to implement it, and tell us where it's unclear or unsafe.
+Thank you for looking at Shōkai. **v0.5.0 is the current draft** in this repository (not yet on npm). **v0.3.0 is the latest published release** (`@kigenka/shokai@0.3.0`). Neither is 1.0, so review is the most useful contribution right now: read the specification, try to implement it, and tell us where it's unclear or unsafe.
 
 ## Ways to help
 
 - **Open an issue** for anything unclear, contradictory or unsafe. Quote the section (for example "§6.7") and, if you can, the conformance check involved (for example "C151").
-- **Implement it** from [`SPEC.md`](./SPEC.md) alone, run the conformance runner against your door (`npx shokai-conformance <url>`), and tell us where you had to guess. An independent implementation is the strongest review there is.
+- **Implement it** from the specification alone (start with [`SPEC.md`](./SPEC.md); the canonical normative text is [`docs/SPEC-DETAIL.md`](./docs/SPEC-DETAIL.md)), run the conformance runner against your door (`npx shokai-conformance <url>`), and tell us where you had to guess. An independent implementation is the strongest review there is.
 - **Propose a change.** Small fixes can be a pull request. A change to normative behaviour starts as a proposal in [`proposals/`](./proposals/): copy the shape of an existing one (problem, proposal, open questions) and open a pull request with it.
 - **Report a vulnerability privately.** See [SECURITY.md](./SECURITY.md); please don't open a public issue for it.
 
@@ -13,7 +13,7 @@ Thank you for looking at Shōkai. It's at v0.3.0, not 1.0, so review is the most
 
 ## Getting started
 
-You need Node.js 20 or later (CI runs 20, 22 and 24) and git.
+You need Node.js 22 or later (CI runs 20, 22 and 24) and git.
 
 ```bash
 git clone https://github.com/<your-username>/shokai.git   # your fork of github.com/Kigenka/shokai
@@ -36,15 +36,29 @@ Useful commands while you work:
 
 ### Where things live
 
-- **The specification:** `SPEC.md` (normative), `extensions/`, `SIGNING.md`; the wire types in `protocol-shapes.ts`, and the JSON Schema generated from them in `schema/`. Don't edit `schema/` by hand.
+- **The specification:** `SPEC.md` (the normative core) and `docs/SPEC-DETAIL.md` (the canonical normative text), `extensions/`, `SIGNING.md`; the wire types in `protocol-shapes.ts`, and the JSON Schema generated from them in `schema/`. Don't edit `schema/` by hand.
 - **Conformance:** `conformance/` (golden traces, test vectors, the checklist); the runner is in `packages/shokai/src/conformance/`.
 - **The SDK:** `packages/shokai/`. Its `src/core/` and `spec/` are copied from the reference and the root by `scripts/sync-core.mjs`: edit the originals, then run `npm run sync` in `packages/shokai`.
 - **Reference implementations:** `reference/engawa/` (the place server whose core the SDK ships), `reference/prototype/`, `reference/signing-page/`.
 - **Proposals:** `proposals/`, numbered, not normative until merged into the spec.
 
+## Two kinds of contribution
+
+- **Code, tests, tools and documentation:** the [Developer Certificate of Origin 1.1](./DCO.txt) sign-off below, under the license of the files you change. No contributor agreement.
+- **Normative specification changes** (`SPEC.md`, `docs/SPEC-DETAIL.md`, `extensions/`, `conformance/`, `SIGNING.md`, `protocol-shapes.ts` and so `schema/`): these will need a specification contributor agreement, the OWF Contributor License Agreement 1.0 (Copyright and Patent), once counsel approves it. **Until then, the project accepts no outside changes to normative files.** Please open an issue or a proposal in `proposals/` instead (proposals aren't normative); the editor writes any resulting normative text. If you contribute for an employer, its authorization will be needed too.
+
+### Before outside material enters the specification
+
+Issues, proposals and feedback are welcome and may be discussed without the OWF CLA. Sending them doesn't give the project the copyright and patent rights it needs to put them in a final specification, and an editor rewriting them doesn't settle that either. So:
+
+- **Discussion is open; incorporation waits for clearance.** Substantive material from a third party (wording, a design, a message shape, a rule, a test) is not incorporated into a final normative specification until the project's contributor-rights review for it is complete: its origin checked, and the approved specification rights clearance obtained (the OWF CLA once counsel approves it, from the contributor and, where needed, their employer or organization).
+- **Logged.** Each such item is entered in the contribution clearance register: its source (issue, proposal, message or conversation), the material used, the dates, its clearance status and who approved it. Until it is cleared it may appear only in non-normative places (issues, `proposals/`, drafts marked as such).
+- **Ideas and plain bug reports** ("§6.7 contradicts §7.2") usually need no clearance; the editor decides, and records the decision in the register when in doubt.
+- Commits that carry cleared material still need the DCO sign-off below.
+
 ## Developer Certificate of Origin (DCO)
 
-We use the [Developer Certificate of Origin 1.1](./DCO.txt) instead of a contributor license agreement. Each commit must carry a sign-off line stating that you wrote the change or otherwise have the right to submit it under the project's licenses:
+Each commit must carry a sign-off line stating that you wrote the change or otherwise have the right to submit it under the project's licenses:
 
 ```
 Signed-off-by: Your Name <you@example.com>
@@ -54,18 +68,22 @@ Signed-off-by: Your Name <you@example.com>
 
 ## Licenses
 
-- **Code and the whole specification** (the reference implementations, the SDK, tools and tests, plus `SPEC.md`, `extensions/`, `conformance/`, `proposals/`, `protocol-shapes.ts` and `THREAT-MODEL.md`): [Apache License 2.0](./LICENSE), including its patent licence (§3).
-- **Explanatory documentation** (`docs/`): [Creative Commons Attribution 4.0](./LICENSE-docs).
+- **Code and the whole specification** (the reference implementations, the SDK, tools and tests, plus `SPEC.md`, `docs/SPEC-DETAIL.md`, `extensions/`, `conformance/`, `proposals/`, `protocol-shapes.ts` and `THREAT-MODEL.md`): [Apache License 2.0](./LICENSE), including its patent licence (§3).
+- **Explanatory documentation** (`docs/`, except the normative `docs/SPEC-DETAIL.md`): [Creative Commons Attribution 4.0](./LICENSE-docs).
 - [`REUSE.toml`](./REUSE.toml) maps every path to its license; the license texts are in [`LICENSES/`](./LICENSES/).
 
-By signing off, you agree that your contribution is licensed under the license that applies to the files you change. The copyright holder's royalty-free patent commitment for final specification versions is described in [PATENTS.md](./PATENTS.md) (a draft; its wording is pending legal review), and the use of the project's names and logo in [TRADEMARKS.md](./TRADEMARKS.md).
+By signing off, you agree that your contribution is licensed under the license that applies to the files you change. The use of the project's names and logo is in [TRADEMARKS.md](./TRADEMARKS.md).
 
-New source files start with a short header (use `#` instead of `//` in shell and Python files, and an HTML comment in specification Markdown):
+**IP status (governing statement).** Shōkai's specification and reference implementation are presently available under Apache License 2.0. The project intends to add a specification-level patent commitment under the OWFa 1.0 Final Specification Agreement (Patent Only), made per final version, starting with v0.5.0, with Yu Sung Yeh (the copyright holder and current founder-steward) as the intended signer; the copyright licence stays Apache License 2.0. No such commitment has been executed yet. If the project later moves to a legal entity or a neutral home, later versions may be signed by it, as described in [PATENTS.md](./PATENTS.md); the choice is recorded as decision D27 in [DECISIONS.md](./DECISIONS.md), pending the editor's confirmation and legal review. No existing copyright or patent owner is represented as having made an OWFa commitment merely because the specification has been published. **Scope of a future commitment.** Under OWFa 1.0, a signer's Granted Claims are limited to the patent claims needed to implement the functionality the specification describes (§7.4). A commitment does not reach a signer's whole personal patent portfolio, or claims that are not needed for the specification. The proposed commitment is described in [PATENTS.md](./PATENTS.md) (not yet executed).
+
+You keep the copyright in what you contribute; signing off licenses it, it doesn't assign it. New source files start with a short header naming the actual copyright holder: your own name for a file you write, or the project line for the project's own files (use `#` instead of `//` in shell and Python files, and an HTML comment in specification Markdown):
 
 ```
 // SPDX-License-Identifier: Apache-2.0
-// SPDX-FileCopyrightText: 2026 Yu Sung Yeh
+// SPDX-FileCopyrightText: 2026 Your Name
 ```
+
+The project's own files carry `SPDX-FileCopyrightText: 2026 Yu Sung Yeh and Shōkai contributors` (older files may still say `2026 Yu Sung Yeh`).
 
 To check licensing information locally, run [`reuse lint`](https://reuse.software/) (for example `pipx run reuse lint`). It isn't part of CI yet, because CI would have to download the tool on every run.
 
@@ -76,7 +94,7 @@ You may use AI tools (code assistants, agents, language models) to help write co
 - **The person who signs off is accountable.** Your `Signed-off-by:` line is your DCO statement for the whole contribution, including any part an AI tool produced. An AI tool can't sign off, and a sign-off can't name one.
 - **Review it as your own.** Read, understand and test everything you submit. Don't submit output you couldn't explain in review.
 - **Only submit what you have the right to license.** Don't submit material that reproduces third-party code or text you don't have the right to contribute under the project's licenses, or that your tool's terms don't let you contribute.
-- **Say so when it's substantial.** If an AI tool wrote a substantial part of a change, mention it in the pull request description (for example "drafted with an AI assistant, reviewed and tested by me"). This helps reviewers; it doesn't change who is accountable.
+- **Say so when it's substantial.** If an AI tool wrote a substantial part of a change, mention it in the pull request description, naming the tool and what you decided or changed yourself (for example "drafted with an AI assistant; I chose the design, rewrote the error handling and tested it"). This helps reviewers and the project's authorship and provenance records; it doesn't change who is accountable.
 - Fictional examples and the no-secrets rule below apply to AI output too.
 
 ## Rules for spec changes

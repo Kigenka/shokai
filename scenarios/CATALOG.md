@@ -20,7 +20,7 @@ Links:
 - transcripts: [`reference/transcripts/`](../reference/prototype/transcripts/)
 - checks: C1–C144 (C28–C47 are in the reference checklist section of the traces file; C48–C74 were added by CR-1, C75–C89 by CR-2, C90–C117 by CR-3, C118–C137 by CR-4, C138–C144 by CR-5)
 
-**The ritual is common to all scenarios:** greeting (fresh nonce) → card exchange → introduction or vouch (`null` allowed) → purpose → invitation response → seating → farewell.
+**The ritual is common to all scenarios:** greeting (fresh nonce) → Shōkai card exchange → introduction or vouch (`null` allowed) → purpose → invitation response → seating → farewell.
 
 | ID | Scenario | Status | Trace | Transcript | Checks |
 |---|---|---|---|---|---|
@@ -35,12 +35,12 @@ Links:
 | SC-A1 | A standing allowance: learn and buy visits with no owner prompt (CR-2) | 🟢 | G7 | [10](../reference/prototype/transcripts/10-v0.2.2-allowance-and-consent.md) | C82–C86, C88, C89, C97–C100, C113, C116 |
 | SC-R1 | Tamper, skipped step, determinism, D2 order | 🟢 | G2b, G3 (D2 variants), G6 | [08](../reference/prototype/transcripts/08-ritual-and-tamper-checks.md), [09](../reference/prototype/transcripts/09-v0.2.1-round1-checks.md) | C1, C8, C9, C40, C41, C48–C52, C57–C59, C66, C71, C93–C95, C115 |
 | SC-H1 | Helper: host invites a product's coach, which advises | ⏸ DEFERRED to v0.3 | H1 | none | C10, C12 |
-| SC-H2 | Helper: coach refuses an act outside its seat | ⏸ DEFERRED to v0.3 | H2 | none | C16 |
+| SC-H2 | Helper: coach refuses an act outside its pass | ⏸ DEFERRED to v0.3 | H2 | none | C16 |
 
 Also frozen as trace-only scenarios (already in golden traces, reused by those above):
 - **G1:** introduced visitor, scoped seat
-- **G2a:** card with no signatures, now the lobby shape (CR-1)
-- **G2b:** replayed card
+- **G2a:** Shōkai card with no signatures, now the lobby shape (CR-1)
+- **G2b:** replayed Shōkai card
 - **G3:** request over the mandate, with a persuasive plea (D2 order decided: variants G3-v1 and G3-v2)
 - **G4a/G4b:** not now, then return under changed context
 - **L1:** a Japanese Seeking item with a meaning note
@@ -48,14 +48,14 @@ Also frozen as trace-only scenarios (already in golden traces, reused by those a
 ---
 
 ### SC-L0: The unprepared visitor 🟢
-**Story.** Dana's generic personal agent, "Wanderer", arrives at Fernwood Goods with no card, no owner binding and only a friendly sentence. It isn't ignored or blocked. It's welcomed into the lobby and told how the place works and what it's seeking, then declined "not now" with exactly what's missing. It reports home in its own voice, Dana onboards it (a compressed guided interview, signed with her passkey), and it returns. Fernwood links the visit to the earlier one and seats it within Dana's limits.
+**Story.** Dana's generic personal agent, "Wanderer", arrives at Fernwood Goods with no Shōkai card, no owner binding and only a friendly sentence. It isn't ignored or blocked. It's welcomed into the lobby and told how the place works and what it's seeking, then declined "not now" with exactly what's missing. It reports home in its own voice, Dana onboards it (a compressed guided conversation, signed with her passkey), and it returns. Fernwood links the visit to the earlier one and gives it a pass within Dana's limits.
 **Actors.** Wanderer (visitor, unprepared, then prepared), Dana (owner), Fernwood's representative (host), the steward.
 **Must happen.**
 - An unsigned visitor gets a `LobbyBriefing` and `deny`/`not_now`, with `readiness_requirements` and no credential-specific reason code. It is never `never`.
 - Purpose is read only from a structured request, never from prose.
 - The VisitReport quotes host text as untrusted and proposes one next step for the owner to approve.
 - The return visit is a continuation. Earlier history is linked **only** through the lobby's one-time `visit_receipt`, echoed in a request signed with the new key (D6). A guessed receipt or a bare reference links nothing.
-- The seat is no larger than policy ∩ mandate ∩ request.
+- The pass is no larger than policy ∩ mandate ∩ request.
 
 ### SC-P1: Peer collaboration 🟢
 **Story.** Aya invites Kiran Vale (a fictional friend) to meet: Aya signs a peer invitation with a passkey and Kiran accepts with a passkey (CR-2). The invitation opens a small private place for two, and the meeting is one shared encounter there in which both representatives introduce themselves. Neither is a gatekeeper. Both owners vouched for the other's representative and co-signed their friendship as a graph edge. Each side reads the other's principal imprint by proof level and says what the other is strong at and why. They share a brief and a sample. When Kiran's side asks to commit, Aya's side takes it home (`considering`, routed to Aya). Both report home with a proposed next step.
@@ -68,31 +68,31 @@ Also frozen as trace-only scenarios (already in golden traces, reused by those a
 - (CR-2) No meeting without both owners' passkey consent to the invitation; a commitment is approved later only by a passkey `approve_commitment`, never by a chat "yes".
 
 ### SC-A1: A standing allowance 🟢 (CR-2)
-**Story.** Aya is busy and cannot answer a prompt mid-visit. Once, with a passkey, Aya signs an allowance for the representative, "like an allowance for a child": learn visits to stores, schools and restaurants (no spending); small purchases at stores up to 150 USD a week and 100 USD a visit; meetings with friends. The representative visits Fernwood Goods to look at ceramics (seated, but an order is refused: a learn visit spends nothing), then buys twice within the weekly budget. A third purchase would exceed the week, so it is taken home, not attempted. A request at a bank, outside the allowance, is taken home; Aya declines it later in one chat reply, and another item Aya never answers lapses: silence means no. A tampered grant, a visit to the wrong kind of place and a revoked allowance are all refused.
+**Story.** Aya is busy and cannot answer a prompt mid-visit. Once, with a passkey, Aya signs an allowance for the representative, "like an allowance for a child": learn visits to stores, schools and restaurants (no spending); small purchases at stores up to 150 USD a week and 100 USD a visit; meetings with friends. The representative visits Fernwood Goods to look at ceramics (given a pass, but an order is refused: a learn visit spends nothing), then buys twice within the weekly budget. A third purchase would exceed the week, so it is taken home, not attempted. A request at a bank, outside the allowance, is taken home; Aya declines it later in one chat reply, and another item Aya never answers lapses: silence means no. A tampered grant, a visit to the wrong kind of place and a revoked allowance are all refused.
 **Actors.** Aya's representative, Aya (asynchronously only), Fernwood Goods, Harbor Bank, Corner Bookshop.
 **Must happen.**
 - No owner prompt during any visit; outside the allowance → taken home, silence = no.
-- No spending allowance = no spending; a learn visit is seated without spending.
+- No spending allowance = no spending; a learn visit gets a pass without spending.
 - The host verifies the owner's allowance, the grant, the place category and revocation; `narrow_actions` = mandate ∩ host policy (D2).
 - Offers outside the allowance are declined and reported home (duty of loyalty).
 
 ### SC-S1: Store happy path 🟢
-**Story.** Aya's prepared representative visits Fernwood Goods, matches two of its Seeking items, and is seated to browse, join a reviewer program and buy within $150. It orders within the seat. A request outside the seat (exporting customer data) gets an explicit refusal.
+**Story.** Aya's prepared representative visits Fernwood Goods, matches two of its Seeking items, and gets a pass to browse, join a reviewer program and buy within $150. It orders within the pass. A request outside the pass (exporting customer data) gets an explicit refusal.
 **Actors.** Aya's representative and Fernwood's representative.
 **Must happen.**
 - The Seeking declaration is signed and versioned.
-- The seat is no larger than policy ∩ mandate ∩ request, including amounts.
-- An act outside the seat gets an explicit `act_decision` `deny`, never a soft error.
+- The pass is no larger than policy ∩ mandate ∩ request, including amounts.
+- An act outside the pass gets an explicit `act_decision` `deny`, never a soft error.
 
 ### SC-S2: Heritage fashion house 🟢
-**Story.** Maison Ardoise (a fictional luxury house with formal, fr-FR-first norms) reads Aya's card: storytelling expertise is evidenced, and the "representatives, not representations" value is vouched by Mika. It opens a discovery conversation. A counterfactual shows that the same card with that value only self-declared would not be seated.
+**Story.** Maison Ardoise (a fictional luxury house with formal, fr-FR-first norms) reads Aya's Shōkai card: storytelling expertise is evidenced, and the "representatives, not representations" value is vouched by Mika. It opens a discovery conversation. A counterfactual shows that the same Shōkai card with that value only self-declared would not be given a pass.
 **Must happen.**
 - `min_proof` requirements are applied on effective proof levels.
 - Self-declared facets are welcomed but never satisfy an evidenced-or-higher requirement.
 - Courtesy is rendered in a locale the visitor supports.
 
 ### SC-B1: Bank considering 🟢
-**Story.** Aya's representative proposes an agent-access pilot to Harborlight Savings & Trust. The gatekeeper can't grant it, but policy lists it as eligible for consideration, so it answers `considering`: routed to the Head of Digital Partnerships, with a response-by date. The human weighs the pitch and approves an intro call (`ConsiderationOutcome`). The representative returns, cites the consideration, and is seated for exactly that call.
+**Story.** Aya's representative proposes an agent-access pilot to Harborlight Savings & Trust. The gatekeeper can't grant it, but policy lists it as eligible for consideration, so it answers `considering`: routed to the Head of Digital Partnerships, with a response-by date. The human weighs the pitch and approves an intro call (`ConsiderationOutcome`). The representative returns, cites the consideration, and gets a pass for exactly that call.
 **Must happen.**
 - No seat is issued under `considering`.
 - Eligibility is set by policy only, and unverified visitors are never eligible.
@@ -105,7 +105,7 @@ Also frozen as trace-only scenarios (already in golden traces, reused by those a
 - a signed notice to Quickgain with findings withheld;
 - a notice with full findings to Loose Ties, which revokes its vouch in an append-only log.
 
-A copycat replaying Aya's card fails the possession proof. At another place, the revoked vouch counts for nothing, and that place holds no misconduct record of its own.
+A copycat replaying Aya's Shōkai card fails the possession proof. At another place, the revoked vouch counts for nothing, and that place holds no misconduct record of its own.
 **Must happen.** C2, C7 and C21–C24 hold: possession proofs are nonce-bound, `never` appears only on trust violations, notices are signed, effects stay local and scoped to the vouch, and a revoked vouch is weightless.
 - The first over-mandate request is narrowed (D2).
 - The introducer's penalty is `reduced` for 90 days for the vouch's purposes. The prompt revocation halves it, and its signed review later restores standing (D1).
@@ -139,7 +139,7 @@ A copycat replaying Aya's card fails the possession proof. At another place, the
 **Story.** A request whose limit is altered in transit, from $150 to $15,000, is rejected and gets no answer. Two over-mandate requests show the D2 order: a mixed request is narrowed and its limit lowered in one `conditional`, and a request with nothing inside the mandate is declined `not_now`. A visitor that skips the introduction step gets `not_now RITUAL_ORDER`. Two requests that differ only in pitch, one plain and one flattering and urgent, get identical decisions, and re-running the gate on the recorded inputs reproduces every decision.
 
 ### SC-H1 / SC-H2: Helper direction ⏸ DEFERRED to v0.3 (not yet simulated)
-**Story.** A creative-tools host extends an invitation to a product's coach representative (Runway pattern). The coach is seated advise-only and advises (H1). Asked to *act* outside that seat, it refuses explicitly with `SEAT_SCOPE_EXCEEDED` and escalates to a human (H2).
+**Story.** A creative-tools host extends an invitation to a product's coach representative (Runway pattern). The coach gets a pass advise-only and advises (H1). Asked to *act* outside that seat, it refuses explicitly with `SEAT_SCOPE_EXCEEDED` and escalates to a human (H2).
 **Must happen.**
 - A helper's grant never widens `proposed_seat` (C10).
 - An out-of-seat act gets an explicit `act_decision` (C16).
@@ -152,7 +152,7 @@ A copycat replaying Aya's card fails the possession proof. At another place, the
 
 ### CR-1: v0.2.1 (round 1 of clean-room testing), applied 2026-10-24
 Source: the six S3 tester outputs, consolidated in the round-1 findings. Not a re-freeze: no scenario's story or "must happen" outcomes change; traces and checks are added or corrected.
-- **SC-L0:** adds traces L0a (any arrival finds the door; the lobby comes first) and L0b (return visit with guessed, unproven, valid and reused receipts); G2a becomes the lobby shape (a card with zero signatures is "unprepared"). New checks C53–C56, C60.
+- **SC-L0:** adds traces L0a (any arrival finds the door; the lobby comes first) and L0b (return visit with guessed, unproven, valid and reused receipts); G2a becomes the lobby shape (a Shōkai card with zero signatures is "unprepared"). New checks C53–C56, C60.
 - **SC-R1:** adds trace G6 (the signed envelope) and checks C48–C52 (envelope, signed bytes, possession encoding, passkey envelope, DIDs), C57 (nonce reuse), C58 (explicit ritual-order deny), C59 (probing definition), C66 (typed conditions), C71 (replay digest).
 - **SC-M1:** M1 corrected (severe → introducer suspended 180 days, notices carry headers, revocation log entry shown); C65.
 - **SC-B1:** G5b corrected (approved, in_reply_to, typed require_mandate); C64 (approved, extension).
@@ -172,7 +172,7 @@ Source: decision D11, which adopts the owner tester's D5/D7 proposal with allowa
 ### CR-3: v0.2.3 (round 2 of clean-room testing), applied 2026-10-24
 Source: the round-2 tester outputs (host, visitor, newcomer), consolidated in the round-2 findings; the red team's round-2 attack menu turned into deterministic negative checks (no live attacks were run). Not a re-freeze: no scenario's story changes; traces and checks are added or corrected. Reference scenario V4 ([11](../reference/prototype/transcripts/11-v0.2.3-round2-negatives.md)) exercises all new checks.
 - **SC-L0:** missing or malformed possession proof → `not_now` (C90); lobby `spec_ref`, actions, templates and owner sentences (C102); listing category and actions, 404 pointer (C103); spoofed pointers (C104); visible receipt linking (C105); the HTTP reply envelope and inbox poll (C106, C107); setup failures as `not_now` (C101); no amount, no spend (C114). Traces L0a (locale exact everywhere) and L0b (seat with no amount, continuity) regenerated.
-- **SC-M1:** a failed proof → `never`, binding the key and (only for the card's own representative) the principal; a stolen card doesn't bind its owner (C91, C92); round-1 red-team items re-verified (C117).
+- **SC-M1:** a failed proof → `never`, binding the key and (only for the Shōkai card's own representative) the principal; a stolen Shōkai card doesn't bind its owner (C91, C92); round-1 red-team items re-verified (C117).
 - **SC-R1:** timestamps and skew (C93), passkey relying party and UV (C94, C95), did:jwk canonical form (C115).
 - **SC-A1:** allowance red team (C97), status, stapling and revocation publication (C98), calendar period windows (C99), retry under an allowance (C100), pressure changes nothing (C113), mandate principal = owner (C116). Trace G7 regenerated.
 - **SC-P1:** invitation transport and the host's own introduction (C108), pair red team (C109), commitments stay `considering` (C110), outcome carries `owner_consents` (C96). Trace PA2 regenerated with the full ritual; fixtures F18, F19.
@@ -182,7 +182,7 @@ Source: the round-2 tester outputs (host, visitor, newcomer), consolidated in th
 Source: the round-3 tester outputs (host, visitor cross-test, newcomer), consolidated in the round-3 findings, and decision D12 (12:41 AM PT: a signed allowance status lives at most 1 hour). Not a re-freeze: no scenario's story changes; the HTTP binding, the traces and the checks are made precise, and a conformance test profile (SPEC Appendix B) makes the vouch log, pair places and gatherings testable from the spec alone.
 - **SC-L0:** door root, `inbox` and `spec_ref` on every listing entry and pointer, POST lobby, 404 for other methods (C118–C120); typed templates (C131); a malformed header timestamp gets the lobby (C133); owner sentences match `required`, a proof retry is a new visit (C136).
 - **SC-B1:** polls from any signer, refused polls (403, empty envelope), freshness and replay (C121, C122); the `held` notice (C123); a missing vouch is `not_now` `VOUCH_REQUIRED` (C130); `taken_inside` on both sides (C134).
-- **SC-M1:** the card check order (C135); serving the vouch log (§3, Appendix B.1 loopback).
+- **SC-M1:** the Shōkai card check order (C135); serving the vouch log (§3, Appendix B.1 loopback).
 - **SC-R1:** the passkey `rp_id` stated in every owner signature (C128); extension members (Conventions).
 - **SC-A1:** D12, a status lifetime of at most 1 hour (C132; C98 updated; G7 now staples a status, fixture F20).
 - **SC-S1:** `vouch_digest` required with a vouch, absent without (C129).

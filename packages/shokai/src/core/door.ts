@@ -4,6 +4,7 @@
 // The door (§3.1, §11.1): a machine-readable place listing, and the DoorPointer served at GET <base>/ (200) and on any other path or method (404).
 import type * as S from "./shapes.js";
 import { SPEC_REF, type Host } from "./host.js";
+import { houseDigest } from "./trust.js";
 
 /** Appendix B: a place in a conformance run declares it with the extension member `x-test-profile` in its listing entry. */
 export { TEST_PROFILE } from "./version.js";
@@ -23,11 +24,12 @@ export function placeListing(base: string, hosts: Host[], now: string, own = fal
       const e: ListingEntry = { name: h.cfg.name, display_name: h.cfg.display_name, principal_id: h.cfg.principal_id, representative_id: h.cfg.rep_id,
         entry: entryUrl(base, h.cfg.name), lobby: lobbyUrl(base, h.cfg.name), onboarding_url: P.lobby.onboarding_url,
         locales: P.supported_locales, purposes: P.purposes, category: P.category ?? "x-unspecified", actions: h.placeActions(), spec_ref: SPEC_REF,
-        inbox: inboxUrl(base, h.cfg.name) };
+        inbox: inboxUrl(base, h.cfg.name), accepted_tags: h.acceptedTags() };   // v0.5.0 (§11.1, C254)
       if (h.cfg.seeking) e.seeking_ref = { seeking_id: h.cfg.seeking.payload.seeking_id, digest: h.cfg.seeking.payload_digest };
       if (h.testProfile) e["x-test-profile"] = TEST_PROFILE;
       if (h.testDecider) e["x-test-decider"] = true;   // Appendix B.4 (v0.2.5)
       if (h.cfg.door) e.door_policy = h.cfg.door.policy;
+      if (h.cfg.card?.payload.kind === "host") e.house_digest = houseDigest(h.cfg);   // v0.4.0 (§3.1, §2.3): the house config served now
       if (h.cfg.links?.length) e.links = h.cfg.links;   // v0.3.0-rc1 (§3.1, D20): hints only; never read by the gate   // v0.2.9 (§10): owner-signed; public part plus a salted digest of the private part
       return e;
     }) };

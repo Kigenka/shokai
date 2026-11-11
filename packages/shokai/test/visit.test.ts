@@ -1,18 +1,18 @@
 // SDK tests (v0.3.0-rc2): the visitor checks the place against its listing before any request (§3.1, C104); a visit that spends
 // (limits, amounts, C174); mandate validity; the report home (what was shared, spent, time zone, next step); the core entry point.
-import { createDoor, createRepresentative, verifySigned, type Door, type Transport } from "../src/index.js";
+import { createDoor, createRepresentative, verifySigned, inProcess, type Door, type Transport } from "../src/index.js";
 import * as core from "../src/core/index.js";
 
 let pass = 0, fail = 0;
 const check = (c: boolean, what: string) => { if (c) { pass++; console.log("  PASS " + what); } else { fail++; console.log("  FAIL " + what); } };
-const shop = (name = "kettle") => createDoor({ name, displayName: "Kettle & Leaf", category: "store",
+const shop = (name = "kettle") => createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name, displayName: "Kettle & Leaf", category: "store",
   purposes: [{ code: "visitation", statement: "Looking at the menu." }, { code: "purchase", statement: "Ordering tea." }],
   actions: [{ action: "menu.list", purposes: ["visitation", "purchase"], level: "discover", data_asks: [] },
             { action: "order.place", purposes: ["purchase"], level: "act_on_behalf", data_asks: ["name"] }],
   spendingActions: ["order.place"] });
 const entryOf = (d: Door) => d.listing().places[0];
 const sentRequest = (v: { transcript: { dir: string; message: any }[] }) => v.transcript.some((m) => m.dir === "out" && (m.message?.payload ?? m.message)?.type === "invitation_request");
-const direct = (d: Door): Transport => async (_u, body) => (await d.post(body)).envelope;
+const direct = (d: Door): Transport => inProcess(d);
 
 async function main() {
   console.log("SDK visits (@kigenka/shokai)");
@@ -53,7 +53,8 @@ async function main() {
   const strict = shop(); (strict as any).host.bindNever(aya.id, new Date().toISOString().replace(/\.\d+Z$/, "Z"));
   const early = direct(strict);
   const denied = await aya.visit(entryOf(strict), { purpose: "visitation", actions: ["menu.list"], transport: early });
-  check(denied.placeCheck.ok === false && denied.placeCheck.unchecked === true && denied.placeCheck.checked.length === 0 && !/didn't match its listing/.test(denied.report().outcome_rendered.text),
+  check(denied.placeCheck.ok === false && denied.placeCheck.unchecked === true && denied.placeCheck.checked.every((c) => /published Shōkai host card/.test(c)) &&   // C268: only the pre-ritual card check ran
+     !/didn't match its listing/.test(denied.report().outcome_rendered.text),
     "when nothing about the place was checked, placeCheck.ok is false (unchecked), and the report doesn't call it a mismatch");
 
   // a visit that spends: limits in the mandate and the request; acts state amount (C174)
@@ -74,7 +75,7 @@ async function main() {
   await v.farewell();
   const r = v.report("en-US", { timeZone: "America/Los_Angeles" });
   check(r.spent?.length === 1 && r.spent[0].value === "6.00" && r.spent[0].currency === "USD", "the report sums what was spent (6.00 USD), exactly");
-  check(/Spent 6\.00 USD of the 10\.00 USD allowed/.test(r.outcome_rendered.text) && /seated me for/.test(r.outcome_rendered.text), "outcome_rendered reads as a sentence for the owner, with the spending");
+  check(/Spent 6\.00 USD of the 10\.00 USD allowed/.test(r.outcome_rendered.text) && /admitted me with a pass for/.test(r.outcome_rendered.text), "outcome_rendered reads as a sentence for the owner, with the spending");
   const card = r.shared?.find((s) => s.via === "card"); const mand = r.shared?.find((s) => s.via === "mandate"); const act = r.shared?.find((s) => s.via === "act" && s.items.some((i) => i.field === "tea"));
   check(!!card?.items.some((i) => i.field === "owner_display_name" && i.value === "Aya Linden") && !!card?.items.some((i) => i.field === "owner_id") && !!mand && !!act, "the report lists what was shared: the card (display name, owner id), the mandate, each act's arguments");
   check(Array.isArray(r.taken_home) && r.taken_home.length === 0 && Array.isArray(r.offers_declined), "taken_home and offers_declined are stated (empty), not left out");
@@ -84,18 +85,18 @@ async function main() {
 
   // §10 (R4 finding F2): at a door, the answer to an offer is a signed offer_outcome, not an act_result. The SDK must count a kept
   // offer as done and a declined one as refused, return the outcome, and say in the report what the door did with it.
-  const doorLike = createDoor({ name: "door-ines", displayName: "Ines Calloway's door", category: "x-inbound-door",
+  const doorLike = createDoor({ approvedBy: { name: "Ren Okabe", role: "Owner" }, name: "door-ines", displayName: "Ines Calloway's door", category: "x-inbound-door",
     purposes: [{ code: "presentation", statement: "Present one item, or invite the owner." }],
     actions: [{ action: "door.invite", purposes: ["presentation"], level: "advise", data_asks: [] }] });
   const outcomes = ["kept_for_later", "declined"]; let k = 0;
-  const atDoor: Transport = async (u, body: any) => {
+  const atDoor: Transport = Object.assign(async (u: string, body: any) => {
     const p = body?.payload ?? body;
     if (p?.type !== "act") return direct(doorLike)(u, body);
     const msg = { protocol: p.protocol, encounter_id: p.encounter_id, msg_id: `${p.encounter_id}-oo${k}`, sent_at: new Date().toISOString(), from: doorLike.keys.rep.id, to: p.from,
       type: "offer_outcome", in_reply_to: p.msg_id, seat_id: p.seat_id, offer_id: p.arguments?.offer?.offer_id, offer_digest: core.digestOf(p.arguments?.offer), outcome: outcomes[k++],
       relationship_ref: "rel-test", courtesy: { locale: "en-US", locale_match: "exact", register: "first_meeting", text: "Thank you." } };
     return { messages: [core.makeSigned(msg, doorLike.keys.rep, msg.sent_at)] } as any;
-  };
+  }, { getJson: direct(doorLike).getJson });
   const ama = createRepresentative({ ownerName: "Ama Okafor", purposes: ["presentation"], actions: ["door.invite"] });
   const dv = await ama.visit(entryOf(doorLike), { purpose: "presentation", actions: ["door.invite"], transport: atDoor });
   const offer = (id: string, item: string) => ({ offer: { offer_id: id, kind: "invitation", item, category: "culture", valid_until: "2027-01-01T00:00:00Z", needs_from_owner: [], context: { door: doorLike.keys.rep.id } } });
@@ -109,7 +110,7 @@ async function main() {
     "the report home says what the door did with each offer, from its codes: " + dr);
 
   // the core entry point
-  check(typeof core.Host === "function" && typeof core.digestOf === "function" && core.SPEC_VERSION.startsWith("0.3.0"), "@kigenka/shokai/core exports the protocol core");
+  check(typeof core.Host === "function" && typeof core.digestOf === "function" && core.SPEC_VERSION.startsWith("0.5.0"), "@kigenka/shokai/core exports the protocol core");
   console.log(`${pass} SDK visit checks passed, ${fail} failed`); if (fail) process.exit(1);
 }
 main().catch((e) => { console.error(e); process.exit(1); });

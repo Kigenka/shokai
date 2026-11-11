@@ -1,0 +1,258 @@
+{
+  "trace": "G1-v05",
+  "protocol": "shokai/0.5",
+  "spec": "0.5.0",
+  "note": "Recorded shokai/0.5 opening (SPEC §2.2, §2.4, §3.2; C292, C289): byte-exact. Keys from key_derivation labels (test-vectors.json possession_proof_v05.labels), all times 2026-11-01T09:00:00Z. The visitor card carries owner_prompts and the host card place.site, neither in crit (R4-01). The host card is complete (the C3 members, org_approval for an organization, host_scope, house_digest over the recorded house config, summary_digest, shown_to_owner), so a conformant visitor replaying the trace continues. Check: every payload_digest = digest(JCS(payload)), every signature verifies and regenerates identically (Ed25519), both proofs verify over their audience and fail without it.",
+  "house": {
+    "name": "tea",
+    "display_name": "Kiyomi Tea (fictional)",
+    "principal_id": "did:key:z6MkggR6RFRSPhZS15b4U8Sqp4UgT221qsW62jmKqD1G3Lhs",
+    "policy": {
+      "actions": [
+        {
+          "action": "menu.view",
+          "purposes": [
+            "visitation"
+          ],
+          "spends": false
+        }
+      ],
+      "summary": {
+        "name": "tea",
+        "display_name": "Kiyomi Tea (fictional)",
+        "purpose": {
+          "statement": "A tea shop. Browse the menu.",
+          "locale": "en-US"
+        },
+        "retention_days": 0
+      }
+    }
+  },
+  "messages": [
+    {
+      "payload": {
+        "protocol": "shokai/0.5",
+        "encounter_id": "tv-05-1",
+        "msg_id": "tv-05-1-v1",
+        "sent_at": "2026-11-01T09:00:00Z",
+        "from": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+        "locales": [
+          "en-US"
+        ],
+        "nonce": "visitor-nonce-0501",
+        "type": "greeting"
+      },
+      "payload_digest": "sha-256:67J9-GYeRYiBkiy1bQXdU_bDCqzUG9FnOmsNbwGCeAA",
+      "signatures": [
+        {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "UyfMOGzSt5x_H9ercqUuzBpGNOm3jltcd3xgb2rcdKDkcJJrPGECIyVjAz0-3anMhIvx66rfXmrE6yMzhHeQDg"
+        }
+      ]
+    },
+    {
+      "payload": {
+        "protocol": "shokai/0.5",
+        "encounter_id": "tv-05-1",
+        "msg_id": "tv-05-1-h1",
+        "sent_at": "2026-11-01T09:00:00Z",
+        "from": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "to": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+        "locales": [
+          "en-US"
+        ],
+        "nonce": "host-nonce-0501",
+        "type": "greeting"
+      },
+      "payload_digest": "sha-256:h-XKROzSnylJoGhcvkz3-3ZQ-nWnuW10xScRtrrK7ho",
+      "signatures": [
+        {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks#z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+          "signer": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "IcKVBnBNtCyMDm7dTgCGhZ6OEpq-JOvzAzUysSRt4Wr2pU05smq802dSOkYvFnBe4D2Kw6pXjWLCAhwoC7W4AQ"
+        }
+      ]
+    },
+    {
+      "payload": {
+        "protocol": "shokai/0.5",
+        "encounter_id": "tv-05-1",
+        "msg_id": "tv-05-1-v2",
+        "sent_at": "2026-11-01T09:00:00Z",
+        "from": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+        "to": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "card": {
+          "payload": {
+            "card_id": "card-tv-visitor",
+            "protocol": "shokai/0.5",
+            "representative_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+            "principal": {
+              "principal_id": "did:key:z6Mkfdm42NASQRM4De2L6Mia5anu82ifWNgF1Das8dtJbFpP",
+              "kind": "company",
+              "display_name": "Mossgate Studio (fictional)"
+            },
+            "role": "Mossgate Studio's representative agent",
+            "standing": {
+              "tier": "standard"
+            },
+            "mandate_scope": {
+              "purposes": [
+                "visitation"
+              ],
+              "actions": [
+                "menu.view"
+              ]
+            },
+            "locales": [
+              "en-US"
+            ],
+            "representative_key": {
+              "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+              "alg": "Ed25519",
+              "public_key": "aOzBHON56NxLpCmRIA7tRcZ6t0QvKmy_gQczACbuVsk"
+            },
+            "owner_prompts": "purchase_only",
+            "issued_at": "2026-10-01T00:00:00Z",
+            "expires_at": "2027-04-01T00:00:00Z"
+          },
+          "payload_digest": "sha-256:nPK1Z7EDtJv_D25n0dh58ldyN9rWVyA5KsukFi67YYs",
+          "signatures": [
+            {
+              "alg": "Ed25519",
+              "key_id": "did:key:z6Mkfdm42NASQRM4De2L6Mia5anu82ifWNgF1Das8dtJbFpP#z6Mkfdm42NASQRM4De2L6Mia5anu82ifWNgF1Das8dtJbFpP",
+              "signer": "did:key:z6Mkfdm42NASQRM4De2L6Mia5anu82ifWNgF1Das8dtJbFpP",
+              "signed_at": "2026-11-01T09:00:00Z",
+              "value": "MiVoCv2DASnpQCPwFoxks09WrTc5a3WK18x0aQljxJyMnQRS16zebKhNOpWGvLQID7xevz4fYgEUmRQz3PijCg"
+            }
+          ]
+        },
+        "possession_proof": {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "fX3j8id2LI-4cnpMPUXGt5O1k2x508AmeLDS2o-MHx9JP4wAONoGZREe-9cgsLwf7aYwJkOvG7uBtdjL22DQCg",
+          "audience": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks"
+        },
+        "type": "card_presentation"
+      },
+      "payload_digest": "sha-256:o2N5SO7RThsGYUYPq7JWp7WWO9UInLDM8B8jL-iVj98",
+      "signatures": [
+        {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8#z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signer": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "JnKqyI9u0QbJu1C70y-sfuwPv7qsZ3om9oLleE4FlWmIXmWJbmVL12Epg-yHXbYYTFAzj9TiOXTjlREn39AhCA"
+        }
+      ]
+    },
+    {
+      "payload": {
+        "protocol": "shokai/0.5",
+        "encounter_id": "tv-05-1",
+        "msg_id": "tv-05-1-h2",
+        "sent_at": "2026-11-01T09:00:00Z",
+        "from": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+        "to": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8",
+        "in_reply_to": "tv-05-1-v2",
+        "card": {
+          "payload": {
+            "card_id": "card-tv-door",
+            "kind": "host",
+            "protocol": "shokai/0.5",
+            "representative_id": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+            "principal": {
+              "principal_id": "did:key:z6MkggR6RFRSPhZS15b4U8Sqp4UgT221qsW62jmKqD1G3Lhs",
+              "kind": "company",
+              "display_name": "Kiyomi Tea (fictional)"
+            },
+            "role": "Front-door representative",
+            "standing": {
+              "tier": "principal"
+            },
+            "mandate_scope": {
+              "purposes": [
+                "visitation"
+              ],
+              "actions": [
+                "menu.view"
+              ]
+            },
+            "locales": [
+              "en-US"
+            ],
+            "org_approval": {
+              "approver": {
+                "name": "Kiyomi Arai (fictional)",
+                "role": "Owner"
+              },
+              "approved_at": "2026-10-01T00:00:00Z"
+            },
+            "representative_key": {
+              "key_id": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks#z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+              "alg": "Ed25519",
+              "public_key": "I3t-HIO06yUrsNHg_k7BLnXPl_Otz4whyteKAWJ0NKg"
+            },
+            "place": {
+              "principal_id": "did:key:z6MkggR6RFRSPhZS15b4U8Sqp4UgT221qsW62jmKqD1G3Lhs",
+              "entry": "https://tea.example/shokai/tea/entry",
+              "site": "https://tea.example"
+            },
+            "host_scope": {
+              "actions": [
+                "menu.view"
+              ],
+              "duties": [
+                "seat"
+              ]
+            },
+            "house_digest": "sha-256:eJ8AAGJZL_T3a_jjjzNJH_0wB2YRbFdpM6hobFeAzw8",
+            "summary_digest": "sha-256:kPF1bBYTqkJy26JhnF4pHKyP3N_IqYplt9dd6q97_Ao",
+            "preset": "browse",
+            "shown_to_owner": {
+              "text": "Kiyomi Tea's host representative may welcome visitors and show them the menu (menu.view), until 2027-04-01.",
+              "locale": "en-US"
+            },
+            "issued_at": "2026-10-01T00:00:00Z",
+            "expires_at": "2027-04-01T00:00:00Z"
+          },
+          "payload_digest": "sha-256:N5jHG3bh5n-zn_LS0hCseY5SLlF9iBXxEEV6oOzYBUM",
+          "signatures": [
+            {
+              "alg": "Ed25519",
+              "key_id": "did:key:z6MkggR6RFRSPhZS15b4U8Sqp4UgT221qsW62jmKqD1G3Lhs#z6MkggR6RFRSPhZS15b4U8Sqp4UgT221qsW62jmKqD1G3Lhs",
+              "signer": "did:key:z6MkggR6RFRSPhZS15b4U8Sqp4UgT221qsW62jmKqD1G3Lhs",
+              "signed_at": "2026-11-01T09:00:00Z",
+              "value": "YJN_kx8nksPfl-GPOSNMCg5U45nlI4OUFaji_f1QkXBBXj0cNAZMUZQFWQQG8TO3tda8jyyFnl3wd_GIsQ4uBg"
+            }
+          ]
+        },
+        "possession_proof": {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks#z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+          "signer": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "TTEZwXDgG1HhhyTg5nT6VzNXzx-hhY-NCEKmu1MCEkPw2SOzbjTSx4_QWyaQWMCdxVQgQbybhWKQz27SGbgBDA",
+          "audience": "did:key:z6MkmWqqFmFSELmLMJmZXFwkFj3x7Zg9pBrw2KhkkwzT6pU8"
+        },
+        "type": "card_presentation"
+      },
+      "payload_digest": "sha-256:IEdLO8hRYHSNWSBfiL84Mbp8pIFOKhGV3xT4BDjT25g",
+      "signatures": [
+        {
+          "alg": "Ed25519",
+          "key_id": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks#z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+          "signer": "did:key:z6MkgqmXqFnjrHqVgeafvNosYVdhxqHJ7mLUeNNVoMqQEHks",
+          "signed_at": "2026-11-01T09:00:00Z",
+          "value": "K1xreAf6SQm1N1ND-4uMZXIdptG2v3mf77qlXT8-04A5Rad-EtF2DGXkBRmI9JnWNDYXdbmpHSPk93oCaAbgAA"
+        }
+      ]
+    }
+  ]
+}

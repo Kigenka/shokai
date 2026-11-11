@@ -1,6 +1,3 @@
-Attribution 4.0 International License (CC BY 4.0). Code is licensed under Apache-2.0 (see LICENSE).
-STATUS: pending legal review.
-
 Attribution 4.0 International
 
 =======================================================================

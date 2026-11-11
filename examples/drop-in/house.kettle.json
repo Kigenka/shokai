@@ -1,0 +1,24 @@
+{
+  "shokai_house": "1",
+  "place": { "name": "kettle", "display_name": "Kettle & Leaf", "category": "store", "locales": ["en-US"] },
+  "host": { "name": "Suzu" },
+  "offers": {
+    "purposes": [
+      { "code": "visitation", "statement": "Looking at our teas and asking about them." },
+      { "code": "purchase", "statement": "Buying loose-leaf tea for delivery." }
+    ],
+    "actions": [
+      { "action": "tea.browse", "purposes": ["visitation", "purchase"], "level": "discover" },
+      { "action": "tea.order", "purposes": ["purchase"], "level": "act_on_behalf", "spends": true,
+        "limits": { "max_amount": { "value": "60.00", "currency": "USD" } }, "data_asks": ["name", "address"] }
+    ]
+  },
+  "preset": "standard",
+  "leaflet": {
+    "about": "Kettle & Leaf is a small tea shop. We sell loose-leaf green and black teas by the gram, and we ship within the country.",
+    "place_questions": ["Which teas does your owner enjoy?"],
+    "closing": "The kettle will be on when you come back."
+  },
+  "owner": { "kind": "person", "display_name": "Mika Tanabe" },
+  "door": { "base_url": "https://kettle.example/shokai", "site_url": "https://kettle.example/" }
+}

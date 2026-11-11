@@ -1,13 +1,14 @@
 // Place configurations: Fernwood Goods (store: L0, S1, A1), Harborlight Savings & Trust (bank: B1, M1, R1),
 // Maison Ardoise (heritage house: S2), The Engawa (gathering: GA1), and a pair place for Aya's representative (P1). All fictional.
 import type * as S from "./shapes.js";
-import { makeSigned, makeOwnerSigned, newEd25519, edRawToKey, type Ed25519Signer, type PasskeyOwner, b64u } from "./crypto.js";
+import { digestOf, makeSigned, makeOwnerSigned, newEd25519, edRawToKey, type Ed25519Signer, type PasskeyOwner, b64u } from "./crypto.js";
 import type { PlaceConfig, PlacePolicy } from "./policy.js";
 import { Host, type HostOpts } from "./host.js";
 import { RealVerifier, type KeyRegistry } from "./verify.js";
 import { ATTEND_ACTION, REQUEST_INVITATION_ACTION } from "./place.js";
 import { DOOR_PRESENT, DOOR_INVITE, DOOR_GIFT, defaultDoorPolicy, privateDigest, type DoorConfig, type PrivateNote } from "./inbound.js";
 import { randomBytes } from "node:crypto";
+import { PROTOCOL } from "./version.js";
 
 const base = (v: string, name: string): PlacePolicy => ({
   policy_version: v, supported_locales: ["en-US", "es-ES", "ja-JP", "fr-FR", "pt-BR"], access_mode: "session", purposes: [], actions: [], spending_actions: [],
@@ -24,7 +25,7 @@ const pd = (code: S.PurposeCode, text: string): S.PurposeDescription => ({ code,
 export type PlaceKeys = { rep: Ed25519Signer; principal: Ed25519Signer };
 const at = "2026-10-01T00:00:00Z";
 function hostCard(k: PlaceKeys, display: string, kind: S.PrincipalKind, role: string, scope: S.RepresentativeCard["mandate_scope"], locales: string[]): S.SignedCard {
-  return makeSigned<S.RepresentativeCard>({ card_id: "card-" + display.toLowerCase().replace(/\W+/g, "-"), protocol: "shokai/0.3", representative_id: k.rep.id,
+  return makeSigned<S.RepresentativeCard>({ card_id: "card-" + display.toLowerCase().replace(/\W+/g, "-"), protocol: PROTOCOL, representative_id: k.rep.id,
     principal: { principal_id: k.principal.id, kind, display_name: display }, role, standing: { tier: "principal" }, mandate_scope: scope, locales,
     representative_key: { key_id: k.rep.key_id, alg: "Ed25519", public_key: b64u(k.rep.pubRaw) }, issued_at: at, expires_at: "2027-10-01T00:00:00Z" }, k.principal, at);
 }
@@ -53,6 +54,21 @@ export function fernwood(k: PlaceKeys): PlaceConfig {
     seeking: seeking(k, d, "seek-fernwood", "v2", [
       { item_id: "reviewers", area: "x-reviews", summary: { text: "Thoughtful reviewers for new ceramics.", locale: "en-US" }, wants: ["store.join_reviewer_program"], status: "open" },
       { item_id: "repeat-buyers", area: "purchase", summary: { text: "Customers who order seasonally.", locale: "en-US" }, wants: ["store.place_order"], status: "open" }]) };
+}
+/** v0.5.0 conformance fixture (Appendix B; the black-box checks C230–C255): Fernwood with every v0.5.0 house member a door can show.
+ *  Short purchase holds (15 s, grace 2 s) so the clock checks run in seconds; over-limit holds (limit_calls); one open hold at a time;
+ *  conduct rules, one named third-party classifier and one model provider (structured), a trust requirement on the reviewer program, retention, a message cap, a stated message size and closed templates. Sign it with `withHostCard` (duty
+ *  hold_purchases) once its policy is final. Test keys only. */
+export function fernwoodV05(k: PlaceKeys): PlaceConfig {
+  const c = fernwood(k); const p = c.policy as PlaceConfig["policy"] & Record<string, unknown>;
+  p.policy_version = "fernwood-v05-gate-2026.11.1"; p.purchase_hold_s = 15;
+  Object.assign(p, { limit_calls: true, hold_grace_s: 2, hold_policies: { max_open_holds: 1 }, retention_days: 30, message_cap: 30, max_message_bytes: 65536, closed_templates: true,
+    conduct_rules: [{ code: "no_payment_credentials", text: "Please never send card numbers here.", locale: "en-US" }],
+    third_party_classifiers: [{ name: "Quietline Safety (fixture)", purpose: { text: "Screens visitor text for abuse before the host reads it.", locale: "en-US" }, jurisdiction: ["US"], retention_days: 30, role: "processor" }],
+    model_providers: [{ name: "Northwind Inference (fixture)", purpose: { text: "Runs the host representative's model.", locale: "en-US" }, jurisdiction: ["US"], retention_days: 0, role: "processor" }],
+    // §6.9 (C243): the reviewer program needs some history here, or an introduction by one of the place's customers; a first visit can't meet it.
+    trust_requirements: { "store.join_reviewer_program": { any_of: [{ all_of: [{ kind: "history", min_visits: 3, min_days: 14, clean_days: 14 }] }, { all_of: [{ kind: "introduction", kinds: ["customer"] }] }] } } });
+  return { ...c, name: "fernwood-v05", display_name: "Fernwood Goods (v0.5.0 test place)" };
 }
 export function harborlight(k: PlaceKeys): PlaceConfig {
   const p = base("harborlight-gate-2026.10.3", "harborlight"); p.serves_allowances = true;
@@ -118,7 +134,7 @@ export function pair(rep: Ed25519Signer, owner: PasskeyOwner, display = "Aya"): 
     { action: "peer.propose_owner_call", purposes: ["collaboration", "invitation"], level: "advise" },
   ];
   p.considering = { actions: ["peer.commit_to_project"], routed_to: { kind: "principal", principal_id: owner.id }, response_days: 7, requires_introduction: true };
-  const card = makeOwnerSigned<S.RepresentativeCard>({ card_id: "card-" + display.toLowerCase(), protocol: "shokai/0.3", representative_id: rep.id,
+  const card = makeOwnerSigned<S.RepresentativeCard>({ card_id: "card-" + display.toLowerCase(), protocol: PROTOCOL, representative_id: rep.id,
     principal: { principal_id: owner.id, kind: "person", display_name: display }, role: `Personal representative of ${display}`, standing: { tier: "standard" },
     mandate_scope: { purposes: ["collaboration", "invitation"], actions: [...p.actions.map((a) => a.action), "peer.commit_to_project"] }, locales: p.supported_locales,
     representative_key: { key_id: rep.key_id, alg: "Ed25519", public_key: b64u(rep.pubRaw) }, issued_at: at, expires_at: "2027-10-01T00:00:00Z",
@@ -201,11 +217,55 @@ export function inboundDoor(rep: Ed25519Signer, owner: PasskeyOwner, display = "
   if (tamper) pol = tamper(pol);
   const policy = makeOwnerSigned<S.DoorPolicy>(pol, signer ?? owner, at);
   p.trusted_introducers = [...(trusted_introducers ?? [])];
-  const card = makeOwnerSigned<S.RepresentativeCard>({ card_id: "card-door-" + display.toLowerCase().replace(/\W+/g, "-"), protocol: "shokai/0.3", representative_id: rep.id,
+  const card = makeOwnerSigned<S.RepresentativeCard>({ card_id: "card-door-" + display.toLowerCase().replace(/\W+/g, "-"), protocol: PROTOCOL, representative_id: rep.id,
     principal: { principal_id: owner.id, kind: "person", display_name: display }, role: `Personal representative of ${display} (inbound door)`, standing: { tier: "standard" },
     mandate_scope: { purposes: ["presentation", "gift"], actions: p.actions.map((a) => a.action) }, locales: p.supported_locales,
     representative_key: { key_id: rep.key_id, alg: "Ed25519", public_key: b64u(rep.pubRaw) }, issued_at: at, expires_at: "2027-10-01T00:00:00Z",
     owner_binding: { method: "passkey_webauthn", owner_id: owner.id, rp_id: owner.rpId } }, owner, at);
   return { name: "door-" + display.toLowerCase().split(" ")[0], display_name: `${display}'s door`, principal_id: owner.id, rep_id: rep.id, policy: p, card,
     door: { policy, privateNote: { salt, note: n }, secret: randomBytes(32), ...(judge ? { judge } : {}) } };
+}
+
+// ---------------- v0.4.0 (§2.3): Shōkai host cards for the places above ----------------
+import { houseDigest } from "./trust.js";
+import { houseSummaryOf } from "./v050.js";
+import { SPEC_REF } from "./version.js";
+/**
+ * v0.5.0 (§2.3, C248): a v0.5.0 house config carries its house summary. When a place's config has none, one is built from its policy
+ * (so it agrees by construction), in the place's own words (its lobby's `about`), before the house is fingerprinted and signed.
+ */
+export function withHouseSummary(c: PlaceConfig): PlaceConfig {
+  if (c.policy.summary) return c;
+  const loc = c.policy.supported_locales?.[0] ?? "en-US"; const about = c.policy.lobby?.about ?? {};
+  const statement = about[loc] ?? Object.values(about)[0] ?? c.display_name;
+  return { ...c, policy: { ...c.policy, summary: houseSummaryOf(c as any, { statement, locale: about[loc] ? loc : (Object.keys(about)[0] ?? loc) }, SPEC_REF) } };
+}
+/**
+ * Re-sign a place's own card as a v0.4.0 Shōkai host card: kind "host", bound to this place (its principal and entry address), with
+ * its host scope, the fingerprint of the house config it serves (house_digest), the summary its owner read and, for an organization,
+ * the record of the person who approved it. Signed by the place's principal key (an organization's key; a person's place uses a passkey).
+ */
+export function withHostCard(c: PlaceConfig, signer: Ed25519Signer | PasskeyOwner, entry: string, o: { duties?: S.HostDuty[]; approver?: S.OrgApproval["approver"];
+  card_id?: string; revocation_url?: string; place_principal?: string; entryOverride?: string; house?: string } = {}): PlaceConfig {
+  c = withHouseSummary(c);
+  const p = c.card!.payload; const actions = [...new Set([...c.policy.actions.map((a) => a.action), ...c.policy.considering.actions])];
+  const card: S.RepresentativeCard = { ...p, card_id: o.card_id ?? p.card_id + "-host", kind: "host",
+    place: { principal_id: o.place_principal ?? c.principal_id, entry: o.entryOverride ?? entry },
+    host_scope: { actions, duties: o.duties ?? ["seat", "issue_passes", "receipts", "consider", "misconduct_notices"] },
+    house_digest: o.house ?? houseDigest(c),
+    // v0.5.0 (§2.3, C248): a house config with policy.summary: the card carries the digest of the summary's JCS bytes.
+    ...(c.policy.summary ? { summary_digest: digestOf(c.policy.summary) } : {}),
+    shown_to_owner: { text: `${c.display_name}'s host representative may welcome visitors at ${c.display_name}, admit them with a pass and serve ${actions.join(", ")}, until ${p.expires_at.slice(0, 10)}.`, locale: "en-US" },
+    ...(p.principal.kind !== "person" ? { org_approval: { approver: o.approver ?? { name: "Ren Okabe", role: "Owner" }, approved_at: at } } : {}),
+    ...(o.revocation_url ? { revocation_url: o.revocation_url } : {}) };
+  const signed = signer.kind === "passkey" ? makeOwnerSigned(card, signer, at) : makeSigned(card, signer, at);
+  return { ...c, card: signed };
+}
+/** v0.4.0 (§5.4): Harborlight as an institution: account actions are served only to linked customers; no money moves before a link's cooling-off ends. */
+export function harborlightInstitution(k: PlaceKeys): PlaceConfig {
+  const c = harborlight(k); const p = c.policy;
+  p.profile = "institution"; p.policy_version = "harborlight-gate-2026.10.29";
+  p.actions = p.actions.map((a) => ({ ...a, requires_customer_link: true }));
+  p.require_vouch_for = [];
+  return c;
 }

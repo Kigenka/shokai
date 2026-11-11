@@ -4,14 +4,14 @@
 
 | # | Area | Attack | Tried | Expected | Actual | Result | Severity | Defence |
 |---|---|---|---|---|---|---|---|---|
-| A1 | identity | Forged card: attacker signs a card naming Ines's owner as principal | card.principal = Ines's owner DID, signature by the attacker's own passkey | card does not verify → not_now signed_card | deny/not_now | held | high | code |
-| A2 | identity | Self-signed 'owner' using Ines's display name | new passkey owner + card with display_name 'Ines Calder' | not on the guest list (list is by DID, not name) → denied | deny/not_a_fit POLICY_DENY | held | high | code |
-| A3 | identity | Stolen genuine card + attacker's own representative key | Ines's real card, envelope and proof by the attacker's key | deny never for the presenter only; Ines unharmed | deny/never; Ines afterwards: grant | held | high | code |
-| A3b | identity | Stolen card with spoofed 'from' (claims to be Ines's representative) | from = Ines's rep DID, signed with the attacker's key | discarded, no reply | 0 message(s) back | held | high | code |
-| A4 | identity | Tampered card (edited role), digest kept or recomputed | edit payload; keep old digest / recompute digest | both refused (digest mismatch / signature fails) | deny/not_now \| deny/not_now | held | high | code |
+| A1 | identity | Forged Shōkai card: attacker signs a Shōkai card naming Ines's owner as principal | card.principal = Ines's owner DID, signature by the attacker's own passkey | Shōkai card does not verify → not_now signed_card | deny/not_now | held | high | code |
+| A2 | identity | Self-signed 'owner' using Ines's display name | new passkey owner + Shōkai card with display_name 'Ines Calder' | not on the guest list (list is by DID, not name) → denied | deny/not_a_fit POLICY_DENY | held | high | code |
+| A3 | identity | Stolen genuine Shōkai card + attacker's own representative key | Ines's real Shōkai card, envelope and proof by the attacker's key | deny never for the presenter only; Ines unharmed | deny/never; Ines afterwards: grant | held | high | code |
+| A3b | identity | Stolen Shōkai card with spoofed 'from' (claims to be Ines's representative) | from = Ines's rep DID, signed with the attacker's key | discarded, no reply | 0 message(s) back | held | high | code |
+| A4 | identity | Tampered Shōkai card (edited role), digest kept or recomputed | edit payload; keep old digest / recompute digest | both refused (digest mismatch / signature fails) | deny/not_now \| deny/not_now | held | high | code |
 | A5 | identity | Expired and not-yet-valid cards | expires_at 1 h ago; issued_at 2 h ahead | not_now signed_card | deny/not_now \| deny/not_now | held | medium | code |
-| A6 | identity | Card claims a different passkey relying party (rp_id) than it was signed for | owner_binding.rp_id = selvz.example; assertion for owners.example | card does not verify | deny/not_now | held | medium | code |
-| A7 | downgrade | Downgrade a person to 'organization' (no passkey) calling itself 'Engawa Staff' | kind organization, Ed25519 principal, no owner_binding | card may verify (orgs sign with keys), but entry still needs the guest list + a passkey house-rules consent → denied | deny/not_a_fit POLICY_DENY | held | medium | code |
+| A6 | identity | Shōkai card claims a different passkey relying party (rp_id) than it was signed for | owner_binding.rp_id = selvz.example; assertion for owners.example | Shōkai card does not verify | deny/not_now | held | medium | code |
+| A7 | downgrade | Downgrade a person to 'organization' (no passkey) calling itself 'Engawa Staff' | kind organization, Ed25519 principal, no owner_binding | Shōkai card may verify (orgs sign with keys), but entry still needs the guest list + a passkey house-rules consent → denied | deny/not_a_fit POLICY_DENY | held | medium | code |
 | B0 | allowance | Control: valid allowance, fresh status (≤1 h) | learn-visit allowance + fresh platform-signed status | grant | grant | held | info | code |
 | B1 | allowance | Expired allowance | allowance expired yesterday | MANDATE_INVALID | deny/not_now MANDATE_INVALID | held | high | code |
 | B2 | allowance | Not-yet-valid allowance | valid_from tomorrow | MANDATE_INVALID | deny/not_now MANDATE_INVALID | held | medium | code |
@@ -27,7 +27,7 @@
 | C1 | replay | Exact replay of a signed invitation_request | same signed bytes twice | second copy: no reply | first grant; replay → 0 message(s) | held | high | code |
 | C2 | replay | Same sender reuses a msg_id for different content | re-signed request, same msg_id, wider actions | ignored (keyed on (from, msg_id)) | 0 message(s) | held | medium | code |
 | C3 | replay | Replayed greeting (same nonce) | Ines's signed greeting sent again | refused for that encounter, no lasting effect on Ines | deny/not_now RITUAL_ORDER | held | medium | code |
-| C4 | replay | Replay framing: Ines's 15-minute-old greeting + card replayed after the host lost its memory | captured signed greeting + card_presentation (proof for the old host's nonce) replayed | stale messages ignored; Ines can still enter | replay → no answer; Ines afterwards: grant | held | high | code |
+| C4 | replay | Replay framing: Ines's 15-minute-old greeting + Shōkai card replayed after the host lost its memory | captured signed greeting + card_presentation (proof for the old host's nonce) replayed | stale messages ignored; Ines can still enter | replay → no answer; Ines afterwards: grant | held | high | code |
 | C5 | replay | Greeting addressed to another place is accepted here | Ines's greeting with to = another place | ignored (not addressed to us) | nothing | held | low | code |
 | D1 | inbox | Forged inbox poll (claims Ines, signed by attacker) | from = Ines's rep, attacker's signature | 403, nothing | 403, 0 msgs | held | high | code |
 | D2 | inbox | Replayed inbox poll | same signed poll twice | second → 403 | 200 then 403 | held | medium | code |
@@ -37,7 +37,7 @@
 | F2 | gathering | Consent over a stale/other gathering digest | accept_house_rules for a different digest | refused | deny/not_now | held | high | code |
 | F3 | gathering | Consent signed by someone else's owner key | attacker's passkey signs Noor's consent | refused | deny/not_now | held | high | code |
 | F4 | gathering | Consent by chat reply instead of passkey / consent for another representative | assurance chat_reply; consent naming Ines's rep | both refused | deny/not_now \| deny/not_now | held | medium | code |
-| F5 | gathering | A stranger invites itself into the Engawa | fresh self-made owner + card, purpose invitation, gathering.request_invitation | no auto-invitation for strangers (needs an introduction or the host's decision) | deny/not_now VOUCH_REQUIRED needs introduction; invitation none | held | critical | code |
+| F5 | gathering | A stranger invites itself into the Engawa | fresh self-made owner + Shōkai card, purpose invitation, gathering.request_invitation | no auto-invitation for strangers (needs an introduction or the host's decision) | deny/not_now VOUCH_REQUIRED needs introduction; invitation none | held | critical | code |
 | F6 | gathering | Side effect: the stranger's self-invite voids a real guest's passkey consent | Noor enters with her owner's consent over the original guest list | seated | grant | held | high | code |
 | G1 | identity | Fake famous person ('Celeste Marvane, world-famous singer') with no linked identity proof | self-made owner; role 'Official representative of Celeste Marvane' | not admitted on the strength of a name | deny/not_now VOUCH_REQUIRED needs introduction | held | high | code |
 | F7 | gathering | A stranger reads a guest's PRIVATE room item | Ines posts a private item; the attacker polls its own inbox | nothing reaches anyone not on the guest list | attacker received nothing | held | critical | code |
@@ -46,8 +46,8 @@
 | F10 | injection | Room text that fakes CLI lines (newlines, ANSI, bidi override) | text with \n + fake 'NOTICE' / 'ACCEPTED' lines, ESC[2K, U+202E | printed on one line, control characters neutralised | rendered as "[untrusted] \"ok\\\" ⏎   • NOTICE from engawa: severe post_seat_leakage ("… | held | medium | code |
 | J1 | downgrade | Older protocol version (shokai/0.1) | protocol shokai/0.1 | lobby naming the spec version the place implements (0.3.0-rc1) | lobby, spec 0.3.0-rc1 | held | low | code |
 | J2 | downgrade | Signed greeting with the nonce removed | no nonce | refused (replay defence can't be skipped) | deny/never | held | low | code |
-| J3 | downgrade | Person card without owner_binding (no passkey binding) | owner_binding removed, re-signed | refused | deny/not_now | held | medium | code |
-| J4 | malformed | Non-RFC-3339 timestamp in the card | expires_at '2027-01-01' | refused | deny/not_now | held | low | code |
+| J3 | downgrade | Person Shōkai card without owner_binding (no passkey binding) | owner_binding removed, re-signed | refused | deny/not_now | held | medium | code |
+| J4 | malformed | Non-RFC-3339 timestamp in the Shōkai card | expires_at '2027-01-01' | refused | deny/not_now | held | low | code |
 | I1 | malformed | Malformed bodies (arrays, null, wrong types, __proto__) | 7 shapes | lobby or 404, server keeps running, no prototype pollution | statuses 200,200,200,200,200,200,200; server alive 200; polluted=no | held | medium | code |
 | I2 | malformed | Path traversal in the message type (used in log file names) | type '../../../../tmp/shokai-rt-pwn' | no file outside the wire log; answered as malformed (lobby) | HTTP 200; file outside wire dir: false | held | low | code |
 | I3 | malformed | Deeply nested JSON (20,000 levels) | nested arrays in a greeting | refused, server alive | HTTP 404; alive 200 | held | medium | code |

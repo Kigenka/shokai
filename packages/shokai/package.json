@@ -1,7 +1,7 @@
 {
   "name": "@kigenka/shokai",
-  "version": "0.3.0",
-  "description": "Reference TypeScript SDK for Shōkai, the agent introduction protocol: signed cards, vouches and envelopes, door policy, visit reports, and a gate that puts a Shōkai door in front of any MCP server.",
+  "version": "0.5.0",
+  "description": "Agents, introduced properly. Reference TypeScript SDK for Sh\u014dkai, the open protocol that gives online places a door for agents: signed Sh\u014dkai cards, vouches and envelopes, door policy, visit reports, and a gate that puts a Sh\u014dkai door in front of any MCP server.",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,
@@ -28,7 +28,8 @@
       "types": "./dist/src/browser.d.ts",
       "default": "./dist/src/browser.js"
     },
-    "./schema.json": "./spec/schema.json"
+    "./schema.json": "./spec/schema.json",
+    "./package.json": "./package.json"
   },
   "bin": {
     "shokai": "dist/src/cli.js",
@@ -36,15 +37,18 @@
   },
   "files": [
     "dist/src",
+    "src",
     "dist/examples",
     "conformance-data",
+    "agent-install",
     "spec",
     "README.md",
     "LICENSE",
+    "LICENSE-docs",
     "NOTICE"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "keywords": [
     "shokai",
@@ -60,12 +64,13 @@
     "check-sync": "node scripts/sync-core.mjs --check",
     "build": "tsc -p .",
     "prepack": "node scripts/sync-core.mjs --check && node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p .",
-    "test": "node scripts/sync-core.mjs --check && tsc -p . && node dist/test/sdk.test.js && node dist/test/visit.test.js && node dist/test/mandate.test.js && node dist/test/mcp-gate.test.js && node dist/test/gate-release.test.js && node dist/test/fetch-policy.test.js && node dist/test/extras.test.js && node dist/test/state.test.js && node dist/test/owner.test.js && node dist/test/restart.test.js && node dist/test/claims.test.js && node dist/test/doorcard.test.js && node dist/test/demo.test.js && node dist/test/runner.test.js && node dist/src/conformance/cli.js --self-test",
+    "test": "node scripts/sync-core.mjs --check && tsc -p . && node scripts/test-total.mjs",
     "example": "tsc -p . && node dist/examples/toy-mcp/run.js",
-    "demo": "tsc -p . && node dist/src/cli.js demo"
+    "demo": "tsc -p . && node dist/src/cli.js demo",
+    "test:upstash": "tsc -p . && node dist/test/upstash.integration.test.js"
   },
   "peerDependencies": {
-    "@modelcontextprotocol/sdk": ">=1.12.0"
+    "@modelcontextprotocol/sdk": ">=1.12.0 <2"
   },
   "peerDependenciesMeta": {
     "@modelcontextprotocol/sdk": {
@@ -73,12 +78,15 @@
     }
   },
   "devDependencies": {
+    "@hono/node-server": "2.1.5",
     "@modelcontextprotocol/sdk": "1.32.2",
-    "@types/node": "^20.19.43",
+    "@types/node": "^22.20.5",
+    "express": "5.3.0",
+    "hono": "4.13.14",
     "typescript": "5.9.3",
     "zod": "^4.6.7"
   },
-  "author": "YSY",
+  "author": "Yu Sung Yeh",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kigenka/shokai.git",

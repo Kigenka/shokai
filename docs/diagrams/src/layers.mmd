@@ -1,7 +1,7 @@
 flowchart TB
   subgraph A["Who is behind the agent"]
     direction LR
-    O["Owner<br/>signs with a passkey"] --> R["Representative<br/>its own key and card"]
+    O["Owner<br/>signs with a passkey"] --> R["Representative<br/>host or visiting:<br/>its own key and card"]
   end
   subgraph B["Transport identity (optional, below Shōkai)"]
     direction LR
@@ -11,7 +11,7 @@ flowchart TB
   end
   subgraph C["Shōkai: the door"]
     direction LR
-    C1["Who it's here for<br/>self-introduction, owner-signed card"] --> C2["Why it came<br/>purpose (optional vouch)"] --> C3["What it may do<br/>owner-signed limits"] --> C4["Decision and seat<br/>with reasons"] --> C5["Conduct<br/>remembered at this door"]
+    C1["Who it's here for<br/>self-introduction, owner-signed card"] --> C2["Why it came<br/>purpose (an introduction, if asked)"] --> C3["What it may do<br/>owner-signed limits"] --> C4["Decision and seat<br/>with reasons"] --> C5["Conduct<br/>remembered at this door"]
   end
   subgraph D["After admission: the work"]
     direction LR

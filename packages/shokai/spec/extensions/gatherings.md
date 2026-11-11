@@ -2,7 +2,7 @@
 <!-- SPDX-FileCopyrightText: 2026 Yu Sung Yeh -->
 # Shōkai extension: Gatherings
 
-**Status: stable** (in the reference with its own tests; within 0.3, it changes only for fixes). *Extension `gatherings`, version 0.3.0, tied to the core [SPEC.md](../SPEC.md) v0.3.0 (wire `shokai/0.3`). Normative for implementations that claim this extension. Section references without a document name are to the core.*
+**Status: stable** (in the reference with its own tests; within 0.5, it changes only for fixes). *Extension `gatherings`, version 0.5.0, tied to the core [SPEC.md](../SPEC.md) v0.5.0 (wire `shokai/0.5`, with `shokai/0.3` still accepted during the transition window, SPEC §11.1). **Applies to v0.5.0 (unchanged since v0.4.0).** Normative for implementations that claim this extension. Section references without a document name are to the core.*
 
 *© 2026 Yu Sung Yeh. Licensed under the [Apache License 2.0](../LICENSE). Patent commitment (draft): [PATENTS.md](../PATENTS.md). Names and logo: [TRADEMARKS.md](../TRADEMARKS.md).*
 
@@ -58,9 +58,9 @@
 - **Room items.** An attendee addressing the room MUST set both `encounter_id` and `to` to the gathering id; the place MUST hold the original signed items (it can't rewrite a signed header). [SC-GA1, GA1, C137, C111]
 
 ## The test gathering (Appendix B.3)
-- A gathering place in a conformance run MAY serve the action `gathering.request_invitation` (purpose `invitation`). It MUST grant it to a verified visitor whose card and mandate verify, re-sign its `Gathering` with that visitor's representative added to `invitees`, and hold a `gathering_invitation` for the visitor's inbox. The visitor then enters as in this extension. [SC-GA1, GA1, C127, C111]
+- A gathering place in a conformance run MAY serve the action `gathering.request_invitation` (purpose `invitation`). It MUST grant it to a verified visiting representative whose card and mandate verify, re-sign its `Gathering` with that visiting representative's representative added to `invitees`, and hold a `gathering_invitation` for the visiting representative's inbox. The visiting representative then enters as in this extension. [SC-GA1, GA1, C127, C111]
 - **Pressing in a run.** A test gathering MUST count presses exactly as this extension says, from room items alone, and MUST hold the notice for the presser's representative (and MAY hold it under the principal's DID) while handling the room question that is the press at `notice_at`, so it is in the next poll. Counts are never shared between askers or kept place- or gathering-wide. [SC-GA1, GA1, C46, C37]
-- **Trigger and gate.** The invitation follows the `grant` of an `invitation_request` naming `gathering.request_invitation`; no `act` is needed. The normal gate still applies: a visitor that fails it (for example a malformed possession proof) is not granted and gets no invitation. [SC-GA1, GA1, C140, C127, C90]
+- **Trigger and gate.** The invitation follows the `grant` of an `invitation_request` naming `gathering.request_invitation`; no `act` is needed. The normal gate still applies: a visiting representative that fails it (for example a malformed possession proof) is not granted and gets no invitation. [SC-GA1, GA1, C140, C127, C90]
 
 ## Open questions (informative)
 - Paraphrase quality (D4) can't be checked mechanically. Conformance checks only for the absence of verbatim text, organization names, titles and listed hints.

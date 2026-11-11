@@ -16,7 +16,7 @@
 ## 1. Problem
 rc4 proves who the owner is (an owner DID, §2.1) and what they signed (§5). It has no way to say "this owner DID is your existing customer". The scenario note (`scenarios/places-first.md` (e)) records the gap. Today a bank's choices are bad: ask the agent to log in (the owner's credentials in an agent's context: phishable, replayable, unbounded), or rely on an aggregator token the bank can't tie to a particular representative (P14 §1).
 
-**Decision taken by the editor (YSY, 2026-10-27):** a representative MUST NEVER carry the owner's bank login, password, one-time code, session cookie, access or refresh token, or account number. This proposal is built so that it never needs to.
+**Decision taken by the editor (2026-10-27):** a representative MUST NEVER carry the owner's bank login, password, one-time code, session cookie, access or refresh token, or account number. This proposal is built so that it never needs to.
 
 ## 2. Design in one diagram (informative)
 ```

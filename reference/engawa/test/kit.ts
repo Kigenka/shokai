@@ -52,11 +52,12 @@ export function ownerConsent(owner: PasskeyOwner, rep: string, action: S.OwnerCo
 
 /** A ritual session against one host; collects every outbound message. */
 export class Session {
+  /** v0.5.0 (§11.1): the wire tag this visitor sends (default the v0.4.0 tag, so the earlier suites run unchanged). */ tag: S.ProtocolVersion = "shokai/0.3";
   enc = randomId("enc"); seq = 0; /** v0.2.7 (§2.2): msg_ids are unique per sender, also across sessions that share an encounter id (pair places). */ sid = randomId("s"); hostNonce = ""; transcript: Out[] = []; last: any[] = [];
   constructor(public h: Host, public v: Visitor | null, public fromId?: string) {}
   get from() { return this.v?.rep.id ?? this.fromId ?? "urn:shokai:anon:wanderer"; }
   msg(type: string, body: Record<string, unknown>): any {
-    return { protocol: "shokai/0.3", encounter_id: this.enc, msg_id: `${this.enc}-${this.sid}-v${++this.seq}`, sent_at: NOW, from: this.from, to: this.h.cfg.rep_id, type, ...body };
+    return { protocol: this.tag, encounter_id: this.enc, msg_id: `${this.enc}-${this.sid}-v${++this.seq}`, sent_at: NOW, from: this.from, to: this.h.cfg.rep_id, type, ...body };
   }
   send(m: any, sign = true): any[] {
     const wire = sign && this.v ? makeSigned(m, this.v.rep, NOW) : { payload: m, payload_digest: digestOf(m), signatures: [] };
@@ -70,8 +71,9 @@ export class Session {
   }
   greet(sign = true, extra: Record<string, unknown> = {}) { return this.send(this.msg("greeting", { locales: this.v?.locales ?? ["en-US"], nonce: randomId("n-vis"), ...extra }), sign); }
   present(card = this.v!.card, proofKey = this.v!.rep, nonce?: string) {
-    const proof = makeSigned(possessionPayload(this.enc, nonce ?? this.hostNonce), proofKey, NOW).signatures[0];
-    return this.send(this.msg("card_presentation", { card, possession_proof: { ...proof, key_id: card.payload.representative_key.key_id, signer: card.payload.representative_id } }));
+    const aud = this.tag === "shokai/0.5" ? this.h.cfg.rep_id : undefined;   // R3-01: a 0.5 proof names the door it is for
+    const proof = makeSigned(possessionPayload(this.enc, nonce ?? this.hostNonce, aud), proofKey, NOW).signatures[0];
+    return this.send(this.msg("card_presentation", { card, possession_proof: { ...proof, key_id: card.payload.representative_key.key_id, signer: card.payload.representative_id, ...(aud ? { audience: aud } : {}) } }));
   }
   receipt(d = "sha-256:hostcard") { return this.send(this.msg("card_receipt", { card_digest: d })); }
   introduce(v: S.SignedVouch | null, extra: Record<string, unknown> = {}) { return this.send(this.msg("introduction", { vouch: v, ...extra })); }

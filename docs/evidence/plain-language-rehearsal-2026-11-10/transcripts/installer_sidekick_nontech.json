@@ -1,0 +1,129 @@
+{
+  "id": "installer/sidekick/nontech",
+  "role": "installer",
+  "skill": "sidekick",
+  "persona": "nontech",
+  "owner": "Priya Nair",
+  "agent": "Claude Sidekick",
+  "path": "/workspace/agentic-mcp/repo-export/shokai-0.5-preview/drafts/package-0.5/installer-skills/sidekick.md",
+  "pass": true,
+  "leaks": [],
+  "turns": [
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Hi, I heard I can have an assistant greet people who visit my shop on my behalf. I run Cedar & Steam on Shopify. We sell handmade herbal soaps and bath soaks. I'm Priya, I own it. I'm not technical at all — please keep it simple."
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "Hi Priya! I can help you plan a welcoming assistant for Cedar & Steam. Here's what I can do today and what comes later:\n\n**Right now, I can help you:**\n- Design a warm greeting that sounds like your shop\n- Decide what visitors can do (like browse your soaps and suggest orders)\n- Draft example conversations\n- Prepare a summary so you can pick this back up anytime\n\n**What's not connected yet:**\n- A live door/service that keeps your shop open between our chats\n- The actual signing and appointment of a lasting host\n- Connecting to your product catalog\n\nSo this is planning and rehearsal—useful groundwork, but not a live installation yet.\n\n**First question:** What's your store's web address? With your permission, I can look at your admin information or public pages to understand Cedar & Steam's feel before we draft the welcome. Nothing on your store will change.",
+      "usage": {
+        "input_tokens": 71,
+        "cache_creation_input_tokens": 18308,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 18308,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 203,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Oh, that's helpful—thank you! So we're just planning it out for now, that makes sense. My shop is cedardsteam.myshopify.com. And honestly, I'd rather you just ask me about the vibe instead of poking around—I'm a bit protective of my admin stuff. What do you want to know?"
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "Perfect—I respect that. Let me ask you directly instead.\n\n**Tell me about Cedar & Steam in your own words.** What's the feeling you want visitors to have? What matters most about your shop?",
+      "usage": {
+        "input_tokens": 352,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 47,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "We're all about natural, calming products—everything is handmade in small batches with herbs I source carefully. I want people to feel like they're stepping into something peaceful and genuine, not a big corporate thing. Honestly, I just want them to relax, maybe learn a bit about what goes into each soap or soak, and feel good about what they're buying."
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "That's beautiful, Priya. Peaceful, genuine, small-batch—I can feel the care in that.\n\nSo here's what I'm picturing for a welcome from your assistant:\n\n**\"Welcome to Cedar & Steam. Take a moment—I'm here to help you explore our handmade soaps and soaks, or answer questions about what goes into them. What draws you in today?\"**\n\nDoes that land right? Does it sound like Cedar & Steam?",
+      "usage": {
+        "input_tokens": 482,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 104,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "Yes, I really like that—it feels warm without being pushy, and it invites them to just browse if they want. The \"take a moment\" part especially feels right for what we do. I'd maybe just add something about how everything is handmade, since that's what I'm most proud of, but honestly this is close to perfect."
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "Great—let me adjust it:\n\n**\"Welcome to Cedar & Steam. Take a moment—I'm here to help you explore our handmade soaps and soaks, learn about the herbs and care that go into each one, or just browse. What draws you in today?\"**\n\nHow's that?",
+      "usage": {
+        "input_tokens": 663,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 68,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    },
+    {
+      "role": "owner",
+      "name": "Priya Nair",
+      "text": "That's perfect—that's exactly Cedar & Steam. I love it. So what happens next? How does this actually work once it's live?"
+    },
+    {
+      "role": "agent",
+      "name": "Claude Sidekick",
+      "text": "Good question. Let me walk you through what we're building toward:\n\n**What visitors would do:**\n- They'd arrive at your shop's door and see that welcome\n- They could browse your soaps and soaks, ask questions about ingredients or your process\n- They could suggest an order—like \"I'd like to try the lavender soap and the chamomile soak\"—and you'd see that suggestion\n- Nothing gets charged, reserved, or created in your store automatically. It's a conversation, not a purchase yet\n\n**What you'd do:**\n- You'd see those suggestions and decide what to do—accept it, chat more, or pass\n- You stay in control the whole time\n\n**The missing pieces (not built yet):**\n- A lasting \"host\"—an assistant that can remember Cedar & Steam between conversations and keep the door open\n- A way to connect your actual product list so visitors see what you really offer\n- The approval/signing process so you can officially appoint that host\n\n**For now:** We're drafting the welcome (done ✓), figuring out what visitors can do (browsing + suggestions, sounds right?), and preparing a summary you can come back to anytime.\n\nDoes that make sense? Any questions before we keep going?",
+      "usage": {
+        "input_tokens": 764,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 18308,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 277,
+        "service_tier": "standard",
+        "inference_geo": "not_available",
+        "speed": "standard"
+      }
+    }
+  ],
+  "running_cost_usd": 0.3379
+}
