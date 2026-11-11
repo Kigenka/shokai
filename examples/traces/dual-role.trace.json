@@ -1,4 +1,7 @@
 {
+  "protocol": "shokai/0.5",
+  "sdk": "@kigenka/shokai 0.5.1 (with the red-team round 3 fixes; 0.5.0 lacks them)",
+  "note": "The protocol calls the grant a pass. On the wire the field is still seat.",
   "steps": [
     {
       "who": "Fen's agent (no card)",
@@ -14,7 +17,7 @@
     {
       "who": "Maru's representative",
       "at": "room",
-      "seated": true,
+      "granted": true,
       "placeSigner": "Kiran's key",
       "repKey": "Noor's key",
       "acts": [
@@ -24,7 +27,7 @@
     {
       "who": "Noor (card 2)",
       "at": "tea shop",
-      "seated": true,
+      "granted": true,
       "acts": [
         "menu.view: ok",
         "order.place 12.00 USD: ok"
@@ -34,12 +37,12 @@
       "who": "Kiran",
       "at": "tea shop",
       "sent": "card_revocation of card 2",
-      "effect": "old seat's next act: act_decision/deny"
+      "effect": "old pass's next act: act_decision/deny"
     },
     {
       "who": "Maru's representative",
       "at": "room",
-      "seated": true,
+      "granted": true,
       "note": "card 1 untouched"
     }
   ],
@@ -50,15 +53,15 @@
     },
     {
       "ok": true,
-      "what": "Maru's representative checked the room's card (signed by Kiran's key, naming Noor) and was seated"
+      "what": "Maru's representative checked the room's card (signed by Kiran's key, naming Noor) and was granted a pass"
     },
     {
       "ok": true,
-      "what": "Maru's representative posts in the room within its seat"
+      "what": "Maru's representative posts in the room within its pass"
     },
     {
       "ok": true,
-      "what": "Noor, with card 2, is seated at the tea shop"
+      "what": "Noor, with card 2, is granted a pass at the tea shop"
     },
     {
       "ok": true,
@@ -78,13 +81,14 @@
     },
     {
       "ok": true,
-      "what": "after Kiran revokes card 2, Noor's open seat under it is ended"
+      "what": "after Kiran revokes card 2, Noor's open pass under it is ended"
     },
     {
       "ok": true,
-      "what": "the meeting room, under card 1, still seats visitors"
+      "what": "the meeting room, under card 1, still grants a pass"
     }
   ],
+  "ok": true,
   "trace": {
     "maru_room": [
       {
@@ -122,7 +126,8 @@
       },
       {
         "dir": "in",
-        "type": "farewell"
+        "type": "farewell",
+        "outcome": "seated"
       },
       {
         "dir": "out",
@@ -134,7 +139,8 @@
       },
       {
         "dir": "out",
-        "type": "farewell"
+        "type": "farewell",
+        "outcome": "completed"
       }
     ],
     "noor_shop": [
@@ -173,7 +179,8 @@
       },
       {
         "dir": "in",
-        "type": "farewell"
+        "type": "farewell",
+        "outcome": "seated"
       },
       {
         "dir": "out",
@@ -201,6 +208,5 @@
         "decision": "deny"
       }
     ]
-  },
-  "ok": true
+  }
 }

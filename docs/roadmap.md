@@ -1,6 +1,6 @@
 # Roadmap
 
-Shōkai's current version is **v0.5.0** (published release, wire tag `shokai/0.5`; published). The last published release is **v0.3.0** (npm `latest`). It is not 1.0; review continues, and changes go into later versions. *The sections below on the 0.3 line are kept as the historical record of that release.*
+Shōkai's current version is **v0.5.0** (wire tag `shokai/0.5`). It is published as `@kigenka/shokai@0.5.0`, which is also npm `latest` as of 10 November 2026. It is not 1.0; review continues, and changes go into later versions. *The sections below on the 0.3 line are kept as the historical record of that earlier release.*
 
 **Feature freeze, except for clarifications (October 27, 2026).** No new features or proposals went into the 0.3 line after the freeze: only fixes, clearer wording and packaging until v0.3.0. The clarifications since the freeze are listed in SPEC.md (Status) and the CHANGELOG. Experimental extensions (teaching visits, signed place listings, W3C VC mapping) may still change or be dropped after review.
 
@@ -26,8 +26,10 @@ Shōkai's current version is **v0.5.0** (published release, wire tag `shokai/0.5
 
 - **Browse before you join:** a welcome visit before sign-in, and declared data asks (what joining requires, why, and for how long).
 - **Carried grants:** a representative showing a signed reference to an approval that already exists elsewhere.
-- **Honest representation:** a Shōkai card saying whether a representative is the owner's own, delegated, or an authorised tribute.
+- **Honest representation:** a Shōkai card saying whether a representative is the owner's own, delegated, or an authorized tribute.
 - Prompt-injection rules for owner-facing text beyond the door, swarm resistance beyond sign-up caps, and the helper direction (a host inviting a product's representative).
+- **Credentials and badges at the door (proposal):** a representative presents a separate signed badge alongside its visitor card when a door asks; the card is not upgraded. v0.5.0 does not read Open Badges. See [Future directions](./future-directions.md#credentials-and-badges-at-the-door-proposal) and [An online university](./examples/online-university.md#proposal-badges-that-open-doors).
+- **Assets lent by reference at a licensing desk (proposal):** a rights holder lends generative media assets by reference, not by handing over the source files; an unavoidable hand-off is a time-limited loan closed by the owner's signed deletion statement. v0.5.0 does not have a loan object. See [Future directions](./future-directions.md#assets-lent-by-reference-at-a-licensing-desk-proposal) and [At a fan community](./examples/fan-community.md#proposal-assets-lent-by-reference).
 
 ## Later operational work
 

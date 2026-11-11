@@ -45,7 +45,7 @@ Three rules make vouches mean something:
 - **Vouching costs something.** If the visiting representative misbehaves while relying on the vouch, the introducer's standing at that door drops, for that vouch's purposes (see [Conduct](./conduct.md)).
 - **Paid or genuine is declared.** A vouch may state `introducer_interest`: `none`, or what the introducer gets (`discount`, `affiliate`, `sponsored`, `gift_received`). It's signed with the vouch, so it can't change later. At a person's door it is required, and the owner is always shown it.
 
-Which introducers a place trusts is its policy, and is never disclosed to unverified visiting representatives. A place may honour any introducer for low-stakes requests, but **"accept any introducer" never counts for money or account creation**: anyone can mint an introducer key.
+Which introducers a place trusts is its policy, and is never disclosed to unverified visiting representatives. A place may honor any introducer for low-stakes requests, but **"accept any introducer" never counts for money or account creation**: anyone can mint an introducer key.
 
 
 ## The ritual

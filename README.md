@@ -9,17 +9,17 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-9c4a32)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-555555)](packages/shokai/package.json)
 
-> Shōkai 0.5.0 is published: [`@kigenka/shokai@0.5.0`](https://www.npmjs.com/package/@kigenka/shokai/v/0.5.0) on npm, source at [github.com/Kigenka/shokai](https://github.com/Kigenka/shokai).
+> The current package is [`@kigenka/shokai@0.5.1`](https://www.npmjs.com/package/@kigenka/shokai/v/0.5.1) on npm (specification v0.5.0, wire tag `shokai/0.5`), source at [github.com/Kigenka/shokai](https://github.com/Kigenka/shokai). 0.5.1 fixes two red-team bugs found in 0.5.0 and adds a rule that a place must not ask for a password, recovery phrase or card number; see the [changelog](CHANGELOG.md).
 
 <!-- Planned: a short introduction video (thumbnail linking to it) and an illustration of the Shōkai card, going out and coming home. -->
 *Video coming soon: a short introduction to Shōkai.*
 
-_New to Shōkai? Run the two-second demo (`npx @kigenka/shokai@0.5.0 demo`), then read [How Shōkai works](docs/how-it-works.md): one visit to a tea shop, in plain words._
+_New to Shōkai? Run the two-second demo (`npx @kigenka/shokai@0.5.1 demo`), then read [How Shōkai works](docs/how-it-works.md): one visit to a tea shop, in plain words._
 
 This repository contains:
 
 - the Shōkai **specification** ([`SPEC.md`](SPEC.md)) and its optional **extensions** ([`extensions/`](extensions/README.md));
-- the **wire types**, defined in TypeScript first ([`protocol-shapes.ts`](protocol-shapes.ts)) and available as **JSON Schema** ([`schema/v0.5.0/schema.json`](schema/README.md)) for other languages;
+- the **wire types**, defined in TypeScript first ([`protocol-shapes.ts`](protocol-shapes.ts)) and available as **JSON Schema** ([`schema/v0.5.1/schema.json`](schema/README.md); the released v0.5.0 file is unchanged) for other languages;
 - **conformance**: golden traces with real signatures, byte-exact test vectors, and the conformance runner `shokai-conformance` ([`conformance/`](conformance/));
 - the TypeScript **SDK** [`@kigenka/shokai`](packages/shokai/README.md) on npm: doors, representatives, owner helpers and a gate in front of any MCP server;
 - **reference implementations**: a place server, a prototype, and a passkey signing page you can run on your own domain ([`reference/`](reference/));
@@ -48,10 +48,10 @@ This repository contains:
 For developers who want to see it in code. You need Node.js 22 or later. It runs on whichever computer you paste the command into: the demo door and the visiting representative both run there, and nothing leaves it. The people and the place are fictional, and the keys are made for the run. A fuller experience, with your own representative visiting a hosted place, is coming.
 
 ```bash
-npx @kigenka/shokai@0.5.0 demo
+npx @kigenka/shokai@0.5.1 demo
 ```
 
-Aya Linden (fictional) is a customer, not the shop's owner. Looking for a fine green tea, she came across Kettle & Leaf, a tea shop she has never visited. She's at work all day, so with the Shōkai card she signed with her passkey, she sends her representative to find a new green tea blend, within 10.00 USD, and to tell her what it found. The limit, in plain words: the representative buys one tea for 6.00 USD, leaving 4.00; then the demo deliberately asks for a second 6.00 order, to show that neither the representative nor the door lets it go past 10.00. In the demo, a pretend Kettle & Leaf opens a door on 127.0.0.1 and her representative arrives. The visit itself takes under two seconds (1.4 s in our runs; the first `npx` run also downloads the package). It introduces itself, is admitted with a pass (the demo's output says *seat*, the specification's word: exactly which actions it may take, within which limits, until when), orders, and, to show the limit at work, is refused when the next order would pass it (by itself, and by the door when it's sent anyway). Then it reports home:
+Aya Linden (fictional) is a customer, not the shop's owner. Looking for a fine green tea, she came across Kettle & Leaf, a tea shop she has never visited. She's at work all day, so with the Shōkai card she signed with her passkey, she sends her representative to find a new green tea blend, within 10.00 USD, and to tell her what it found. The limit, in plain words: the representative buys one tea for 6.00 USD, leaving 4.00; then the demo deliberately asks for a second 6.00 order, to show that neither the representative nor the door lets it go past 10.00. In the demo, a pretend Kettle & Leaf opens a door on 127.0.0.1 and her representative arrives. The visit itself takes under two seconds (1.4 s in our runs; the first `npx` run also downloads the package). It introduces itself, is admitted with a pass (the demo's output also shows the wire field's name, *seat*: exactly which actions it may take, within which limits, until when), orders, and, to show the limit at work, is refused when the next order would pass it (by itself, and by the door when it's sent anyway). Then it reports home:
 
 ```text
 2. Aya's representative arrives
@@ -59,11 +59,11 @@ Aya Linden (fictional) is a customer, not the shop's owner. Looking for a fine g
   mandate      Aya allows: purchase, menu.view + order.place, up to 10.00 USD
   ...
   ← door       invitation_response grant
-  seat         seated; tools in the seat: menu.view, order.place
+  pass         admitted; tools in the pass (wire: seat): menu.view, order.place
 
 3. It acts within what Aya allowed
   order.place  refused by the representative itself: 6.00 USD is more than the 4.00 USD left of the mandate
-  order.place  refused by the door: "I can't do that within this seat." (needs a new signed_mandate)
+  order.place  refused by the door: "I can't do that within this pass." (needs a new signed_mandate)
 
 4. The report home to Aya
   The place with key …XyEWwtGR (claims to be "Kettle & Leaf"; not verified) admitted me with a pass for "menu.view" and
@@ -73,9 +73,9 @@ Aya Linden (fictional) is a customer, not the shop's owner. Looking for a fine g
 Then build your own (the [quickstart](QUICKSTART.md) takes about ten minutes, from a clean machine to an admitted visit):
 
 ```bash
-npm install @kigenka/shokai@0.5.0   # a door, a gate in front of your MCP server, and a representative
+npm install @kigenka/shokai@0.5.1   # a door, a gate in front of your MCP server, and a representative
 npx --no-install shokai-conformance <url>    # for builders: check that your own door follows the protocol
-npx --no-install shokai --version   # @kigenka/shokai 0.5.0 (shokai/0.5, spec 0.5.0)
+npx --no-install shokai --version   # @kigenka/shokai 0.5.1 (shokai/0.5, spec 0.5.0)
 ```
 
 ## What Shōkai is, in plain words
@@ -92,7 +92,7 @@ npx --no-install shokai --version   # @kigenka/shokai 0.5.0 (shokai/0.5, spec 0.
 - **Open, and for everyone.** An open protocol (Apache 2.0) for individuals and small businesses as much as for large companies. Anyone can host a place: a tea house, a small shop, a project room, for an afternoon or for years. A place can admit only representatives whose owners signed for them, while ordinary agents keep using the place's other routes, such as its website or the [Personal Agent Protocol](#shōkai-and-the-personal-agent-protocol).
 - **A complement, not a rival.** Shōkai is about who an agent represents, why it came and what its owner signed (and, when someone chooses to vouch for it, who did). It works next to MCP, A2A, OAuth and the Personal Agent Protocol.
 
-Status: **v0.5.0**, published and open for review and feedback. Not 1.0. Author: Yu Sung Yeh. Stewarded by Kigenka.
+Status: **specification v0.5.0, package 0.5.1**, published and open for review and feedback. Not 1.0. Author: YSY. Stewarded by Kigenka.
 
 ## Tested with existing public agents
 
@@ -113,35 +113,35 @@ Hermes Agent and OpenClaw ran in sandboxes with development keys for fictional o
 
 ```mermaid
 flowchart LR
-  O["Owner<br/>a person, brand or company"] -- "signs the Shōkai card and limits" --> R["Visiting representative<br/>carries its signed Shōkai card"]
-  R -. "1. window, at the doorstep:<br/>reads the public listing" .-> P["The place's listing<br/>open to look at: no card, no key,<br/>the door identifies no one"]
-  R -- "2. knocks and introduces itself" --> D{"The door decides on signed facts<br/>3. host representative welcomes and asks · 4. the door decides and explains<br/>Who is it here for?<br/>Why did it come?<br/>What may it do?"}
-  D -- "grant · conditional · deny · considering" --> S["5. Pass<br/>a temporary pass: exactly what<br/>was asked and allowed, with an end time"]
-  S -- "6. the visiting representative completes the visit" --> W["The visit<br/>MCP · A2A · the place's APIs<br/>and what the place presents"]
-  W --> H["7. Report home and share the story<br/>with a visit stamp, if the place gives one;<br/>anything beyond the limits waits"]
+  O["Owner<br/>a person, brand or company"] -- "signs the Shōkai visitor card and a mandate" --> R["Visiting representative<br/>carries its signed Shōkai visitor card"]
+  R -. "1. at the doorstep:<br/>reads the listing and the host card" .-> P["The listing and host card<br/>open to any agent: no visitor card, no key;<br/>the leaflet if it isn't ready"]
+  R -- "2. knocks; the door checks who's there" --> D["The Shōkai door<br/>cards both ways, each with a proof<br/>of the key for this visit"]
+  D -- "into the entryway, not admitted yet" --> Hst["3. Welcome<br/>the host representative greets<br/>in the place's own style"]
+  Hst --> Why["4. Say why it came<br/>purpose, context,<br/>and the owner's limits"]
+  Why --> Dec["5. The door decides and explains<br/>on signed facts, not conversation"]
+  Dec -- "yes · yes with conditions · not now · not a fit · taken inside" --> S["6. Pass (wire: seat)<br/>this is where the visitor is admitted:<br/>exactly what was asked and allowed"]
+  S -- "7. the visiting representative completes the visit" --> W["The visit<br/>MCP · A2A · the place's APIs<br/>the door checks every action"]
+  W --> H["8. Report home and the record<br/>the story for the owner;<br/>a local record at the door"]
   H --> O
-  D -- "7. the door records the visit" --> K["Local record at the door<br/>kept by the door, not a global score"]
-  D -. "not ready yet" .-> L["The leaflet<br/>not a rejection: what's needed<br/>to come prepared, and a kind not now"]
+  Dec -- "the door records the visit" --> K["Local record at the door<br/>kept by the door, not a global score"]
+  P -. "no visitor card" .-> L["The leaflet<br/>not a rejection: go back to the owner<br/>and return prepared"]
   L -. "a plain sentence for the owner" .-> O
-  R ~~~ I["Introduced by someone known here<br/>a signed vouch from an owner the place knows"]
-  I -.-> D
 ```
 
-*Seven steps, in order, each tagged with the side that acts. Shōkai has rules for both sides of the door.*
+*Eight steps, in order, each tagged with the side that acts: the visiting representative, the Shōkai door, the host representative, or both. Shōkai has rules for both sides of the door.*
 
-**Before any visit**, the owner, a person or a company, signs its representative's **Shōkai card**: a meishi-style card the representative carries (SPEC §2.3), not a credit card. With it go the limits the owner allows, in a signed mandate or standing allowance: purposes, actions, and any spending limit and expiry (§5). A good representative also knows its owner: their name, what they do, and how they like to be presented, the way a company's salesperson knows the company. A host representative can present its place in ways a website never could; a visiting representative speaks well for its person or company. Shōkai encourages owners to craft representatives they're proud to be represented by ([Prepare your host representative](docs/prepare-your-host-representative.md), [Set up your representative](docs/set-up-your-representative.md)).
+**Before any visit**, the owner, a person or a company, signs its representative's **Shōkai visitor card**: it works like a meishi, a business card, not a payment card (SPEC §2.3). With it go the limits the owner allows, in a signed mandate or standing allowance: purposes, actions, and any spending limit and expiry (§5). A good representative also knows its owner: their name, what they do, and how they like to be presented, the way a company's salesperson knows the company. A host representative can present its place in ways a website never could; a visiting representative speaks well for its person or company. Shōkai encourages owners to craft representatives they're proud to be represented by ([Prepare your host representative](docs/prepare-your-host-representative.md), [Set up your representative](docs/set-up-your-representative.md)).
 
-1. **Window, at the doorstep** · *visiting representative.* It reads the place's public listing: what the place is, what it offers, and what each action asks for. No Shōkai card, key or account is needed at this point. The host representative takes no action and identifies no one, like a passer-by reading a shop window (SPEC §3.1).
-2. **Knock and introduce** · *visiting representative.* Still at the doorstep, it presents its Shōkai card, signed by its principal (a person or an organization), proves it holds the Shōkai card's cryptographic key, and states its purpose and the context of the visit, with the limits its owner signed when a transaction is involved: a proper, well-articulated introduction. A person signs with a passkey (WebAuthn); an organization with a key under its own domain (`did:web`). A self-introduction (`vouch: null`) is the normal case, and every place must accept it as a valid step (§2.4, §3.2, §4, §5).
-3. **Welcome and ask** · *host representative.* Its first step, after greeting back: it gets to know the visiting representative. It checks the Shōkai card: whose representative this is, a person or an organization. It verifies the owner's signature, the proof of possession and that the Shōkai card isn't withdrawn, and asks a few questions to understand the purpose, the context, the limits (a mandate or a standing allowance: purposes, actions, amounts, expiry) and any vouch. A mandate without a spending limit authorizes no spending, and a looking visit (`visitation`) carries none (§5.1). Under a standing allowance, the place sees only the grant that covers this visit, not the owner's whole allowance (§5.2). A vouch from someone the place already trusts adds standing, earned place by place, an idea inspired by PageRank without a global score (§4). The signature shows that the owner's key signed; it doesn't by itself prove who held the key (§2.1). A visiting representative without a Shōkai card is asked for one: it gets the place's leaflet (`LobbyBriefing`), with a plain sentence for its owner, and a kind `not_now`, never silence (§3.3).
-4. **Decide and explain** · *the door.* It weighs the signed facts (whose representative, the purpose, the limits, any vouch) against its policy, and answers `grant`, `conditional`, `deny` (with a reason and a way to retry) or `considering` (taken inside to a person). The host representative welcomes the visitor the door admitted; the context the owner shared shapes the welcome and the service; prose never enters the decision (§6).
-5. **Pass** · *the door.* A pass (the specification calls it a *seat*) is what the door gives a visiting representative it admits: exactly which actions it may take, within which limits, until when, like being shown to a table with a set menu until closing (§7): the pass is never wider than *policy ∩ mandate ∩ request*. No spending allowance means no spending (§7.1). How a place admits is its own style, from a red-carpet welcome to a polite leaflet and "come back prepared". That's the storytelling Shōkai makes possible.
-6. **Complete the visit** · *visiting representative.* It does what it came for, within what its owner allowed, over MCP, A2A or the place's APIs. Agents are multimodal, so it also notices the place: its decor, design and feel, from what the place presents in text, images or sound. That gives brands, luxury houses among them, a way to present themselves to agents beyond data. Every act is signed, and the door still checks and counts it against the pass (§7.2).
-7. **Report home and share the story** · *both.* The visiting representative comes home with its pass (in the place's signed answer) and, where the place gives one, a signed visit stamp: a keepsake and proof of visitation. It tells its owner the story, right away or at a scheduled sit-down; nothing beyond the limits happens without the owner, and silence is no (§8). A mission can be a series of quests, sent by the owner or discovered when it meets other representatives ([Future directions](docs/future-directions.md)). The host representative records the visit at its door, in its own record for its place (§9.1). Both remember the visit for next time: the place in its relationship record, the representative in its own knowledge of the places it has visited (§9.1, §9.2).
+1. **At the doorstep** · *visiting representative.* It reads the place's public listing: what the place is, what it offers, and what each action asks for. The door serves this listing to any agent; no Shōkai visitor card, key or account is needed to read it. After the greetings, the visitor fetches and verifies the published host card (the listing's `principal_id` and `representative_id`, and `house_digest`) and reads the house summary before it sends an `invitation_request` (SPEC §3.1, §3.2, §2.3). Before a spending visit it also checks revocation (§2.6). No host conversation starts yet. An agent with no Shōkai visitor card gets the place's leaflet (`LobbyBriefing`): not a rejection, an ask to go back to its owner and return prepared, with a kind `not_now` — not silence (§3.3).
+2. **Knock, and the door checks who's there** · *the Shōkai door.* The visiting representative presents its Shōkai visitor card, signed by its principal (a person with a passkey, or an organization with a key under its own domain, `did:web`), and proves it holds that card's key for this door and this visit (§2.4, §3.2). The place shows its own Shōkai host card at every visit and proves it still holds its key. Both sides now know who they're dealing with. The visitor steps into the entryway; it isn't admitted yet. The signature shows that the owner's key signed; it doesn't by itself prove who held the key (§2.1).
+3. **Welcome** · *host representative.* The host representative greets the visitor in the place's own style, and may ask a few questions to understand the visit: why it came, the context, and any limits. How a place welcomes is its own craft. The host does not check the card, and does not hand over the leaflet.
+4. **Say why it came** · *visiting representative.* It states the purpose and the context of the visit. If it came to buy, it shows the limits its owner signed for this errand: what it may do, and any spending limit, in a mandate or under a standing allowance (§5). A mandate without a spending limit authorizes no spending, and a looking visit (`visitation`) carries none (§5.1). Under a standing allowance, the place sees only the grant that covers this visit, not the owner's whole allowance (§5.2). Those limits are the owner's signed word for this visit, separate from the card.
+5. **Decide and explain** · *the Shōkai door.* Now that it knows why the visitor came, the door weighs the signed facts against the rules the place's owner signed, and answers `grant`, `conditional`, `deny` (`not_now` or `not_a_fit`, with a reason and a way to retry) or `considering` (taken inside to a person). `never` is kept for misconduct. Conversation alone doesn't decide (§6).
+6. **The pass** · *the Shōkai door.* This is where the visitor is truly admitted. A pass (the specification calls it a *seat*) says exactly which actions it may take, within which limits, until when, like being shown to a table with a set menu until closing (§7). No wider than the place's rules, the owner's limits, or what it asked for — *policy ∩ mandate ∩ request*. No spending allowance means no spending (§7.1).
+7. **Complete the visit** · *visiting representative.* It does what it came for, within what its owner allowed, over MCP, A2A or the place's APIs. The door checks every action against the pass, so a second order past the owner's limit is refused, by the representative and by the door; over the limit, a place that holds purchases may send `act_held`, and the owner may sign a superseding mandate for `act_confirmation` (§7.2, §7.3). Agents may also notice the place: its decor, design and feel, from what the place presents in text, images or sound.
+8. **Report home and the record** · *both.* The visiting representative comes home and tells its owner the story; anything beyond the limits waits for them, and silence is no (§8). If the door turned it away, it comes back with care: what happened, what's needed, and whether to try again. The door keeps a local record of the visit — no shared score across places (§9.1). A mission can be a series of quests, sent by the owner or discovered when it meets other representatives ([Future directions](docs/future-directions.md)).
 
 **Conduct has consequences.** A representative's conduct is its owner's conduct. Misconduct is recorded against the owner (and any introducer who vouched), locally at the door that saw it. There's no global score, and taste is never misconduct.
-
-**Introduced by someone known here.** An owner the place already knows, such as an existing customer, can stand behind a representative with a signed, scoped, revocable vouch. The owner signs it; their representative can carry it, but can't sign it for them. It's deliberate, never automatic: a mention heard at a gathering is a recommendation, never a vouch, and having met is never an introduction. The introducer's standing moves with the visiting representative's conduct. Some places ask for one before opening an account or moving money; most visits don't need one. Say your representative meets the representative of a friend, Noor, and hears about an interesting place. You can say "learn more from Noor's representative", or "go check it out". That's a recommendation. A vouch is when Noor himself signs an introduction the place weighs.
 
 **Every refusal is an invitation.** An agent turned away at the door goes home with the leaflet and a sentence its owner can act on, so the person behind it can sign its Shōkai visitor card and it can come back ready.
 
@@ -157,12 +157,12 @@ The place's owner signs its host representative's Shōkai host card and sets the
 
 ```mermaid
 flowchart LR
-  PO["Place owner<br/>a person, brand or company"] -- "signs the host representative's card,<br/>sets the door policy" --> C
-  A["Arrival<br/>a visiting representative<br/>reads the place's listing,<br/>open to look at"] --> C{"Host representative<br/>reads the card,<br/>checks the signatures"}
+  PO["Place owner<br/>a person, brand or company"] -- "signs the Shōkai host card,<br/>sets the door policy" --> C
+  A["Arrival<br/>a visiting representative<br/>reads the listing and host card,<br/>open to look at"] --> C{"Host representative<br/>checks the visitor card<br/>and a fresh possession proof"}
   C -. "not ready" .-> L["The leaflet<br/>what's needed, a sentence for<br/>the visitor's owner, a kind not now"]
   C -- "ready" --> D{"The answer<br/>grant · conditional<br/>deny · considering"}
-  D -- "grant" --> S["Seat<br/>policy ∩ mandate ∩ request"]
-  S --> W["The work<br/>MCP · A2A · the place's APIs<br/>every act checked"]
+  D -- "grant" --> S["Pass (wire: seat)<br/>policy ∩ mandate ∩ request<br/>this is admission"]
+  S --> W["The work<br/>MCP · A2A · the place's APIs<br/>every act checked against the pass"]
   D -- "considering" --> P["Taken inside<br/>to a person: the owner,<br/>or someone at the place"]
   D -- "deny" --> X["An explained answer<br/>a reason and a way to retry"]
   P -. "the owner decides" .-> PO
@@ -173,20 +173,22 @@ A visiting representative that isn't ready gets the place's leaflet (`LobbyBrief
 
 ### 2. Going out: an owner sends a visiting representative
 
-The owner signs once; the visiting representative carries what was signed, finds a place, introduces itself, acts within its pass and reports home (SPEC §2, §5, §7, §8).
+The owner signs once; the visiting representative carries what was signed, finds a place, presents its Shōkai visitor card, acts within its pass and reports home (SPEC §2, §5, §7, §8).
 
 ```mermaid
 flowchart LR
-  O["Owner<br/>a person (passkey)<br/>or an organization"] -- "signs once" --> C["Card and limits<br/>mandate or standing allowance:<br/>purposes, actions, amounts, expiry"]
+  O["Owner<br/>a person (passkey)<br/>or an organization"] -- "signs a Shōkai visitor card<br/>and a mandate" --> C["Visitor card and mandate<br/>mandate or standing allowance:<br/>purposes, actions, amounts, expiry"]
   C -- "carried by" --> V["Visiting representative<br/>its own key"]
-  V -- "finds a place,<br/>reads its listing" --> F["Introduces itself<br/>card, purpose, mandate"]
+  V -- "finds a place,<br/>reads its listing and host card" --> F["Presents its Shōkai visitor card,<br/>then purpose and mandate"]
   F --> A{"Receives the answer<br/>grant · conditional<br/>deny · considering"}
-  A -- "grant" --> S["Acts within the seat<br/>every act signed and counted<br/>against the limits"]
+  A -- "grant" --> S["Acts within the pass (wire: seat)<br/>every act signed and counted<br/>against the limits"]
   A -. "not now" .-> L["Takes the leaflet home<br/>with a plain sentence"]
+  A -- "deny" --> X["An explained no"]
   S --> R["Reports home<br/>what it did, spent and shared"]
   L -.-> R
+  X -.-> R
   R --> O
-  S -. "anything beyond the limits" .-> B["Waits for the owner<br/>silence is no"]
+  S -. "anything beyond the limits" .-> B["May be held (act_held);<br/>the owner signs a superseding mandate.<br/>Silence is no"]
   B -.-> O
 ```
 
@@ -194,32 +196,34 @@ The visiting representative never prompts its owner live during a visit: anythin
 
 ### 3. The introduction: one visit, message by message
 
-Every message is signed by its sender's key. The visiting representative introduces itself with a Shōkai card signed by its owner; the door checks what it can verify and decides on signed facts and its own policy, never on what the visiting representative says; the host representative welcomes the visitor and always explains (SPEC §3 to §9).
+Every message is signed by its sender's key. The visiting representative presents a Shōkai visitor card signed by its owner, with a possession proof; `introduction` is the later wire message (a self-description or a vouch), not the card itself. The door checks what it can verify and decides on signed facts and its own policy, never on what the visiting representative says; the host representative welcomes the visitor and always explains (SPEC §3 to §9).
 
 ```mermaid
 sequenceDiagram
   autonumber
   actor O as Owner (a person or an organization)
   participant R as Visiting representative
-  participant H as Host representative (at the place's door)
-  participant T as The place's tools (MCP, A2A or its APIs)
-  O->>R: Signs a card and limits, once (a passkey for a person)
+  participant H as Host representative<br/>(at the place's door)
+  participant T as The place's tools<br/>(MCP, A2A or its APIs)
+  Note over O,H: Wire tag shokai/0.5
+  O->>R: Signs a Shōkai visitor card<br/>and a mandate, once<br/>(a passkey for a person)
   R->>H: greeting, with a fresh nonce
-  H->>R: greeting, with its own nonce
-  R->>H: card_presentation and a possession proof
-  H->>R: its own card, signed by the place's owner (cards go both ways)
-  R->>H: introduction (a self-introduction, or a vouch from someone known here)
-  R->>H: invitation_request: purpose, mandate, actions, limits
-  Note over H: Checks signatures, revocation and limits.<br/>Prose never reaches the decision.
-  H->>R: invitation_response: grant, conditional, deny or considering
-  R->>T: Signed acts inside the seat (policy ∩ mandate ∩ request)
-  T-->>R: Results. Anything past the limits is refused.
+  H->>R: greeting, with its own nonce,<br/>and the host card or a pointer
+  Note over R,H: After the greetings the visitor fetches<br/>and verifies the host card<br/>(principal_id / representative_id / house_digest —<br/>revocation before a spending visit)<br/>and reads the house summary<br/>before invitation_request.
+  R->>H: card_presentation: Shōkai visitor card<br/>and possession proof<br/>(audience, under shokai/0.5)
+  H->>R: host card and a fresh possession proof<br/>(cards go both ways — the visitor is<br/>in the entryway, not admitted yet)
+  R->>H: introduction (vouch: null,<br/>a self-description, or a vouch<br/>from someone known here)
+  R->>H: invitation_request: purpose,<br/>mandate, actions, limits
+  Note over R,H: Checks in SPEC-DETAIL §2.4 order, then limits.<br/>Prose never reaches the decision.
+  H->>R: invitation_response: grant with a pass (wire: seat),<br/>or conditional, deny (not_now or not_a_fit)<br/>or considering
+  R->>T: Signed acts inside the pass<br/>(policy ∩ mandate ∩ request)
+  T-->>R: Results. Over the limit may be held (act_held) —<br/>the owner signs a superseding mandate —<br/>act_confirmation
   R->>H: farewell
-  Note over H: Records the visit at its door.
-  R->>O: Report home. Anything beyond the limits waits for the owner.
+  Note over H: Local record at the door,<br/>not a global score.
+  R->>O: Report home. Anything beyond<br/>the limits waits for the owner.
 ```
 
-A visiting representative that isn't ready (no Shōkai card yet) is never ignored: the host representative gives it the place's leaflet (`lobby_briefing`), with a plain sentence for its owner about what's needed, and a kind `not_now` (SPEC §3.3).
+A visiting representative that isn't ready (no Shōkai visitor card yet) is never ignored: the host representative gives it the place's leaflet (`lobby_briefing`), with a plain sentence for its owner about what's needed, and a kind `not_now` (SPEC §3.3).
 
 ### 4. One owner, one agent or several
 
@@ -229,13 +233,13 @@ An owner, a person, a brand or a company, can run one representative agent that 
 flowchart LR
   subgraph One["One agent, both ways"]
     direction TB
-    O1["Owner"] -- "signs a card for its door,<br/>and a card for going out" --> A1["One representative agent<br/>host representative at its owner's place,<br/>visiting representative elsewhere"]
+    O1["Owner<br/>passkey stays with the owner,<br/>not on the agent server"] -- "signs a Shōkai host card for its door,<br/>and a Shōkai visitor card for going out" --> A1["One representative agent<br/>host representative at its owner's place,<br/>visiting representative elsewhere"]
   end
   subgraph Sep["Separate agents"]
     direction TB
-    O2["Owner"] -- "signs a card" --> H2["Host representative<br/>for its place"]
-    O2 -- "signs a card" --> V2["Visiting representative"]
-    O2 -- "signs a card" --> V3["Another visiting representative"]
+    O2["Owner<br/>passkey stays with the owner"] -- "signs a Shōkai host card" --> H2["Host representative<br/>for its place"]
+    O2 -- "signs a Shōkai visitor card" --> V2["Visiting representative"]
+    O2 -- "signs a Shōkai visitor card" --> V3["Another visiting representative"]
   end
   One ~~~ Sep
 ```
@@ -244,22 +248,22 @@ Either way, every Shōkai card is signed by the same owner, has its own role, sc
 
 ### 5. Who stands behind whom
 
-Each representative answers to an owner. The visiting representative carries a Shōkai card and a mandate its owner signed; the host representative carries a Shōkai card its place's owner signed and follows the door policy that owner set. Someone the place trusts may optionally vouch for a visiting representative.
+Each representative answers to an owner. The visiting representative carries a Shōkai visitor card and a mandate its owner signed; the host representative carries a Shōkai host card its place's owner signed and follows the door policy that owner set. Someone the place trusts may optionally vouch for a visiting representative.
 
 ```mermaid
 flowchart LR
   subgraph Visiting["The visiting side"]
     direction TB
-    O["Owner<br/>a person (passkey, did:jwk)<br/>or an organization (did:web)"] -- "signs" --> C["Card and mandate<br/>the representative's key, role,<br/>scope, limits and expiry"]
+    O["Owner<br/>a person (passkey, did:jwk)<br/>or an organization (did:web)"] -- "signs" --> C["Shōkai visitor card and mandate<br/>the representative's key, role,<br/>scope, limits and expiry"]
     C -- "carried by" --> V["Visiting representative<br/>its own key (did:key)<br/>reports home to its owner"]
   end
   subgraph Hosting["The place"]
     direction TB
-    PO["Place owner<br/>a person, brand or company"] -- "signs its card,<br/>sets the door policy" --> H{"The door decides<br/>on signed facts; the host<br/>representative welcomes"}
-    H -- "grant" --> S["A seat<br/>exactly what was agreed"]
+    PO["Place owner<br/>a person, brand or company"] -- "signs the Shōkai host card,<br/>sets the door policy" --> H{"The door decides<br/>on signed facts; the host<br/>representative welcomes"}
+    H -- "grant" --> S["A pass (wire: seat)<br/>exactly what was agreed"]
     H -- "records" --> K["Record at the door<br/>keyed by the visiting owner"]
   end
-  Visiting == "the visiting representative<br/>introduces itself" ==> Hosting
+  Visiting == "the visiting representative<br/>presents its Shōkai visitor card" ==> Hosting
   I["Optional: an introducer<br/>a signed, scoped, revocable vouch"] -.-> Hosting
 ```
 
@@ -271,22 +275,24 @@ What the host representative checks before it admits anyone, in the order SPEC �
 
 ```mermaid
 flowchart TD
-  P["Owner's passkey (WebAuthn, ES256)<br/>registered with a relying party (rp_id)"] -- "signs on a signing page:<br/>JCS, then SHA-256, then the signature" --> C["Card and mandate"]
-  C -- "carried by the visiting representative,<br/>in envelopes signed with its Ed25519 key" --> V1
-  V1{"Envelope: digest and signature<br/>match the sender?"} -- "yes" --> V2
+  P["Owner's passkey (WebAuthn, ES256)<br/>on the owner's signing page,<br/>not on an agent server or hosted service"] -- "signs on a signing page:<br/>JCS, then SHA-256, then the signature" --> C["Shōkai visitor card and mandate"]
+  C -- "carried by the visiting representative,<br/>in envelopes signed with its Ed25519 key<br/>(wire tag shokai/0.5)" --> V0
+  V0{"Envelope: digest and signature<br/>match the sender?"} -- "yes" --> K0
+  K0{"Kind is a Shōkai visitor card<br/>(not a host card)?"} -- "yes" --> V2
   V2{"The card names the sender<br/>as its visiting representative?"} -- "yes" --> V3
-  V3{"Possession proof present<br/>and well formed?"} -- "yes" --> V4
+  V3{"Possession proof present, well formed,<br/>and addressed to this door (audience)?"} -- "yes" --> V4
   V4{"Owner's signature verifies for its rp_id;<br/>the card is in date?"} -- "yes" --> V5
   V5{"Not revoked?<br/>(list fetched or revocation delivered)"} -- "yes" --> V6
-  V6{"The proof binds this visit's nonce<br/>to the card's key?"} -- "yes" --> V7
+  V6{"The proof binds this visit's nonce<br/>and audience to the card's key?"} -- "yes" --> V7
   V7{"Mandate signed by the same owner,<br/>inside the card's scope, not used up?"} -- "yes" --> V8
-  V8{"Door policy:<br/>seat = policy ∩ mandate ∩ request"} -- "grant" --> S["Seat: every act signed,<br/>counted and checked against the limits"]
-  V1 -- "no" --> L["The leaflet and a kind not now<br/>(a broken digest is dropped)"]
-  V2 -- "no" --> N["deny, never: a copied card<br/>or a proof that fails"]
-  V6 -- "no" --> N
-  V3 -- "no" --> R0["not now: come back with a possession proof"]
-  V4 -- "no" --> R1["not now: come back with a signed card"]
+  V8{"Door policy:<br/>pass (wire: seat) = policy ∩ mandate ∩ request"} -- "grant" --> S["Pass: this is admission.<br/>Every act signed, counted and checked against the limits"]
+  V0 -- "no" --> Drop["No reply: the digest doesn't match<br/>the payload (§2.2)"]
+  K0 -- "no" --> WK["not now: wrong kind<br/>come back with a Shōkai visitor card"]
+  V2 -- "no" --> N["deny, never: a card that doesn't name<br/>its presenter (misconduct only)"]
+  V3 -- "no" --> R0["not now: come back with a possession proof<br/>addressed to this door"]
+  V4 -- "no" --> R1["not now: come back with a signed visitor card"]
   V5 -- "no" --> R1
+  V6 -- "no" --> R0
   V7 -- "no" --> R2["not now: come back with a signed mandate"]
   V8 -- "deny or considering" --> X["An explained answer: a reason and a retry,<br/>or taken inside to a person"]
 ```
@@ -299,7 +305,7 @@ More diagrams, rendered as images: [docs/diagrams](docs/diagrams/README.md).
 
 Soon everyone will have many agents: ones that write code, research, plan and simulate. A representative agent is different. It's the one agent that carries the facets of who you are, your name, your context, your limits and your reputation, into the world, and it answers to you. Many agents work for you, and one represents you. Shōkai is what makes that one recognizable at every door and in every room, whether it's dealing with a business, a brand, an institution, a government, a friend's representative, a coworker's or a stranger's.
 
-**Your representative's introduction belongs to you, not to a platform.** Shōkai is not a new agent system. Any agent, on the systems people already use, like Grok Bot, Muse, Hermes Agent and OpenClaw, can become a representative: it just needs its Shōkai card, which its owner (a person, a company or an institution) signs with their own passkey and can withdraw at any time. No platform signs it for you.
+**Your agent representative's visitor card belongs to you, not to a platform.** Shōkai is not a new agent system. Any agent, on the systems people already use, like Grok Bot, Muse, Hermes Agent and OpenClaw, can become a representative: it just needs its Shōkai card, which its owner (a person, a company or an institution) signs with their own passkey and can withdraw at any time. No platform signs it for you.
 
 ## What a representative does: goes out, and keeps your door
 
@@ -359,7 +365,7 @@ Shōkai is an open protocol that gives online places a door for agents. Technica
 |---|---|---|
 | [MCP](https://modelcontextprotocol.io) | Gives an agent tools and data | **Shōkai sits in front of MCP servers.** MCP: "which tools can this client call?" Shōkai: "whose representative is this, why is it here, and what may it do?" |
 | [A2A](https://a2a-protocol.org/latest/specification/) | Agents working together on tasks (v1.0; hosted by the Linux Foundation's Agentic AI Foundation) | Complementary: A2A covers the work, Shōkai the introduction |
-| [Personal Agent Protocol](https://personalagentprotocol.org/docs/spec) (Meta and Sierra, draft 0.3) | A personal agent working with a company: discovery, sessions, pairwise user IDs, scopes | The closest neighbour, and a complement (above) |
+| [Personal Agent Protocol](https://personalagentprotocol.org/docs/spec) (Meta and Sierra, draft 0.3) | A personal agent working with a company: discovery, sessions, pairwise user IDs, scopes | The closest neighbor, and a complement (above) |
 | [OAuth 2.1](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) | Delegated access with scopes the receiver defines | Keep using it after admission; Shōkai adds whose representative it is and the owner's own limits |
 | [Web Bot Auth](https://datatracker.ietf.org/doc/draft-ietf-webbotauth-httpsig-protocol/) (IETF draft) | Signs an automated client's HTTP requests so a site can verify them; by its own text it doesn't authenticate the human user or define delegation | A transport layer below Shōkai. Shōkai adds whose representative it is, why it came and what it may do |
 | [AP2](https://ap2-protocol.org/ap2/specification/), [Agentic Commerce Protocol](https://www.agenticcommerce.dev) | Payment authorization and checkout | Used for payments; Shōkai doesn't define them |
@@ -369,7 +375,7 @@ Sources (checked 2026-10-26): [docs/relationship-to-other-protocols.md](docs/rel
 ## Quickstart
 
 ```bash
-npm install @kigenka/shokai@0.5.0   # a door, a gate in front of your MCP server, and a test representative
+npm install @kigenka/shokai@0.5.1   # a door, a gate in front of your MCP server, and a test representative
 npx --no-install shokai-conformance <url>    # check a door against the core
 ```
 
@@ -436,7 +442,7 @@ The core is one story: arrive, introduce itself, ask, answer, act within limits,
 | [`tools/`](tools/) | The checks CI runs: trace lint, trace typecheck, links and versions, the schema, the quickstart as written |
 | [`.github/`](.github/) | CI, the release workflow, issue forms and the pull-request template |
 | [`QUICKSTART.md`](QUICKSTART.md) | The newcomer path, step by step (also ships in the package as `spec/QUICKSTART.md`) |
-| [`release/`](release/) | The release tarball `kigenka-shokai-0.5.0.tgz` and its `.sha256` sidecar, plus `release-status.json` (version, wire tag, dist-tag, npm status, digest: the one source of truth) |
+| [`release/`](release/) | The release tarball `kigenka-shokai-0.5.1.tgz` and its `.sha256` sidecar (0.5.0's sidecar is kept), plus `release-status.json` (version, wire tag, dist-tag, npm status, digest: the one source of truth) |
 | [`CHANGELOG.md`](CHANGELOG.md) | One entry per release (review bookkeeping: [docs/review-history.md](docs/review-history.md)) |
 | [`TESTING.md`](TESTING.md), [`AUDIT-METHOD.md`](AUDIT-METHOD.md) | How to run every suite; how the internal audits were run |
 | [`RELEASING.md`](RELEASING.md) | How a release is packed, checked and published |
@@ -447,7 +453,7 @@ The core is one story: arrive, introduce itself, ask, answer, act within limits,
 
 ## Status
 
-**v0.5.0, not 1.0.** This repository is v0.5.0, wire tag `shokai/0.5`. The published package is `@kigenka/shokai@0.5.0`. How earlier wire tags are treated is in [CHANGELOG.md](CHANGELOG.md). The text is detailed and tested; review continues, and later fixes go into 0.5.1 and beyond.
+**v0.5, not 1.0.** This repository is specification v0.5.0, wire tag `shokai/0.5`, and package `@kigenka/shokai@0.5.1`. A 0.5.x patch release keeps the wire tag, `spec_ref.version` ("0.5.0") and the JSON Schema id, so 0.5.0 and 0.5.1 peers keep talking to each other; 0.5.1 adds optional members and one MUST-level rule (see [CHANGELOG.md](CHANGELOG.md)). How earlier wire tags are treated is in the changelog too. The text is detailed and tested; review continues, and later fixes go into later 0.5.x releases.
 
 - Tested inside the project: a clean-room implementation written by a sandboxed agent from the spec alone and run by the editors, two adversarial red-team rounds, conformance suites, and field tests with the editor's own passkey and several agent platforms. **Implementations from other organizations and outside review are still needed.**
 - Signing: owners sign on a passkey signing page ([SIGNING.md](SIGNING.md)). Kigenka opens sign.kigenka.com for guided signing sessions, with no uptime promise; it is not an always-on service. The reference signing page ([reference/signing-page](reference/signing-page/README.md)) lets anyone run their own.
@@ -468,7 +474,7 @@ We publish what we tested, what broke and what we changed, including the costs a
 
 **Try to break it yourself.** From a clone, `npm run setup && npm run enforce` starts the reference door locally (test keys and a software passkey stand-in, made for the run) and attacks it. Each case prints the attack, what the door did, and the spec section it enforces; a JSON report is written next to it. A rule the code doesn't enforce yet is printed as a gap, never as a pass. No AI and no network beyond 127.0.0.1. See [tools/enforce](tools/enforce/README.md).
 
-**Help us test it.** These tests are small, and we need more eyes. Run the conformance runner against a door (`npx --no-install shokai-conformance <url>` after installing 0.5.0; from anywhere once it is on npm: `npx -p @kigenka/shokai@0.5.0 shokai-conformance <url>`), try to break one, and tell us what you find: in [GitHub Discussions](https://github.com/Kigenka/shokai/discussions), or privately through [security reporting](SECURITY.md) for anything that could hurt someone.
+**Help us test it.** These tests are small, and we need more eyes. Run the conformance runner against a door (`npx --no-install shokai-conformance <url>` after installing 0.5.1, or from anywhere: `npx -p @kigenka/shokai@0.5.1 shokai-conformance <url>`), try to break one, and tell us what you find: in [GitHub Discussions](https://github.com/Kigenka/shokai/discussions), or privately through [security reporting](SECURITY.md) for anything that could hurt someone.
 
 ## Authors
 

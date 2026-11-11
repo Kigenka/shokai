@@ -5,9 +5,9 @@
   "guide": "AGENT-INSTALL.md",
   "package": {
     "name": "@kigenka/shokai",
-    "min_version": "0.5.0",
-    "install": "npm install @kigenka/shokai@0.5.0",
-    "install_from_file": "npm install ./kigenka-shokai-0.5.0.tgz",
+    "min_version": "0.5.1",
+    "install": "npm install @kigenka/shokai@0.5.1",
+    "install_from_file": "npm install ./kigenka-shokai-0.5.1.tgz",
     "run_prefix": "npx --no-install",
     "bin": "shokai"
   },
@@ -29,9 +29,9 @@
   "steps": [
     {
       "id": "install",
-      "run": "npm install @kigenka/shokai@0.5.0",
+      "run": "npm install @kigenka/shokai@0.5.1",
       "by": "agent",
-      "when": "always first, before any shokai command (or the package file: npm install ./kigenka-shokai-0.5.0.tgz)"
+      "when": "always first, before any shokai command (or the package file: npm install ./kigenka-shokai-0.5.1.tgz)"
     },
     {
       "id": "detect",

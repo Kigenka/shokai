@@ -1,0 +1,192 @@
+{
+  "protocol": "shokai/0.5",
+  "sdk": "@kigenka/shokai 0.5.1 (with the red-team round 3 fixes; 0.5.0 lacks them)",
+  "note": "The protocol calls the grant a pass. On the wire the field is still seat.",
+  "steps": [
+    {
+      "who": "Remy's visiting representative",
+      "at": "Harborlight Bank",
+      "visit": 1,
+      "granted": true,
+      "acts": [
+        "balance.view (no amount): ok",
+        "transfer.send (no amount): refused",
+        "transfer.send 30.00 USD: ok"
+      ]
+    },
+    {
+      "who": "Remy's visiting representative",
+      "at": "Harborlight Bank",
+      "visit": 2,
+      "granted": true,
+      "acts": [
+        "transfer.send 30.00 USD: refused"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "ok": true,
+      "what": "visit 1: Remy's visiting representative was granted a pass, up to 50.00 USD"
+    },
+    {
+      "ok": true,
+      "what": "it looks at the balance"
+    },
+    {
+      "ok": true,
+      "what": "a transfer with no amount is refused as incomplete, not as silence"
+    },
+    {
+      "ok": true,
+      "what": "a 30.00 USD transfer goes through"
+    },
+    {
+      "ok": true,
+      "what": "visit 2: the same mandate is accepted again"
+    },
+    {
+      "ok": true,
+      "what": "a second 30.00 USD transfer is refused: 20.00 USD of the mandate is left"
+    },
+    {
+      "ok": true,
+      "what": "the refusal says the mandate's remaining limit would be passed"
+    },
+    {
+      "ok": true,
+      "what": "the report home counts across visits"
+    }
+  ],
+  "report_home": "The place with key …(this run's key) (claims to be \"Harborlight Bank\"; not verified) admitted me with a pass for \"balance.view\" and \"transfer.send\", up to 50.00 USD. I did 0 actions; 1 was refused. This was visit 2 under the mandate you signed. Earlier: here, 2 actions done, 1 refused, 30.00 USD spent. In all under this mandate: 2 actions done, 2 refused; spent 30.00 USD of the 50.00 USD allowed, 20.00 USD left.",
+  "ok": true,
+  "place": "Harborlight Bank (fictional)",
+  "trace": {
+    "visit_1": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell",
+        "outcome": "seated"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_decision",
+        "decision": "deny",
+        "reason_code": "REQUEST_INCOMPLETE"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "farewell",
+        "outcome": "completed"
+      }
+    ],
+    "visit_2": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell",
+        "outcome": "seated"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_decision",
+        "decision": "deny",
+        "reason_code": "SEAT_SCOPE_EXCEEDED"
+      },
+      {
+        "dir": "out",
+        "type": "farewell",
+        "outcome": "completed"
+      }
+    ]
+  }
+}

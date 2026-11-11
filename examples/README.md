@@ -2,29 +2,31 @@
 
 Working doors and visitors you can run. Place stories you read, and situations and proofs, are a different set: [worked examples](../docs/examples/index.md). Every person, business and place here is fictional, and every example is **non-normative**: where an example and [SPEC.md](../SPEC.md) disagree, the spec wins. Written for the **v0.5.0**.
 
-The draft calls the grant a place gives a **pass**. This repository still publishes v0.3.0, whose wire names that grant `seat`. On this site, diagram *labels* say pass; each example page notes when the underlying recording still used seat/seated and was not re-done as a v0.5 run.
+The protocol calls the grant a place gives a **pass**. On the wire the field is still `seat` in both 0.3 and 0.5. The diagrams on the main example pages were redrawn from the 11 November 2026 0.5 recordings; they say pass in the prose and `seat` only where the wire field or a reason code is shown. Prefer `@kigenka/shokai@0.5.0` (npm `latest` as of 10 November 2026). The public GitHub repository is [Kigenka/shokai](https://github.com/Kigenka/shokai) at v0.5.0. Some examples still need the project tree, not only the npm package.
 
-**New here?** Run `npx @kigenka/shokai@0.5.0 demo`, then read [How Shōkai works](../docs/how-it-works.md): a tea shop, an anonymous visitor who gets the leaflet, and a representative that introduces itself and buys a green tea within its owner's limit.
+**New here?** Run `npx @kigenka/shokai@0.5.1 demo`, then read [How Shōkai works](../docs/how-it-works.md): a tea shop, an anonymous visitor who gets the leaflet, and a representative that introduces itself and buys a green tea within its owner's limit.
+
+**See also:** [worked examples](../docs/examples/index.md) and the [Quickstart](../QUICKSTART.md). Use cases live on the documentation site.
 
 ## The main examples, each with a diagram from a real run
 
-Each page is a short story, one sequence diagram drawn from a recorded run (a field test, a simulated-team wire log, or a reference run you can repeat), and what it shows. [traces/](traces/README.md) says where each diagram came from.
+Each page is a short story, one sequence diagram drawn from a recorded 0.5 run you can repeat, and what it shows. [traces/](traces/README.md) says where each diagram came from.
 
 | Example | Kind of place | The diagram is drawn from |
 |---|---|---|
-| [Tea shop](tea-shop.md) | Shop | A field-test transcript (2026-10-27). Diagram labels say pass; the transcript used seated. |
-| [Store](store.md) | Shop | A v0.3.0-rc4 wire log: two simulated teams, a purchase within a limit and one refused past it. The log used seat; diagram labels say pass. |
-| [Bank](bank.md) | Bank | A v0.3.0-rc4 wire log: a transfer, then a revisit the bank counts under the same mandate. The log used seat; diagram labels say pass. |
-| [Marketplace](marketplace.md) | Marketplace | A v0.3.0-rc4 wire log: turned away with the leaflet, then back prepared. The log used seated; diagram labels say pass. |
-| [Community room](community-room.md) | A gathering | A reference prototype run (transcript 07): discretion and a report home |
-| [Brand door](brand-door.md) | A person's own door | A reference run you can repeat ([traces/brand-door.mjs](traces/brand-door.mjs)) |
-| [One representative, two roles](dual-role.md) | A person's meeting room, and a tea shop | An SDK run you can repeat ([traces/dual-role.mjs](traces/dual-role.mjs)) |
+| [Tea shop](tea-shop.md) | Shop | A 0.5 SDK recording (11 November 2026): Aya orders tea within a 10.00 USD limit. |
+| [Store](store.md) | Shop | A 0.5 SDK recording: a purchase within a 100.00 USD limit, and one refused past it. |
+| [Bank](bank.md) | Bank | A 0.5 SDK recording: a transfer, then a revisit the bank counts under the same mandate. |
+| [Marketplace](marketplace.md) | Marketplace | A 0.5 SDK recording: turned away with the leaflet, then back prepared. |
+| [Community room](community-room.md) | A gathering | A 0.5 recording on the protocol core: discretion and a report home. |
+| [Brand door](brand-door.md) | A person's own door | A 0.5 recording on the protocol core ([traces/brand-door.mjs](traces/brand-door.mjs)). |
+| [One representative, two roles](dual-role.md) | A person's meeting room, and a tea shop | A 0.5 SDK recording ([traces/dual-role.mjs](traces/dual-role.mjs)). |
 
 ## Run it
 
 | Example | What it shows | Where | Run |
 |---|---|---|---|
-| **The two-second visit** | A tea shop (*Kettle & Leaf*) and a visiting representative on your machine: the ritual, a pass, an order within a 10.00 USD limit, an order past it refused, the report home | [`packages/shokai/src/cli.ts`](../packages/shokai/src/cli.ts) | **v0.5 draft:** download [kigenka-shokai-0.5.0.tgz](../release/kigenka-shokai-0.5.0.tgz) then `npx --package=./kigenka-shokai-0.5.0.tgz shokai demo` ([Local trial](https://shokaiprotocol.com/docs/quickstart#local-trial)). Bare `npx @kigenka/shokai demo` is public **0.3.0**, not 0.5. |
+| **The two-second visit** | A tea shop (*Kettle & Leaf*) and a visiting representative on your machine: the ritual, a pass, an order within a 10.00 USD limit, an order past it refused, the report home | [`packages/shokai/src/cli.ts`](../packages/shokai/src/cli.ts) | **v0.5.0:** download [kigenka-shokai-0.5.0.tgz](../release/kigenka-shokai-0.5.0.tgz) then `npx --package=./kigenka-shokai-0.5.1.tgz shokai demo` ([Local trial](https://shokaiprotocol.com/docs/quickstart#local-trial)), or pin `npx @kigenka/shokai@0.5.1 demo`. |
 | **Quickstart tea shop** | Your MCP server plus a Shōkai door; a visiting representative that spends within a mandate and comes back for a second visit; the conformance check | [`QUICKSTART.md`](../QUICKSTART.md), code in [`packages/shokai/examples/quickstart/`](../packages/shokai/examples/quickstart/) | `npm run quickstart` (runs QUICKSTART.md as written) |
 | **A gate in front of any MCP server** | Three note tools behind a Shōkai door; `tools/list` narrowed to the pass; every call a signed act | [`packages/shokai/examples/toy-mcp/`](../packages/shokai/examples/toy-mcp/) | `cd packages/shokai && npm run example` |
 | **A door ready for a public host** | Stable keys, state that survives restarts, edge limits, a kill switch | [`deploy/HOST-A-PLACE.md`](../deploy/HOST-A-PLACE.md), [`deploy/demo-place/`](../deploy/demo-place/) | see the guide |
@@ -73,4 +75,4 @@ Place stories, not this runnable list: [Worked examples](../docs/examples/index.
 ## Not here yet
 - A runnable bank or marketplace door (the bank exists as a read-through, a transcript and traces).
 - The platform recipes (Grok Bot, OpenClaw, Hermes Agent and others) are in [docs/platforms/](../docs/platforms/README.md), as drafts.
-- A page about the tests behind this release (field tests, clean-room implementations, red-team rounds) is planned.
+- How the release was tested and reviewed is on [How we built and tested this](https://shokaiprotocol.com/transparency/how-we-built-this).

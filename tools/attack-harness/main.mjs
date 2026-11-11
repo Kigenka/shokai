@@ -4,9 +4,11 @@ import { join } from "node:path";
 import { mkdirSync } from "node:fs";
 import { results, HERE, TARGET } from "./lib.mjs";
 const label = process.argv[2] ?? "latest";
-console.log(`Red team round 2 against ${TARGET}`);
+console.log(`Red team round 3 (Shōkai 0.5) against ${TARGET}`);
 await import("./inproc-attacks.mjs");
 await import("./http-attacks.mjs");
+await import("./v05-door.mjs");
+await import("./v05-visitor.mjs");
 const esc = (s) => String(s ?? "").replace(/\|/g, "\\|").replace(/\n/g, " ");
 const md = ["| # | Area | Attack | Tried | Expected | Actual | Result | Severity | Defence |",
   "|---|---|---|---|---|---|---|---|---|",

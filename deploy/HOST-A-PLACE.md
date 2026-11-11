@@ -91,9 +91,9 @@ for (const s of ["SIGINT", "SIGTERM"]) process.on(s, () => server.close(() => pr
 ## 2. Run it
 
 ```sh
-npm install @kigenka/shokai@0.5.0 @modelcontextprotocol/sdk zod
+npm install @kigenka/shokai@0.5.1 @modelcontextprotocol/sdk zod
 PUBLIC_URL=https://place.example HOST=0.0.0.0 TRUST_PROXY=1 DATA_DIR=/data KEY_DIR=/keys node place.mjs
-npx --no-install shokai-conformance https://place.example/shokai   # the core checks against your door (from another machine, once 0.5.0 is on npm: npx -p @kigenka/shokai@0.5.0 shokai-conformance …)
+npx --no-install shokai-conformance https://place.example/shokai   # the core checks against your door (from another machine: npx -p @kigenka/shokai@0.5.1 shokai-conformance …)
 ```
 
 The core checks include `seat.max_amount`: the runner is admitted with a pass with a 0.01 cap and asks for 1.00, so a door that enforces caps moves no money. The running totals (`seat.max_amount_total`, `mandate.max_amount_total`) need one admitted order and are opt-in: add `--spend <one order's amount> --spend-args '<the order's other arguments as JSON>'`, against mock money.
@@ -142,4 +142,4 @@ The door refuses to start with an invalid value (SPEC §2.3, "A valid house conf
 - Roll back: run the previous version against the same `DATA_DIR` and `KEY_DIR`. The state file is versioned (`"v": 1`); copy it before an upgrade.
 - Retire: close it, keep `DATA_DIR` for as long as your mandates and `never` bindings run (up to 180 days), then delete the keys.
 
-What this guide doesn't cover yet: a `did:web` identity for your organisation (the SDK's door uses `did:key`), running more than one process per door, and a key-file helper in the SDK itself (`keys.mjs` fills that gap).
+What this guide doesn't cover yet: a `did:web` identity for your organization (the SDK's door uses `did:key`), running more than one process per door, and a key-file helper in the SDK itself (`keys.mjs` fills that gap).

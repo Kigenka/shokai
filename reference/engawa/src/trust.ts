@@ -230,7 +230,21 @@ export function checkHostCardFields(card: S.RepresentativeCard, x: { principal_i
  *  never carries these: not in a card, a mandate or an act. Compared case-insensitively, with "-" and spaces read as "_". */
 export const CREDENTIAL_MEMBERS = ["password", "passcode", "passphrase", "otp", "one_time_code", "one_time_password", "totp", "session_cookie",
   "access_token", "refresh_token", "bearer_token", "id_token", "api_key", "client_secret", "account_number", "iban", "routing_number", "sort_code",
-  "card_number", "pan", "cvv", "cvc", "security_code"];
+  "card_number", "pan", "cvv", "cvc", "security_code",
+  // v0.5.1 (red-team round 3, V05-F10-04): C210's "session cookie or token" in its other spellings. See also sessionShaped below.
+  "session_token", "session_key", "set_cookie", "auth_token"];
+/**
+ * v0.5.1 (red-team round 3, V05-F10-04; C210 "session cookie or token"): names that are a credential only by their shape, so an
+ * ordinary argument with the same word (a bakery's `cookie: "oatmeal"`, a booked class `session: { date, time }`) isn't refused: a
+ * `session` object carrying a cookie, token, secret or sid (a pasted session: `{ id, cookie }`), and a `cookie` or `cookies` whose
+ * value is an object, an array, or a string holding `name=value`. Checked wherever the C210 list is (when `names` includes session_cookie).
+ */
+const SESSION_SECRETS = ["cookie", "cookies", "set_cookie", "token", "secret", "sid"];
+export function sessionShaped(name: string, v: unknown): boolean {
+  if (name === "session") return !!v && typeof v === "object" && Object.keys(v as object).some((k) => SESSION_SECRETS.includes(k.toLowerCase().replace(/[-\s]/g, "_")));
+  if (name === "cookie" || name === "cookies") return (!!v && typeof v === "object") || (typeof v === "string" && /[^=\s]=/.test(v));
+  return false;
+}
 /** v0.4.0 (§5.1, C211): a mandate or card also carries no payment instrument: no payment token or wallet credential. */
 export const INSTRUMENT_MEMBERS = ["payment_token", "payment_method_token", "wallet_token", "network_token", "card_token"];
 export function forbiddenMembers(x: unknown, names: string[] = CREDENTIAL_MEMBERS, depth = 0): string[] {
@@ -238,7 +252,7 @@ export function forbiddenMembers(x: unknown, names: string[] = CREDENTIAL_MEMBER
   const out: string[] = [];
   for (const [k, v] of Object.entries(x as Record<string, unknown>)) {
     const n = k.toLowerCase().replace(/[-\s]/g, "_");
-    if (names.includes(n)) out.push(n);
+    if (names.includes(n) || (names.includes("session_cookie") && sessionShaped(n, v))) out.push(n);
     out.push(...forbiddenMembers(v, names, depth + 1));
   }
   return [...new Set(out)];

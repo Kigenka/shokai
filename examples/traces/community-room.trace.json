@@ -1,0 +1,339 @@
+{
+  "protocol": "shokai/0.5",
+  "sdk": "@kigenka/shokai 0.5.1 (with the red-team round 3 fixes; 0.5.0 lacks them)",
+  "note": "The protocol calls the grant a pass. On the wire the field is still seat.",
+  "steps": [
+    {
+      "who": "The Engawa",
+      "at": "gathering",
+      "sent": "gathering_invitation to Aya, Kiran and Noor"
+    },
+    {
+      "who": "Aya, Kiran and Noor",
+      "at": "The Engawa",
+      "granted": true,
+      "note": "each owner signed accept_house_rules"
+    },
+    {
+      "who": "Kiran's visiting representative",
+      "at": "The Engawa",
+      "sent": "work insight (Chatham House; may be quoted, unattributed)"
+    },
+    {
+      "who": "Noor's visiting representative",
+      "at": "The Engawa",
+      "sent": "an item marked private (never leaves)"
+    },
+    {
+      "who": "Noor's visiting representative",
+      "at": "Kiran's visiting representative",
+      "sent": "How is Kiran doing?",
+      "got": "privacy_decline (not penalized)"
+    },
+    {
+      "who": "Aya's visiting representative",
+      "at": "Kiran's visiting representative",
+      "sent": "How is Kiran doing?",
+      "got": "an answer, with consent to pass it on"
+    },
+    {
+      "who": "Noor's visiting representative",
+      "at": "Kiran's visiting representative",
+      "sent": "presses again",
+      "got": "privacy_decline; a light flag, no misconduct notice"
+    },
+    {
+      "who": "Aya's visiting representative",
+      "at": "Aya (owner)",
+      "sent": "report home: what it may tell, and a story offered but not told"
+    }
+  ],
+  "checks": [
+    {
+      "ok": true,
+      "what": "The Engawa has a signed gathering"
+    },
+    {
+      "ok": true,
+      "what": "each invitee is sent a gathering invitation, held for its inbox"
+    },
+    {
+      "ok": true,
+      "what": "all three enter with a pass after their owners accept the house rules"
+    },
+    {
+      "ok": true,
+      "what": "pressing after a decline is noted at the place"
+    },
+    {
+      "ok": true,
+      "what": "Aya's takeaway includes the work insight (unattributed or paraphrased)"
+    },
+    {
+      "ok": true,
+      "what": "the private item does not leave the room in Aya's takeaway"
+    },
+    {
+      "ok": true,
+      "what": "the answer meant for Aya may leave, attributed, with consent"
+    }
+  ],
+  "takeaway_kinds": [
+    "chat",
+    "question",
+    "chat",
+    "question"
+  ],
+  "flags": 1,
+  "presses": 1,
+  "ok": true,
+  "place": "The Engawa (fictional)",
+  "note_on_friends": "Whether Kiran's representative answers Aya and declines Noor is scripted from Kiran's disclosure rule (wellbeing is for friends). The door records the signed privacy declines and the press.",
+  "trace": {
+    "invitations": 3,
+    "entries": [
+      {
+        "who": "aya_enter",
+        "types": [
+          {
+            "dir": "out",
+            "type": "greeting"
+          },
+          {
+            "dir": "in",
+            "type": "greeting"
+          },
+          {
+            "dir": "out",
+            "type": "card_presentation"
+          },
+          {
+            "dir": "in",
+            "type": "card_presentation"
+          },
+          {
+            "dir": "in",
+            "type": "card_receipt"
+          },
+          {
+            "dir": "out",
+            "type": "card_receipt"
+          },
+          {
+            "dir": "out",
+            "type": "introduction"
+          },
+          {
+            "dir": "out",
+            "type": "invitation_request"
+          },
+          {
+            "dir": "in",
+            "type": "invitation_response",
+            "decision": "grant"
+          },
+          {
+            "dir": "in",
+            "type": "farewell",
+            "outcome": "seated"
+          },
+          {
+            "dir": "out",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          }
+        ]
+      },
+      {
+        "who": "kiran_enter",
+        "types": [
+          {
+            "dir": "out",
+            "type": "greeting"
+          },
+          {
+            "dir": "in",
+            "type": "greeting"
+          },
+          {
+            "dir": "out",
+            "type": "card_presentation"
+          },
+          {
+            "dir": "in",
+            "type": "card_presentation"
+          },
+          {
+            "dir": "in",
+            "type": "card_receipt"
+          },
+          {
+            "dir": "out",
+            "type": "card_receipt"
+          },
+          {
+            "dir": "out",
+            "type": "introduction"
+          },
+          {
+            "dir": "out",
+            "type": "invitation_request"
+          },
+          {
+            "dir": "in",
+            "type": "invitation_response",
+            "decision": "grant"
+          },
+          {
+            "dir": "in",
+            "type": "farewell",
+            "outcome": "seated"
+          },
+          {
+            "dir": "out",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "out",
+            "type": "privacy_decline"
+          },
+          {
+            "dir": "held",
+            "type": "privacy_decline"
+          },
+          {
+            "dir": "held",
+            "type": "privacy_decline"
+          },
+          {
+            "dir": "out",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "out",
+            "type": "privacy_decline"
+          },
+          {
+            "dir": "held",
+            "type": "privacy_decline"
+          },
+          {
+            "dir": "held",
+            "type": "privacy_decline"
+          }
+        ]
+      },
+      {
+        "who": "noor_enter",
+        "types": [
+          {
+            "dir": "out",
+            "type": "greeting"
+          },
+          {
+            "dir": "in",
+            "type": "greeting"
+          },
+          {
+            "dir": "out",
+            "type": "card_presentation"
+          },
+          {
+            "dir": "in",
+            "type": "card_presentation"
+          },
+          {
+            "dir": "in",
+            "type": "card_receipt"
+          },
+          {
+            "dir": "out",
+            "type": "card_receipt"
+          },
+          {
+            "dir": "out",
+            "type": "introduction"
+          },
+          {
+            "dir": "out",
+            "type": "invitation_request"
+          },
+          {
+            "dir": "in",
+            "type": "invitation_response",
+            "decision": "grant"
+          },
+          {
+            "dir": "in",
+            "type": "farewell",
+            "outcome": "seated"
+          },
+          {
+            "dir": "out",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "out",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "out",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          },
+          {
+            "dir": "held",
+            "type": "gathering_message"
+          }
+        ]
+      }
+    ],
+    "room": {
+      "items": 8,
+      "flags": 1,
+      "presses": 1
+    }
+  }
+}

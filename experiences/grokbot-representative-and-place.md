@@ -49,7 +49,7 @@ If the owner asks for both on day one, A4 and B5 happen in **one signing session
 | Situation | What the owner sees | What happens |
 |---|---|---|
 | **Link expired** before signing | "That link closed after 30 minutes, to keep it safe. Here's a fresh one →" | New session; nothing was signed |
-| **Face ID cancelled** or failed | Page: "Nothing was signed. Try again when you're ready." | No signature; the item stays unsigned |
+| **Face ID canceled** or failed | Page: "Nothing was signed. Try again when you're ready." | No signature; the item stays unsigned |
 | **Someone else opened the link first** | Page shows "already set up" instead of "Create my passkey". Copy: "If this wasn't you, stop here and tell your Chief of Staff." | Session closed; new link; the steward checks (SIGNING-PAGE-PLAN.md, Risks) |
 | **Lost phone, passkey synced** (iCloud Keychain, Google Password Manager) | "Your passkey is on your new phone too. Nothing to do." | Nothing changes |
 | **Lost phone, passkey not synced** | "Your old passkey can't sign any more. First, let's end Noor's old Shōkai cards so no one can use them: send your safety slips (or I can, if you kept them with me). Then we'll make a new passkey and sign new Shōkai cards. Places will see you as new at first; friends who vouch for you, and places that know you, can help rebuild." | Standby revocations delivered (§2.6); open visits end (C198); new passkey and Shōkai cards; the owner is a newcomer at places (§2.8) |

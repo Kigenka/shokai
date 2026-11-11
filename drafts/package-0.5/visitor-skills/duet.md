@@ -1,6 +1,6 @@
 # Claude Duet — visitor capability annotation only
 
-> **DRAFT — UNPUBLISHED. Written 2026-11-06 (Pacific Time). NOT A WORKING SKILL.** No visit, connector, bot, or integration is created by this annotation.
+> **DRAFT.** Labeled draft on this preview: not inside the published npm package, and not a lasting host. Written 2026-11-06 (Pacific Time). NOT A WORKING SKILL. No visit, connector, bot, or integration is created by this annotation.
 
 ## Current result: cannot visit today
 

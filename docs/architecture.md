@@ -4,7 +4,7 @@
 
 | Participant | Role |
 |---|---|
-| **Owner / principal** | Signs the Shōkai card, mandates, the standing allowance, door policies and consents (a person with a passkey; an organisation with a `did:web` key). |
+| **Owner / principal** | Signs the Shōkai card, mandates, the standing allowance, door policies and consents (a person with a passkey; an organization with a `did:web` key). |
 | **Representative** | The visiting agent. Holds its own Ed25519 key, introduces itself with the Shōkai card, asks within limits, reports home. |
 | **Host representative** | The place's own representative at the door. It welcomes the visitor the door admitted, explains and remembers. The door verifies and decides on signed facts. |
 | **Introducer** | Someone known here, when a place asks for one: an owner the place already knows, who signs a scoped, revocable vouch and answers for it. |
@@ -36,7 +36,7 @@ The `@kigenka/shokai` package ships a gate meant to sit in front of an existing 
 ## Messages and transport
 
 - Every message is a signed envelope: `{payload, payload_digest, signatures}`, Ed25519 over SHA-256 of the RFC 8785 (JCS) form, with a ritual header (`protocol: "shokai/0.5"` in v0.5.0; places still accept the legacy tag `shokai/0.3` for 90 days after release, SPEC §11.1; `encounter_id`, `msg_id`, `sent_at`, `from`, `to`).
-- Identifiers are DIDs: `did:key` for representatives, `did:web` for organisations, `did:jwk` for owners' passkeys.
+- Identifiers are DIDs: `did:key` for representatives, `did:web` for organizations, `did:jwk` for owners' passkeys.
 - Timestamps are RFC 3339 UTC with a `Z`. Amounts are exact decimal strings with an ISO 4217 currency.
 - **Minimal HTTP binding:** `GET <base>/` returns a door pointer, `GET <base>/places` the listing, and `POST` to an entry, lobby or inbox returns `200` with a `ReplyEnvelope {protocol, messages[]}`. Late answers (a `considering` outcome, a notice) are held for the recipient and collected with a signed `inbox_poll`. Unknown paths get `404` with a door pointer, never an empty body.
 

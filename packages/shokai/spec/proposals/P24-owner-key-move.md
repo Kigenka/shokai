@@ -12,7 +12,7 @@
 5. **If the old key is already gone, there is no shortcut:** the owner starts over with a new identity and rebuilds through vouches from people the place trusts and through the place's own relationship with them (P18 covers recovery keys named in advance).
 
 ## Why now
-The steward runs a test-stage signing page at `sign.kigenka.com` ([deploy/SIGNING-PAGE-PLAN.md](https://github.com/Kigenka/shokai/blob/v0.5.0/deploy/SIGNING-PAGE-PLAN.md)). Every passkey made there names that address forever (SPEC §2.1, Appendix A.1, C195). The plan keeps the address, but owners deserve to know what happens if it ever moves. The honest rc4 answer is "you start over"; P24 is the better answer for v0.4, and the steward commits not to move the address before it exists.
+The steward runs a test-stage signing page at `sign.kigenka.com` ([deploy/SIGNING-PAGE-PLAN.md](https://github.com/Kigenka/shokai/blob/v0.5.1/deploy/SIGNING-PAGE-PLAN.md)). Every passkey made there names that address forever (SPEC §2.1, Appendix A.1, C195). The plan keeps the address, but owners deserve to know what happens if it ever moves. The honest rc4 answer is "you start over"; P24 is the better answer for v0.4, and the steward commits not to move the address before it exists.
 
 Other reasons an owner moves keys, all covered by the same artifact:
 - the owner switches passkey providers or platforms and the passkey doesn't sync across;
@@ -39,7 +39,7 @@ KeyMove {
 - **Paired with revocations.** A move SHOULD come with a `CardRevocation` of each old card, signed by the old key in the same session, so nothing stays open under the old identity (C198 ends its open seats).
 
 ## What a place does with it
-- **MAY honour it, never MUST** (reputation stays local; D3). A place that honours it treats `new_owner` as `old_owner` for relationship records, standing, conduct, sign-up counts and `never` bindings (§9), from `effective_at` on.
+- **MAY honor it, never MUST** (reputation stays local; D3). A place that honours it treats `new_owner` as `old_owner` for relationship records, standing, conduct, sign-up counts and `never` bindings (§9), from `effective_at` on.
 - **A move only carries; it never clears.** Exactly as an owner link (§2.8): a `never`, a reduced standing, a misconduct record and sign-up counts all move with the owner. A move that would land on a key the place has already bound `never` leaves that binding in place.
 - **One move per old key.** A place MUST ignore a second move from an `old_owner` it has already seen moved (to a different `new_owner`); a key that moved away can't move again. This stops a stolen old key from "moving" an owner after the real move.
 - **Chains.** A → B → C is allowed; each step is its own `KeyMove`, and a place that missed B learns the chain from the list.

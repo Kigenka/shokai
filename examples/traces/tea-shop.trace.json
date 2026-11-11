@@ -1,0 +1,128 @@
+{
+  "protocol": "shokai/0.5",
+  "sdk": "@kigenka/shokai 0.5.1 (with the red-team round 3 fixes; 0.5.0 lacks them)",
+  "note": "The protocol calls the grant a pass. On the wire the field is still seat.",
+  "steps": [
+    {
+      "who": "Aya's visiting representative",
+      "at": "Willowfold Tea House",
+      "sent": "read the listing (no card)",
+      "got": "listing"
+    },
+    {
+      "who": "Aya's visiting representative",
+      "at": "Willowfold Tea House",
+      "granted": true,
+      "tools": [
+        "menu.view",
+        "order.place",
+        "stamp.collect"
+      ],
+      "acts": [
+        "menu.view: ok",
+        "order.place 6.00 USD: ok",
+        "stamp.collect: ok"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "ok": true,
+      "what": "the listing is readable with no card (looking is free)"
+    },
+    {
+      "ok": true,
+      "what": "Aya's visiting representative checked the host card and was granted a pass"
+    },
+    {
+      "ok": true,
+      "what": "it looks at the menu within the pass"
+    },
+    {
+      "ok": true,
+      "what": "it orders a Spring Sencha for 6.00 USD, within the 10.00 USD limit"
+    },
+    {
+      "ok": true,
+      "what": "it collects a stamp within the pass"
+    },
+    {
+      "ok": true,
+      "what": "it writes a report home for Aya"
+    }
+  ],
+  "report_home": "The place with key …(this run's key) (claims to be \"Willowfold Tea House\"; not verified) admitted me with a pass for \"menu.view\", \"order.place\" and \"stamp.collect\", up to 10.00 USD. I did 3 actions; none were refused. Spent 6.00 USD of the 10.00 USD allowed.",
+  "ok": true,
+  "place": "Willowfold Tea House (fictional)",
+  "trace": {
+    "visit": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell",
+        "outcome": "seated"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "farewell",
+        "outcome": "completed"
+      }
+    ]
+  }
+}

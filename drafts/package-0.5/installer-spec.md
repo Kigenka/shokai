@@ -1,6 +1,6 @@
 # Shōkai installer: a conversation that sets up a place
 
-> **DRAFT — UNPUBLISHED. Written 2026-11-06 (America/Los_Angeles). Not on the live site or public GitHub.** Prepared from YSY and Chief of Staff’s November 6 conversation for YSY’s review. This is a design spec, not running code, an installation claim, or permission to open a door.
+> **DRAFT.** Labeled draft on this preview: not inside the published npm package, and not a lasting host. Written 2026-11-06 (America/Los_Angeles). Prepared from the editor's November 6 conversation with the project steward. This is a design spec, not running code, an installation claim, or permission to open a door.
 
 ## 1. The installer is part of the product
 

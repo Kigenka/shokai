@@ -40,7 +40,7 @@ npm run fuzz           # fuzz only; add a run count and seed: node tools/fuzz/fu
 
 - Every suite prints a pass count; any failure fails the run.
 - The enforcement cases each say which rule the door kept and are built so they can fail: `tools/enforce/mutate.mjs` breaks the door on purpose to show a case catches it.
-- The attack harness marks each attack `held` or `BROKE`, with a defence level: `code` (the reference enforces it), `spec` (a protocol decision still open) or `judgment` (left to the agent or owner). **Only a code-level break fails the run.** The spec-level breaks S1, S2 and S4 (one owner with many agents, a passkey farm, a low-and-slow return) are known open items, recorded in the red team report.
+- The attack harness marks each attack `held` or `BROKE`, with a defense level: `code` (the reference enforces it), `spec` (a protocol decision still open) or `judgment` (left to the agent or owner). **Only a code-level break fails the run.** The spec-level breaks S1, S2 and S4 (one owner with many agents, a passkey farm, a low-and-slow return) are known open items, recorded in the red team report.
 
 ## Fictional data
 

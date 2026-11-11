@@ -8,7 +8,7 @@ Please don't open a public issue, and please don't test any live Kigenka or demo
 
 Please report a security problem in either of these ways:
 
-1. **GitHub private vulnerability reporting** on the public [Kigenka/shokai](https://github.com/Kigenka/shokai) repository (the repository's **Security** tab, **Report a vulnerability**). That path goes live with the public 0.5.0 release.
+1. **GitHub private vulnerability reporting** on the public [Kigenka/shokai](https://github.com/Kigenka/shokai) repository (the repository's **Security** tab, **Report a vulnerability**).
 2. **Email [security@kigenka.com](mailto:security@kigenka.com).**
 
 Include what you found, the affected section of `docs/SPEC-DETAIL.md` (the normative text) or file, the steps to reproduce, and the impact as you understand it. Unless we agree otherwise, we'll publish a fix or a specification change and credit you (if you wish) within 90 days.
@@ -49,7 +49,7 @@ Before 1.0, a fix may need a specification change; it then ships as a new 0.5.x 
 
 ## Scope
 
-- The specification (`docs/SPEC-DETAIL.md`, the normative text; `SPEC.md`, its short core; `extensions/`), including design-level issues where the specification allows harmful behaviour.
+- The specification (`docs/SPEC-DETAIL.md`, the normative text; `SPEC.md`, its short core; `extensions/`), including design-level issues where the specification allows harmful behavior.
 - The SDK and conformance runner (`packages/shokai/`).
 - The reference implementations (`reference/engawa/`, `reference/prototype/`) and the tools in `tools/`.
 - Test vectors and golden traces that would lead implementers to an insecure result.
@@ -62,7 +62,7 @@ Out of scope: denial of service by sheer volume against a local test server, and
 
 A good-faith research safe-harbor policy is drafted but **not in force**: it waits for counsel's approval, so it is kept as a proposal ([proposals/P34-security-safe-harbor.md](proposals/P34-security-safe-harbor.md)) and not published here as policy. Until it is approved, nothing in this file authorizes testing any system.
 
-## Intended behaviour, not vulnerabilities
+## Intended behavior, not vulnerabilities
 
 Some things Shōkai does on purpose. Reports about them are welcome as design discussion (a specification issue), but they aren't vulnerabilities:
 

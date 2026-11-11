@@ -1,0 +1,149 @@
+{
+  "protocol": "shokai/0.5",
+  "sdk": "@kigenka/shokai 0.5.1 (with the red-team round 3 fixes; 0.5.0 lacks them)",
+  "note": "The protocol calls the grant a pass. On the wire the field is still seat.",
+  "steps": [
+    {
+      "who": "Vex's representative, showing Dana's card",
+      "at": "Juniper Tea Room",
+      "got": {
+        "type": "invitation_response",
+        "decision": "deny",
+        "disposition": "never",
+        "retry": {
+          "kind": "never",
+          "until": "<the run's date + 180 days>",
+          "appeal": {
+            "url": "https://juniper.example/appeals",
+            "place": "<the place's owner ID>"
+          }
+        }
+      }
+    },
+    {
+      "who": "Dana's visiting representative",
+      "at": "Juniper Tea Room",
+      "tools": [
+        "menu.view",
+        "order.place"
+      ],
+      "acts": [
+        "order.place with a pasted session: deny (not_a_fit, CREDENTIAL_NOT_ACCEPTED)",
+        "order.place 5.00 USD: ok"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "ok": true,
+      "what": "a representative showing someone else's card is refused with a never reply"
+    },
+    {
+      "ok": true,
+      "what": "the reply states when the ban lifts, within 180 days"
+    },
+    {
+      "ok": true,
+      "what": "the reply names the place and where to appeal"
+    },
+    {
+      "ok": true,
+      "what": "the reply gives no reason code (it does not coach the attempt)"
+    },
+    {
+      "ok": true,
+      "what": "Dana's own representative is granted a pass (the stolen-card attempt did not ban Dana or her representative)"
+    },
+    {
+      "ok": true,
+      "what": "an order carrying a pasted login session is refused before the place's service sees it"
+    },
+    {
+      "ok": true,
+      "what": "the same order without the session goes through, within the 10.00 USD limit"
+    }
+  ],
+  "ok": true,
+  "place": "Juniper Tea Room (fictional)",
+  "trace": {
+    "stolen_card": [
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "deny",
+        "disposition": "never"
+      },
+      {
+        "dir": "in",
+        "type": "farewell"
+      }
+    ],
+    "dana_visit": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell",
+        "outcome": "seated"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_decision",
+        "decision": "deny",
+        "reason_code": "CREDENTIAL_NOT_ACCEPTED"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "farewell",
+        "outcome": "completed"
+      }
+    ]
+  }
+}

@@ -31,7 +31,7 @@ Shōkai's answer is **two doors**:
 
 **M2. Introducer standing and accountability** (extends §4.12 and red-team P2, P5).
 - Introducers already stake their standing. Misconduct notices go to every introducer in the vouch chain, and penalties grade `reduced` (90 days) or `suspended` (180 days) (§4.12, D1). The brief traces these notices to v0.1b; today they live in SPEC v0.2.7 §4.12.
-- Adopt **P2**: a vouch weighs only if its introducer has standing *at this place*. Self-hosted or first-seen introducers carry no weight, and `"*"` is forbidden for account-creating actions. This is the main defence against T3.
+- Adopt **P2**: a vouch weighs only if its introducer has standing *at this place*. Self-hosted or first-seen introducers carry no weight, and `"*"` is forbidden for account-creating actions. This is the main defense against T3.
 - Adopt **P5**: a penalised introducer can't sign its own review.
 - New: a misconduct code `fake_signup`, or an extension of `purpose_misrepresentation`, covering accounts created for fake growth. Default severity: serious, rising to severe for a pattern.
 
@@ -51,7 +51,7 @@ Shōkai's answer is **two doors**:
 - New: a recommended *place-to-place* signal, off by default. A place MAY publish signed, aggregate statements about introducers ("introducer X: 40 vouched sign-ups, 38 fake, window W"), and other places MAY weigh them.
 - This needs care: §4.12 says another host MUST NOT *apply* a misconduct record it didn't witness. Weighing a signed report as input is different from applying a penalty.
 
-**M6. Replay defence** (T4; mostly already covered).
+**M6. Replay defense** (T4; mostly already covered).
 - A replayed card is already logged as impersonation without notifying its owner (§4.12).
 - Adopt **P1** (a normative freshness window) and **P8** (fetch scope).
 - Recommend that an `account.create` request bind the card digest *and* a fresh place nonce, so a copied card can't open an account.

@@ -10,7 +10,7 @@ An annotated visit with a misconduct notice: [Unsolicited offer, pressure declin
 
 | Code | Covers |
 |---|---|
-| `purpose_misrepresentation` | behaviour differs from the stated purpose |
+| `purpose_misrepresentation` | behavior differs from the stated purpose |
 | `gate_probing` | enumerating request shapes, Shōkai card replay, credential stuffing |
 | `seat_overreach` | acting beyond the pass, structuring around limits |
 | `vouch_misuse` | acting beyond a vouch's scope, or passing it on |

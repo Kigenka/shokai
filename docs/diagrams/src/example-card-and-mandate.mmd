@@ -1,0 +1,13 @@
+sequenceDiagram
+  participant A as Aya
+  participant R as Aya's agent<br/>representative
+  participant D as Kettle and Leaf
+  A->>R: Signs a visitor card<br/>lasting six months
+  A->>R: Signs today's mandate:<br/>tea.order, 20.00, today
+  R->>D: Visitor card, proof,<br/>and the short mandate
+  D->>R: Host card and its proof
+  D->>R: grant, pass under<br/>today's mandate
+  R->>D: act tea.order within 20.00
+  D->>R: act_result: done
+  Note over A,D: Tomorrow, a new mandate<br/>on the same visitor card
+  R->>A: Report home

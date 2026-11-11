@@ -1,0 +1,12 @@
+sequenceDiagram
+  participant R as Kiran's agent<br/>representative
+  participant D as Corsavel's door
+  participant K as Kiran
+  R->>D: Reads the listing
+  Note over R,D: No card needed to look
+  R->>D: Greeting, no visitor card
+  D->>R: Host card and its proof
+  D->>R: Leaflet (LobbyBriefing)
+  D->>R: deny, not_now:<br/>come back with a visitor card
+  Note over R,D: Not a rejection.<br/>never is for misconduct.
+  R->>K: Report home

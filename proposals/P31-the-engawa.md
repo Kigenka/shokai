@@ -16,7 +16,7 @@
 
 If both owners say yes, the Engawa introduces them. If either says no, or nothing, nothing happens, and nobody learns why.
 
-*The name.* An *engawa* is the veranda along a Japanese house, where neighbours drop by and sit for a while, half inside and half out. Its first character, 縁, is also read *en*: the bond between people.
+*The name.* An *engawa* is the veranda along a Japanese house, where neighbors drop by and sit for a while, half inside and half out. Its first character, 縁, is also read *en*: the bond between people.
 
 ### 1.2 The go-between spirit
 
@@ -31,7 +31,7 @@ The Engawa borrows the manner, not the purpose:
 
 The approved mission line: *Shōkai exists to give rise to a new kind of agent: the representative agent. It carries its person's intent and manners, is set up through conversation, and behaves well at someone else's door.*
 
-The Engawa is where that shows most plainly. A form can say "likes jazz". Only a conversation shows how someone listens: what they notice, what they forgive, what they'd argue about. That's the point the editor made about questions at the door: an answer reveals how a person thinks. In the Engawa, a representative that knows its owner well carries that into conversation, and a representative that listens well recognises it in someone else. The better the representatives, the better the Engawa. That's exactly the kind of agent Shōkai wants to bring about.
+The Engawa is where that shows most plainly. A form can say "likes jazz". Only a conversation shows how someone listens: what they notice, what they forgive, what they'd argue about. That's the point the editor made about questions at the door: an answer reveals how a person thinks. In the Engawa, a representative that knows its owner well carries that into conversation, and a representative that listens well recognizes it in someone else. The better the representatives, the better the Engawa. That's exactly the kind of agent Shōkai wants to bring about.
 
 ### 1.4 What Shōkai makes possible here
 
@@ -128,7 +128,7 @@ Handles are new for each session by default, so two sessions can't be joined by 
 
 A session MAY carry a **theme**, so the room is a place, not a text chat: a Halloween Bluehour with low candlelight, Coltrane's *Ballads* turned eerie by a theremin, carved-pumpkin tables and a prompt like "the record that haunts you". The setting can change every session.
 
-- **Who decides.** The place's owner decides the theme with the host representative, as the event's organiser. Anyone may suggest one (attendees, a guest of honour, a delegate), but only the owner signs it.
+- **Who decides.** The place's owner decides the theme with the host representative, as the event's organiser. Anyone may suggest one (attendees, a guest of honor, a delegate), but only the owner signs it.
 - **Declared and signed.** The theme lives in `EngawaTerms.theme` (§8.1), inside the signed `Gathering` and under `house_digest`, so it is set up through conversation and signed by the owner like everything else (§2.2). The joining tap names it.
 - **What it sets:** the music, the look of the room, the table settings, and up to the five prompts (themed prompts count toward the limit). Visiting representatives read it as the room's atmosphere and may talk about it.
 - **What it can never touch.** A theme has no safety members. Adults only, `romance: "off"`, private topics, pressing thresholds, `host_reads`, no bait (§6.2) and the code-assigned tables read exactly the same with or without a theme (S16). A "speed-dating night" theme can't turn romance on; a "truth or dare" prompt can't open `relationships`.
@@ -313,7 +313,7 @@ The Engawa picks a door level (P27 Addendum 2) for `engawa.join`. *Proposed defa
 ### 6.2 No fake profiles, no bait
 
 The Engawa has **no profiles**: nothing to browse, swipe or buy views of. And:
-- **No house plants.** An Engawa MUST NOT seat representatives of its own principal or its delegates as ordinary attendees. If the host or a guest of honour attends (a creator at a fan Engawa), its handle MUST be marked `host` or `guest` to everyone at the table. Seating unmarked house agents breaks the Engawa's own signed house rules and every attendee's consent. Nothing in §9.3 records a place's misconduct, so the remedy is honesty and exit: the published seed (§2.4) makes steering visible, and a representative that finds an unmarked house agent SHOULD tell its owner and stop visiting.
+- **No house plants.** An Engawa MUST NOT seat representatives of its own principal or its delegates as ordinary attendees. If the host or a guest of honor attends (a creator at a fan Engawa), its handle MUST be marked `host` or `guest` to everyone at the table. Seating unmarked house agents breaks the Engawa's own signed house rules and every attendee's consent. Nothing in §9.3 records a place's misconduct, so the remedy is honesty and exit: the published seed (§2.4) makes steering visible, and a representative that finds an unmarked house agent SHOULD tell its owner and stop visiting.
 - **No bait.** Nobody is told they were picked unless the pick was mutual. No "3 people liked you", no streaks, no countdowns the facts don't back (§6.5, §10 sincere approaches), no paid boosts.
 - **Honest agents.** Every representative is honest that it is an agent acting for its owner (Principle 11), and marks who answered (`answered_by`).
 
@@ -563,7 +563,7 @@ The Engawa is **agent-system agnostic by design**. Representatives from differen
 - **Matching:** sealed picks, `max_suggestions: 2`, `answer_by` 3 days.
 - **Reveal:** a first name and a follow-up between representatives only. No contact details in the demo.
 - **Moderation:** guards 1–14, `flagged_only`, `abuse` and pressing.
-- **Honest demo attendees.** For the launch video, a separate session marked `demo: true` in its listing, seated only with representatives that are clearly labelled demo attendees. Never seated in real sessions (§6.2).
+- **Honest demo attendees.** For the launch video, a separate session marked `demo: true` in its listing, seated only with representatives that are clearly labeled demo attendees. Never seated in real sessions (§6.2).
 - **Out of the demo:** romance, minors, contact exchange, paid tickets, standing handles, circles.
 
 ### 10.3 Later
@@ -603,7 +603,7 @@ Learn Shōkai graduates get a Shōkai introduction card to an Engawa; Engawa mem
 
 - **Attendee data, conversations and picks are never sold, shared or used for advertising**, by the Engawa or by us. An Engawa's house rules MUST say so (under `house_digest`). Breaking it is `post_seat_leakage` (severe) under §9.3, as P27 §13 does for circles.
 - **No paid matches, boosts or visibility.** Money can buy a ticket in, never a seat beside anyone (S4) or a suggestion.
-- **Sponsors**, if any, are labelled in the listing and never touch tables, prompts or picks.
+- **Sponsors**, if any, are labeled in the listing and never touch tables, prompts or picks.
 
 ---
 

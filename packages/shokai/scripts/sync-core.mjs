@@ -51,7 +51,11 @@ const extDir = join(ROOT, "extensions");
 if (existsSync(extDir)) for (const f of readdirSync(extDir).filter((f) => f.endsWith(".md"))) SPEC_FILES["extensions/" + f] = join(extDir, f);
 // The JSON Schema generated from protocol-shapes.ts (tools/schema/schema.mjs), for implementers who don't read TypeScript.
 const SPEC_V = readFileSync(join(ROOT, "SPEC.md"), "utf8").match(/\*\*Specification v(\d+\.\d+\.\d+(?:-rc\d+)?) \(core\)\.\*\*/)?.[1];
-if (SPEC_V) SPEC_FILES["schema.json"] = pick(`schema/v${SPEC_V}/schema.json`);
+// The package ships the schema for its own messages: release-status.json "schema_version" (0.5.1 adds optional Retry members and
+// has its own $id), else the specification's. The frozen v0.5.0 file stays in the repository under schema/v0.5.0/.
+const RS = join(ROOT, "release/release-status.json");
+const SCHEMA_V = (existsSync(RS) && JSON.parse(readFileSync(RS, "utf8")).schema_version) || SPEC_V;
+if (SCHEMA_V) SPEC_FILES["schema.json"] = pick(`schema/v${SCHEMA_V}/schema.json`);
 // A relative link in a Markdown file of the bundle that points at a repository file the package doesn't ship (deploy/, reference/,
 // CONTRIBUTING.md, …) would break for a reader who has only the package (and on npmjs.com). Such links are rewritten to the
 // same file in the repository at this package version's tag (images to their raw bytes); links inside the bundle stay relative.

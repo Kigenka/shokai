@@ -53,7 +53,7 @@ The [reference signing page](./reference/signing-page/README.md) is a small, dep
 - in Japanese, every line is worded in Japanese from the same machine fields, in plain です/ます, with the same figures and the same checks, including the one-purchase raise and its refusals (§8). Amounts in yen are written 4,000円 in sentences and ¥4,000 in table cells, with no decimals unless the signed figure has them; other currencies by the Japanese number format with the currency's name; every time with its weekday and time zone (2026年11月2日（月）午前9:15（日本時間）); the raise's `shown_to_owner` is the Japanese text, locale `ja-JP`;
 - when none of the browser's languages is the page's language, the page shows a warning at the top, before anything is offered for signing, telling the owner not to sign what they can't read.
 
-Test: `reference/signing-page/test/language.mjs`, including a figures-equivalence check (the English and Japanese screens for the same items show the same amounts, times and identifiers, the same checks and the same one-tap behaviour). A signing page for other languages must word every item in that language itself, from the machine fields (§2 item 3).
+Test: `reference/signing-page/test/language.mjs`, including a figures-equivalence check (the English and Japanese screens for the same items show the same amounts, times and identifiers, the same checks and the same one-tap behavior). A signing page for other languages must word every item in that language itself, from the machine fields (§2 item 3).
 
 - [ ] A stable hostname; the domain on auto-renew with registrar lock.
 - [ ] Hardware-key two-factor sign-in on your registrar, DNS and hosting accounts.

@@ -1,6 +1,6 @@
 {
   "name": "@kigenka/shokai",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Agents, introduced properly. Reference TypeScript SDK for Sh\u014dkai, the open protocol that gives online places a door for agents: signed Sh\u014dkai cards, vouches and envelopes, door policy, visit reports, and a gate that puts a Sh\u014dkai door in front of any MCP server.",
   "license": "Apache-2.0",
   "type": "module",

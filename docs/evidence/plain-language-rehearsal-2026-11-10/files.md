@@ -9,7 +9,7 @@ Every conversation from the 10 November 2026 rehearsal is listed here. The Muse 
 
 ## Muse report
 
-- [Muse's report (page)](./muse-report.md) — the full t1490u paste, as a page
+- [Muse's report (page)](./muse-report.md) — the full Muse report, as a page
 - <a href="/raw/evidence/plain-language-rehearsal-2026-11-10/muse-report.txt" target="_blank" rel="noopener">Muse’s report (text)</a>
 
 ## Retest transcripts (38)

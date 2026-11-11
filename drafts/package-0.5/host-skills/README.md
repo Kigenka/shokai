@@ -1,6 +1,6 @@
 # Shōkai host-representative skills 0.5 — draft index
 
-> **DRAFT — UNPUBLISHED. Written 2026-11-08 (Pacific Time).** First unpublished host-representative drafts, with targeted honesty corrections — planning/rehearsal instructions, not complete production hosts, not installed skills and not live appointments. Fictional examples (Mira Solano, Lanternfern Tea Room) must never be copied into real identity fields. Writing or reading these files authorizes no key generation, signing, deploy, publication, host appointment, live visit, spending, or door opening/change.
+> **DRAFT.** Labeled draft on this preview: not inside the published npm package, and not a lasting host. Written 2026-11-08 (Pacific Time). First unpublished host-representative drafts, with targeted honesty corrections — planning/rehearsal instructions, not complete production hosts, not installed skills and not live appointments. Fictional examples (Mira Solano, Lanternfern Tea Room) must never be copied into real identity fields. Writing or reading these files authorizes no key generation, signing, deploy, publication, host appointment, live visit, spending, or door opening/change.
 
 ## Three kinds of skill
 
@@ -24,7 +24,7 @@ Status in 0.5: a lasting host is not yet proven. Planning walkthroughs of all fi
 
 **Still open:** the doorbell — how a door reaches a host on an agent platform. Until it is answered, the door speaks from the signed house and the host is who the owner talks to about the shop; no file promises live host conversation at the door. Also open: a hosted key home (recorded later option, not built), the same-agent lifecycle, the leaflet’s visitor-skill wording and URL, and evidence linking owner, business, store/domain and host.
 
-**Client pin:** non-Muse files use the unpublished `@kigenka/shokai` 0.5.0 cut, SHA-256 `51986a7cd08da3d2d5d48cf7ff5d493d3381a23c76d93678bdbbbc7b9857acc8`. Muse keeps its two-cut provenance: the earlier cut `a68340ea0aeb8baea773d60bcd94c5c0013c30b9ac5f053a34954a4c379388d9` is its usable pin only if Muse personally hashes it at the recorded path. A matching hash identifies bytes, not safety.
+**Client pin:** non-Muse files use the unpublished `@kigenka/shokai` 0.5.0 cut, SHA-256 `259b414dfe78beb5a50a5b87a5c66c505dca73e2f34d6889622600904c22143b`. Muse keeps its two-cut provenance: the earlier cut `a68340ea0aeb8baea773d60bcd94c5c0013c30b9ac5f053a34954a4c379388d9` is its usable pin only if Muse personally hashes it at the recorded path. A matching hash identifies bytes, not safety.
 
 **Reviews:** outside reviews of the Grok Bot, Muse and Dot first drafts were received 2026-11-08 Pacific Time, and targeted unpublished honesty corrections followed in all five files. Muse and Dot follow-up reviews of the corrected drafts were received the same evening: Muse asked for no further unique text changes, and Dot’s remaining honesty corrections were applied to the shared conversation in all five files. A further Dot follow-up the same evening confirmed those eight items and asked for focused wording leftovers, which were applied. They remain planning/rehearsal drafts, statically checked only, with no live appointment, planning walkthrough or acceptance run.
 

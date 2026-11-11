@@ -1,21 +1,23 @@
 sequenceDiagram
   autonumber
-  participant IM as Ines (student, owner)
-  participant R as Ines's visiting representative
-  participant C as Campus host representative (admissions, registrar)
-  participant D as Course host representative (Dr. Ellery's agent)
-  participant HE as Dr. Ellery (faculty, owner)
-  IM->>R: Signs the card once with a passkey
-  R->>C: Reads the window, then card, purpose: enrol, and the offer of admission (the university's own signed invitation)
-  Note over C: Checks the owner's signature, the offer, the purpose<br/>and what enrolment asks (name, email, date of birth)
-  C->>R: grant, seat [campus.look, enrolment.confirm]
-  R->>C: act enrolment.confirm
-  R->>D: card, purpose: attend DS 210 (data_access)
-  Note over D: Pass = policy ∩ mandate ∩ request
-  D->>R: grant, seat [course.materials.read, assignment.submit, grades.view_own, office_hours.book]
-  R->>D: acts within the pass (week 3 materials, assignment 2, own grades, Thursday office hours)
+  participant IM as Ines<br/>(student, owner)
+  participant R as Ines's agent<br/>representative
+  participant C as Campus host<br/>representative
+  participant D as Course host<br/>representative
+  participant HE as Dr. Ellery<br/>(faculty, owner)
+  IM->>R: Signs a Shōkai visitor card<br/>once with a passkey
+  R->>C: Reads the window, then Shōkai visitor card,<br/>proof, purpose: enrol, and the offer of admission
+  C->>R: Shōkai host card, with its proof,<br/>then a welcome
+  Note over R,C: Checks the owner's signature, the offer,<br/>the purpose, and what enrolment asks
+  C->>R: grant, pass (wire: seat)<br/>campus.look, enrolment.confirm
+  R->>C: act enrolment.confirm,<br/>checked against the pass
+  R->>D: Shōkai visitor card, proof,<br/>purpose: attend DS 210
+  D->>R: Course Shōkai host card,<br/>then a welcome
+  Note over R,D: Pass = policy ∩ mandate ∩ request
+  D->>R: grant, pass (wire: seat): materials,<br/>submit, own grades, office hours
+  R->>D: acts within the pass
   R->>D: act grades.view_all
-  D->>R: act_decision deny: outside the seat
-  Note over D: Records the visit (SPEC §9.1)
-  D-->>HE: The office-hours booking reaches Dr. Ellery (the course's own service)
-  R->>IM: Report home: seated for four tools, four acts done, one refused
+  D->>R: act_decision deny:<br/>outside the pass
+  Note over D: Records the visit<br/>(SPEC §9.1).<br/>No global score.
+  D-->>HE: Office-hours booking<br/>reaches Dr. Ellery
+  R->>IM: Report home: a pass for four tools,<br/>four acts done, one refused

@@ -59,12 +59,12 @@ async function main() {
 
   // 4. The local seat check (default on): tea.ask isn't in the seat, so it isn't sent.
   let e: any = await client.callTool({ name: "tea.ask", arguments: { tea: "sencha" } }).catch((x) => x);
-  check(e?.code === SHOKAI_NOT_SEATED && /not sent: tea\.ask is not in this seat \(it allows menu\.view, order\.place, stamp\.collect\)/.test(e.message) && e.data?.shokai?.refused_by === "representative" && e.data.shokai.by === "seat",
+  check(e?.code === SHOKAI_NOT_SEATED && /not sent: tea\.ask is not in this pass \(it allows menu\.view, order\.place, stamp\.collect\)/.test(e.message) && e.data?.shokai?.refused_by === "representative" && e.data.shokai.by === "seat",
     "a tool outside the seat is not sent: the representative checks the seat's tool_allowlist first (by: seat)");
   v.checkSeatLocally = false;
   e = await client.callTool({ name: "tea.ask", arguments: { tea: "sencha" } }).catch((x) => x);
-  check(e?.data?.shokai?.refused_by === "door" && e.data.shokai.reason_code === "SEAT_SCOPE_EXCEEDED" && /tea\.ask is not in your seat \(it allows/.test(e.message),
-    "with checkSeatLocally = false it is sent, and the door refuses it with its own message (not \"get a seat first\")");
+  check(e?.data?.shokai?.refused_by === "door" && e.data.shokai.reason_code === "SEAT_SCOPE_EXCEEDED" && /tea\.ask is not in your pass \(it allows/.test(e.message),
+    "with checkSeatLocally = false it is sent, and the door refuses it with its own message (not \"get a pass first\")");
   v.checkSeatLocally = true;
 
   // 2. A currency mismatch says so, at the representative and at the door.
@@ -72,18 +72,18 @@ async function main() {
   check(/not sent: 3\.00 EUR is not in the mandate's currency \(USD\)/.test(e?.message ?? ""), "the representative names a currency mismatch as such, not as \"more than is left\"");
   const keep = v.beyondMandate; v.beyondMandate = () => null;
   e = await client.callTool({ name: "order.place", arguments: { tea: "sencha", amount: { value: "3.00", currency: "EUR" } } }).catch((x) => x);
-  check(e?.data?.shokai?.reason_code === "SEAT_SCOPE_EXCEEDED" && /3\.00 EUR is not in your seat's currency \(USD\)/.test(e.message) && !/amount is required/.test(e.message),
+  check(e?.data?.shokai?.reason_code === "SEAT_SCOPE_EXCEEDED" && /3\.00 EUR is not in your pass's currency \(USD\)/.test(e.message) && !/amount is required/.test(e.message),
     "sent anyway, the door refuses it SEAT_SCOPE_EXCEEDED with a currency message (C177), never \"amount is required\"");
   // 3. Each refusal class has its own words.
   e = await client.callTool({ name: "order.place", arguments: { tea: "sencha" } }).catch((x) => x);
   check(e?.data?.shokai?.reason_code === "REQUEST_INCOMPLETE" && /order\.place spends: state what it spends in arguments\.amount/.test(e.message), "a spending act with no amount: \"state what it spends\" (REQUEST_INCOMPLETE)");
   check(!!(await client.callTool({ name: "order.place", arguments: { tea: "sencha", amount: USD("6.00") } })), "6.00 USD goes through");
   e = await client.callTool({ name: "order.place", arguments: { tea: "sencha", amount: USD("6.00") } }).catch((x) => x);
-  check(e?.data?.shokai?.refused_by === "door" && /6\.00 USD would pass what is left of your seat's or mandate's limit \(cap 10\.00 USD\)/.test(e.message), "past the cap: \"would pass what is left\"");
+  check(e?.data?.shokai?.refused_by === "door" && /6\.00 USD would pass what is left of your pass's or mandate's limit \(cap 10\.00 USD\)/.test(e.message), "past the cap: \"would pass what is left\"");
   v.beyondMandate = keep;
   const raw = await (await fetch(base + "/mcp", { method: "POST", headers: { "content-type": "application/json", accept: "application/json, text/event-stream" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "menu.view", arguments: {} } }) })).json() as any;
-  check(raw.error?.code === SHOKAI_NOT_SEATED && /get a seat first/.test(raw.error.message) && raw.error.data?.shokai?.refused_by === "gate", "only a call with no seat is told \"get a seat first\" (refused_by: gate)");
+  check(raw.error?.code === SHOKAI_NOT_SEATED && /get a pass first/.test(raw.error.message) && raw.error.data?.shokai?.refused_by === "gate", "only a call with no seat is told \"get a pass first\" (refused_by: gate)");
   const mallory = createRepresentative({ ownerName: "Mallory Quist", purposes: ["purchase"], actions: ["menu.view"] });
   const stolen = sign({ ...v.signAct("menu.view", {}).payload, from: mallory.id, msg_id: "m-1" }, mallory.key);
   const st = await (await fetch(base + "/mcp", { method: "POST", headers: { "content-type": "application/json", accept: "application/json, text/event-stream", [ACT_HEADER]: b64(stolen) },

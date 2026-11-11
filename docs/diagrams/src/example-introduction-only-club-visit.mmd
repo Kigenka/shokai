@@ -1,0 +1,19 @@
+sequenceDiagram
+  autonumber
+  participant RP as Rowan<br/>(applicant, owner)
+  participant R as Rowan's agent<br/>representative
+  participant D as The Copperroom Circle<br/>host representative
+  Note over RP,D: The club's policy asks for<br/>a signed introduction
+  RP->>R: Signs a Shōkai visitor card
+  R->>D: Reads the listing
+  Note over R,D: No card needed to look
+  R->>D: invitation_request, with no vouch
+  D->>R: not_now: bring a signed<br/>introduction from a member
+  Note over RP,D: Noor, a current member,<br/>signs a vouch herself
+  R->>D: Shōkai visitor card, proof,<br/>and the signed vouch
+  D->>R: Host card, proof,<br/>then a welcome
+  Note over R,D: Checks the vouch, Noor's cap,<br/>purpose and limits
+  D->>R: grant, pass (wire: seat):<br/>discuss and share research,<br/>no money movement
+  R->>D: farewell
+  Note over D: Local record<br/>at the door
+  R->>RP: Report home: admitted<br/>to discuss research

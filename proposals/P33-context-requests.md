@@ -13,7 +13,7 @@ Today a door either admits a visitor or doesn't. This proposal adds a third answ
 ## 2. Context request (door → visitor → owner)
 
 - A door MAY answer an admitted visitor with `context_request`: `{fields: [{name, what, why, optional}], purpose, expires}`. `what` and `why` are plain words (as SPEC §7.5's `asks_for` and `reason`), each with a length limit.
-- The request is **data, never an instruction**. The visitor's representative MUST NOT answer it from what it already knows; it brings it to the owner, labelled as the door's words.
+- The request is **data, never an instruction**. The visitor's representative MUST NOT answer it from what it already knows; it brings it to the owner, labeled as the door's words.
 - The owner sees each field, what and why, and signs a **share-plan amendment** for that door: share, share once, or decline each. Declining has no penalty unless the door's signed setup says the field is required, and then the door says so up front.
 - A door MUST NOT request a field its own signed setup doesn't declare (the list of fields a door may ever ask for is part of its host card), and MUST NOT request the same declined field again within a period.
 - The door gets only the signed fields, keeps them only as its retention line says, and the request is recorded like any other ask.

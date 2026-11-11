@@ -1,6 +1,6 @@
 # Governance
 
-*Draft for v0.5.0. This document will change as the project grows. Changes to it follow the process below.*
+*Living document, written for v0.5.0. This document will change as the project grows. Changes to it follow the process below.*
 
 ## Stewardship today
 
@@ -12,7 +12,7 @@ The editor:
 - records every normative decision in the changelog;
 - ships a release only when every conformance suite and the trace lint pass.
 
-Maintainers who aren't the editor may merge editorial fixes, tests and reference-code changes that don't change normative behaviour.
+Maintainers who aren't the editor may merge editorial fixes, tests and reference-code changes that don't change normative behavior.
 
 ## Proposals
 
@@ -66,11 +66,11 @@ Each step is a governance change. It is proposed in a pull request to this file 
 
 *Kigenka is the project's steward brand. It is not yet a registered legal entity, so the copyright holder and licensor is the person named in [NOTICE](./NOTICE).*
 
-**IP status (governing statement).** Shōkai's specification and reference implementation are presently available under Apache License 2.0. The project intends to add a specification-level patent commitment under the OWFa 1.0 Final Specification Agreement (Patent Only), made per final version, starting with v0.5.0, with Yu Sung Yeh (the copyright holder and current founder-steward) as the intended signer; the copyright licence stays Apache License 2.0. No such commitment has been executed yet. If the project later moves to a legal entity or a neutral home, later versions may be signed by it, as described in [PATENTS.md](./PATENTS.md); the choice is recorded as decision D27 in [DECISIONS.md](./DECISIONS.md), pending the editor's confirmation and legal review. No existing copyright or patent owner is represented as having made an OWFa commitment merely because the specification has been published. **Scope of a future commitment.** Under OWFa 1.0, a signer's Granted Claims are limited to the patent claims needed to implement the functionality the specification describes (§7.4). A commitment does not reach a signer's whole personal patent portfolio, or claims that are not needed for the specification.
+**IP status (governing statement).** Shōkai's specification and reference implementation are presently available under Apache License 2.0. The project intends to add a specification-level patent commitment under the OWFa 1.0 Final Specification Agreement (Patent Only), made per final version, starting with v0.5.0, with Yu Sung Yeh (the copyright holder and current founder-steward) as the intended signer; the copyright license stays Apache License 2.0. No such commitment has been executed yet. If the project later moves to a legal entity or a neutral home, later versions may be signed by it, as described in [PATENTS.md](./PATENTS.md); the choice is recorded as decision D27 in [DECISIONS.md](./DECISIONS.md), pending the editor's confirmation and legal review. No existing copyright or patent owner is represented as having made an OWFa commitment merely because the specification has been published. **Scope of a future commitment.** Under OWFa 1.0, a signer's Granted Claims are limited to the patent claims needed to implement the functionality the specification describes (§7.4). A commitment does not reach a signer's whole personal patent portfolio, or claims that are not needed for the specification.
 
 - **Licenses.** Code and the whole specification are under the Apache License 2.0; explanatory documentation in `docs/` is under CC BY 4.0, except the normative `docs/SPEC-DETAIL.md` (Apache-2.0) (see [NOTICE](./NOTICE) and [REUSE.toml](./REUSE.toml)).
 - **Copyright.** Contributors keep the copyright in their contributions and license them under those licenses by signing off ([CONTRIBUTING.md](./CONTRIBUTING.md)). There is no copyright assignment. Code, tests, tools and documentation need only the DCO sign-off. Normative specification changes will need the OWF Contributor License Agreement 1.0 (Copyright and Patent) once counsel approves it; until then the project accepts no outside changes to normative files. The copyright holder named in NOTICE holds the copyright in the project's own work, under the Kigenka brand.
-- **Patents.** Each contributor's patent licence comes from Apache License 2.0 §3. The intended royalty-free patent commitment for final specification versions (OWFa 1.0 Patent Only, intended signer Yu Sung Yeh; not executed; see the statement above) is described in [PATENTS.md](./PATENTS.md); it is made per version, and an entry is added there when it is.
+- **Patents.** Each contributor's patent license comes from Apache License 2.0 §3. The intended royalty-free patent commitment for final specification versions (OWFa 1.0 Patent Only, intended signer Yu Sung Yeh; not executed; see the statement above) is described in [PATENTS.md](./PATENTS.md); it is made per version, and an entry is added there when it is.
 - **Names and logo.** The Shōkai and Kigenka names and the arch-and-keystone logo are used for the project under the Kigenka brand (held by the copyright holder named in NOTICE until Kigenka is formed), under [TRADEMARKS.md](./TRADEMARKS.md). They aren't registered.
 - **Changing a license.** A license change is a governance change: it is proposed in a pull request and decided under the process above, with at least **30 days** of discussion. Because contributors keep their copyright and no agreement lets the project relicense their work, relicensing existing contributions also needs the consent of their contributors. A license change never applies retroactively to versions already published.
 - **Forming Kigenka.** Kigenka is revisited for incorporation before material operational risk: real money, or a guided signing service for outside users. Who signs a patent commitment is decided through neutral stewardship and legal review, not by forming Kigenka.

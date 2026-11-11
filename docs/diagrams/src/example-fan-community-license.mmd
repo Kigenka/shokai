@@ -1,0 +1,17 @@
+sequenceDiagram
+  autonumber
+  participant S as Sol<br/>(fan, owner)
+  participant R as Sol's agent<br/>representative
+  participant D as Northlamp Studio<br/>host representative
+  Note over S,D: The door is the studio's<br/>licensing desk
+  S->>R: Signs a Shōkai visitor card,<br/>and a mandate: ask to use<br/>Aoshi in one short film
+  R->>D: Reads the listing
+  Note over R,D: No card needed to look
+  R->>D: Shōkai visitor card<br/>and possession proof
+  D->>R: Studio host card<br/>and a fresh proof, then a welcome
+  R->>D: invitation_request: one short film,<br/>non-commercial, with the mandate
+  Note over R,D: Studio policy decides.<br/>Pass = policy ∩ mandate ∩ request
+  D->>R: grant, pass (wire: seat):<br/>this film, non-commercial,<br/>credit the studio
+  R->>D: farewell
+  Note over D: Local record<br/>at the door
+  R->>S: Report home: the license<br/>for this film is granted

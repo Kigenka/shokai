@@ -18,7 +18,7 @@ An owner's identity at a place is a passkey's `did:jwk` (SPEC §2.1, §2.8). If 
 3. **Signing-page custody.** The signing page vouches for a succession after its own account recovery. Simple for owners, but makes the page a trust point that can take over identities; probably only as an option a place can refuse.
 
 ## Questions
-- Must a place honour a succession, or may it treat the new identity as a newcomer anyway? (Recommendation: MAY honour, never MUST: reputation stays local, D3.)
+- Must a place honor a succession, or may it treat the new identity as a newcomer anyway? (Recommendation: MAY honor, never MUST: reputation stays local, D3.)
 - A succession can launder a `never` as easily as an owner link could; it should carry the old identity's record and nevers, like a link.
 - Does succession conflict with per-place identities (§2.8)? Each per-place identity would need its own recovery key, or one recovery key would link them all at recovery time.
 

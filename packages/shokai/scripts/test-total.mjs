@@ -11,7 +11,7 @@ const names = [
   'state', 'owner', 'restart', 'claims', 'doorcard', 'twocard', 'v050', 'dropin',
   'instances', 'prune', 'adapters', 'site', 'demo2', 'host-budget',
   'context-requests', 'house', 'setup', 'demo', 'runner', 'bidi', 'redteam-fixes', 'redteam-highs', 'h4-checks', 'context-reask', 'budget-shared', 'anon-rate',
-  'presigned-runner', 'conformance-exit', 'digest-actions', 'no-revocation-url-seat', 'must-understand', 'allowance-cap', 'canonical-json', 'graduated-penalties', 'free-principals', 'ssrf-normative', 'r8-overlimit-ceiling', 'flood', 'card-kind', 'round2-guards', 'conformance-0.5',
+  'presigned-runner', 'conformance-exit', 'digest-actions', 'no-revocation-url-seat', 'must-understand', 'allowance-cap', 'canonical-json', 'graduated-penalties', 'free-principals', 'ssrf-normative', 'r8-overlimit-ceiling', 'flood', 'card-kind', 'round2-guards', 'conformance-0.5', 'redteam-round3',
 ];
 // Pre-release review (round 2): a suite listed twice would be counted twice.
 { const dup = names.filter((n, i) => names.indexOf(n) !== i); if (dup.length) { console.error(`test-total: duplicate suite name(s): ${dup.join(', ')}`); process.exit(2); } }

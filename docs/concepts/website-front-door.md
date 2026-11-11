@@ -56,9 +56,9 @@ Naming these technologies implies no affiliation or endorsement. Status lines we
 
 ### A store: Corsavel
 
-- **Website.** The luggage catalogue for people.
-- **Agent front.** Browsing the catalogue asks for nothing (`data_asks: []`); placing an order declares `name`, `address`, `payment_method`. The front links to Corsavel's product feed and the checkout protocol it already supports.
-- **Door.** Asking for a quote for this owner, placing an order or joining the loyalty programme needs the Shōkai card and a spending limit the owner signed. With no spending allowance there is no spending. See [Look before you join](../examples/look-before-you-join.md).
+- **Website.** The luggage catalog for people.
+- **Agent front.** Browsing the catalog asks for nothing (`data_asks: []`); placing an order declares `name`, `address`, `payment_method`. The front links to Corsavel's product feed and the checkout protocol it already supports.
+- **Door.** Asking for a quote for this owner, placing an order or joining the loyalty program needs the Shōkai card and a spending limit the owner signed. With no spending allowance there is no spending. See [Look before you join](../examples/look-before-you-join.md).
 
 ### A photographer's portfolio: Ines Calder Photography
 

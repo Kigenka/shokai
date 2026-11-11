@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  participant E as Elias<br/>(owner)
+  participant R as Elias's agent<br/>representative
+  participant G as Cadrelune's host<br/>representative
+  E->>R: Signs a Shōkai visitor card<br/>and a no-spend mandate to ask
+  R->>G: Reads the listing<br/>(no card needed to look)
+  R->>G: Shōkai visitor card, audience-bound proof,<br/>purpose: ask about the reissue
+  G->>R: Shōkai host card,<br/>with its proof
+  G->>R: Welcome, in the house's own<br/>register, in French
+  Note over R,G: Optional (SPEC §4): a signed vouch from the watchmaker<br/>who has serviced Elias's watches, an introducer the house names.
+  G->>R: grant, a pass (wire: seat) to view<br/>the reissue and request an appointment
+  R->>G: request to be considered<br/>for the limited reissue
+  G->>R: act_decision: considering,<br/>routed to the boutique director
+  R->>E: Report home: the director will answer by Friday.<br/>The appointment is yours to confirm
+  Note over R,G: Local record at the door, so the next visit<br/>is a returning client. No global score.

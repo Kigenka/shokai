@@ -2,11 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 Yu Sung Yeh
 // JSON Schema for the Shōkai wire types, generated from protocol-shapes.ts (the TypeScript is the source of truth, as in MCP).
-//   node tools/schema/schema.mjs          write schema/v<version>/schema.json (version from SPEC.md's header)
+//   node tools/schema/schema.mjs          write schema/v<schema version>/schema.json (release/release-status.json "schema_version",
+//                                          else the version in SPEC.md's header). Each schema file has its own $id; a released one
+//                                          is frozen (FROZEN below) and never regenerated.
 //   node tools/schema/schema.mjs --check  exit 1 if the file is stale, if any golden-trace message fails it, or if a broken message passes
 // Needs `npm --prefix tools/schema ci` (part of `npm run setup`).
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { createGenerator } from "ts-json-schema-generator";
 import Ajv from "ajv";
@@ -17,7 +20,13 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const V = (readFileSync(join(root, "SPEC.md"), "utf8").match(/\*\*Specification v(\d+\.\d+\.\d+(?:-rc\d+)?) \(core\)\.\*\*/)?.[1])
   ?? (readFileSync(join(root, "docs/SPEC-DETAIL.md"), "utf8").match(/\*\*Specification v(\d+\.\d+\.\d+(?:-rc\d+)?) \(core\)\.\*\*/)?.[1]);
 if (!V) { console.error("schema: no version in SPEC.md or docs/SPEC-DETAIL.md header"); process.exit(2); }
-const out = join(root, "schema", "v" + V, "schema.json");
+// Package 0.5.1 keeps specification v0.5.0 on the wire but adds optional members (Retry: until, appeal), so its schema is a new
+// file with its own $id: one $id never covers two contents. The schema version comes from release/release-status.json.
+const relStatus = join(root, "release/release-status.json");
+const SV = (existsSync(relStatus) && JSON.parse(readFileSync(relStatus, "utf8")).schema_version) || V;
+const out = join(root, "schema", "v" + SV, "schema.json");
+// Released schema files, byte for byte (sha256 of the file at its release tag). --check fails if one changes.
+const FROZEN = { "0.5.0": "49c7c8e3858159e03eea6cc88fdd698983e8af1b87b7252c9ef64759a0c2faf9" };
 
 const generated = createGenerator({ path: join(root, "protocol-shapes.ts"), type: "*", expose: "export", jsDoc: "extended", skipTypeCheck: true }).createSchema("*");
 // Extensible objects (SPEC Conventions, §0.1: unknown members are ignored unless named in `crit`; `x-` members are always allowed,
@@ -48,8 +57,8 @@ const generated = createGenerator({ path: join(root, "protocol-shapes.ts"), type
 }
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",
-  $id: `https://github.com/Kigenka/shokai/blob/v${V}/schema/v${V}/schema.json`,
-  title: `Shōkai wire types, specification v${V}`,
+  $id: `https://github.com/Kigenka/shokai/blob/v${SV}/schema/v${SV}/schema.json`,
+  title: SV === V ? `Shōkai wire types, specification v${V}` : `Shōkai wire types, schema v${SV} (specification v${V}, wire tag shokai/0.5, with optional members added in package ${SV})`,
   description: "GENERATED from protocol-shapes.ts by tools/schema/schema.mjs; do not edit. The TypeScript types are the source of truth; docs/SPEC-DETAIL.md (the normative text) wins where they differ. Start from the definitions WireMessage (a signed envelope), ShokaiMessage (a payload) or DoorPointer.",
   definitions: Object.fromEntries(Object.entries(generated.definitions ?? {}).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))),
 };
@@ -58,6 +67,9 @@ const check = process.argv.includes("--check");
 if (!check) { mkdirSync(dirname(out), { recursive: true }); writeFileSync(out, body); console.log(`schema: wrote ${out.slice(root.length + 1)} (${Object.keys(schema.definitions).length} definitions)`); process.exit(0); }
 
 let fail = 0;
+for (const [fv, sha] of Object.entries(FROZEN)) { if (fv === SV) continue; const f = join(root, "schema", "v" + fv, "schema.json");
+  const got = existsSync(f) ? createHash("sha256").update(readFileSync(f)).digest("hex") : "missing";
+  if (got !== sha) { console.error(`schema: schema/v${fv}/schema.json changed (sha256 ${got}); a released schema is frozen at ${sha}`); fail++; } }
 if (!existsSync(out) || readFileSync(out, "utf8") !== body) { console.error(`schema: ${out.slice(root.length + 1)} is stale; run node tools/schema/schema.mjs`); fail++; }
 const ajv = new Ajv({ strict: false, allErrors: true }); addFormats(ajv); ajv.addSchema(schema, "s");
 const T = (t) => { const f = ajv.getSchema("s#/definitions/" + encodeURIComponent(t)); if (!f) throw new Error("schema: no definition " + t); return f; };
@@ -128,4 +140,4 @@ if (sample) {
 }
 for (const [what, m] of controls) if (isMessage(m)) { fail++; console.error(`schema: control passed but must fail: ${what}`); }
 if (fail) process.exit(1);
-console.log(`schema: schema/v${V}/schema.json is current; ${checked} golden-trace (Markdown) + ${jsonChecked} standalone JSON golden messages validate; ${EXTENSIBLE.length} extensible definitions take x- members (${skipped} with fixture placeholders skipped); ${controls.length} broken controls fail ✓`);
+console.log(`schema: schema/v${SV}/schema.json is current (frozen: ${Object.keys(FROZEN).filter((v) => v !== SV).map((v) => "v" + v).join(", ") || "none"} unchanged); ${checked} golden-trace (Markdown) + ${jsonChecked} standalone JSON golden messages validate; ${EXTENSIBLE.length} extensible definitions take x- members (${skipped} with fixture placeholders skipped); ${controls.length} broken controls fail ✓`);

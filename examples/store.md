@@ -7,13 +7,13 @@
 [![A purchase at Brightwick Outfitters](diagrams/png/store.png)](diagrams/svg/store.svg)
 
 ::: tip Diagram honesty
-**Recorded on a v0.3.0-rc4 wire log.** Node labels on this site say **pass** (v0.5 prose). The underlying recording still used seat/seated; the wire field remains `seat`. This log was **not** re-recorded as a fresh v0.5 run.
+**0.5 SDK recording, 11 November 2026** (repeatable from the linked trace). The diagram says **pass** in the prose. On the wire the field is still `seat`.
 :::
 
-**Where the diagram comes from.** A recorded wire log from the v0.3.0-rc4 simulated-team rounds: two teams, each played by an AI model, built the store and the visitor in Python from the spec alone, without each other's code. Every signature in the log was re-verified with the reference implementation. These teams are simulations, not real companies. Diagram node labels on this site say **pass** (v0.5 wording). The underlying recording still used seat/seated; the wire field remains `seat`. This log was not re-recorded as a fresh v0.5 run.
+**Where the diagram comes from.** A run of the 0.5 SDK in one process ([traces/store.mjs](traces/store.mjs)), with fresh fictional keys; [traces/store.trace.json](traces/store.trace.json) lists each step (5/5 checks).
 
 **What it shows**
-- The pass is never wider than what the owner signed (§6.1, §7.2). On this log the field is still `seat`.
+- The pass is never wider than what the owner signed (§6.1, §7.2). On the wire the field is still `seat`.
 - Every tool call through the MCP gate carries a signed act, so the store can count each amount against the pass (§11.3).
 - A refusal is an answer, not an error page: `not_now`, with a reason code for the visitor (§6.2).
 

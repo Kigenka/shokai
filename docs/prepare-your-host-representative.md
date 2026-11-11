@@ -35,7 +35,7 @@ Outlines: [Set up your representative, a host representative](./set-up-your-repr
 
 ## 4. At the high end
 
-A luxury watchmaker or jeweller wants a host representative steeped in its house: its history and craft, the music and art it cares about, and the discretion its clients expect. It recognises a returning client's representative from its own record of past visits ([SPEC §9.1](../SPEC.md)), and welcomes it accordingly. The door is the same one a tea shop uses; the briefing is what makes it theirs. See [A collector at a heritage watchmaker](./examples/heritage-watchmaker.md).
+A luxury watchmaker or jeweller wants a host representative steeped in its house: its history and craft, the music and art it cares about, and the discretion its clients expect. It recognizes a returning client's representative from its own record of past visits ([SPEC §9.1](../SPEC.md)), and welcomes it accordingly. The door is the same one a tea shop uses; the briefing is what makes it theirs. See [A collector at a heritage watchmaker](./examples/heritage-watchmaker.md).
 
 A small anime and manga goods shop wants the opposite of discretion: a host representative that knows the series its owner loves, the artists it stocks and the fans who come back. When a visiting representative introduces its owner as a fan of the same long-running ninja manga, the shop's host representative can recognize a fellow fan and welcome them like one.
 

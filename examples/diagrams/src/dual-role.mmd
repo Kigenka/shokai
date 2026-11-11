@@ -1,5 +1,5 @@
 sequenceDiagram
-  title One representative, two cards: Noor keeps Kiran's room and goes out (SDK run, examples/traces/dual-role.mjs, 10/10 checks)
+  title Two cards: Noor keeps Kiran's room and goes out
   participant F as Fen's agent (no card)
   participant M as Maru's visiting representative
   participant R as Kiran's meeting room (Noor as host representative, card 1)
@@ -8,12 +8,13 @@ sequenceDiagram
   participant Y as Kiran (owner)
   Note over R,E: Same representative key (Noor). Card 1 and card 2 both signed by Kiran's key.
   F->>R: greeting, unsigned
-  R-->>F: greeting, lobby_briefing (the leaflet), not now, farewell
+  R-->>F: greeting, leaflet, not now, farewell
   M->>R: greeting, card_presentation
-  R-->>M: card 1 with possession proof: Maru's visiting representative checks it against the listing
+  R-->>M: host card (card 1) with possession proof
   M->>R: introduction (vouch null), invitation_request: room.look, room.post
   R-->>M: grant: pass
   M->>R: act room.post
+  Note over E,T: The protocol calls the grant a pass. On the wire the field is still seat.
   E->>T: greeting, card_presentation (card 2 only: the shop never sees card 1)
   E->>T: introduction, invitation_request: purchase up to 15.00 USD
   T-->>E: grant: pass

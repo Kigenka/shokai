@@ -84,7 +84,7 @@ type ProjectRoster = {
 2. **Theo** is in Saltmarsh only. His pass covers Saltmarsh. When his representative agent asks about "the film project", the door gives the same answer it would give for a project that doesn't exist, and the host representative says nothing about Tidewater.
 3. **Marcus** invites a new illustrator, Ren Aldo, to Paper Lanterns: a named Shōkai invitation card scoped to that project, signed under his lead delegation. Ren's owner signs the project rules with a passkey; Marcus signs roster version 4.
 4. **Theo leaves Saltmarsh** for a month to tour. His representative agent sends his `ConsentRevocation`; his open seat ends at once, and the roster drops him. Rejoining is a new invitation.
-5. **Clara allows one exchange:** the Paper Lanterns lead may see Tidewater's final colour palette. She signs the house change with her passkey. Nothing else crosses.
+5. **Clara allows one exchange:** the Paper Lanterns lead may see Tidewater's final color palette. She signs the house change with her passkey. Nothing else crosses.
 
 ---
 
@@ -135,7 +135,7 @@ One principal per place keeps one answer. Delegations add people without adding 
 ### 2.5 Set up through conversation, with several delegates
 
 - Everyone sets things up by talking with the **same** host representative ("Set up through conversation"). The host representative tells each person only what their role covers, in plain words.
-- **Only the owner signs house config changes.** A delegate's idea that changes the policy becomes a draft for the owner, explained in one sentence in the owner's next summary: "Dev suggests free day-old bread for neighbours after 5 PM. It changes who gets something free, so it needs you."
+- **Only the owner signs house config changes.** A delegate's idea that changes the policy becomes a draft for the owner, explained in one sentence in the owner's next summary: "Dev suggests free day-old bread for neighbors after 5 PM. It changes who gets something free, so it needs you."
 - **The notes problem (proposed fix).** House manners and the leaflet's wording are part of the house config today (§2.3, the leaflet text still pending P26 sign-off), so even a typo fix needs the owner's signature. *Proposed:* split out an optional **`HouseNotes`** document (manners, leaflet wording, seasonal greeting) that the owner, or a delegate with `edit_notes`, signs separately. The Shōkai host card names which delegations may sign notes. Trust requirements, prices and actions stay under `house_digest` and the owner's signature. Visitors still see who signed the notes they read. This is an open question (Q6).
 - The owner's summary includes a short **"changed by others"** line: what delegates changed or approved since the last summary, kept in "Return with care" style.
 

@@ -615,6 +615,26 @@ export const MAX_CONTEXT_WHAT_CHARS = 120;
 export const MAX_CONTEXT_WHY_CHARS = 300;
 export const MAX_CONTEXT_VALUE_CHARS = 500;
 const words = (v: unknown, max: number) => typeof v === "string" && v.trim().length > 0 && v.length <= max;
+/**
+ * v0.5.1 (§6.12): a context field that asks for a password, a recovery phrase or seed, or a card number — by its `name`,
+ * or in its `what` or `why`. A door will not start with such a field and will not emit it; a visiting representative
+ * will not bring the request home. Ordinary fields (a favorite food, an 18+ confirmation, a membership id) are not this.
+ * "Seed" alone is not; "seed phrase" and "recovery seed" are.
+ */
+export function contextFieldAsksCredential(f: { name?: string; what?: string; why?: string } | undefined): boolean {
+  if (!f) return false;
+  const name = String(f.name ?? "").toLowerCase().replace(/[-\s]/g, "_");
+  const tokens = new Set(name.split("_").filter(Boolean));
+  if (["password", "passcode", "passphrase"].some((t) => tokens.has(t))) return true;
+  if (/(recovery_phrase|seed_phrase|recovery_seed|mnemonic|passkey_recovery)/.test(name)) return true;
+  if (name.includes("card_number") || ["pan", "cvv", "cvc"].includes(name) || tokens.has("cvv") || tokens.has("cvc") || tokens.has("pan")) return true;
+  if (tokens.has("security") && tokens.has("code")) return true;
+  const text = `${f.what ?? ""} ${f.why ?? ""}`.toLowerCase();
+  if (/\b(passwords?|passcodes?|passphrases?)\b/.test(text)) return true;
+  if (/\b(recovery\s+phrases?|seed\s+phrases?|recovery\s+seeds?|mnemonics?|mnemonic\s+phrases?)\b/.test(text)) return true;
+  if (/\b((credit|debit|payment|bank)\s+)?card\s+numbers?\b|\b(cvv|cvc)\b/.test(text)) return true;
+  return false;
+}
 /** Red team phase 1 (§6.12, C267, provisional): the sensitive field classes. */
 export const SENSITIVE_CLASSES = ["health", "religion_or_belief", "sexual_life", "political_opinion", "ethnic_origin", "union_membership", "biometric", "genetic", "children", "precise_location", "government_id", "financial_account"] as const;
 const fieldValid = (f: S.ContextField | undefined): boolean => !!f && typeof f === "object" && !Array.isArray(f)
@@ -638,6 +658,8 @@ export function contextRequirementsProblems(r: S.ContextRequirements): string[] 
   else if (new Set(f.map((x) => x.name)).size !== f.length) bad("field_names_unique");
   // Red team phase 1 (§6.12, C267, provisional): a sensitive field is never required, never asked before entry, and kept for no days.
   else if (f.some((x) => x.sensitive !== undefined && (x.required || r.mode === "before_entry" || (r.retention_days ?? 0) > 0))) bad("sensitive_field");
+  // v0.5.1 (§6.12): a password, recovery phrase or seed, or card number is not a valid context field.
+  if (Array.isArray(f) && f.every(fieldValid) && f.some(contextFieldAsksCredential)) bad("credential_field");
   if (r.retention_days !== undefined && !daysOk(r.retention_days)) bad("retention_days");
   return out;
 }
@@ -650,6 +672,7 @@ export function contextRequestFor(place: string, r: S.ContextRequirements | unde
   if (!r || r.mode === "card_enough" || !names.length || new Set(names).size !== names.length) return null;
   const decl = new Map((r.fields ?? []).map((f) => [f.name, f]));
   if (names.some((n) => !decl.has(n) || (o.declined ?? []).includes(n))) return null;
+  if (names.some((n) => contextFieldAsksCredential(decl.get(n)))) return null;
   return { type: "context_request", request_id: o.request_id, place, mode: r.mode, fields: names.map((n) => ({ ...decl.get(n)! })), retention_days: r.retention_days ?? 0, expires_at: o.expires_at };
 }
 /**
@@ -659,7 +682,10 @@ export function contextRequestFor(place: string, r: S.ContextRequirements | unde
 export function contextRequestProblems(req: S.ContextRequest, r: S.ContextRequirements | undefined, place: string, declined: string[] = []): string[] {
   const out: string[] = [];
   if (!req || req.type !== "context_request" || typeof req.request_id !== "string" || !req.request_id) return ["shape"];
-  if (!r || r.mode === "card_enough") return ["no_context_requirements"];
+  // v0.5.1 (§6.12): refuse a request that asks for a password, recovery phrase or seed, or card number, even if the
+  // place's signed requirements named it, and even when there are no signed requirements to check against.
+  if (Array.isArray(req.fields)) for (const f of req.fields) if (contextFieldAsksCredential(f)) out.push("credential_field:" + String(f?.name));
+  if (!r || r.mode === "card_enough") return out.length ? out : ["no_context_requirements"];
   if (req.place !== place) out.push("place");
   if (req.mode !== r.mode) out.push("mode");
   if (!isTimestamp(req.expires_at)) out.push("expires_at");

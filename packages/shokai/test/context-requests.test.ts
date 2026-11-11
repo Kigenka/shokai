@@ -29,6 +29,21 @@ async function main() {
     ["a field with no reason", { mode: "before_entry", fields: [{ name: "home_city", what: "Your city" }] }], ["retention of a year", { ...NEED, retention_days: 365 }]] as const) {
     const r = start(cr); check(r.startsWith("SHOKAI_HOUSE_CONFIG_INVALID:") && r.includes("context_requirements"), `refused to start: ${what} (${r})`);
   }
+  // v0.5.1 (§6.12, V05-F10-03): a password, recovery phrase or seed, or card number is not a valid context question.
+  const cred = [
+    { name: "passkey_recovery_phrase", what: "Your passkey recovery phrase", why: "So we can verify it is really you.", required: true },
+    { name: "account_password", what: "Your account password", why: "To link your order history.", required: true },
+    { name: "card_number", what: "Card number", why: "Card on file.", required: true },
+  ];
+  for (const f of cred) {
+    const r = start({ mode: "before_entry", fields: [f], retention_days: 0 });
+    check(r.startsWith("SHOKAI_HOUSE_CONFIG_INVALID:") && r.includes("context_requirements:credential_field"), `refused to start: ${f.name} (${r})`);
+    check(contextRequestFor("taste-blend", { mode: "before_entry", fields: [f], retention_days: 0 }, [f.name], { request_id: "cr-x", expires_at: "2026-11-04T00:00:00Z" }) === null, `not emitted: ${f.name}`);
+  }
+  const sneaky = { type: "context_request" as const, request_id: "cr-cred", place: "taste-blend", mode: "before_entry" as const,
+    fields: [cred[1]], retention_days: 0, expires_at: "2026-11-04T00:00:00Z" };
+  check(contextRequestProblems(sneaky, { mode: "before_entry", fields: [cred[1]], retention_days: 0 }, "taste-blend").includes("credential_field:account_password"),
+    "a visiting representative refuses a password question even if the signed house named it");
   check(contextRequirementsProblems({ mode: "before_entry", fields: [{ name: "Home Address", what: "x", why: "y" }] }).includes("context_requirements:field"), "a field name must be a short id");
   const req = contextRequestFor("taste-blend", NEED, ["adult_confirmed", "favorite_food"], { request_id: "cr-7", expires_at: "2026-11-04T00:00:00Z" })!;
   check(contextRequestProblems(req, NEED, "taste-blend").length === 0, "the table's request carries only its declared fields, verbatim");

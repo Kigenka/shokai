@@ -40,7 +40,14 @@ for (const b of bundles) {
 const specPath = [join(root, "SPEC.md"), ...bundles.map((b) => join(b, "SPEC.md"))].find(existsSync);
 const head = specPath ? readFileSync(specPath, "utf8").match(/\*\*Specification v(\d+\.\d+\.\d+(?:-rc\d+)?) \(core\)\.\*\*/) : null;
 if (!head) errors.push("SPEC.md: no '**Specification vX (core).**' header");
-const V = head?.[1]; const pkgV = V?.replace(/-rc(\d+)$/, "-rc.$1");
+const V = head?.[1]; const specPkgV = V?.replace(/-rc(\d+)$/, "-rc.$1");
+// 0.5.1 onward: a package patch release may follow a specification version without changing it (same wire tag, same
+// spec_ref.version, same schema id; additive optional members only). The package version is then V's major.minor with a
+// patch at or above V's. Everything else keeps naming the specification version V.
+const PKG_VERSION = JSON.parse(readFileSync(join(root, "packages/shokai/package.json"), "utf8")).version;
+const samePatchLine = (pv, sv) => { const a = /^(\d+)\.(\d+)\.(\d+)$/.exec(pv ?? ""), b = /^(\d+)\.(\d+)\.(\d+)$/.exec(sv ?? "");
+  return !!a && !!b && a[1] === b[1] && a[2] === b[2] && Number(a[3]) >= Number(b[3]); };
+const pkgV = PKG_VERSION === specPkgV || samePatchLine(PKG_VERSION, specPkgV) ? PKG_VERSION : specPkgV;
 const need = (file, re, what) => { for (const base of [root, ...bundles]) { const p = join(base, file); if (!existsSync(p)) continue; versions++;
   if (!re.test(readFileSync(p, "utf8"))) errors.push(`${relative(root, p)}: ${what} doesn't name ${V}`); } };
 const q = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -57,7 +64,7 @@ if (V) {
   need("s5/engawa/src/version.ts", new RegExp(`SPEC_VERSION = "${q(V)}"`), "SPEC_VERSION");
   need("reference/engawa/src/version.ts", new RegExp(`SPEC_VERSION = "${q(V)}"`), "SPEC_VERSION");
   need("packages/shokai/src/core/version.ts", new RegExp(`SPEC_VERSION = "${q(V)}"`), "the SDK's SPEC_VERSION");
-  need("packages/shokai/package.json", new RegExp(`"version": "${q(pkgV)}"`), `the SDK package version (${pkgV})`);
+  need("packages/shokai/package.json", new RegExp(`"version": "${q(pkgV)}"`), `the SDK package version (${pkgV}; specification ${V}, same major.minor, patch at or above)`);
   // no other current-version marker may name an older release candidate of this version
   for (const base of new Set([root, ...bundles])) for (const f of ["SPEC.md", "protocol-shapes.ts", "conformance/golden-traces.md"]) { const p = join(base, f); if (!existsSync(p)) continue;
     const t = readFileSync(p, "utf8"); const stale = [...t.matchAll(/"version": "(\d+\.\d+\.\d+(?:-rc\d+)?)"/g)].map((m) => m[1]).filter((x) => x !== V);
@@ -87,6 +94,12 @@ if (V) {
   must(join(root, ".github/workflows/release.yml"), /check-links-versions\.mjs/, "release workflow doesn't run the links/versions/status check");
   mustNot(join(root, "RELEASING.md"), /npx @kigenka\/shokai@0\.3\.0 --version/, "post-publish check verifies 0.3.0, not the release");
   must(join(root, "schema/README.md"), new RegExp(`v${q(V)}/schema\\.json`), `doesn't list the v${V} schema`);
+  { const rs = join(root, "release/release-status.json"); const SV = existsSync(rs) ? JSON.parse(readFileSync(rs, "utf8")).schema_version : null;
+    if (SV) { must(join(root, "schema/README.md"), new RegExp(`v${q(SV)}/schema\\.json`), `doesn't list the v${SV} schema`);
+      const sf = join(root, `schema/v${SV}/schema.json`);
+      if (!existsSync(sf) || JSON.parse(readFileSync(sf, "utf8")).$id !== `https://github.com/Kigenka/shokai/blob/v${SV}/schema/v${SV}/schema.json`) errors.push(`schema/v${SV}/schema.json: missing, or its $id isn't its own`);
+      const pkgSchema = join(root, "packages/shokai/spec/schema.json");
+      if (existsSync(pkgSchema) && existsSync(sf) && readFileSync(pkgSchema, "utf8") !== readFileSync(sf, "utf8")) errors.push(`packages/shokai/spec/schema.json isn't schema/v${SV}/schema.json (run sync-core)`); } }
   mustNot(join(root, "docs/architecture.md"), /ritual header \(`protocol: "shokai\/0\.3"`/, "teaches shokai/0.3 as the current header without a legacy label");
   mustNot(join(root, "docs/roadmap.md"), /Shōkai is at \*\*v0\.3\.0\*\*/, "calls the project v0.3.0");
   mustNot(join(root, "docs/index.md"), /Status: \*\*v0\.3\.0\*\*/, "calls the project v0.3.0");
@@ -105,7 +118,8 @@ if (V && existsSync(statusPath)) {
   const st = JSON.parse(readFileSync(statusPath, "utf8")); versions++;
   const rd = (p) => existsSync(p) ? readFileSync(p, "utf8") : null;
   const wire = "shokai/" + V.split(".").slice(0, 2).join(".");
-  if (st.version !== V) errors.push(`release-status.json: version ${st.version}, SPEC.md says ${V}`);
+  if (st.version !== pkgV) errors.push(`release-status.json: version ${st.version}, the package says ${pkgV}`);
+  if ((st.spec_version ?? st.version) !== V) errors.push(`release-status.json: spec_version ${st.spec_version ?? st.version}, SPEC.md says ${V}`);
   if (st.wire !== wire) errors.push(`release-status.json: wire ${st.wire}, want ${wire}`);
   if (!["unpublished", "published"].includes(st.npm_status)) errors.push(`release-status.json: npm_status must be unpublished|published, not ${st.npm_status}`);
   const pkgTag = JSON.parse(readFileSync(join(root, "packages/shokai/package.json"), "utf8")).publishConfig?.tag;
@@ -117,8 +131,8 @@ if (V && existsSync(statusPath)) {
     if (got !== st.sha256) errors.push(`release/${st.tarball}: sha256 ${got.slice(0, 12)}… isn't release-status.json's ${String(st.sha256).slice(0, 12)}…`); }
   // the CHANGELOG has exactly one entry for this version and an Unreleased stub
   const cl = rd(join(root, "CHANGELOG.md")); if (cl) { versions++;
-    const heads = cl.match(new RegExp(`^## v${q(V)}\\b.*$`, "gm")) ?? [];
-    if (heads.length !== 1) errors.push(`CHANGELOG.md: ${heads.length} '## v${V}' headings, want exactly one`);
+    for (const ver of new Set([V, pkgV])) { const heads = cl.match(new RegExp(`^## v${q(ver)}\\b.*$`, "gm")) ?? [];
+      if (heads.length !== 1) errors.push(`CHANGELOG.md: ${heads.length} '## v${ver}' headings, want exactly one`); }
     if (!/^## Unreleased\b/m.test(cl)) errors.push("CHANGELOG.md: no '## Unreleased' stub (the PR template asks for entries there)"); }
   // npm-status prose: true for the current state only
   // Pre-release review (round 2): every repository Markdown file (the history files aside), not a short list, plus the package's own docs.
@@ -128,9 +142,10 @@ if (V && existsSync(statusPath)) {
   const site = [join(root, "../../site/shokai-site/pages"), join(root, "../../site/shokai-site/config.mjs"), process.env.SHOKAI_SITE_PAGES].filter((d) => d && existsSync(d));
   const walk = (d) => statSync(d).isDirectory() ? readdirSync(d).flatMap((n) => n === "node_modules" ? [] : walk(join(d, n))) : /\.(md|mjs|vue|html)$/.test(d) ? [d] : [];
   const files = [...prose, ...site.flatMap(walk)];
+  const qv = q(st.version);   // the release this status file describes (0.5.0 for the first 0.5 publish, then 0.5.1, …)
   const wrong = st.npm_status === "unpublished"
-    ? /is published under the `next` tag|(?<!once |until |before )0\.5\.0 is (now )?on npm|until `?@kigenka\/shokai`? is on npm/i
-    : /npm 0\.5\.0: pending|0\.5\.0[^.\n]{0,40}not (yet )?(on npm|published)|until 0\.5 is on npm/;
+    ? new RegExp(`is published under the \`next\` tag|(?<!once |until |before )${qv} is (now )?on npm|until \`?@kigenka\\/shokai\`? is on npm`, "i")
+    : new RegExp(`npm ${qv}: pending|${qv}[^.\\n]{0,40}not (yet )?(on npm|published)|until ${qv} is on npm|${qv}, which isn't released yet`);
   // Commands that only work once published must say so on their line; bare `npx shokai` may fetch an unrelated package; the conformance runner is pinned.
   const unpublishedOk = /\b(once|until|after|before|when|public path|publish)\b/i;   // a line naming @next must say it is for later
   const presentNext = /(0\.5\.0 is (on|under) the `?next`? (dist-)?tag)/i;

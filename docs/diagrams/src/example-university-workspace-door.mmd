@@ -1,0 +1,21 @@
+sequenceDiagram
+  autonumber
+  participant HE as Dr. Ellery<br/>(faculty, owner)
+  participant F as Faculty co-worker<br/>agent representative
+  participant D as University Workspace<br/>host representative
+  participant IM as Ines<br/>(student)
+  Note over HE,IM: The door sits in front of<br/>the university's own Drive
+  HE->>F: Signs a Shōkai visitor card,<br/>and a mandate: DS 210, week 6,<br/>read and summarize, no edits
+  F->>D: Reads the listing
+  Note over F,D: No card needed to look
+  F->>D: Shōkai visitor card<br/>and possession proof
+  D->>F: Workspace host card<br/>and a fresh proof, then a welcome
+  F->>D: invitation_request: purpose<br/>and the signed mandate
+  Note over F,D: University policy decides.<br/>Pass = policy ∩ mandate ∩ request
+  D->>F: grant, pass (wire: seat):<br/>DS 210 week 6, read and<br/>summarize, no edits
+  F->>D: acts within the pass
+  F->>D: act submissions.edit
+  D->>F: act_decision deny:<br/>outside the pass
+  F->>D: farewell
+  Note over D,IM: Local record at the door.<br/>Ines can see a visit that<br/>touched her work.
+  F->>HE: Report home: week 6<br/>summarized, no edits

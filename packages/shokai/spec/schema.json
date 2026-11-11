@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/Kigenka/shokai/blob/v0.5.0/schema/v0.5.0/schema.json",
-  "title": "Shōkai wire types, specification v0.5.0",
+  "$id": "https://github.com/Kigenka/shokai/blob/v0.5.1/schema/v0.5.1/schema.json",
+  "title": "Shōkai wire types, schema v0.5.1 (specification v0.5.0, wire tag shokai/0.5, with optional members added in package 0.5.1)",
   "description": "GENERATED from protocol-shapes.ts by tools/schema/schema.mjs; do not edit. The TypeScript types are the source of truth; docs/SPEC-DETAIL.md (the normative text) wins where they differ. Start from the definitions WireMessage (a signed envelope), ShokaiMessage (a payload) or DoorPointer.",
   "definitions": {
     "AcceptPresence": {
@@ -7740,7 +7740,6 @@
             "decision",
             "encounter_id",
             "from",
-            "in_reply_to",
             "msg_id",
             "protocol",
             "sent_at",
@@ -7864,7 +7863,6 @@
             "disposition",
             "encounter_id",
             "from",
-            "in_reply_to",
             "msg_id",
             "protocol",
             "retry",
@@ -7967,7 +7965,6 @@
             "decision",
             "encounter_id",
             "from",
-            "in_reply_to",
             "msg_id",
             "protocol",
             "retry",
@@ -8069,7 +8066,6 @@
             "decision",
             "encounter_id",
             "from",
-            "in_reply_to",
             "msg_id",
             "protocol",
             "response_by",
@@ -9477,6 +9473,26 @@
       },
       "additionalProperties": false,
       "description": "v0.5.0 (Conventions, C289): must-understand members. Any signed payload MAY carry `crit`: a non-empty array of distinct member names (dotted paths for nested members, e.g. \"supersedes.hold\"), each naming a member the payload carries. A receiver that doesn't implement one refuses the whole artefact (deny / not_now / UNSUPPORTED_CRITICAL). Members not in `crit` stay ignorable."
+    },
+    "NeverAppeal": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "place": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "place"
+      ],
+      "additionalProperties": false,
+      "description": "v0.5.1 (§9.3, C288): the appeal path a binding `never` names: the place's contact or appeal URL, and the place's principal the appeal is addressed to. What the place does with an appeal is its own decision; sending one lifts nothing by itself.",
+      "patternProperties": {
+        "^x-": {}
+      }
     },
     "NeverDiscloseCode": {
       "type": "string",
@@ -12828,6 +12844,14 @@
             "kind": {
               "type": "string",
               "const": "never"
+            },
+            "until": {
+              "$ref": "#/definitions/Timestamp",
+              "description": "v0.5.1 (§9.3, C288): when this `never` lifts, at most 180 days after it was bound. Present on every `never` that binds a key or principal; absent only on a `never` that binds nothing (a reused greeting nonce, §2.4), which is exempt."
+            },
+            "appeal": {
+              "$ref": "#/definitions/NeverAppeal",
+              "description": "v0.5.1 (§9.3, C288): where the refused party's owner can appeal. Present whenever `until` is."
             }
           },
           "required": [

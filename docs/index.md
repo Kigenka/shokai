@@ -6,7 +6,7 @@ The world is filling with agents of every kind: agents that write, research, sho
 
 **A representative, not a representation.** A representative isn't a picture of you: it has agency, and speaks and acts on your behalf, within what you signed. It knows and belongs to what it represents, and that is where its trust and context come from.
 
-**Yours, not a platform's.** Your representative's introduction belongs to you, not to a platform. You're in the driver's seat: you sign its Shōkai card and its limits, and you can withdraw them. Nothing is forced, on you or on the places it visits: a place chooses whom it lets in, and you choose where your representative goes and what it may do. What it brings home can be rich, too: pictures of a place, a short audio note, its visit stamps, the story told in its own personality.
+**Yours, not a platform's.** Your agent representative's visitor card belongs to you, not to a platform. You sign it, you set its limits, and you can withdraw it at any time. Each place decides whom it lets in, and you decide where your representative goes and what it may do there. What it brings home can be rich, too: pictures of a place, a short audio note, its visit stamps, the story told in its own personality.
 
 **Shōkai (紹介) is an open protocol that gives online places a door for agents.** Every agent that comes in arrives introduced: who sent it, why it came, and what it may do. Every representative answers to an owner who signed for it: a person, a business or an organization, never an anonymous agent running wild. That matters now. Banks are finding agents inside customer accounts and often can't tell whether the customer directed them ([Axios, October 22, 2026](https://www.axios.com/2026/10/22/ai-agents-banks-unauthorized-accounts-access)); Amazon blocked Muse (Meta) from shopping on its store, saying the agent didn't identify itself ([September 20, 2026](./why.md#happening-now-agents-at-the-store)); and when the editor's agent bought this project's domain, no site could tell an agent was acting, or for whom ([October 28, 2026](./why.md#a-true-story-my-agent-bought-a-domain)).
 
@@ -38,7 +38,7 @@ The host representative answers clearly, and always explains, with one of four d
 
 ### Where it already works
 
-Only what the project's [field tests](./field-tests.md) recorded, October 25 to 28, 2026.
+Only what the project's [field tests](./field-tests.md) recorded, including the 0.5 rounds of November 4–6, 2026 and the earlier 0.3-era rounds of October 25–28.
 
 | Platform | Recorded so far | Not yet tested |
 |---|---|---|
@@ -65,18 +65,18 @@ How to choose between one agent and separate ones, and the steps for each: [Set 
 ### For host representatives (places)
 
 - **A tea shop's host representative can welcome a visiting representative it has never met**, check its owner's signed Shōkai card and spending limit, and sell within it; an anonymous visiting representative with no Shōkai card gets the leaflet and a kind "not now". ([How Shōkai works](./how-it-works.md))
-- **A bank's host representative can recognise *this* person's visiting representative**, let it read a balance within the limits its owner signed, and send a larger transfer home for the owner's approval. ([Example](./examples/harborlight-bank.md))
-- **A company's host representative can admit an employee's co-worker agent to internal MCP tools**, with its role vouched for by the company and narrower limits than the employee's own permissions. ([Example](./examples/enterprise-coworker.md))
-- **A person's own host representative can hear from brands** under door rules that person chose, with any friend who introduces a brand signing the vouch herself and declaring whether she gets anything for it. ([Example](./examples/brand-door.md))
-- **An online campus's host representative (admissions and registrar) can tell who's who**: a prospective student gets a narrow pass to look, ask and apply; an admitted student enrols with the university's own signed offer; and **a faculty member's representative keeps a course door**, admitting each student for materials, submissions, their own grades and office hours, never another student's records. ([Example](./examples/online-university.md))
+- **A bank's host representative can recognize *this* person's visiting representative**, let it read a balance within the limits its owner signed, and send a larger transfer home for the owner's approval. ([Example](./examples/harborlight-bank.md))
+- **A freight company can put a host representative in front of each internal resource**, and its co-worker agent can also visit a carrier's or a warehouse partner's door, with a Shōkai visitor card and narrower limits than the employee's own permissions. ([Example](./examples/enterprise-coworker.md))
+- **An introduction-only club can make a signed vouch its door rule**, with a cap, while most doors don't need one; a person can also keep a door for brands under rules they chose, with any friend who introduces a brand signing the vouch herself and declaring whether she gets anything for it. ([Example](./examples/introduction-only-club.md))
+- **An online university can set three kinds of door**: a university Workspace door in front of its own Drive, where a faculty co-worker agent visits with a mandate scoped to one course and one week, and university policy makes a visit that touched a student's work visible to that student; a course door whose host representative is the agent that designed the course, admitting each student's representative for materials, questions and their own records; and onboarding so each student has an agent representative of their own. A campus door for admissions still sits at the front. ([Example](./examples/online-university.md))
 
 ### For visiting representatives
 
 - **A visiting representative can introduce itself at a tea shop** it has never visited, with its owner's signed Shōkai card and a spending limit, and buy within it. ([How Shōkai works](./how-it-works.md))
-- **A visiting representative can be recognised at a bank** as *this* person's representative, read a balance within limits the owner signed, and bring a larger transfer home for approval instead of failing or guessing. ([Example](./examples/harborlight-bank.md))
+- **A visiting representative can be recognized at a bank** as *this* person's representative, read a balance within limits the owner signed, and bring a larger transfer home for approval instead of failing or guessing. ([Example](./examples/harborlight-bank.md))
 - **A visiting representative can look before it joins**, reading what a place offers and what joining would ask, without handing over identity first. ([Example](./examples/look-before-you-join.md))
-- **A brand's visiting representative can arrive with a friend's vouch** at a person's own door, deliberate and signed. ([Example](./examples/brand-door.md))
-- **An enrolled student's visiting representative can attend courses within its pass**: materials, submissions, its owner's own grades, office hours, and a study room inside, where a classmate's signed introduction is welcome. ([Example](./examples/online-university.md))
+- **A brand's visiting representative can arrive with a friend's vouch** at a person's own door, deliberate and signed. ([Example](./examples/introduction-only-club.md#5-the-same-optional-vouch-at-a-persons-own-door))
+- **An enrolled student's visiting representative can attend a course within its pass**: materials, submissions, its owner's own grades, and questions, with a customer link made in the university's enrolment channel. ([Example](./examples/online-university.md))
 - **A prospective student's visiting representative can read the window, look around and introduce itself before applying**, and gets a narrower pass until its owner is admitted. ([Example](./examples/online-university.md))
 - **Every visiting representative goes home with an answer**: a pass, or a plain sentence its owner can act on, and a report of the visit. ([Report home](./concepts/report-home.md))
 

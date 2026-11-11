@@ -4,7 +4,7 @@
 
 The human front door is **`SPEC.md`** (short core, ~15-minute read). The full normative text is **`docs/SPEC-DETAIL.md`**, at **v0.5.0** (wire tag `shokai/0.5`; `shokai/0.3` is still accepted during the transition window, SPEC §11.1). Extensions are separate documents (see [Extensions](./extensions.md)). What changed is in [What's new in v0.5.0](./whats-new-v050.md); building a visiting representative is in [Build a visitor](./build-a-visitor.md).
 
-*The specification files (SPEC.md, the types, SIGNING.md and the conformance files) are under Apache-2.0, like the code; these guide pages under `docs/` are CC BY 4.0. `REUSE.toml` in the repository lists which licence covers each file.*
+*The specification files (SPEC.md, the types, SIGNING.md and the conformance files) are under Apache-2.0, like the code; these guide pages under `docs/` are CC BY 4.0. `REUSE.toml` in the repository lists which license covers each file.*
 
 The same files are in three places: rendered in these docs, in the `@kigenka/shokai` package (`node_modules/@kigenka/shokai/spec/`), and in the source repository.
 
@@ -13,6 +13,8 @@ The same files are in three places: rendered in these docs, in the `@kigenka/sho
 - [Types](../protocol-shapes.ts): `protocol-shapes.ts` (TypeScript, types only). Where the spec and the types disagree, the spec wins and the disagreement is a bug.
 - [Conformance checklist and golden traces](../conformance/golden-traces.md) (message-by-message examples), the [test vectors](../conformance/test-vectors.json) (byte-exact signatures and digests) and the [map of checks to levels](../conformance/homes.json).
 - [The extensions](../extensions/README.md), the [threat model](../THREAT-MODEL.md) and the [changelog](../CHANGELOG.md).
+
+**See also:** [What's new in v0.5.0](./whats-new-v050.md), [v0.3.0 release notes](./releases/v0.3.0.md), and the [Apache License 2.0](../LICENSE). On the documentation site, current and earlier release notes are under Releases, and the license is under Community.
 
 ## What to implement
 

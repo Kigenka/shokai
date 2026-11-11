@@ -1,8 +1,27 @@
 {
+  "protocol": "shokai/0.5",
+  "sdk": "@kigenka/shokai 0.5.1 (with the red-team round 3 fixes; 0.5.0 lacks them)",
+  "note": "The protocol calls the grant a pass. On the wire the field is still seat.",
+  "steps": [
+    {
+      "who": "Noor (introducer)",
+      "at": "Maison Ardoise",
+      "sent": "vouch for presentation and gift, interest none"
+    },
+    {
+      "who": "Maison Ardoise's visiting representative",
+      "at": "Kiran's door",
+      "granted": true,
+      "outcomes": [
+        "kept_for_later",
+        "accepted"
+      ]
+    }
+  ],
   "checks": [
     {
       "ok": true,
-      "what": "the introduced brand is seated at Kiran's door"
+      "what": "the introduced brand is granted a pass at Kiran's door"
     },
     {
       "ok": true,
@@ -21,74 +40,78 @@
       "what": "Kiran's private note never appears on the wire"
     }
   ],
-  "trace": [
-    {
-      "dir": "out",
-      "type": "greeting"
-    },
-    {
-      "dir": "in",
-      "type": "greeting"
-    },
-    {
-      "dir": "out",
-      "type": "card_presentation"
-    },
-    {
-      "dir": "in",
-      "type": "card_presentation"
-    },
-    {
-      "dir": "in",
-      "type": "card_receipt"
-    },
-    {
-      "dir": "out",
-      "type": "card_receipt"
-    },
-    {
-      "dir": "out",
-      "type": "introduction",
-      "vouch": "Noor's vouch"
-    },
-    {
-      "dir": "out",
-      "type": "invitation_request"
-    },
-    {
-      "dir": "in",
-      "type": "invitation_response",
-      "decision": "grant"
-    },
-    {
-      "dir": "in",
-      "type": "farewell",
-      "outcome": "seated"
-    },
-    {
-      "dir": "out",
-      "type": "act",
-      "tool": "door.present"
-    },
-    {
-      "dir": "in",
-      "type": "offer_outcome",
-      "outcome": "kept_for_later"
-    },
-    {
-      "dir": "out",
-      "type": "act",
-      "tool": "door.gift"
-    },
-    {
-      "dir": "in",
-      "type": "offer_outcome",
-      "outcome": "accepted"
-    }
-  ],
   "outcomes": [
     "kept_for_later",
     "accepted"
   ],
-  "ok": true
+  "claim_ticket_issued": true,
+  "ok": true,
+  "place": "Kiran Vale's door (fictional)",
+  "trace": {
+    "visit": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction",
+        "vouch": "Noor's vouch"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell",
+        "outcome": "seated"
+      },
+      {
+        "dir": "out",
+        "type": "act",
+        "tool": "door.present"
+      },
+      {
+        "dir": "in",
+        "type": "offer_outcome",
+        "outcome": "kept_for_later"
+      },
+      {
+        "dir": "out",
+        "type": "act",
+        "tool": "door.gift"
+      },
+      {
+        "dir": "in",
+        "type": "offer_outcome",
+        "outcome": "accepted"
+      }
+    ]
+  }
 }

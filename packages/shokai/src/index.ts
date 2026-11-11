@@ -24,7 +24,7 @@ import { matchAsk, ASK_COURTESY, MAX_ASK_CHARS, reviewVisitor, reviewText, owner
 import { CalendarStandIn, bookingRef, confirmationMatches, type ReservationArgs } from "./reservations.js";
 import { bookingProblem, intersectLimits } from "./core/gate.js";
 import type { ServiceContext, ServiceAnswer } from "./core/host.js";
-import { summaryDigest, summaryMatches, limitRequestOf, houseSummaryOf, contextRequestProblems as ctxProblemsOf } from "./core/v050.js";
+import { summaryDigest, summaryMatches, limitRequestOf, houseSummaryOf, contextRequestProblems as ctxProblemsOf, contextFieldAsksCredential } from "./core/v050.js";
 /** Red team phase 1 (§11.1, C269): https, or plain http only on this computer (loopback). */
 export function secureEntry(u: string): boolean { try { const x = new URL(u); if (x.protocol === "https:") return true; if (x.protocol !== "http:") return false; const h = x.hostname; return h === "localhost" || h === "[::1]" || /^127\.\d+\.\d+\.\d+$/.test(h); } catch { return false; } }
 import { HostBudgetKeeper, priceTableMeter, HOST_BUDGET_LINES, type CostMeter, type HostModelEstimate, type ModelUsage, type BudgetTicket, type BudgetScope, type HostBudgetNotice } from "./host-budget.js";
@@ -38,7 +38,7 @@ export * from "./budget-store.js";
 export { matchAsk, normaliseAsk, NEVER_DISCLOSE_WORDS, ASK_COURTESY, MAX_ASK_CHARS, reviewVisitor, type AskMatch } from "./outside.js";
 export { CalendarStandIn, bookingRef, confirmationMatches, CALENDAR_STAND_IN_NOTE, type CalendarFile, type ReservationArgs } from "./reservations.js";
 export { bookingProblem, bookingWithin, bookingLimitsOk } from "./core/gate.js";
-export { contextRequirementsProblems, contextRequestFor, contextRequestProblems, contextResponseProblems, contextResponseDigest, contextAdmission, MAX_CONTEXT_FIELDS, MAX_CONTEXT_VALUE_CHARS } from "./core/v050.js";
+export { contextRequirementsProblems, contextRequestFor, contextRequestProblems, contextResponseProblems, contextResponseDigest, contextAdmission, contextFieldAsksCredential, MAX_CONTEXT_FIELDS, MAX_CONTEXT_VALUE_CHARS } from "./core/v050.js";
 /** v0.5.0 (§7.2, C231): a fresh idempotency key (16 random bytes, base64url) for one act or act_confirmation. */
 const idemKey = () => b64u(randomBytes(16));
 
@@ -314,6 +314,11 @@ export type DoorOptions = {
   testProfile?: boolean;
   /** Anything else in the place policy (advanced). */
   policy?: Partial<PlacePolicy>;
+  /**
+   * v0.5.1 (§9.3, C288): the place's contact or appeal URL (a page or mailbox its people read). Every binding `never` reply names it,
+   * with when the binding lifts (at most 180 days). Unset: the door's inbox address.
+   */
+  appealUrl?: string;
   hostOpts?: HostOpts;
   /**
    * v0.3.0-rc4 (§3.6, C192): where the door keeps its durable state (mandate ledgers, nevers, spent nonces, revocations), as JSON.
@@ -454,6 +459,7 @@ export class Door {
     const epoch = opts.stateFile || opts.store ? undefined : nowIso();
     this.host = new Host(cfg, this.keys.rep, this.keys.principal ?? null, new RealVerifier(), undefined,
       { fetched: this.fetched, entryUrl: entryUrl(this.base, opts.name), inboxUrl: inboxUrl(this.base, opts.name), testProfile: !!opts.testProfile, uniqueActRefs: true,
+        ...(opts.appealUrl ? { appealUrl: new URL(opts.appealUrl).href } : {}),
         ...(epoch ? { stateEpoch: epoch } : {}), maxEncounters: DEFAULT_MAX_ENCOUNTERS, ...(opts.testProfile ? {} : { seatsPerCard: SEATS_PER_CARD, seatsPerSource: SEATS_PER_SOURCE }), claimFailCapPerCard: CLAIM_FAIL_CAP_PER_CARD, claimBackoff: { baseS: CLAIM_BACKOFF_BASE_S, maxS: CLAIM_BACKOFF_MAX_S }, ...pruneOpts(opts), ...(opts.hostOpts ?? {}), service: (a, ctx) => this.serve(a, ctx),
         costlyActCap: (x) => !this.costlyAct(x) ? { reached: false, count: () => {} } : this.costlyCapReached(x.seat_id, x.principal) ? { reached: true } : { reached: false, count: () => this.costlyCount(x.seat_id, x.principal) } });
     if (opts.reservations) this.calendar = new CalendarStandIn(opts.reservations.calendarFile);
@@ -1608,10 +1614,10 @@ export function limitRequestProblem(req: Pick<S.LimitRequest, "limit" | "current
   // Dual totals (per-visit and whole-mandate): when the place stated them, they MUST match the representative's ledgers.
   if (req.seat) {
     const sl = parseMoney(req.seat.limit), sc = parseMoney(req.seat.current);
-    if (!sl || !sc) return "a seat figure is missing or not an amount";
+    if (!sl || !sc) return "a per-visit (pass) figure is missing or not an amount";
     const seatWant = scap && scap.currency === mcap.currency ? scap.units : mcap.units;
-    if (sl.units !== seatWant) return `the place's seat limit (${money(req.seat.limit)}) isn't the seat ceiling the owner signed`;
-    if (sc.units !== mine.units) return `the place's seat current (${money(req.seat.current)}) isn't this visit's ledger (${money(k.current)})`;
+    if (sl.units !== seatWant) return `the place's per-visit limit for this pass (${money(req.seat.limit)}) isn't the pass ceiling the owner signed`;
+    if (sc.units !== mine.units) return `the place's per-visit total for this pass (${money(req.seat.current)}) isn't this visit's ledger (${money(k.current)})`;
   }
   if (req.mandate) {
     const ml = parseMoney(req.mandate.limit), mc = parseMoney(req.mandate.current);
@@ -1708,7 +1714,7 @@ export class Visit {
   outsideSeat(tool: string): string | null {
     if (!this.checkSeatLocally || !this.seat) return null;
     const allowed = this.seat.tool_allowlist ?? [];
-    return allowed.includes(tool) ? null : `${tool} is not in this seat (it allows ${allowed.length ? allowed.join(", ") : "no tools"})`;
+    return allowed.includes(tool) ? null : `${tool} is not in this pass (it allows ${allowed.length ? allowed.join(", ") : "no tools"})`;
   }
   /** Everything the representative checks before it sends an act: the seat's tools, then what remains of the mandate. */
   beforeSend(tool: string, args: Record<string, unknown> = {}): { why: string; by: "seat" | "mandate" } | null {
@@ -1921,7 +1927,9 @@ export class Visit {
    *  context_requirements, read under shokai/0.5); otherwise it is dropped and the report says why. */
   get contextRequest(): S.ContextRequest | undefined { const r = this.response?.context_request; return r && !this.contextRequestRefusal().length ? r : undefined; }
   contextRequestRefusal(): string[] {
-    const r = this.response?.context_request; if (!r || !this.summaryRead) return [];
+    const r = this.response?.context_request; if (!r) return [];
+    // v0.5.1 (§6.12): refuse a password, recovery phrase or seed, or card number even when the house summary hasn't been read.
+    if (!this.summaryRead) return (r.fields ?? []).filter((f: S.ContextField) => contextFieldAsksCredential(f)).map((f: S.ContextField) => "credential_field:" + String(f?.name));
     return ctxProblemsOf(r, this.summaryRead.context_requirements, this.summaryRead.name).filter((x) => x !== "expires_at");
   }
   /** The nonce in the place's last greeting (for possession proofs). */
@@ -1929,12 +1937,12 @@ export class Visit {
   get seated(): boolean { return !!this.seat && this.placeCheck.ok; }
   /** Sign an act within the seat without sending it (for the MCP gate's Shokai-Act header). */
   signAct(tool: string, args: Record<string, unknown> = {}): S.Signed<S.Act> {
-    if (!this.seat) throw new Error("not seated");
+    if (!this.seat) throw new Error("not admitted: no pass");
     return this.signed(this.message("act", { seat_id: this.seat.seat_id, tool, arguments: args }));
   }
   /** Send an act to the door and record the door's answer (§7.2). */
   async act(tool: string, args: Record<string, unknown> = {}, opts: { contextResponse?: S.ContextResponse } = {}) {
-    if (!this.seat) throw new Error("not seated");
+    if (!this.seat) throw new Error("not admitted: no pass");
     const stop = this.errandStopped(); if (stop) return errandStopDecision(stop);
     const pre = this.beforeSend(tool, args);
     const spend = this.spendOf(tool, args);
@@ -1973,7 +1981,7 @@ export class Visit {
   async actWithOwner(tool: string, args: Record<string, unknown>, approve: (held: S.ActHeld) => Promise<S.Signed<S.OwnerConsent> | null>,
     o: { /** v0.5.0 (§7.3, C230): take an over-limit hold home as a LimitRequest; the owner answers with a superseding mandate, or null. */
          raiseLimit?: (request: S.LimitRequest, held: S.ActHeld) => Promise<S.SignedMandate | null> } = {}) {
-    if (!this.seat) throw new Error("not seated");
+    if (!this.seat) throw new Error("not admitted: no pass");
     const stop = this.errandStopped(); if (stop) return errandStopDecision(stop);
     const spend = this.spendOf(tool, args); const amt = parseMoney(spend);
     const why = this.rep.card.payload.owner_prompts !== "purchase_only" ? "this representative's Shōkai visitor card didn't tell its owner it may ask them live (owner_prompts)"
@@ -2278,7 +2286,7 @@ export function visitReport(v: Visit, locale = "en-US", opts: ReportOptions = {}
     return `${offers.indexOf(a) === 0 ? "The door" : "the door"} ${OW[a.offer_outcome!] ?? a.offer_outcome} (${it})`; }))}.`;
   const nU = v.acts.filter((a) => a.interrupted === "unreachable").length, nG = v.acts.filter((a) => a.interrupted === "seat_gone").length;
   const acts_ = (k: number) => `${k === 1 ? "One action" : `${k} actions`}`;
-  const interruptedText = !v.interrupted ? "" : `${nG ? ` ${acts_(nG)} ${nG === 1 ? "wasn't" : "weren't"} carried out: the place no longer knew my seat (probably a restart).` : ""}`
+  const interruptedText = !v.interrupted ? "" : `${nG ? ` ${acts_(nG)} ${nG === 1 ? "wasn't" : "weren't"} carried out: the place no longer knew my pass (probably a restart).` : ""}`
     + `${nU ? ` ${acts_(nU)} got no answer (the place may have been restarting), so I can't tell whether ${nU === 1 ? "it" : "they"} went through.` : ""}`
     + " The visit was interrupted. I'll knock again for a new visit, and won't repeat a purchase until I've checked; what was spent under your mandate still counts.";
   // §3.3 (clarification, 2026-10-28): what the place asks the owner is the place's own text, so it is quoted and attributed to the
@@ -2287,7 +2295,7 @@ export function visitReport(v: Visit, locale = "en-US", opts: ReportOptions = {}
   const asked = ((v as any).readiness as S.ReadinessRequirement[] | undefined ?? []).map((x) => clean(x.owner_text?.text)).filter(Boolean);
   const ob = v.onboardingUrl ? (() => { try { const u = new URL(v.onboardingUrl!); return /^https?:$/.test(u.protocol) ? u.origin : null; } catch { return null; } })() : null;
   // v0.5.0 (§6.12): a context request is the place's own words, quoted with each field's what and why, for the owner to answer or decline.
-  const cqBad = v.contextRequestRefusal(); const cq = v.contextRequest; const ctxText = cqBad.length ? ` It asked for more about you than its signed house rules declare (${cqBad.slice(0, 3).join(", ")}), so I didn't bring that request home.` : !cq || !Array.isArray(cq.fields) ? "" : ` It asked for a little more about you before ${r.decision === "grant" ? "going on" : "letting me in"} (its own words, quoted; I didn't answer anything): `
+  const cqBad = v.contextRequestRefusal(); const cq = v.contextRequest; const ctxText = cqBad.length ? (cqBad.some((x) => x.startsWith("credential_field:")) ? ` It asked for a password, a recovery phrase or seed, or a card number, so I didn't bring that request home.` : ` It asked for more about you than its signed house rules declare (${cqBad.slice(0, 3).join(", ")}), so I didn't bring that request home.`) : !cq || !Array.isArray(cq.fields) ? "" : ` It asked for a little more about you before ${r.decision === "grant" ? "going on" : "letting me in"} (its own words, quoted; I didn't answer anything): `
     + cq.fields.slice(0, 12).map((f) => `"${clean(f?.what)}" (why: "${clean(f?.why)}")${f?.required ? ", required" : ""}`).join("; ") + `. It keeps answers ${cq.retention_days ? `for ${cq.retention_days} days` : "only for the visit"}. You can answer or decline each one.`;
   const placeAskedText = ctxText + (asked.length ? ` It asked you, in its own words as its key signed them (quoted, not checked by me): ${asked.map((t) => `"${t}"`).join(" ")}.` : "")
     + (ob ? ` It points to a setup page at ${ob}. I won't open it; open it yourself only if you trust ${ob}.` : "");
@@ -2298,8 +2306,8 @@ export function visitReport(v: Visit, locale = "en-US", opts: ReportOptions = {}
   else if (v.withdrew) text = `I didn't ask ${host} for anything: ${v.withdrew}. I said goodbye and left; nothing was done.`;
   else if (r.decision === "grant") text = `${host} admitted me with a pass for ${list(seatActions.map((a) => `"${a}"`))}, ${list(limitBits)}. `
     + `I did ${okActs} action${okActs === 1 ? "" : "s"}${refused ? `; ${refused} ${refused === 1 ? "was" : "were"} refused` : "; none were refused"}. ${spentText}`.trim() + offerText + mandateText + bbText + interruptedText + ctxText;
-  else if (r.decision === "deny") text = `${host} didn't seat me (${r.disposition}${r.reason_code ? ", " + r.reason_code : ""})${r.retry?.kind === "after" && r.retry?.not_before ? `; I may try again after ${when(r.retry.not_before, locale, tz)}` : r.retry?.kind === "with_credential" ? `; it would need: ${list(r.retry.credentials ?? [])}` : r.retry?.kind === "never" ? "; I won't try again" : ""}. Nothing was done.` + placeAskedText;
-  else if (r.decision === "conditional") text = `${host} would seat me only if conditions are met; nothing was done.`;
+  else if (r.decision === "deny") text = `${host} didn't admit me (${r.disposition}${r.reason_code ? ", " + r.reason_code : ""})${r.retry?.kind === "after" && r.retry?.not_before ? `; I may try again after ${when(r.retry.not_before, locale, tz)}` : r.retry?.kind === "with_credential" ? `; it would need: ${list(r.retry.credentials ?? [])}` : r.retry?.kind === "never" ? (r.retry.until ? `; I won't try again before ${when(r.retry.until, locale, tz)}${r.retry.appeal?.url ? ` (you can appeal at ${r.retry.appeal.url})` : ""}` : "; I won't try again") : ""}. Nothing was done.` + placeAskedText;
+  else if (r.decision === "conditional") text = `${host} would admit me only if conditions are met; nothing was done.`;
   else if (r.decision === "considering") text = `${host} is considering the request${r.response_by ? ` and will answer by ${when(r.response_by, locale, tz)}` : ""}; nothing happens until it answers, and no answer by then means no.`;
   else text = `No decision from ${host}; nothing was done.`;
   // v0.5.0 (§11.1 "No downgrade", C254): a visit under shokai/0.3 says what it didn't have.

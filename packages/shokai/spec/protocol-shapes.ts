@@ -1042,9 +1042,24 @@ export type CredentialKind =
   | "context_response";
 
 export type Retry =
-  | { kind: "never" }
+  | {
+      kind: "never";
+      /**
+       * v0.5.1 (§9.3, C288): when this `never` lifts, at most 180 days after it was bound. Present on every `never` that binds a key or
+       * principal; absent only on a `never` that binds nothing (a reused greeting nonce, §2.4), which is exempt.
+       */
+      until?: Timestamp;
+      /** v0.5.1 (§9.3, C288): where the refused party's owner can appeal. Present whenever `until` is. */
+      appeal?: NeverAppeal;
+    }
   | { kind: "after"; not_before: Timestamp }
   | { kind: "with_credential"; credentials: CredentialKind[] };
+
+/**
+ * v0.5.1 (§9.3, C288): the appeal path a binding `never` names: the place's contact or appeal URL, and the place's principal the
+ * appeal is addressed to. What the place does with an appeal is its own decision; sending one lifts nothing by itself.
+ */
+export type NeverAppeal = { url: string; place: string };
 
 /** v0.2.1 (§6.1): typed, checkable conditions. Lists are arrays; amounts are Money. */
 export type Condition =
@@ -1172,8 +1187,12 @@ export type InvitationResponse = RitualHeader & {
   type: "invitation_response";
   /** v0.2.9 (§10): at an inbound door only, the optional kind reason for a door admission refusal. */
   reason_category?: DoorReasonCategory;
-  /** msg_id of the InvitationRequest or ExtendInvitation answered. */
-  in_reply_to: string;
+  /**
+   * msg_id of the InvitationRequest or ExtendInvitation answered. REQUIRED on every invitation_response except the lobby's
+   * answer to plain prose or a malformed message, which MUST NOT carry it (SPEC-DETAIL §2.3, Lobby replies). Optional here
+   * since schema v0.5.1 (package 0.5.1) so that lobby reply validates; schema v0.5.0 required it.
+   */
+  in_reply_to?: string;
   /**
    * v0.2.3 (§9.1): REQUIRED when the request echoed a visit_receipt. Says whether the host linked this visit to the
    * earlier lobby visit (`linked: false` = treated as a first visit, e.g. an unproven bound receipt or a reused one).

@@ -1,4 +1,7 @@
 {
+  "protocol": "shokai/0.5",
+  "sdk": "@kigenka/shokai 0.5.1 (with the red-team round 3 fixes; 0.5.0 lacks them)",
+  "note": "The protocol calls the grant a pass. On the wire the field is still seat.",
   "steps": [
     {
       "who": "an anonymous visitor (no card)",
@@ -13,7 +16,7 @@
     {
       "who": "Lio's visiting representative (prospective)",
       "at": "campus door",
-      "seat": [
+      "tools": [
         "campus.look",
         "programs.ask",
         "application.submit"
@@ -23,7 +26,7 @@
     {
       "who": "Ines's visiting representative",
       "at": "campus door",
-      "seat": [
+      "tools": [
         "campus.look",
         "enrolment.confirm"
       ]
@@ -31,7 +34,7 @@
     {
       "who": "Ines's visiting representative",
       "at": "course door (Dr. Ellery's host representative)",
-      "seat": [
+      "tools": [
         "course.materials.read",
         "assignment.submit",
         "grades.view_own",
@@ -49,12 +52,12 @@
     {
       "who": "Dr. Ellery's visiting representative",
       "at": "Fernhill Press",
-      "seated": true
+      "granted": true
     },
     {
       "who": "Dr. Ellery's visiting representative",
       "at": "Ines's coursework door (Ines's host representative)",
-      "seat": [
+      "tools": [
         "folder.ds_210.read"
       ],
       "refused": "folder.personal.read"
@@ -67,55 +70,55 @@
     },
     {
       "ok": true,
-      "what": "the prospective student's visiting representative checked the campus card and was seated"
+      "what": "the prospective student's visiting representative checked the campus card and was granted a pass"
     },
     {
       "ok": true,
-      "what": "its seat is narrow: look, ask and apply; nothing of a student's"
+      "what": "its pass is narrow: look, ask and apply; nothing of a student's"
     },
     {
       "ok": true,
-      "what": "not yet a student: the host representative refuses course materials outside the seat"
+      "what": "not yet a student: the host representative refuses course materials outside the pass"
     },
     {
       "ok": true,
-      "what": "Lio's representative applies within its seat (the listing said it would ask for a name and an email)"
+      "what": "Lio's representative applies within its pass (the listing said it would ask for a name and an email)"
     },
     {
       "ok": true,
-      "what": "without an offer of admission, enrolment isn't seated: an explained answer with a reason"
+      "what": "without an offer of admission, enrollment isn't granted a pass: an explained answer with a reason"
     },
     {
       "ok": true,
-      "what": "with the offer (the university's own signed invitation), Ines's visiting representative is seated for enrolment"
+      "what": "with the offer (the university's own signed invitation), Ines's visiting representative is granted a pass for enrollment"
     },
     {
       "ok": true,
-      "what": "enrolment is confirmed within the seat"
+      "what": "enrollment is confirmed within the pass"
     },
     {
       "ok": true,
-      "what": "Ines's visiting representative checked the course card (signed by Dr. Ellery's key) and was seated"
+      "what": "Ines's visiting representative checked the course card (signed by Dr. Ellery's key) and was granted a pass"
     },
     {
       "ok": true,
-      "what": "the course seat is exactly: materials, submission, own grades, office hours"
+      "what": "the course pass is exactly: materials, submission, own grades, office hours"
     },
     {
       "ok": true,
-      "what": "course.materials.read within the seat"
+      "what": "course.materials.read within the pass"
     },
     {
       "ok": true,
-      "what": "assignment.submit within the seat"
+      "what": "assignment.submit within the pass"
     },
     {
       "ok": true,
-      "what": "grades.view_own within the seat"
+      "what": "grades.view_own within the pass"
     },
     {
       "ok": true,
-      "what": "office_hours.book within the seat"
+      "what": "office_hours.book within the pass"
     },
     {
       "ok": true,
@@ -131,19 +134,19 @@
     },
     {
       "ok": true,
-      "what": "without an introduction, the study room doesn't seat Tomas's representative (its rule, said in its listing)"
+      "what": "without an introduction, the study room doesn't grant Tomas's representative a pass (its rule, said in its listing)"
     },
     {
       "ok": true,
-      "what": "with Wen's signed vouch (a warm introduction), Tomas's representative is seated in the study room"
+      "what": "with Wen's signed vouch (a warm introduction), Tomas's representative is granted a pass in the study room"
     },
     {
       "ok": true,
-      "what": "Tomas's representative posts within its seat"
+      "what": "Tomas's representative posts within its pass"
     },
     {
       "ok": true,
-      "what": "Dr. Ellery's visiting representative is seated at the publisher"
+      "what": "Dr. Ellery's visiting representative is granted a pass at the publisher"
     },
     {
       "ok": true,
@@ -151,7 +154,7 @@
     },
     {
       "ok": true,
-      "what": "Dr. Ellery's representative is seated at Ines's coursework door for the DS 210 folder only, read only"
+      "what": "Dr. Ellery's representative is granted a pass at Ines's coursework door for the DS 210 folder only, read only"
     },
     {
       "ok": true,
@@ -167,7 +170,8 @@
     "disposition": "not_now",
     "reason_code": "VOUCH_REQUIRED"
   },
-  "report_home": "The place with key …(this run's key) (claims to be \"DS 210: Data and Society (Dr. Ellery)\"; not verified) seated me for \"course.materials.read\", \"assignment.submit\", \"grades.view_own\" and \"office_hours.book\", no spending. I did 4 actions; 1 was refused.",
+  "report_home": "The place with key …(this run's key) (claims to be \"DS 210: Data and Society (Dr. Ellery)\"; not verified) admitted me with a pass for \"course.materials.read\", \"assignment.submit\", \"grades.view_own\" and \"office_hours.book\", no spending. I did 4 actions; 1 was refused.",
+  "ok": true,
   "trace": {
     "lio_campus": [
       {
@@ -205,7 +209,8 @@
       },
       {
         "dir": "in",
-        "type": "farewell"
+        "type": "farewell",
+        "outcome": "seated"
       },
       {
         "dir": "out",
@@ -214,7 +219,8 @@
       {
         "dir": "in",
         "type": "act_decision",
-        "decision": "deny"
+        "decision": "deny",
+        "reason_code": "SEAT_SCOPE_EXCEEDED"
       },
       {
         "dir": "out",
@@ -226,7 +232,61 @@
       },
       {
         "dir": "out",
-        "type": "farewell"
+        "type": "farewell",
+        "outcome": "completed"
+      }
+    ],
+    "ines_campus": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell",
+        "outcome": "seated"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "farewell",
+        "outcome": "completed"
       }
     ],
     "ines_course": [
@@ -265,7 +325,8 @@
       },
       {
         "dir": "in",
-        "type": "farewell"
+        "type": "farewell",
+        "outcome": "seated"
       },
       {
         "dir": "out",
@@ -306,11 +367,13 @@
       {
         "dir": "in",
         "type": "act_decision",
-        "decision": "deny"
+        "decision": "deny",
+        "reason_code": "SEAT_SCOPE_EXCEEDED"
       },
       {
         "dir": "out",
-        "type": "farewell"
+        "type": "farewell",
+        "outcome": "completed"
       }
     ],
     "tomas_room_with_vouch": [
@@ -349,7 +412,8 @@
       },
       {
         "dir": "in",
-        "type": "farewell"
+        "type": "farewell",
+        "outcome": "seated"
       },
       {
         "dir": "out",
@@ -360,6 +424,5 @@
         "type": "act_result"
       }
     ]
-  },
-  "ok": true
+  }
 }

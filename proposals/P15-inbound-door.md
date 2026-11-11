@@ -17,7 +17,7 @@ Today brands reach people through ads, email, DMs and social posts. With agents 
 - it accepts at most what her door policy allows (for example one item);
 - it reports home.
 
-Misconduct is recorded against the brand and its introducer, so bad behaviour loses future welcomes.
+Misconduct is recorded against the brand and its introducer, so bad behavior loses future welcomes.
 
 **Two layers:**
 1. **Admission is deterministic.** As everywhere in Shōkai, the gate checks signed facts only: card, place proof, vouch, door policy, caps.
@@ -42,7 +42,7 @@ How a representative learns its owner's tastes, sorts invitations, or weighs fri
 |---|---|---|
 | A person's representative can be a host | Roles are by position, not kind: a gatekeeper is "the host's representative at the door". Pair places already make a person's representative the host side | §1, §8 |
 | A door any agent can find, with a lobby for unprepared ones | Place listing, lobby, entry, inbox; unprepared visitors get a `LobbyBriefing`, never silence | §4.0, §4.1a |
-| Brands prove who they are | Organisation principals use `did:web`, so domain control proves the brand. A lookalike can't sign for the real domain. Display names are never identity | §2.1, §3 (v0.2.8), P11 |
+| Brands prove who they are | Organization principals use `did:web`, so domain control proves the brand. A lookalike can't sign for the real domain. Display names are never identity | §2.1, §3 (v0.2.8), P11 |
 | Introductions with consequences | Signed vouches with scope, expiry and revocation logs. The vouch chain is recorded on every outcome. Penalties are `reduced` (90 days) or `suspended` (180 days) | §3, §4.12 |
 | Choosing whom to trust | `trusted_introducers` is policy and isn't disclosed to unverified visitors. Under v0.2.8, `"*"` gives no weight for money or account-creating actions | §3 |
 | Judgment without letting prose decide | The gate ignores prose (§4.7). `considering` takes a pitch "inside", where it's weighed and the gatekeeper never does. Silence means no | §4.7, §4.11 |
@@ -218,7 +218,7 @@ The editor's warning (2026-10-26): tricksters are already attacking agents with 
 
 **8.1 The executive secretary plus butler.** The editor's picture: a representative that's your ultimate executive secretary and your butler, combined. It learns Kiran's tastes through ongoing conversation and everything it does for her, so it can sort what arrives at her door. Sunday's report home: *"You got three invitations this week. Maison Ardoise's travel line is for you, given Kyoto in spring. The other two aren't: a gym chain and a watch brand you've said you don't wear."* Her detailed tastes stay with her representative; brands only ever saw the door's coarse categories and an outcome code. That's the answer to the battle for attention: not more filters for Kiran to manage, but a representative who knows her and protects her time.
 
-**8.2 From happy customer to friend's introduction.** Kiran claimed the scarf, later bought the coat, and loves it. She tells her representative: "Introduce Maison Ardoise to Noor and Lior." Her representative signs the introduction with `introducer_interest: "none"`: a genuine recommendation. Noor's representative weighs it highly: *"Kiran recommends Maison Ardoise's travel coat; she gets nothing for it."* If Kiran had joined the brand's affiliate programme, the same introduction would carry `"affiliate"`, and Noor's representative might treat it as a friendly ad: *"Kiran recommends this; she earns a commission."*
+**8.2 From happy customer to friend's introduction.** Kiran claimed the scarf, later bought the coat, and loves it. She tells her representative: "Introduce Maison Ardoise to Noor and Lior." Her representative signs the introduction with `introducer_interest: "none"`: a genuine recommendation. Noor's representative weighs it highly: *"Kiran recommends Maison Ardoise's travel coat; she gets nothing for it."* If Kiran had joined the brand's affiliate program, the same introduction would carry `"affiliate"`, and Noor's representative might treat it as a friendly ad: *"Kiran recommends this; she earns a commission."*
 
 **8.3 Friends whose picks prove right.** Over months, Noor's representative notices privately that Kiran's introductions usually suit Noor (kept, liked, bought, not regretted), while another friend's mostly don't. It starts giving Kiran's introductions a little more weight: *"Kiran's picks usually suit you."* No one else sees this, and there's no public leaderboard of friends. If Kiran ever introduces a brand that misbehaves at Noor's door, her standing there drops, as for any introducer.
 

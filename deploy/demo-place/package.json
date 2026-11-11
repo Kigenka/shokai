@@ -7,5 +7,5 @@
   "type": "module",
   "engines": { "node": ">=22" },
   "scripts": { "start": "node server.mjs", "test": "node test.mjs" },
-  "dependencies": { "@kigenka/shokai": "0.5.0" }
+  "dependencies": { "@kigenka/shokai": "0.5.1" }
 }

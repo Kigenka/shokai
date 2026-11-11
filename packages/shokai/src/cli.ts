@@ -57,7 +57,7 @@ async function visitAndPrint(base: string, name: string | undefined, t0: number,
     const extra = p.type === "invitation_response" ? ` ${p.decision === "grant" ? green(p.decision) : red(p.decision)}` : (p.type === "greeting" || p.type === "farewell") && p.courtesy?.text ? dim(` "${p.courtesy.text}"`) : "";
     line(who, `${p.type}${extra}`);
   }
-  if (!visit.seated) { line("door", red("not seated: " + (visit.response?.courtesy?.text ?? visit.response?.reason_code ?? visit.decision ?? "no answer"))); process.exitCode = 1; return; }
+  if (!visit.seated) { line("door", red("not admitted: " + (visit.response?.courtesy?.text ?? visit.response?.reason_code ?? visit.decision ?? "no answer"))); process.exitCode = 1; return; }
   line("pass", `${green("admitted")}; tools in the pass (wire: seat): ${visit.seat!.tool_allowlist.join(", ")}`);
   await pause(250);
 

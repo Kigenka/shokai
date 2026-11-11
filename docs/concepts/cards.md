@@ -1,10 +1,10 @@
 # Shōkai cards
 
-The **card** (*meishi*, the Japanese business card) is how a representative introduces itself: who it's here for, signed by that person or organisation. A `RepresentativeCard` contains:
+The **card** (*meishi*, the Japanese business card) is how a representative introduces itself: who it's here for, signed by that person or organization. A `RepresentativeCard` contains:
 
 - the **principal** (who it represents) and its **role** ("Representative of Kiran Vale", "Account manager, Pacific freight team")
 - its **standing**, as the principal asserts it (the host representative's own record is what counts)
-- its **mandate scope**: the outer bound of purposes and actions any mandate under it may authorise
+- its **mandate scope**: the outer bound of purposes and actions any mandate under it may authorize
 - its **locales** and etiquette preferences
 - the representative's own key, and `issued_at` / `expires_at`
 - for a person, an `owner_binding` naming the owner's passkey and its relying party
@@ -28,7 +28,7 @@ It is signed by the principal.
 ```
 *Abridged and illustrative, v0.5.0 (`shokai/0.5`; a v0.3.0 Shōkai card says `shokai/0.3` and has no `kind`): the envelope, signatures and some required members are omitted.*
 
-A Shōkai card is both a helpful metaphor — a signed introduction you can picture — and a signed, typed document a door can verify. Developers who want to invent their own card types should treat 0.5's family as the pattern and read [Cards as a blueprint](./card-classes.md). A conforming door verifies the three specified classes: visitor, host and introduction. An unknown kind is not honoured; a new class is design work until it is specified, tested and given a conformance class.
+A Shōkai card is both a helpful metaphor — a signed business card you can picture — and a signed, typed document a door can verify. Developers who want to invent their own card types should treat 0.5's family as the pattern and read [Cards as a blueprint](./card-classes.md). A conforming door verifies the three specified classes: visitor, host and introduction. An unknown kind is not honoured; a new class is design work until it is specified, tested and given a conformance class.
 
 ## The host card
 

@@ -120,6 +120,11 @@ export type HostOpts = {
   fetched?: FetchCache;
   /** This place's own entry address (§11.1), used as reply_to / gathering entry. */
   entryUrl?: string;
+  /**
+   * v0.5.1 (§9.3, C288): the place's contact or appeal URL, named in every binding `never` reply. Unset: the place's inbox address,
+   * else its entry address (the address the place is reached at).
+   */
+  appealUrl?: string;
   /** Appendix B: this place runs the conformance test profile (x-test-profile: shokai-b/0.3): loopback URLs, test owner, test gathering. */
   testProfile?: boolean;
   /** Fable review (§2.1, THREAT-MODEL): owner rp_ids this door accepts. Unset: any rp_id except RFC 2606 reserved names, which only the test profile accepts. */
@@ -357,6 +362,23 @@ export class Host {
   isNever(id: string | undefined, now = this.clock()): boolean { const u = id ? this.never.get(canonDid(id)) : undefined; return !!u && Date.parse(now) < Date.parse(u); }
   /** RT-H1: keyed on the canonical DID, so a non-canonical did:jwk of the same key (§2.1, C115) can't step around a `never`. */
   bindNever(id: string, now = this.clock()) { this.never.set(canonDid(id), addDays(now, NEVER_DAYS)); }
+  /** v0.5.1 (§9.3, C288): where to appeal a `never` here: the configured appeal URL, else the inbox, else the entry address. */
+  appealPath(): S.NeverAppeal | undefined {
+    const url = this.opts.appealUrl ?? this.opts.inboxUrl ?? this.opts.entryUrl ?? this.cfg.card?.payload.place?.entry;
+    return url ? { url, place: this.cfg.principal_id } : undefined;
+  }
+  /**
+   * v0.5.1 (§9.3, C288): the retry of a binding `never`: when it lifts (the latest active binding among `ids`; at most NEVER_DAYS
+   * from now) and the appeal path. Every `never` that binds a key or principal carries both; only the nonce-reuse `never` (binds nothing) doesn't.
+   */
+  neverRetry(ids: (string | undefined)[], now = this.clock()): Extract<S.Retry, { kind: "never" }> {
+    const cap = addDays(now, NEVER_DAYS);
+    const ends = ids.map((id) => (id ? this.never.get(canonDid(id)) : undefined)).filter((u): u is string => !!u && Date.parse(u) > Date.parse(now));
+    const latest = ends.sort((a, b) => Date.parse(b) - Date.parse(a))[0];
+    const until = latest && Date.parse(latest) <= Date.parse(cap) ? latest : cap;
+    const appeal = this.appealPath();
+    return { kind: "never", until, ...(appeal ? { appeal } : {}) };
+  }
   /** §9.3 (v0.2.3): notices are signed by the place's principal key; a person's place (no principal key here) signs with its representative key. */
   signAsPrincipal<T>(p: T): S.Signed<T> {
     if (this.principal) return makeSigned(p, this.principal, this.clock());
@@ -1070,7 +1092,7 @@ export class Host {
       this.signals.push({ at: now, principal: card.principal?.principal_id ?? "?", kind: "impersonation", encounter_id: e.id }); // no notice to the card's owner (§9.3)
       this.bindNever(c.from, now);
       this.note(`key binding failed for ${c.msg_id}: deny never (presenter bound)`);
-      return deny("never", "adversarial", { kind: "never" }, "forged");
+      return deny("never", "adversarial", this.neverRetry([c.from], now), "forged");
     }
     // §2.4 (v0.2.3): a missing or malformed proof is a setup failure → not_now / CREDENTIAL_REQUIRED, readiness possession_proof. Never `never`.
     if (!this.verifier.proofShape(c.possession_proof, card)) {
@@ -1125,7 +1147,7 @@ export class Host {
       ctxKey = "ctx_possession"; readinessCode = "possession_proof";
       return deny("not_now", e.register, { kind: "with_credential", credentials: ["possession_proof"] }, "proof_failed");
     }
-    if (this.isNever(card.principal.principal_id, now) || this.isNever(card.representative_id, now)) return deny("never", "adversarial", { kind: "never" }, "never");
+    if (this.isNever(card.principal.principal_id, now) || this.isNever(card.representative_id, now)) return deny("never", "adversarial", this.neverRetry([card.principal.principal_id, card.representative_id], now), "never");
     // v0.4.0 (§2.3, §2.4 step 5, C202): a Shōkai host card shown as a visitor's credential is the wrong kind: a setup failure, fixable
     // in one step, with a fixed sentence. not_now / CREDENTIAL_REQUIRED, readiness card_kind, retry with a signed card (a new
     // visit). Never `never`, no notice, nothing recorded against anyone.
@@ -1811,6 +1833,8 @@ export class Host {
     if (gr.decision === "considering") { base.consideration_ref = gr.consideration_ref; base.routed_to = gr.routed_to; base.response_by = gr.response_by; }
     if (gr.decision === "deny") {
       base.disposition = gr.disposition; base.retry = gr.retry;
+      // v0.5.1 (§9.3, C288): a gate `never` (counted probing, or a principal or key already bound here) states when it lifts and the appeal path.
+      if (gr.disposition === "never" && gr.retry.kind === "never" && !gr.retry.until) base.retry = this.neverRetry([e.card?.principal?.principal_id, e.card?.representative_id], now);
       if (gr.ctx && gr.disposition !== "never") base.context_statement = { text: t(locale, ({ card: "ctx_card", paused: "ctx_paused", evidence: "ctx_evidence", mandate: "ctx_mandate", consent: "ctx_consent" } as const)[gr.ctx]), locale };
       else if (gr.disposition !== "never" && gr.reason_code === "VOUCH_REQUIRED" && gr.retry.kind === "after") base.context_statement = { text: t(locale, "ctx_vouch_log"), locale };
       else if (gr.disposition !== "never" && gr.reason_code === "PURPOSE_NOT_SERVED") base.context_statement = { text: t(locale, "ctx_purpose"), locale };
@@ -2042,7 +2066,7 @@ export class Host {
       if (ref && st.byRef[ref] !== undefined && refSum > cap.units) {
         st.unseated = true; this.bindNever(st.rep, now); e.neverClosed = true;
         this.issueNotice(e, [{ code: "seat_overreach", severity: "severe", observed_at: now, evidence_digest: digestOf({ seat: a.seat_id, ref, sum: refSum.toString() }) }], false, st);
-        return [...refuse("never", undefined, { kind: "never" }), { ...this.hdr(e, "unseat"), seat_id: a.seat_id, reason: "seat_overreach" }];
+        return [...refuse("never", undefined, this.neverRetry([st.rep, st.principal], now)), { ...this.hdr(e, "unseat"), seat_id: a.seat_id, reason: "seat_overreach" }];
       }
       const mcap = mu ? parseMoney(ML.max_amount_scope === "per_operation" ? (sessionCapOf(ML) ?? ML.max_amount) : ML.max_amount) : null;
       const seatFails = (perOp && amt.units > cap.units) || st.spent + amt.units > sess.units;
@@ -2114,7 +2138,7 @@ export class Host {
     if (st.allow) return null;
     // Review 5 R5-02: at most one over-limit hold open per seat, so `current` and `proposed` are the true totals the owner approves:
     // a newer over-limit act ends the older hold (it lapses; its raise can no longer release it), e.g. after the owner declined it.
-    for (const h of [...this.holds.values()]) if (!h.done && h.over_limit && h.seat_id === st.seat.seat_id) this.lapse(h, "ended by a newer over-limit hold in this seat (one at a time)");
+    for (const h of [...this.holds.values()]) if (!h.done && h.over_limit && h.seat_id === st.seat.seat_id) this.lapse(h, "ended by a newer over-limit hold in this pass (one at a time)");
     if (!st.mandate || !st.mandateDigest || !mu || perOp || L.session_max_amount || ML.max_amount_scope === "per_operation" || ML.session_max_amount) return null;
     if (amt.currency !== cap.currency || (mcap && mcap.currency !== amt.currency)) return null;
     if (a.arguments?.payment_ref !== undefined && st.byRef[String(a.arguments.payment_ref)] !== undefined) return null;   // never for parts of one payment (structuring)
@@ -2240,7 +2264,7 @@ export class Host {
     const st = this.seats.get(seatId); if (!st || st.unseated) return false;
     st.unseated = true; this.allowanceLedger.forgetSeat(seatId); const e = this.encounters.get(st.encounter_id);
     // §7.1: its open holds lapse with nothing charged (a later confirmation gets HOLD_LAPSED).
-    for (const h of this.holds.values()) if (h.seat_id === seatId && !h.done) this.lapse(h, "the host ended the seat");
+    for (const h of this.holds.values()) if (h.seat_id === seatId && !h.done) this.lapse(h, "the host ended the pass");
     if (e && !e.seatEnded) { e.closed = true; e.seatEnded = true; this.outbox.push({ to: st.rep, held: true, message: this.wrap(this.farewell(e, "completed")) }); }
     this.note(`endSeat ${seatId}`); return true;
   }
@@ -2381,7 +2405,7 @@ export class Host {
     const seat = [...this.seats.values()].find((s) => s.encounter_id === encounter_id);
     const decision = (last?.decision ?? "deny") as "grant" | "deny" | "conditional" | "considering";
     const rendered = cons ? `Taken inside: a decision is needed by ${renderDate(cons.response_by, ownerLocale, timeZone)}; with no reply it is declined.`
-      : decision === "grant" ? `Seated for ${seat?.seat.tool_allowlist.join(", ")}${seat?.seat.limits?.max_amount ? ` up to ${seat.seat.limits.max_amount.value} ${seat.seat.limits.max_amount.currency}` : ", no spending"}.`
+      : decision === "grant" ? `Admitted with a pass for ${seat?.seat.tool_allowlist.join(", ")}${seat?.seat.limits?.max_amount ? ` up to ${seat.seat.limits.max_amount.value} ${seat.seat.limits.max_amount.currency}` : ", no spending"}.`
       : `Declined (${last?.disposition ?? "not_now"}).`;
     const offers = this.offersDeclined.filter((o) => o.encounter_id === encounter_id);
     return { report_id: "vrep-" + short(encounter_id), representative_id: this.cfg.rep_id, host: { display_name: this.cfg.display_name, principal_id: this.cfg.principal_id },

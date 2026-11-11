@@ -1,0 +1,113 @@
+{
+  "protocol": "shokai/0.5",
+  "sdk": "@kigenka/shokai 0.5.1 (with the red-team round 3 fixes; 0.5.0 lacks them)",
+  "note": "The protocol calls the grant a pass. On the wire the field is still seat.",
+  "steps": [
+    {
+      "who": "Quillfern's visiting representative",
+      "at": "Brightwick Outfitters",
+      "granted": true,
+      "tools": [
+        "order.place"
+      ],
+      "acts": [
+        "order.place 40.00 USD: ok",
+        "order.place 80.00 USD: refused"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "ok": true,
+      "what": "Quillfern's visiting representative was granted a pass for order.place, up to 100.00 USD"
+    },
+    {
+      "ok": true,
+      "what": "the pass is only order.place, never wider than the mandate"
+    },
+    {
+      "ok": true,
+      "what": "the first order, 40.00 USD, goes through"
+    },
+    {
+      "ok": true,
+      "what": "the second order, 80.00 USD, is refused by the door: it would go past the 100.00 USD limit"
+    },
+    {
+      "ok": true,
+      "what": "the refusal names a reason (on the wire the code is still a seat-scope code)"
+    }
+  ],
+  "ok": true,
+  "place": "Brightwick Outfitters (fictional)",
+  "trace": {
+    "visit": [
+      {
+        "dir": "out",
+        "type": "greeting"
+      },
+      {
+        "dir": "in",
+        "type": "greeting"
+      },
+      {
+        "dir": "out",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_presentation"
+      },
+      {
+        "dir": "in",
+        "type": "card_receipt"
+      },
+      {
+        "dir": "out",
+        "type": "introduction"
+      },
+      {
+        "dir": "out",
+        "type": "invitation_request"
+      },
+      {
+        "dir": "in",
+        "type": "invitation_response",
+        "decision": "grant"
+      },
+      {
+        "dir": "in",
+        "type": "farewell",
+        "outcome": "seated"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_result"
+      },
+      {
+        "dir": "out",
+        "type": "act"
+      },
+      {
+        "dir": "in",
+        "type": "act_decision",
+        "decision": "deny",
+        "reason_code": "SEAT_SCOPE_EXCEEDED"
+      },
+      {
+        "dir": "out",
+        "type": "farewell",
+        "outcome": "completed"
+      }
+    ]
+  },
+  "refusal": {
+    "type": "act_decision",
+    "decision": "deny",
+    "reason_code": "SEAT_SCOPE_EXCEEDED"
+  }
+}

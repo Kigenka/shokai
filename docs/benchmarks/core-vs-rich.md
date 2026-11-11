@@ -6,7 +6,7 @@ Machine-readable twin: [`core-vs-rich.results.json`](./core-vs-rich.results.json
 
 ## Exact commands
 
-From the v0.5.0 source tree (public npm is still 0.3.0 — do not use bare `npx @kigenka/shokai` for this):
+From the v0.5.0 source tree (this is a source-tree bench; do not use bare `npx @kigenka/shokai` for it. If you want the published package, pin `@kigenka/shokai@0.5.0`):
 
 ```bash
 cd packages/shokai

@@ -1,0 +1,12 @@
+sequenceDiagram
+  participant R as Aya's agent<br/>representative
+  participant D as Kettle and Leaf
+  R->>D: Reads the listing
+  R->>D: Greeting, visitor card,<br/>audience-bound proof
+  D->>R: Host card and its proof
+  Note over R,D: Each proof is bound<br/>to this encounter
+  D->>R: Welcome
+  R->>D: Purpose and signed mandate
+  D->>R: grant, pass (wire: seat)
+  R->>D: farewell
+  Note over D: Local record.<br/>No global score.

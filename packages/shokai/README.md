@@ -1,16 +1,16 @@
 # @kigenka/shokai
 
-The reference TypeScript SDK for **Shōkai, the agent introduction protocol** (v0.5.0, wire tag `shokai/0.5`): signed Shōkai cards, mandates, vouches and envelopes; doors and representatives; visit reports; a gate that puts a Shōkai door in front of any MCP server; and the `shokai-conformance` runner.
+The reference TypeScript SDK for **Shōkai, the agent introduction protocol** (package 0.5.1; specification v0.5.0, wire tag `shokai/0.5`): signed Shōkai cards, mandates, vouches and envelopes; doors and representatives; visit reports; a gate that puts a Shōkai door in front of any MCP server; and the `shokai-conformance` runner.
 
-> Install: `npm install @kigenka/shokai@0.5.0`. The quickstart (`spec/QUICKSTART.md` in this package) walks through it.
+> Install: `npm install @kigenka/shokai@0.5.1`. The quickstart (`spec/QUICKSTART.md` in this package) walks through it.
 >
 > **The specification ships in this package**, in `spec/`: `SPEC.md`, the types (`protocol-shapes.ts`), the conformance checklist and golden traces (`conformance/golden-traces.md`), the test vectors, the extensions, the threat model, the changelog and the patent and trademark policies. **`spec/docs/SPEC-DETAIL.md` is the canonical normative text** (every MUST and check id), and section numbers such as §3.1 refer to it. `spec/SPEC.md` is the 15-minute short core of the same rules; where they differ, SPEC-DETAIL wins.
 
 ## See a visit first
 
 ```bash
-npx @kigenka/shokai@0.5.0 demo
-                                # npx --package=./kigenka-shokai-0.5.0.tgz shokai demo
+npx @kigenka/shokai@0.5.1 demo
+                                # npx --package=./kigenka-shokai-0.5.1.tgz shokai demo
 ```
 
 A door, with its host representative, and a visiting representative on 127.0.0.1, printed as the visit happens: the ritual, a pass, an order within a 10.00 USD mandate, an order past it refused (by the representative, and by the door when sent anyway), and the report home. A couple of seconds for the visit itself (the first `npx` run also downloads the package); fictional actors, keys made for the run, nothing leaves the machine.
@@ -118,7 +118,7 @@ A mandate's limits are for the whole errand, across visits (§5.1). The represen
 ### Before sending, refusals, and what comes home
 
 - **Checked before sending.** Before each act the representative checks the pass's `tool_allowlist` (`visit.checkSeatLocally`, default on) and what remains of the mandate (`visit.checkMandateLocally`, default on). An act that doesn't fit isn't sent: `visit.act()` returns `{ refused_by: "representative", by: "seat" | "mandate", why }`, and through `shokaiFetch` the MCP call fails with `not sent: …`. Turn either off only to test a door's own enforcement.
-- **Each refusal says what it is.** Every refused `tools/call` is JSON-RPC `-32012` (`SHOKAI_REFUSED`, also exported as `SHOKAI_NOT_SEATED`). The `message` is specific (no seat: "get a seat first"; a tool outside the seat, with what it allows; a spending act with no amount; an amount in another currency; past what's left; an act that doesn't fit a live visit), and `data.shokai` carries `refused_by` (`representative`, `door` or `gate`), `reason_code` and, from the door, its `act_decision`. `actRefusalMessage(tool, decision, seat, args)` gives the same wording for your own gate.
+- **Each refusal says what it is.** Every refused `tools/call` is JSON-RPC `-32012` (`SHOKAI_REFUSED`, also exported as `SHOKAI_NOT_SEATED`). The `message` is specific (no pass: "get a pass first"; a tool outside the pass, with what it allows; a spending act with no amount; an amount in another currency; past what's left; an act that doesn't fit a live visit), and `data.shokai` carries `refused_by` (`representative`, `door` or `gate`), `reason_code` and, from the door, its `act_decision`. `actRefusalMessage(tool, decision, seat, args)` gives the same wording for your own gate.
 - **What comes home.** A signed object a tool returns (a visit stamp, a receipt) is kept in `visit.broughtBack`, verified against the listing's `principal_id`, and reported as `report().brought_back` with its envelope (`report(locale, { broughtBack: "reference" })` for only the digest); the readable report says what was brought back and whether it verified (§8.2, C178). `visit.keep(envelope)` adds one by hand; `visit.keepSigned = false` turns it off.
 
 ### Finding a place

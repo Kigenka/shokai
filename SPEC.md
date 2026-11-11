@@ -2,9 +2,11 @@
 <!-- SPDX-FileCopyrightText: 2026 Yu Sung Yeh -->
 # Shōkai, the agent introduction protocol
 
-**Specification v0.5.0 (core).** Published. Status: not 1.0 (changes are listed in the CHANGELOG). Editor: Yu Sung Yeh.
+**Specification v0.5.0 (core).** Published. Status: not 1.0 (changes are listed in the CHANGELOG). Editor: YSY.
 
-**How to read this.** This file is the short core: a staged human read of what Shōkai is and how a visit works (~15 minutes). The full normative text — every MUST, every check id, every edge case — lives in [`docs/SPEC-DETAIL.md`](./docs/SPEC-DETAIL.md). **Which document wins:** the tagged release in the GitHub repository (`github.com/Kigenka/shokai`, tag `v0.5.0`) is canonical, and within it `docs/SPEC-DETAIL.md` is the normative text; the site and the npm package mirror it, and § numbers in every Shōkai document refer to it. Agents and implementers use the detail; people start here. Requirement ids (`C…`, `SC-…`, `G…`, `D…`) are stable across both. Wire tag: `shokai/0.5` (places still accept `shokai/0.3` for 90 days after release). History: [CHANGELOG.md](./CHANGELOG.md). Extensions: [extensions/README.md](./extensions/README.md). Shapes: [schema.json](./schema/v0.5.0/schema.json).
+*Package 0.5.1 (11 November 2026) amends this text in place without changing its version on the wire:* the wire tag stays `shokai/0.5`, `spec_ref.version` stays `"0.5.0"`, and the v0.5.0 JSON Schema file is unchanged. It adds two optional members to a binding `never` (when it lifts and where to appeal; SPEC-DETAIL §9.3, C288) and one MUST-level rule: a place must not ask, in its context questions, for a password, a recovery phrase or seed, or a card number (SPEC-DETAIL §6.12). The two members are in a new schema file, [schema/v0.5.1/schema.json](./schema/v0.5.1/schema.json), with its own `$id`. A validator that uses the 0.5.0 schema rejects a `never` that carries `until` and `appeal`; to accept them, validate with the 0.5.1 schema file. The CHANGELOG lists what a 0.5.0 peer sees differently.
+
+**How to read this.** In plain words the grant a place gives is a **pass**; the published wire field and the SPEC field remain `seat`. This file is the short core: a staged human read of what Shōkai is and how a visit works (~15 minutes). The full normative text — every MUST, every check id, every edge case — lives in [`docs/SPEC-DETAIL.md`](./docs/SPEC-DETAIL.md). **Which document wins:** the tagged release in the GitHub repository (`github.com/Kigenka/shokai`, tag `v0.5.0`) is canonical, and within it `docs/SPEC-DETAIL.md` is the normative text; the site and the npm package mirror it, and § numbers in every Shōkai document refer to it. Agents and implementers use the detail; people start here. Requirement ids (`C…`, `SC-…`, `G…`, `D…`) are stable across both. Wire tag: `shokai/0.5` (places still accept `shokai/0.3` for 90 days after release). History: [CHANGELOG.md](./CHANGELOG.md). Extensions: [extensions/README.md](./extensions/README.md). Shapes: [schema.json](./schema/v0.5.0/schema.json).
 
 *© 2026 Yu Sung Yeh. Licensed under the [Apache License 2.0](./LICENSE). Patent commitment (draft): [PATENTS.md](./PATENTS.md). Names and logo: [TRADEMARKS.md](./TRADEMARKS.md).*
 
@@ -27,10 +29,10 @@ The core story in five verbs: **arrive → introduce → ask → answer → act 
 | Introduce | Card + optional vouch; `vouch: null` is a valid step every place accepts | §4 |
 | Ask | Signed request inside a mandate (or allowance) | §5 |
 | Answer | Machine-readable decision; lobby when not ready | §6 |
-| Act | Seats, acts, spending holds, over-limit raises | §7 |
+| Act | Passes and acts (wire field `seat`), spending holds, over-limit raises | §7 |
 | Report | Owner consent where needed; visit report home | §8 |
 | Conduct | Misconduct, records, consequences | §9 |
-| Bindings | HTTP ritual; MCP after seating | §11 |
+| Bindings | HTTP ritual; MCP after the pass | §11 |
 
 ---
 
@@ -251,7 +253,7 @@ A claim names the class plus any extensions. Appendix F in the detail document m
 | Need | Go to |
 |---|---|
 | Every MUST / check / edge case | [docs/SPEC-DETAIL.md](./docs/SPEC-DETAIL.md) |
-| Message shapes | [schema/v0.5.0/schema.json](./schema/v0.5.0/schema.json), [protocol-shapes.ts](./protocol-shapes.ts) |
+| Message shapes | [schema/v0.5.1/schema.json](./schema/v0.5.1/schema.json) (package 0.5.1; the released [v0.5.0 file](./schema/v0.5.0/schema.json) is unchanged), [protocol-shapes.ts](./protocol-shapes.ts) |
 | Golden traces & checklist | [conformance/golden-traces.md](./conformance/golden-traces.md) |
 | Passkey signing UX | [SIGNING.md](./SIGNING.md) |
 | Optional features | [extensions/README.md](./extensions/README.md) |

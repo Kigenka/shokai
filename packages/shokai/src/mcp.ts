@@ -34,26 +34,26 @@ export const SHOKAI_REFUSED = SHOKAI_NOT_SEATED;
 const fmtMoney = (m: any) => (m && typeof m === "object" && typeof m.value === "string" && typeof m.currency === "string" ? `${m.value} ${m.currency}` : null);
 /**
  * A visitor-facing sentence for a door's act_decision (§7.2), from its fields and the seat the act named. Each reason gets its
- * own wording; "get a seat first" is only for an act with no live seat.
+ * own wording; "get a pass first" is only for an act with no live pass (wire: seat).
  */
 export function actRefusalMessage(tool: string, decision: any, seat: { tool_allowlist?: string[]; limits?: any; expires_at?: string } | undefined, args: Record<string, unknown> = {}): string {
   const code = decision?.reason_code; const disp = decision?.disposition; const amt = fmtMoney(args.amount); const cap = seat?.limits?.max_amount;
   if (disp === "never") return `${tool}: the door won't take acts from this representative again (never)`;
-  if (!seat) return `${tool}: no live seat for this act (it ended, was never granted, or isn't yours): get a seat first`;
+  if (!seat) return `${tool}: no live pass for this act (it ended, was never granted, or isn't yours): get a pass first`;
   if (code === "REQUEST_INCOMPLETE") return args.amount === undefined
     ? `${tool} spends: state what it spends in arguments.amount as {value, currency}, e.g. {value: "6.00", currency: "${cap?.currency ?? "USD"}"}`
     : `${tool}: arguments.amount is not valid Money: value a plain decimal string, currency an ISO 4217 code`;
   if (code === "SEAT_SCOPE_EXCEEDED") {
     const allowed = seat.tool_allowlist ?? [];
-    if (!allowed.includes(tool)) return `${tool} is not in your seat (it allows ${allowed.length ? allowed.join(", ") : "no tools"})`;
-    if (disp === "not_a_fit") return `${tool}: this seat isn't live or isn't yours: get a seat first`;
-    if (seat.expires_at && Date.parse(seat.expires_at) < Date.now()) return `${tool}: your seat has expired; get a new seat`;
-    if (!cap && (amt || seat.limits?.max_operations === undefined)) return `${tool}: this seat allows no spending (no max_amount); a seat that spends needs a mandate with max_amount`;
-    if (amt && cap && (args.amount as any).currency !== cap.currency) return `${tool}: ${amt} is not in your seat's currency (${cap.currency}); amounts count against the cap only in its currency`;
-    if (amt) return `${tool}: ${amt} would pass what is left of your seat's or mandate's limit (cap ${fmtMoney(cap)}); more needs a new mandate`;
-    return `${tool}: no operations left under your seat's or mandate's limits; more needs a new mandate`;
+    if (!allowed.includes(tool)) return `${tool} is not in your pass (it allows ${allowed.length ? allowed.join(", ") : "no tools"})`;
+    if (disp === "not_a_fit") return `${tool}: this pass isn't live or isn't yours: get a pass first`;
+    if (seat.expires_at && Date.parse(seat.expires_at) < Date.now()) return `${tool}: your pass has expired; get a new pass`;
+    if (!cap && (amt || seat.limits?.max_operations === undefined)) return `${tool}: this pass allows no spending (no max_amount); a pass that spends needs a mandate with max_amount`;
+    if (amt && cap && (args.amount as any).currency !== cap.currency) return `${tool}: ${amt} is not in your pass's currency (${cap.currency}); amounts count against the cap only in its currency`;
+    if (amt) return `${tool}: ${amt} would pass what is left of your pass's or mandate's limit (cap ${fmtMoney(cap)}); more needs a new mandate`;
+    return `${tool}: no operations left under your pass's or mandate's limits; more needs a new mandate`;
   }
-  if (code === "RITUAL_ORDER") return `${tool}: this act doesn't fit a live visit of yours (RITUAL_ORDER): start again from a fresh greeting and get a seat`;
+  if (code === "RITUAL_ORDER") return `${tool}: this act doesn't fit a live visit of yours (RITUAL_ORDER): start again from a fresh greeting and get a pass`;
   return `${tool}: the door refused this act${code ? ` (${code})` : ""}`;
 }
 const one = (h: string | string[] | undefined) => (Array.isArray(h) ? h[0] : h);
@@ -84,13 +84,13 @@ export class ShokaiGate implements GateAdapter {
   constructor(readonly door: Door, readonly opts: GateOptions = {}) {}
   private refuse(message: string, extra: Record<string, unknown> = {}): GateVerdict {
     return { allow: false, error: { code: SHOKAI_NOT_SEATED, message, data: { shokai: { refused_by: "gate", decision: "deny", disposition: "not_now", door: this.door.base + "/places", entry: this.door.entry,
-      how: "Visit the door (greeting, signed card, introduction, invitation_request within a mandate your owner signed); once seated, send each tools/call with a signed act in the Shokai-Act header.", ...extra } } } };
+      how: "Visit the door (greeting, signed card, introduction, invitation_request within a mandate your owner signed); once admitted with a pass, send each tools/call with a signed act in the Shokai-Act header.", ...extra } } } };
   }
   check(req: JsonRpcRequest, headers: Headers): GateVerdict {
     if ((this.opts.open ?? DEFAULT_OPEN)(req.method)) return { allow: true, seatId: one(headers[SEAT_HEADER]) };
-    if (req.method !== "tools/call") return this.refuse(`${req.method} needs a seat at this door`, { reason_code: "CREDENTIAL_REQUIRED" });
+    if (req.method !== "tools/call") return this.refuse(`${req.method} needs a pass at this door`, { reason_code: "CREDENTIAL_REQUIRED" });
     const raw = one(headers[ACT_HEADER]);
-    if (!raw) return this.refuse("This MCP server is behind a Shōkai door: get a seat first, then send each tools/call with a signed act (Shokai-Act header)", { reason_code: "CREDENTIAL_REQUIRED", readiness: ["card", "owner_binding", "purpose"] });
+    if (!raw) return this.refuse("This MCP server is behind a Shōkai door: get a pass first, then send each tools/call with a signed act (Shokai-Act header)", { reason_code: "CREDENTIAL_REQUIRED", readiness: ["card", "owner_binding", "purpose"] });
     let act: any;
     { let text: string; try { text = new TextDecoder("utf-8", { fatal: true }).decode(Buffer.from(raw, "base64url")); } catch { return this.refuse("Shokai-Act is not base64url UTF-8", { reason_code: "REQUEST_INCOMPLETE" }); }
       const sj = parseStrictJson(text); if (!sj.ok) return this.refuse(`Shokai-Act is not base64url I-JSON with one reading (${sj.why})`, { reason_code: "REQUEST_INCOMPLETE" }); act = sj.value; }

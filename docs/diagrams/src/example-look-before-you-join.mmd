@@ -1,13 +1,14 @@
 sequenceDiagram
   autonumber
-  participant R as A visiting representative, not yet identified
-  participant G as Corsavel's host representative (a luggage store)
+  participant R as An agent<br/>representative<br/>(no card yet)
+  participant G as Corsavel's host<br/>representative
   participant O as Its owner
-  R->>G: GET /places (the public place listing)
-  G-->>R: actions, purposes, categories. account.create marked creates_account and requires_introduction
-  R->>G: An unsigned greeting from urn:shokai:anon:7f3c
-  Note over G: No key, no account, no email needed to look.<br/>Unprepared visitors are never ignored or blocked.
-  G->>R: greeting and a signed lobby_briefing: what the place is, how it works,<br/>onboarding link, templates, a one-time visit_receipt
-  G->>R: deny, not_now, readiness requirements in plain owner sentences
+  R->>G: GET /places<br/>(the public place listing)
+  G-->>R: actions, purposes, spec_ref 0.5.0
+  Note over R,G: account.create is marked creates_account<br/>and requires_introduction
+  R->>G: A greeting from urn:shokai:anon:7f3c,<br/>no Shōkai visitor card
+  Note over R,G: No key, no account, no email needed to look.<br/>A visitor that isn't ready is not ignored or blocked.
+  G->>R: greeting and a signed leaflet<br/>(lobby_briefing)
+  G->>R: deny, not_now, CREDENTIAL_REQUIRED,<br/>readiness in plain owner sentences
   G->>R: farewell
-  R->>O: Report: "Corsavel looks like a fit. Browsing is open. To join they need an introduction.<br/>Nothing about you was shared. Shall I set up a card to visit properly?"
+  R->>O: Report: Corsavel looks like a fit.<br/>Shall I set up a Shōkai visitor card?

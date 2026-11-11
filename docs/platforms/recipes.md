@@ -1,6 +1,6 @@
 # Setup recipes, platform by platform (drafts)
 
-*Older platform recipes, first written 2026-10-27 and later pointed at v0.5.0. Prefer the per-agent [Skills](../skills/index.md) for the 0.5 conversation: installer (set up the door) → owner signs with a passkey → handoff to the host skill; visitor skill for going out. Grok Bot and Muse rehearsals: [plain-language rehearsal](../evidence/plain-language-rehearsal-2026-11-10.md). None of the install steps below has been run as a published, native platform skill, except where a rehearsal or field test says so. Platform behaviour is as their public pages described it on 2026-10-27 (sources in the [index](./README.md)). Install `@kigenka/shokai@0.5.0`.*
+*Older platform recipes, first written 2026-10-27 and later pointed at v0.5.0. Prefer the per-agent [Skills](../skills/index.md) for the 0.5 conversation: installer (set up the door) → owner signs with a passkey → handoff to the host skill; visitor skill for going out. Grok Bot and Muse rehearsals: [plain-language rehearsal](../evidence/plain-language-rehearsal-2026-11-10.md). None of the install steps below has been run as a published, native platform skill, except where a rehearsal or field test says so. Platform behavior is as their public pages described it on 2026-10-27 (sources in the [index](./README.md)). Install `@kigenka/shokai@0.5.0`.*
 
 The recipes below still refer to the older portable folder, [`shokai-representative/`](./shokai-representative/SKILL.md). For 0.5 work, copy the matching draft from [Skills (drafts)](../skills/index.md) instead.
 
@@ -56,7 +56,7 @@ cp -r shokai-representative <iris workspace>/skills/   # hot-reloaded; no restar
 Then in chat: "Use the shokai-representative skill to make yourself my representative." Iris runs scripts in its bash sandbox; keep the representative's key in a file the skill reads, never in `.env` next to other services' tokens. Its `serve-public` skill is the candidate for keeping a door, with the owner's yes each time.
 
 ## irel and iClaw
-Not recommended for v0.3: irel has custom MCP connections but no skills or documented code execution, and neither iClaw (the on-device Mac app or the cloud app of the same name) fits a signing SDK today. Revisit when an MCP bridge for Shōkai exists.
+Not recommended today: irel has custom MCP connections but no skills or documented code execution, and neither iClaw (the on-device Mac app or the cloud app of the same name) fits a signing SDK today. Revisit when an MCP bridge for Shōkai exists.
 
 ## Manus
 Settings → Skills → Add, or import the skill folder from its GitHub URL (`https://github.com/Kigenka/shokai/tree/main/docs/platforms/shokai-representative`); invoke it with `/shokai-representative`.

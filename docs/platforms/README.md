@@ -1,7 +1,7 @@
 # Platforms: turning the agent you already use into a representative
 
 ::: warning 0.5 skill drafts live elsewhere
-This page is the older 2026-10-27 platform-recipe table. It has not been rewritten as the 0.5 per-agent skill story. For visitor, installer and host *drafts* (unpublished, not installed natively from this package), see [Skills (drafts)](../skills/index.md). Grok Bot and Muse rehearsals of those drafts: [plain-language rehearsal](../evidence/plain-language-rehearsal-2026-11-10.md). The generic portable skeleton at the old skill path is labelled older on that index.
+This page is the older 2026-10-27 platform-recipe table. It has not been rewritten as the 0.5 per-agent skill story. For visitor, installer and host *drafts* (unpublished, not installed natively from this package), see [Skills (drafts)](../skills/index.md). Grok Bot and Muse rehearsals of those drafts: [plain-language rehearsal](../evidence/plain-language-rehearsal-2026-11-10.md). The generic portable skeleton at the old skill path is labeled older on that index.
 :::
 
 *Older platform recipes, first written 2026-10-27. Prefer the [0.5 skills](../skills/index.md) for installer → host handoff and visitor onboarding. These recipes have not been installed into a published skills registry. Platform facts were read from public pages on 2026-10-27 (links below) and can change; Shōkai isn't affiliated with any platform named here.*

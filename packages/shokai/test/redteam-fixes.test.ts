@@ -52,6 +52,10 @@ async function main() {
   check(!v.contextRequest && v.contextRequestRefusal().includes("undeclared_field:home_city") && /more about you than its signed house rules declare/.test(v.report().outcome_rendered.text), "a request for a field the owner never signed: not brought home, and the report says why");
   (v as any).response.context_request = { ...(v as any).response.context_request, fields: NEED.fields, mode: "admit_then_request" };
   check(!v.contextRequest && v.contextRequestRefusal().includes("mode"), "a request in another mode than the signed one: not brought home");
+  // v0.5.1 (§6.12, V05-F10-03): a request that asks for a password is not brought home, and the report says so.
+  (v as any).response.context_request = { ...(v as any).response.context_request, fields: [{ name: "account_password", what: "Your account password", why: "To link your order history.", required: true }] };
+  check(!v.contextRequest && v.contextRequestRefusal().includes("credential_field:account_password") && /password, a recovery phrase or seed, or a card number/.test(v.report().outcome_rendered.text),
+    "a request that asks for a password: not brought home, and the report names the ask");
   console.log(`red team fixes: ${pass} passed, ${fail} failed`);
   if (fail) process.exit(1);
 }

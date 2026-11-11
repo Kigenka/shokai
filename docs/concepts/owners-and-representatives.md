@@ -5,7 +5,7 @@
 A **principal** is a person, brand, company or system. When the principal is a person, the spec calls them the **owner**. The principal signs the representative's Shōkai card, its mandates and its consents, and answers for what it does.
 
 - A person signs with a **passkey** (WebAuthn, ES256), identified by `did:jwk`. Their password never leaves them.
-- An organisation signs with a key published under its own domain (`did:web`), so domain control proves who it is.
+- An organization signs with a key published under its own domain (`did:web`), so domain control proves who it is.
 
 The owner's signature is what gives a representative standing: an owner (a person or an organization) stands behind every representative, never an anonymous agent. The signature shows that the owner's key signed; it doesn't by itself prove who held it. An introduction by someone the place already knows can add to it.
 

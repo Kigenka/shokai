@@ -12,15 +12,15 @@ This page is the **runnable / recorded** Harborlight-style bank story. For the l
 [![A transfer and a revisit at Harborlight Bank](diagrams/png/bank.png)](diagrams/svg/bank.svg)
 
 ::: tip Diagram honesty
-**Recorded on a v0.3.0-rc4 wire log.** Node labels on this site say **pass** (v0.5 prose). The underlying recording still used seat/seated; the wire field remains `seat`. This 0.3 log is kept as a cross-implementation record; a **fresh `shokai/0.5` recording** is [below](#v05-recording).
+**0.5 SDK recording, 11 November 2026** (repeatable from the linked trace). The diagram says **pass** in the prose. On the wire the field is still `seat`.
 :::
 
-**Where the diagram comes from.** A recorded wire log from the v0.3.0-rc4 simulated-team rounds: the reference SDK as the visitor, and a bank door built in Python by a simulated team from the spec alone. Signatures re-verified with the reference implementation. Diagram node labels on this site say **pass** (v0.5 wording). The underlying recording still used seat/seated; the wire field remains `seat`. See the fresh v0.5 recording below.
+**Where the diagram comes from.** A run of the 0.5 SDK in one process ([traces/bank.mjs](traces/bank.mjs)), with fresh fictional keys; [traces/bank.trace.json](traces/bank.trace.json) lists each step (8/8 checks).
 
-## Fresh v0.5 recording {#v05-recording}
+## An earlier HTTP recording {#v05-recording}
 
 ::: tip Recorded on 2026-11-05, wire tag `shokai/0.5`
-A reference re-run of the bank pattern on a minimal bank-shaped door (fictional Harborlight Bank, [door script](https://shokaiprotocol.com/traces/v05/bank-server.mjs); not the full Harborlight tree, which is needs-source): the same two-visit story as above under a 50.00 USD mandate: a transfer with no amount refused, 30.00 USD sent, then a second visit under the **same** mandate where another 30.00 USD is refused because 20.00 USD is left. Recorded with the site's [0.5.0 package](https://shokaiprotocol.com/docs/quickstart#local-trial) by a small recorder that logs each message the visiting representative sends and receives. Download: [JSON log](https://shokaiprotocol.com/traces/v05/bank-0.5.json) · [recorder script](https://shokaiprotocol.com/traces/v05/record.mjs). Keys are made fresh per run. The older diagram above stays as the cross-implementation record (a Python door built from the spec).
+A separate HTTP re-run of the same two-visit story, on a minimal bank-shaped door (fictional Harborlight Bank, [door script](https://shokaiprotocol.com/traces/v05/bank-server.mjs); not the full Harborlight tree, which is needs-source), recorded with the site's [0.5.0 package](https://shokaiprotocol.com/docs/quickstart#local-trial). The diagram above is from the later in-process 0.5 SDK recording, not from this log. Download: [JSON log](https://shokaiprotocol.com/traces/v05/bank-0.5.json) · [recorder script](https://shokaiprotocol.com/traces/v05/record.mjs). Keys are made fresh per run.
 :::
 
 ```text
@@ -45,7 +45,7 @@ GET /shokai/places/harborlight/entry/house-summary.json
 → invitation_request [shokai/0.5]  ← invitation_response grant, farewell
 → MCP initialize
 → MCP notifications/initialized
-→ MCP tools/call transfer.send (signed act)  ← error -32012: transfer.send: 30.00 USD would pass what is left of your seat's or mandate's limit (cap 50.00 USD); more needs a new mandate
+→ MCP tools/call transfer.send (signed act)  ← error -32012: transfer.send: 30.00 USD would pass what is left of your pass's or mandate's limit (cap 50.00 USD); more needs a new mandate
 → farewell [shokai/0.5]
 
 results:

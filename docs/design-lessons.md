@@ -42,7 +42,7 @@ Words such as *seat*, *principal* and *vouch* are the specification's terms. On 
 
 ## Say what is built, and what is only proposed
 
-A page that mixes a working door with a sketched idea teaches the wrong lesson. Features we have specified and tested are described as present; proposals stay labelled as proposals; intended designs that have not been run are labelled that way, with no implied throughput or readiness. If we cannot point to a test or a document, we do not claim it.
+A page that mixes a working door with a sketched idea teaches the wrong lesson. Features we have specified and tested are described as present; proposals stay labeled as proposals; intended designs that have not been run are labeled that way, with no implied throughput or readiness. If we cannot point to a test or a document, we do not claim it.
 
 ## Measure the claims that say HOLD
 

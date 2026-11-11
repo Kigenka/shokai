@@ -2,7 +2,7 @@
   "theme": "base",
   "themeVariables": {
     "background": "#fbf9f4",
-    "fontFamily": "Noto Sans, Helvetica Neue, Arial, sans-serif",
+    "fontFamily": "Noto Sans, sans-serif",
     "fontSize": "16px",
     "primaryColor": "#fbf9f4",
     "primaryTextColor": "#1d1c1a",
@@ -36,6 +36,39 @@
     "activationBorderColor": "#2c4a6c",
     "sequenceNumberColor": "#fbf9f4"
   },
-  "sequence": { "mirrorActors": false, "showSequenceNumbers": false, "actorMargin": 60, "boxMargin": 8, "messageMargin": 34 },
-  "flowchart": { "curve": "basis", "padding": 18, "nodeSpacing": 40, "rankSpacing": 48, "htmlLabels": true }
+  "sequence": {
+    "mirrorActors": false,
+    "showSequenceNumbers": false,
+    "actorMargin": 100,
+    "boxMargin": 12,
+    "boxTextMargin": 10,
+    "messageMargin": 52,
+    "noteMargin": 18,
+    "diagramMarginX": 40,
+    "diagramMarginY": 20,
+    "width": 250,
+    "height": 84,
+    "actorFontSize": 15,
+    "actorFontFamily": "Noto Sans, sans-serif",
+    "actorFontWeight": 400,
+    "noteFontSize": 15,
+    "noteFontFamily": "Noto Sans, sans-serif",
+    "noteFontWeight": 400,
+    "messageFontSize": 15,
+    "messageFontFamily": "Noto Sans, sans-serif",
+    "messageFontWeight": 400,
+    "messageAlign": "center",
+    "wrap": true,
+    "wrapPadding": 28,
+    "useMaxWidth": false
+  },
+  "flowchart": {
+    "curve": "basis",
+    "padding": 22,
+    "nodeSpacing": 48,
+    "rankSpacing": 56,
+    "htmlLabels": true,
+    "wrappingWidth": 240
+  },
+  "fontFamily": "Noto Sans, sans-serif"
 }

@@ -1,18 +1,18 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 # Releasing `@kigenka/shokai`
 
-Status: **v0.5.0 is published** (`@kigenka/shokai@0.5.0`, dist-tag `latest`, 2026-11-11T03:26:30.293Z / 7:26:30 PM PT on 10 November 2026, America/Los_Angeles), by the editor from a laptop, without provenance (`--provenance=false --tag latest`). Its tarball: sha256 `259b414dfe78beb5a50a5b87a5c66c505dca73e2f34d6889622600904c22143b`, npm shasum `5575c9588a5144442e8f53b2fad74e2890d86e26`. **v0.3.0** remains on the registry (published October 28, 2026, 11:59 AM PDT; sha256 `f4b12f8dc722db2fcaf9110ab9eb372478311b5c5e3f4086d6ae883ebfc0d515`). Every publish is taken only with the editor's explicit approval.
+Status: **v0.5.1 is packed and not yet published** (`release/kigenka-shokai-0.5.1.tgz`, sha256 `e8a407fc2431464103eae23fc14eae64da1ffe6c704c300259a3fd538255dfa4`, 195 files; specification v0.5.0, wire tag `shokai/0.5`). It waits for the editor's go; see the 0.5.1 checklist below. **v0.5.0 is published** (`@kigenka/shokai@0.5.0`, dist-tag `latest`, 2026-11-11T03:26:30.293Z / 7:26:30 PM PT on 10 November 2026, America/Los_Angeles), by the editor from a laptop, without provenance (`--provenance=false --tag latest`). Its tarball: sha256 `259b414dfe78beb5a50a5b87a5c66c505dca73e2f34d6889622600904c22143b`, npm shasum `5575c9588a5144442e8f53b2fad74e2890d86e26`. **v0.3.0** remains on the registry (published October 28, 2026, 11:59 AM PDT; sha256 `f4b12f8dc722db2fcaf9110ab9eb372478311b5c5e3f4086d6ae883ebfc0d515`). Every publish is taken only with the editor's explicit approval.
 
 ## The package
 
-- `packages/shokai/package.json`: name `@kigenka/shokai`, version `0.5.0` (published; `latest` on npm), author the editor, Apache-2.0. `files`: `dist/src`, `src` (the TypeScript sources ship), `dist/examples`, `conformance-data`, `agent-install` (the agent install guide and manifest ship), `spec`, `README.md`, `LICENSE`, `NOTICE`. Bins: `shokai` (`demo`, `visit`, `conformance`, `detect`, `house`, `init`, `host-card`, `--version`) and `shokai-conformance`. `publishConfig`: `{ access: public, provenance: true, tag: latest }`.
+- `packages/shokai/package.json`: name `@kigenka/shokai`, version `0.5.1` (packed, not yet published; `0.5.0` is `latest` on npm until 0.5.1 is published), author the editor, Apache-2.0. `files`: `dist/src`, `src` (the TypeScript sources ship), `dist/examples`, `conformance-data`, `agent-install` (the agent install guide and manifest ship), `spec`, `README.md`, `LICENSE`, `NOTICE`. Bins: `shokai` (`demo`, `visit`, `conformance`, `detect`, `house`, `init`, `host-card`, `--version`) and `shokai-conformance`. `publishConfig`: `{ access: public, provenance: true, tag: latest }`.
 - **One source of truth for publish-day facts:** [`release/release-status.json`](release/release-status.json) holds the version, wire tag, dist-tag, npm status (`unpublished` or `published`), the latest version on npm and the tarball's sha256. `tools/pack-release.sh` writes the version and sha256; the site build reads the file for its status strings and digest; `tools/check-links-versions.mjs` (CI and the release job) fails if any repository Markdown file, the package README, the agent install guide, the site pages (when the site is checked out; `SHOKAI_REQUIRE_SITE=1` makes their absence a failure), the sidecar `.sha256`, `publishConfig.tag` or the CHANGELOG disagree with it.
-- `repository`, `homepage` and `bugs` point to `github.com/Kigenka/shokai`. npm compares `repository.url` with the publishing workflow's repository, case-sensitively: keep `Kigenka` capitalised.
+- `repository`, `homepage` and `bugs` point to `github.com/Kigenka/shokai`. npm compares `repository.url` with the publishing workflow's repository, case-sensitively: keep `Kigenka` capitalized.
 - Markdown links in the package's `spec/` that point at repository files the package doesn't ship are rewritten by `scripts/sync-core.mjs` to the same file at this version's tag (`https://github.com/Kigenka/shokai/blob/v<version>/…`). Push the tag with the release.
 - `"private": true` stays in the repository's `package.json` as the safety catch. **`tools/pack-release.sh` removes it** (and the `prepack` script) in a temporary copy before `npm pack`; the release job never edits `package.json`, it only **asserts** that the tarball it publishes has no `private` and the right version.
 - `prepack` (in the repository copy) checks the core is in sync with the reference and builds.
 - `npm test` in `packages/shokai` runs only inside this repository: `scripts/sync-core.mjs` reads `reference/engawa/src`, and `scripts/test-total.mjs` runs `examples/traces/university.mjs`. From the installed package, run `npx --no-install shokai-conformance --self-test` instead.
-- `tools/pack-release.sh` gives 189 files (TypeScript sources included), with no dependencies (the MCP SDK is an optional peer). The packed file installs in an empty folder and `npx --no-install shokai demo` runs in about two seconds.
+- `tools/pack-release.sh` gives 195 files (0.5.1) (TypeScript sources included), with no dependencies (the MCP SDK is an optional peer). The packed file installs in an empty folder and `npx --no-install shokai demo` runs in about two seconds.
 
 ## The first publish (done): from a laptop, without provenance
 
@@ -30,9 +30,9 @@ npm publish --provenance=false --access public --tag latest   # npm asks for the
 git checkout package.json                # put the safety catch back
 ```
 
-## Later publishes: from CI, with provenance (once the repository is public)
+## Later publishes: from CI, with provenance
 
-1. **Make `github.com/Kigenka/shokai` public.** npm provenance is only generated for packages published from a public repository, by a cloud-hosted CI runner.
+1. **The repository `github.com/Kigenka/shokai` is public.** npm provenance is only generated for packages published from a public repository, by a cloud-hosted CI runner. The v0.5.0 package was published from a laptop without provenance; later publishes can use CI.
 2. The release job publishes the committed tarball, which `tools/pack-release.sh` already packed without `"private"`; the job only asserts that (it never edits `package.json`).
 3. Confirm the npm scope `@kigenka` belongs to Kigenka, with two-factor auth on every owner account.
 4. `repository`, `homepage` and `bugs` are in `package.json` (done).
@@ -69,3 +69,16 @@ cd "$(mktemp -d)" && npm install @kigenka/shokai@0.5.0 && npx --no-install shoka
 6. **Flip the status in one place:** set `"npm_status": "published"` in `release/release-status.json`, rebuild the site (its nav, hero and release pages read the file) and run `node tools/check-links-versions.mjs`: it fails on any repository Markdown file (CHANGELOG.md and docs/review-history.md, the history, aside), package doc or site page still saying 0.5.0 is pending.
 7. **Run the Quickstart from the public path** on a clean machine (Linux and macOS): `npm install @kigenka/shokai@0.5.0`, then `QUICKSTART.md` steps 1–6 as written, and `bash tools/verify-quickstart.sh` online. This is the first run from the public path (v0.5.0's earlier runs used the package file); record the result on the Releases page.
 8. 0.5.0 was published directly under `latest` (`"latest_on_npm": "0.5.0"`, `"dist_tag": "latest"`). For a later 0.5.x, keep `publishConfig.tag` in agreement with `release-status.json`.
+
+## Publish-day checklist for 0.5.1 (run only when the editor says go)
+
+0.5.1 is a package patch release. The specification stays v0.5.0: `spec_ref.version` is still `"0.5.0"`, the wire tag is still `shokai/0.5`, and the JSON Schema keeps its id. The package adds the optional `retry.until` and `retry.appeal` members on a binding `never`, and one MUST rule (SPEC-DETAIL §6.12). See CHANGELOG.md, v0.5.1.
+
+1. `bash tools/pack-release.sh` once more if anything in the package changed, and commit `release/` (tarball, `.sha256`, `release-status.json`). Run `bash tools/verify.sh`, `SHOKAI_QUICKSTART_TGZ=release/kigenka-shokai-0.5.1.tgz bash tools/verify-quickstart.sh` and, with the site built, `SHOKAI_REQUIRE_SITE=1 node tools/check-links-versions.mjs`.
+2. **Publish from the laptop first**, the same way as 0.5.0: `npm publish release/kigenka-shokai-0.5.1.tgz --provenance=false --access public --tag latest` (npm asks for the one-time code). This publishes the committed file, byte for byte.
+3. Check the registry has the same bytes: `curl -fsSL "$(npm view @kigenka/shokai@0.5.1 dist.tarball)" | sha256sum` must print `release-status.json`'s sha256, and `npm view @kigenka/shokai@0.5.1 dist.integrity` must match the file. Read the publish time from `npm view @kigenka/shokai time.0.5.1`.
+4. **Flip the status in one place:** in `release/release-status.json` set `"npm_status": "published"`, `"latest_on_npm": "0.5.1"` and `"published_at"`, then run `node tools/check-links-versions.mjs`.
+5. Push `main` to the public repository (a new commit, never a force push), then push the tag `v0.5.1`. The release workflow skips a version that is already on npm, so the tag only anchors the GitHub Release and the `blob/v0.5.1/…` links in the package's `spec/`. Attach the tarball and its `.sha256` to the GitHub Release.
+6. Deploy the site, which hosts both `kigenka-shokai-0.5.1.tgz` and the earlier `kigenka-shokai-0.5.0.tgz` (sha256 `259b414d…`), and check the hosted files' sha256.
+7. Run the Quickstart from the public path: `npm install @kigenka/shokai@0.5.1` in an empty folder, then `QUICKSTART.md` as written.
+

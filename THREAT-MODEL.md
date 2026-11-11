@@ -1,8 +1,8 @@
 # Shōkai threat model (v0.5.0)
 
-*Applies to v0.5.0. Sections 1–8 are the v0.4.0 model, still in force. Section 9 is the v0.5.0 review: a desk review of the specification text, written before any red-team round against v0.5.0 code. It is not an audit, and it says where the reference implementation doesn't yet follow the text.*
+*Applies to v0.5.0. Sections 1–8 are the v0.4.0 model, still in force. Section 9 is the v0.5.0 review: a desk review of the specification text, written before red-team round 3, which aimed at what is new in 0.5 and ran on 11 November 2026 (see §5). It is not an audit, and it says where the reference implementation doesn't yet follow the text.*
 
-*Informative. SPEC §12 summarizes this document. If this document and the specification disagree, the specification wins: [`docs/SPEC-DETAIL.md`](./docs/SPEC-DETAIL.md) is the normative text; [`SPEC.md`](./SPEC.md) is the short read, and the detail wins on any tension between them. Section numbers refer to SPEC v0.5.0 (pre-release); v0.5.0 added sections without renumbering those of v0.4.0. The two Shōkai card kinds' checks, purchase holds and customer links of v0.4.0 are summarized in SPEC §12.1; the red-team results below are from the 0.3 line.*
+*Informative. SPEC §12 summarizes this document. If this document and the specification disagree, the specification wins: [`docs/SPEC-DETAIL.md`](./docs/SPEC-DETAIL.md) is the normative text; [`SPEC.md`](./SPEC.md) is the short read, and the detail wins on any tension between them. Section numbers refer to SPEC v0.5.0; v0.5.0 added sections without renumbering those of v0.4.0. The two Shōkai card kinds' checks, purchase holds and customer links of v0.4.0 are summarized in SPEC §12.1; the red-team results in §5 include the 0.3-era scripted rounds and round 3, aimed at what is new in 0.5.*
 
 Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell a good agent from a bad one by reading its words. It decides on signed facts: who the owner is, what the owner allowed, and who, if anyone, vouched for the visiting representative. Prose never enters that decision. This document lists what we protect, who attacks it, where the trust boundaries are, and what each class of attack meets, in STRIDE order. It ends with the red-team results and the risks we accept on purpose.
 
@@ -44,7 +44,7 @@ Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell 
 
 ### Spoofing
 
-| Threat | Defence | Where |
+| Threat | Defense | Where |
 |---|---|---|
 | Forged Shōkai visitor card, or one naming someone else's owner | Shōkai visitor card signed by the owner key; the DID binds the name, so a display name is never identity | §2.3, §2.6 |
 | Stolen genuine Shōkai visitor card presented with the attacker's key | Proof of possession over `{encounter_id, nonce}` by the Shōkai visitor card's representative key; a mismatch is `never` for the presenter only | §2.4, §3.2 |
@@ -61,7 +61,7 @@ Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell 
 
 ### Tampering
 
-| Threat | Defence | Where |
+| Threat | Defense | Where |
 |---|---|---|
 | Edited payload, with or without a recomputed digest | JCS + SHA-256 digest under an Ed25519 or ES256 signature; both cases fail | §2.2, A.2 |
 | Changed tool arguments on an MCP call | The Shōkai gate signs the tool name and an arguments digest into the act, so a changed call fails | SDK `@kigenka/shokai/mcp` |
@@ -70,7 +70,7 @@ Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell 
 
 ### Repudiation
 
-| Threat | Defence | Where |
+| Threat | Defense | Where |
 |---|---|---|
 | An owner denies approving a commitment | The commitment carries a passkey-signed consent | §8.1 |
 | A place denies a decision or a seat | Decisions and seats are signed by the place | §6.1, §7.1 |
@@ -78,7 +78,7 @@ Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell 
 
 ### Information disclosure
 
-| Threat | Defence | Where |
+| Threat | Defense | Where |
 |---|---|---|
 | A place asks for more data than it needs | `data_asks` declared on each listed action (SHOULD); data leaves only through purpose-bound consent | §3.1, §8.1 |
 | "Free gift" in exchange for data | A gift never costs data | §10 |
@@ -90,7 +90,7 @@ Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell 
 
 ### Denial of service
 
-| Threat | Defence | Where |
+| Threat | Defense | Where |
 |---|---|---|
 | Encounter floods from fresh keys | Bounded live state; newcomers are refused at the bound, never existing guests | §3.4 |
 | Lobby floods and oversize bodies | Rate limits (429) and size limits (413) in the HTTP binding | §11.1 |
@@ -99,7 +99,7 @@ Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell 
 
 ### Elevation of privilege
 
-| Threat | Defence | Where |
+| Threat | Defense | Where |
 |---|---|---|
 | **Prompt injection** in Shōkai card roles, purpose statements, meaning notes, lobby text, house rules, vouch relationships or offers | The gate is a pure function of verified facts and policy, so prose can't change a decision; counterpart text is data | §6.4, §6.5 |
 | **Hidden text** (zero-width, CSS-hidden or tiny text in offers) | Shown to the owner behind a visible marker and never obeyed; pressure only in hidden text is severe | §10 |
@@ -117,22 +117,33 @@ Shōkai makes fakes **costly and traceable, not impossible**. A door can't tell 
 | **Place restart** (a place forgets mandate ledgers, nonces and nevers) | Durable state; a place that lost it refuses mandates valid before the loss rather than counting them from zero | §3.6 |
 | **Linking an owner across places** | Per-place owner identities, unlinkable by key; an owner link shown to one place only; content and timing can still link, stated plainly | §2.8, §12.3 |
 
-## 5. Red-team results (v0.3.0-rc1)
+## 5. Red-team results
 
-Both rounds ran on loopback against the reference place server with fictional people and places and fresh keys. Full tables: [`security/redteam/`](./security/redteam/).
+Rounds 1 and 2 are 0.3-era, rerun for v0.3.0-rc1 in October 2026. Round 3 (11 November 2026) aimed at what is new in 0.5 — proofs addressed to one door, lookalike host cards, superseding mandates, the over-limit hold, considering, pressure on the host representative, `never` misuse, customer links, records across places, and owner-key theft through the place — and reran the 48 earlier attacks with it. Full tables: [`security/redteam/`](./security/redteam/).
 
-| Round | Attacks | Held | Broke | Notes |
-|---|---|---|---|---|
-| 1 (identity, introductions, allowances, replay, floods, inbox, pair doors) | 72 | 72 | 0 | |
-| 2 (injection, lookalikes, swarms, clocks, revocation, limits, reputation, DoS, supply chain) | 47 | 44 | 3 | S1, S2 and S4 are accepted by design (D20, below) |
+| Round | Attacks | Held | Accepted by design | Broke | Notes |
+|---|---|---|---|---|---|
+| 1 (identity, introductions, allowances, replay, floods, inbox, pair doors) | 72 | 72 | 0 | 0 | 0.3 era |
+| 2 (injection, lookalikes, swarms, clocks, revocation, limits, reputation, DoS, supply chain) | 47 | 44 | 3 | 0 | 0.3 era; S1, S2 and S4 are accepted by design (D20, below) |
+| 3 (what is new in 0.5, plus the 48 earlier attacks; `npm run attacks`) | 93 | 86 | 4 | 3 | 11 November 2026; S1, S2, S4 and V05-F10-03 accepted at the time of the round (§6). The 3 breaks were two bugs, fixed in 0.5.1. 0.5.1 also closes V05-F10-03 (decided; 0.5.0 lacks it). The rerun after both fixes: 90 held, 3 accepted (S1, S2, S4), 0 broke |
+| 3, role-plays (an attacker model against a host-representative model) | 14 | 14 | 0 | 0 | 11 November 2026; Claude Sonnet as the host representative, DeepSeek as the attacker; loopback, ephemeral keys, fictional people; scored from the door log |
+
+**Round 3's breaks, and where the fix is.** The two bugs, and the later decision on V05-F10-03, are fixed in 0.5.1: **0.5.0 still has both bugs and lacks the context-question rule; use 0.5.1.**
+
+- **V05-F7-04 (medium; the same gap on the SDK door, V05-F7-04-sdk).** When a door answered `never` with a binding (a stolen card presented under another key, or counted probing), the reply didn't state when the binding lifts or how to appeal, though the door already lifted it after 180 days internally. That broke C288 (§9.3: every `never` expires and can be appealed). Nobody wrong was bound, and the victim of a stolen card wasn't bound. Fixed: the reply's `retry` now carries `until` (at most 180 days) and `appeal` (the place's contact or appeal URL, and the place's principal).
+- **V05-F10-04 (low; an outside review suggested medium).** Acts carrying a `session_token`, or a pasted `session` object with a cookie, were carried out instead of refused `CREDENTIAL_NOT_ACCEPTED` (C210, "session cookie or token"). Nothing was logged and no hold was released, but a place shouldn't receive session material at all. Fixed: the C210 list names more session spellings, and a pasted session object or cookie is caught by its shape, while an ordinary word such as a cookie flavor or a booked class session is not.
+- **V05-F10-03 (high; found in round 3 as an open residual; decided 11 November 2026, fixed in 0.5.1).** A place's signed context requirements could name a field such as `passkey_recovery_phrase`, `account_password` or `card_number`, and the door started and asked. C210 and C294 refused credentials in cards, mandates and acts, not in a place's questions. Decided: a place must not ask a visitor's representative for a password, a recovery phrase or seed, or a card number in its context questions. Fixed in 0.5.1: the door refuses to start with such requirements and will not emit them; a visiting representative refuses a request that arrives with them (§6.12, C263, C267). 0.5.0 lacks this. It is no longer an accepted residual.
+
+The round cost $0.66 in model calls (role-plays and one outside review); the scripted attacks cost nothing.
 
 ## 6. Risks accepted by design
 
 - **S1. One owner, many agents, browsing.** Five representatives of one owner each get a browse seat. They share one relationship record, and sign-ups are capped per owner (S1b holds).
 - **S2. Passkey farms browsing.** Eight unintroduced owners each get a browse seat. Sign-ups through one introducer are capped (S2b holds), and a place that requires an introduction for account creation refuses the farm (S2c holds).
 - **S4. Low and slow.** The same owner browses five days in a row. Daily sign-ups with fresh keys are capped (S4b holds).
+- **V05-F10-03. Context questions that ask for a credential (found in round 3, 11 November 2026; decided, fixed in 0.5.1; not an accepted residual).** See §5. 0.5.0 lacks the rule. It is listed here only so a reader of the original round table can find the decision.
 
-**Accepted by design (D20, approved 2026-10-26).** A place has three layers: its ordinary website (outside Shōkai), its agent front (the listing and lobby, open to anyone to look at) and its door (where anything personal happens, with the owner-signed Shōkai visitor card, any introduction the place requires and signed limits). S1, S2 and S4 only ever reach looking: an anonymous read of the front, or a browse seat that spends nothing and creates no account. That is the intended behaviour, not a break: a door that refuses strangers to look around is a worse web, and any agent can already load a place's public website. What limits it:
+**Accepted by design (D20, approved 2026-10-26).** A place has three layers: its ordinary website (outside Shōkai), its agent front (the listing and lobby, open to anyone to look at) and its door (where anything personal happens, with the owner-signed Shōkai visitor card, any introduction the place requires and signed limits). S1, S2 and S4 only ever reach looking: an anonymous read of the front, or a browse seat that spends nothing and creates no account. That is the intended behavior, not a break: a door that refuses strangers to look around is a worse web, and any agent can already load a place's public website. What limits it:
 - anything that creates an account, spends money or posts reviews is gated at the door (§3.3, §4, §7), and sign-ups are capped per owner and per introducer over rolling windows (§9.4; S1b, S2b, S4b hold);
 - a place may require an introduction or its own invitation for account creation (§4; S2c holds, 0/8);
 - one owner's representatives share one relationship record at a place, so browsing is visible conduct there (§9.3);
@@ -174,11 +185,11 @@ The owner keeps that allowance small and narrow:
 
 ## 9. v0.5.0 review (desk review, 2026-11-01)
 
-**Scope and method.** One reviewer read the v0.5.0 additions in SPEC.md against the asset, actor and boundary lists above, after three clean-room readings (a host builder, a visitor builder and an owner-policy reader) had reported gaps. Each item below names the threat, the rule that answers it and what remains. Since this desk review, red-team phase 1 and the attack harness (tools/attack-harness: 48 attacks, three accepted at spec level as S1, S2 and S4 in §7 above) have run against v0.5.0 code, and the conformance runner's black-box checks cover C230–C255 where HTTP reaches them. Where the reference implementation lags the text, it says so (last reconciled with the code on 2026-11-01).
+**Scope and method.** One reviewer read the v0.5.0 additions in SPEC.md against the asset, actor and boundary lists above, after three clean-room readings (a host builder, a visitor builder and an owner-policy reader) had reported gaps. Each item below names the threat, the rule that answers it and what remains. Since this desk review, red-team round 3 (11 November 2026, §5) ran 93 scripted attacks aimed at what is new in 0.5, with the 48 earlier ones: 86 held, 4 accepted at spec level at the time of the round (S1, S2, S4 and V05-F10-03 in §6), and 3 broke. The breaks were two bugs, fixed in 0.5.1; V05-F10-03 was then decided and is also in 0.5.1. 0.5.0 still has the two bugs and lacks the context-question rule. Fourteen role-plays against the host representative all held. The conformance runner's black-box checks cover C230–C255 where HTTP reaches them. Where the reference implementation lags the text, it says so (last reconciled with the code on 2026-11-01).
 
 ### 9.1 The over-limit hold (§7.3, C230)
 
-| Threat | Defence | What remains |
+| Threat | Defense | What remains |
 |---|---|---|
 | A place inflates `proposed` to get a larger raise signed | `proposed` is the place's arithmetic on signed figures; the hold is allowed only when it is within the place's own stated limit; the signing page shows `limit`, `current`, the one purchase and the total from machine fields (SIGNING.md §8) | An owner who approves without reading still approves. The representative and the signing page check `limit` against the owner's signed mandate, `current` against the representative's own ledger and `proposed` minus `current` against the held act's amount, and ask nothing on a mismatch (§7.3 "Checking the figures", SIGNING.md §8; in the SDK since 2026-11-01). A place that also misleads the representative's ledger isn't caught |
 | A one-purchase approval becomes standing headroom | The superseding mandate binds one act (`supersedes.hold` = `{hold_id, act_digest}`), its `max_amount` equals `proposed`, it expires with the hold and is used up on release; the seat keeps its old mandate, and the mandate offered again gets `MANDATE_INVALID` (§5.1, §7.3) | None known in the reference code (checked 2026-11-01): it refuses a `max_amount` below or above `proposed` and one that outlives the hold, and the seat keeps its mandate (black-box check `v050.hold_release`) |
@@ -193,7 +204,7 @@ The weakest point is the owner. The text now fixes what the page shows (SIGNING.
 
 ### 9.3 The house summary (§2.3, C248)
 
-| Threat | Defence | What remains |
+| Threat | Defense | What remains |
 |---|---|---|
 | A place shows visitors one set of rules and enforces another | The summary is inside `house_digest` and its own `summary_digest`; every member it restates must equal the policy, and a door refuses to start if not (§2.3) | Free text in the summary (`about`, offer labels) is the place's own claim, signed but unverified |
 | A man in the middle swaps the summary | A visitor checks it against `summary_digest` on the Shōkai host card before its `invitation_request`, and withdraws on a mismatch | None known beyond the host card's own trust (§4 Spoofing) |
@@ -201,7 +212,7 @@ The weakest point is the owner. The text now fixes what the page shows (SIGNING.
 
 ### 9.4 Named outside classifiers (§6.10, C250) and retention (§12.4, C255)
 
-| Threat | Defence | What remains |
+| Threat | Defense | What remains |
 |---|---|---|
 | Visitor content goes to an unnamed processor | A classifier, or a hosted model provider (§6.10), is called only when named in the signed policy; `"*"` is invalid; structured entries say purpose, countries and retention; shown before seating; nothing goes out before the `invitation_request` | Shōkai can't see inside a place. A place that sends content elsewhere anyway breaks the rule undetectably; the signed list makes the breach attributable, not impossible |
 | Content kept indefinitely | `retention_days` (default 30, at most 90); purpose limits; deletion on request with a signed receipt naming what was kept and why | The receipt is the place's statement, not proof of erasure. A classifier's confirmation is relayed by the place |
@@ -210,7 +221,7 @@ The weakest point is the owner. The text now fixes what the page shows (SIGNING.
 
 ### 9.5 Wire-tag downgrade (§11.1, C254)
 
-| Threat | Defence | What remains |
+| Threat | Defense | What remains |
 |---|---|---|
 | An attacker strips v0.5.0 protection by forcing `shokai/0.3` (no holds, no summary, no classifier list) | A v0.5.0 visitor starts with `shokai/0.5` and moves to `shokai/0.3` only for a place whose listing or lobby says it is below 0.5.0; never for a place whose listing, `accepted_tags` or Shōkai host card says 0.5. Signed objects are never rewritten, and the tag is inside each message's signature | A visitor's first contact with a place it has never seen relies on the listing it fetched; a forged listing is the same risk as in §4 Spoofing. The SDK implements the rule (`chooseWireTag`, 2026-11-01); no v0.4-era test door exists yet to exercise the fallback end to end |
 | A place keeps 0.3 forever to avoid v0.5.0 duties | The window ends on a date fixed at release; after it, `shokai/0.3` may get only the lobby | The window ends 90 days after the release date (SPEC §11.1); the date is fixed when 0.5.0 is published |
@@ -221,6 +232,6 @@ Trust receipts and deposits (§6.9) beyond the rules in their own section, inclu
 
 ### 9.7 Hosted-door key custody (Kettle, 2026-11-09)
 
-This is a factual disclosure of one **deployed** fictional test shop, not a new protocol rule and not a claim of isolated custody. The hosted Kettle & Leaf door (`https://kettle.shokaiprotocol.com`) is a serverless function on Vercel. As of the evening of 2026-11-09 (Pacific Time) it loads only the place representative (host/door) key (`KETTLE_REP_KEY`) from the project's production environment, plus the already-signed host card (`KETTLE_HOST_CARD_JSON`). The place principal key (`KETTLE_PRINCIPAL_KEY`) was removed from the production environment; owner approvals already come from the owner's passkey at sign.kigenka.com. An operator-machine 0600 copy of the principal key remains as an offline stand-in and is not in the function bundle. A names-only listing of this project's Vercel environment-variable names (9 November 2026, late evening, Pacific Time) did not include `KETTLE_PRINCIPAL_KEY` in Production or in Preview. Preview does not serve the public alias. Whether any differently named Preview variable holds a principal key is unknown. No values were printed. Parties who can use the representative key: the function at request time; the project operator; members of the Vercel team that owns the project; the hosting platform operator, Vercel; and anyone else with production environment access. No secret is printed here. The representative key was not rotated. The public door runs the conf6 candidate tarball promoted on 2026-11-09 at about 11:51 PM Pacific Time (`dpl_HZnEpMHpMtQEvRjeD29KiWUqvxaq`, sha-256 `c68c75e7548cd591d7fe7e47cd897a1dea547db08c13eb1d177f14e631518c13`); the previous conf5 deployment (`dpl_9H2iWykWyePEWHGQjp1v4PkTGms2`) is the rollback target. Status: **deployed**, not **publicly open**, and not **appointed** as this package uses that word (Suzu is named on the hung card; the representative key is not in Suzu's custody). The official paced HTTP run against this build, at 12:13 AM Pacific Time, 10 November 2026, measured **30 of 164** Core Door checks (28 observed over HTTP plus 2 implementer-provided in-process self-tests (C236, C240)): 30 pass, 0 fail, 0 skip, 2 N/A (C241, a visiting representative's duty; C242, the templates aren't closed). **132 of 164** were unmeasured (not cited in this run; self-asserted or not URL-reachable). The claim HOLDS, so <!-- public-validated-label: held pending YSY go; scoped to Core Door on conf6 --> Kettle is **validated** for Core Door on conf6 (project convention; see KNOWN-GAPS-0.5.md) (**30 of 164 measured, 28 observed over HTTP plus 2 implementer-provided in-process self-tests (C236, C240), 132 unmeasured**). It is not **publicly open**. Pinned results: operator-held pinned official-run results (not shipped in this preview); see KNOWN-GAPS-0.5.md. The previous conf5 HOLD on `dpl_9H2iWykWyePEWHGQjp1v4PkTGms2` remains historical (operator-held pinned official-run results for the historical conf5 HOLD (not shipped in this preview)). The official runner presented pre-signed owner material signed by passkey; Group A in-process evidence is labelled implementer-provided. Host-side scoped compare-and-set clears of this principal's `never` binding and probing-window shapes were used both to set up the golden run's preconditions and to restore the door after it. They are not place signing: they rewrite durable door state for that principal only, using the production door-state store's write credential (Upstash). Setup (before the golden run): after the earlier official attempt `official-public-kettle-conf5-presigned-probes-revocations-spend-c-evidence-dpl_9H2i-2026-11-09` (Core Door not established; C198 skipped), a scoped clear at 10:21:05 PM Pacific Time, 9 November 2026, moved the store from version 999 to 1000 (YSY removed from `never`; 0 probing principals; 0 probing-window shapes for this principal; other never DIDs unchanged). Backup (mode 0600): an operator-held door-state backup (path not published in this preview). Report: an operator-held clear-run report (not shipped in this preview). The golden run's read-only pre-check then saw store version 1000, YSY absent from `never`, 0 probing principals, and 0 probing-window shapes. Similar scoped clears the same evening after earlier skipped or failed official attempts (t1428u / t1429u / t1430u) likewise restored a clean never/probing map for this principal so later attempts would not start from leftover bindings. Cleanup (after the golden run): after C186 (`neg.probing`) PASSed last and the door `bindNever`'d that principal, a scoped clear at 10:40:56 PM Pacific Time, 9 November 2026, moved the store from version 1153 to 1154 (YSY removed from `never`; 0 probing). Backup (mode 0600): an operator-held door-state backup (path not published in this preview). Report: an operator-held clear-run report (not shipped in this preview). The production door-state store is Upstash. Its write credential is a second custody fact, distinct from the representative key: it can rewrite durable door state (including `never` bindings, probing-window shapes, revocations and spend ledgers) but it is not place signing and the store does not hold the signing keys. Parties who can use that credential: the function at request time; the project operator; members of the Vercel team that owns the project (the write credential is in the production environment, which that team can read); Vercel, which operates that environment; and Upstash as store platform operator. A reachable URL and `/healthz open=true` are not the status **publicly open**.
+This is a factual disclosure of one **deployed** fictional test shop, not a new protocol rule and not a claim of isolated custody. The hosted Kettle & Leaf door (`https://kettle.shokaiprotocol.com`) is a serverless function on Vercel. As of the evening of 2026-11-09 (Pacific Time) it loads only the place representative (host/door) key (`KETTLE_REP_KEY`) from the project's production environment, plus the already-signed host card (`KETTLE_HOST_CARD_JSON`). The place principal key (`KETTLE_PRINCIPAL_KEY`) was removed from the production environment; owner approvals already come from the owner's passkey at sign.kigenka.com. An operator-machine 0600 copy of the principal key remains as an offline stand-in and is not in the function bundle. A names-only listing of this project's Vercel environment-variable names (9 November 2026, late evening, Pacific Time) did not include `KETTLE_PRINCIPAL_KEY` in Production or in Preview. Preview does not serve the public alias. Whether any differently named Preview variable holds a principal key is unknown. No values were printed. Parties who can use the representative key: the function at request time; the project operator; members of the Vercel team that owns the project; the hosting platform operator, Vercel; and anyone else with production environment access. No secret is printed here. The representative key was not rotated. The public door runs the tarball promoted on 9 November 2026 at about 11:51 PM Pacific Time; the previous deployment is the rollback target. Build pins and deployment identifiers are in [Kettle operator notes](./docs/evidence/kettle-operator-notes.md). Status: **deployed**, not **publicly open**, and not **appointed** as this package uses that word (Suzu is named on the hung card; the representative key is not in Suzu's custody). The official paced HTTP run against this build, at 12:13 AM Pacific Time, 10 November 2026, measured **30 of 164** Core Door checks (28 observed over HTTP plus 2 implementer-provided in-process self-tests (C236, C240)): 30 pass, 0 fail, 0 skip, 2 N/A (C241, a visiting representative's duty; C242, the templates aren't closed). **132 of 164** were unmeasured (not cited in this run; self-asserted or not URL-reachable). The official run's measured checks all passed (the claim held on those checks). Kettle was **tested** for Core Door on this build: **30 of 164** measured (28 observed over HTTP plus 2 implementer-provided in-process self-tests (C236, C240), 132 unmeasured). It is not **publicly open**. Pinned results and the earlier official run are in [Kettle operator notes](./docs/evidence/kettle-operator-notes.md). The official runner presented pre-signed owner material signed by passkey; Group A in-process evidence is labeled implementer-provided. Host-side scoped compare-and-set clears of this principal's `never` binding and probing-window shapes were used both to set up the golden run's preconditions and to restore the door after it. They are not place signing: they rewrite durable door state for that principal only, using the production door-state store's write credential (Upstash). Setup (before the golden run): after the earlier official attempt `official-public-kettle-conf5-presigned-probes-revocations-spend-c-evidence-dpl_9H2i-2026-11-09` (Core Door not established; C198 skipped), a scoped clear at 10:21:05 PM Pacific Time, 9 November 2026, moved the store from version 999 to 1000 (the test principal was removed from `never`; 0 probing principals; 0 probing-window shapes for this principal; other never DIDs unchanged). Backup (mode 0600): an operator-held door-state backup (path not published in this preview). Report: an operator-held clear-run report (not shipped in this preview). The golden run's read-only pre-check then saw store version 1000, the test principal was absent from `never`, 0 probing principals, and 0 probing-window shapes. Similar scoped clears the same evening after earlier skipped or failed official attempts likewise restored a clean never/probing map for this principal so later attempts would not start from leftover bindings. Cleanup (after the golden run): after C186 (`neg.probing`) PASSed last and the door `bindNever`'d that principal, a scoped clear at 10:40:56 PM Pacific Time, 9 November 2026, moved the store from version 1153 to 1154 (the test principal was removed from `never`; 0 probing). Backup (mode 0600): an operator-held door-state backup (path not published in this preview). Report: an operator-held clear-run report (not shipped in this preview). The production door-state store is Upstash. Its write credential is a second custody fact, distinct from the representative key: it can rewrite durable door state (including `never` bindings, probing-window shapes, revocations and spend ledgers) but it is not place signing and the store does not hold the signing keys. Parties who can use that credential: the function at request time; the project operator; members of the Vercel team that owns the project (the write credential is in the production environment, which that team can read); Vercel, which operates that environment; and Upstash as store platform operator. A reachable URL and `/healthz open=true` are not the status **publicly open**.
 
 Report vulnerabilities privately as described in [SECURITY.md](./SECURITY.md).

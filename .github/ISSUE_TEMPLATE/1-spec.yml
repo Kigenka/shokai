@@ -7,7 +7,7 @@ body:
       value: |
         Thank you. Quote the section so we can find it. For a security problem, **stop here** and use
         [SECURITY.md](../../SECURITY.md) instead — open a Security finding issue, do not describe an exploit here.
-        A larger change to normative behaviour ends as a numbered proposal in `proposals/`; this issue is a good place to start the discussion.
+        A larger change to normative behavior ends as a numbered proposal in `proposals/`; this issue is a good place to start the discussion.
   - type: dropdown
     id: kind
     attributes:
@@ -54,7 +54,7 @@ body:
     id: proposal
     attributes:
       label: What you expected, or what you propose
-      description: If it changes behaviour on the wire, say how a door and a representative would each be affected.
+      description: If it changes behavior on the wire, say how a door and a representative would each be affected.
   - type: checkboxes
     id: rules
     attributes:

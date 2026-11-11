@@ -62,7 +62,7 @@ type HoldPolicy = {
 ### 1.4 Wire shape (reuse first)
 
 ```ts
-// Reused, with new optional members (absent kind = "purchase": v0.4.0 behaviour)
+// Reused, with new optional members (absent kind = "purchase": v0.4.0 behavior)
 type ActHeld = RitualHeader & {
   type: "act_held"; in_reply_to: string; seat_id: string; tool: string;
   amount: Money;                                 // "0" when confirming charges nothing
@@ -222,7 +222,7 @@ type HouseNotes = {                          // P30 §2.5 (Q6 default); shape pr
 
 1. **The conversation.** Her host representative asks, "If someone's agent finds a box they like, should I keep it while they ask their owner? For how long?" Naoko: "Until the evening is fine. One box per family on hold." It proposes, and she signs:
    - `box.reserve` holdable for up to 3 hours, one active hold per household, ten held at once, four of them at most for new visitors;
-   - terms: free cancellation until 9 AM on pickup day, no deposit, no fee ("unclaimed boxes still go to walk-in neighbours");
+   - terms: free cancellation until 9 AM on pickup day, no deposit, no fee ("unclaimed boxes still go to walk-in neighbors");
    - for the mochi day, a ¥1,000 deposit per box, kept on a no-show, refunded on cancellation before 9 AM the day before;
    - her three manners from setup ("Please come at your pickup time…", "Please don't resell", "Bring your own bag if you can"). "Please don't resell" becomes a real rule, two boxes per household a day; the other two stay courtesy.
 2. **A hold.** At 4:10 PM, Tobias Wren's representative agent is admitted with a pass and finds two boxes for tomorrow. Tobias's summary is at 6 PM, and Asagiri-dō holds for up to 3 hours, so it asks for a hold until 7:10 PM. The door answers `act_held`, with the terms attached.
@@ -230,7 +230,7 @@ type HouseNotes = {                          // P30 §2.5 (Q6 default); shape pr
 4. **A free cancellation.** At 8:30 the next morning Tobias's plans change. He says "cancel", by chat reply, and the door writes `cancelled_free`. No passkey was needed, because nothing was spent.
 5. **A no-show, under the terms.** On mochi day, Rafe Kalani's booking passes the 15-minute grace. The door writes `no_show`, `charged: ¥1,000`, under the terms Rafe approved. No finding, no notice, and his standing is unchanged. His summary: "You missed the mochi pickup. Under the terms you approved, Asagiri-dō kept the ¥1,000 deposit. Their terms page explains how to ask about it."
 6. **Squatting.** Overnight, forty new Shōkai visitor cards try to hold boxes. Four get holds (the `fresh` cap); the rest get `RATE_LIMITED`. Naoko's summary: "Many new visitors tried to hold boxes overnight; four were held and released at 7 AM. Nothing needs you."
-7. **Manners home, and a question.** The mochi day asks one question at the door: "Who will you share the mochi with?" Tobias's representative answers, `answered_by: "representative"`: "My owner hasn't answered this; I believe he'd say his neighbours." Naoko reads it and decides. Tobias's next summary includes that answer for him to confirm, and the night before pickup it reminds him: "Asagiri-dō asks you to bring your own bag if you can."
+7. **Manners home, and a question.** The mochi day asks one question at the door: "Who will you share the mochi with?" Tobias's representative answers, `answered_by: "representative"`: "My owner hasn't answered this; I believe he'd say his neighbors." Naoko reads it and decides. Tobias's next summary includes that answer for him to confirm, and the night before pickup it reminds him: "Asagiri-dō asks you to bring your own bag if you can."
 
 ---
 

@@ -1,6 +1,6 @@
 # Add a Shōkai door to a site: instructions for agents
 
-Version 1 (for `@kigenka/shokai` 0.5.0 and later; spec v0.5.0, wire `shokai/0.5`). Machine-readable twin: [`install-manifest.json`](install-manifest.json).
+Version 1 (for `@kigenka/shokai` 0.5.1 and later; spec v0.5.0, wire `shokai/0.5`). Machine-readable twin: [`install-manifest.json`](install-manifest.json).
 Print this file with `npx --no-install shokai agent-guide`, and the manifest with `npx --no-install shokai agent-guide --manifest` (after step 0).
 
 You are an agent, and your owner has asked you to add a Shōkai door to their site. A Shōkai door greets visiting representatives (agents that carry a Shōkai visitor card their owner signed), admits them with a pass to do what the place offers, and gives every other agent a leaflet to take home. The door is deterministic code: no model runs at the door. Your job is to set it up with your owner, so that it says what they mean, and then to hand them the one step only they can do: signing the door's Shōkai host card with their passkey.
@@ -30,8 +30,8 @@ The result is exactly the door an owner gets by hand. You run the same commands 
 Always install the exact, scoped package before running any `shokai` command, so `npx` can never fetch an unrelated package named `shokai`:
 
 ```sh
-npm install @kigenka/shokai@0.5.0
-# or, from the package file:  npm install ./kigenka-shokai-0.5.0.tgz
+npm install @kigenka/shokai@0.5.1
+# or, from the package file:  npm install ./kigenka-shokai-0.5.1.tgz
 ```
 
 Then run every command as `npx --no-install shokai …` (it uses the installed package and never downloads another).

@@ -1,0 +1,16 @@
+sequenceDiagram
+  participant R as Aya's agent<br/>representative
+  participant D as Kettle and Leaf
+  participant A as Aya
+  R->>D: Visitor card, proof,<br/>mandate tea.order max 50.00
+  D->>R: Host card and its proof
+  D->>R: grant, pass (wire: seat)
+  Note over R,D: 20.00 already spent<br/>under this mandate
+  R->>D: act tea.order 40.00
+  D->>R: act_held: limit 50.00,<br/>current 20.00, proposed 60.00
+  R->>A: LimitRequest, closed figures
+  A->>R: Signs a superseding mandate<br/>for this one purchase
+  R->>D: act_confirmation,<br/>superseding mandate
+  D->>R: Released. Pass keeps 50.00
+  R->>A: Report home
+  Note over D: Local record.<br/>No global score.

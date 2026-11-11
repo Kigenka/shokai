@@ -7,10 +7,10 @@
 [![Noor introduces Maison Ardoise at Kiran's door](diagrams/png/brand-door.png)](diagrams/svg/brand-door.svg)
 
 ::: tip Diagram honesty
-**Reference / SDK run** (repeatable from the linked trace). Node labels on this site say **pass** (v0.5 prose). The recorded run still used the v0.3 word seat/seated in places; the wire field remains `seat`. The trace was **not** re-recorded as a fresh v0.5 run.
+**0.5 recording, 11 November 2026** (repeatable from the linked trace). The diagram says **pass** in the prose. On the wire the field is still `seat`.
 :::
 
-**Where the diagram comes from.** A run of the reference implementation ([traces/brand-door.mjs](traces/brand-door.mjs)), mirroring its conformance scenario V29-D2, with fresh fictional keys; [traces/brand-door.trace.json](traces/brand-door.trace.json) lists every message in order (5/5 checks). Diagram node labels on this site say **pass** (v0.5 wording). The underlying v0.3 run still recorded "seated"; the wire field remains `seat`. The trace was not re-recorded.
+**Where the diagram comes from.** A run of the 0.5 protocol core ([traces/brand-door.mjs](traces/brand-door.mjs)), mirroring its conformance scenario V29-D2, with fresh fictional keys; [traces/brand-door.trace.json](traces/brand-door.trace.json) lists each step (5/5 checks).
 
 **What it shows**
 - A person can be a place's principal: their representative keeps their door (§10).

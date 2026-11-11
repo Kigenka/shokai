@@ -9,7 +9,7 @@ import { entryUrl, doorPointer, placeListing } from "../src/door.js";
 import { readFileSync } from "node:fs";
 import * as S1 from "../src/system1.js";
 import { Host, HouseConfigInvalid } from "../src/host.js";
-import { RealVerifier } from "../src/verify.js";
+import { RealVerifier, possessionPayload } from "../src/verify.js";
 import { createPublicKey } from "node:crypto";
 import { signEd, verifySig } from "../src/crypto.js";
 import { makeSigned, digestOf, newEd25519, randomId, parseMoney, b64u, canonDid, type PasskeyOwner, type Ed25519Signer } from "../src/crypto.js";
@@ -219,6 +219,54 @@ scenario("C235 the payment-instrument scan", () => {
   const unknownTool = act({ note: pan }, {}, "store.unknown_tool");
   check(unknownTool[0]?.reason_code === "CREDENTIAL_NOT_ACCEPTED", "before template checks: an unknown tool with a number gets the same answer");
   check(act({ amount: USD("5.00"), payment_ref: "order-4" })[0]?.type === "act_result", "an ordinary act goes through");
+});
+scenario("C210 red-team round 3 (V05-F10-04): a session token or a pasted session in an act is refused, not performed", () => {
+  const { h } = fernHost(); const aya = visitorCard("Aya Linden"); const { s, act } = seated(h, aya, "50.00", "shokai/0.5");
+  const shapes: [string, Record<string, unknown>][] = [["session_token", { session_token: "tok-FAKE-1" }], ["session{cookie}", { session: { id: "sess-FAKE", cookie: "sid=FAKE" } }],
+    ["session{token}", { session: { token: "tok-FAKE-2" } }], ["cookie header", { cookie: "sid=FAKE; path=/" }], ["Set-Cookie", { "Set-Cookie": "sid=FAKE" }], ["auth_token", { auth_token: "tok-FAKE-3" }],
+    ["session_key", { session_key: "k-FAKE" }]];
+  shapes.forEach(([name, extra], i) => {
+    const r = act({ amount: USD("1.00"), payment_ref: `sess-${i}`, ...extra });
+    check(r[0]?.type === "act_decision" && r[0].disposition === "not_a_fit" && r[0].reason_code === "CREDENTIAL_NOT_ACCEPTED", `${name}: not_a_fit / CREDENTIAL_NOT_ACCEPTED, not performed`);
+  });
+  const all = JSON.stringify(s.transcript.filter((o: any) => (o.message?.payload ?? o.message)?.from === h.cfg.rep_id)) + h.log.join("\n");
+  check(!/FAKE/.test(all), "no session value is echoed or logged by the door");
+  // Ordinary words that happen to be the same: a bakery's cookie, a booked class session, a session id. Not credentials.
+  check(act({ amount: USD("1.00"), payment_ref: "ok-1", cookie: "oatmeal" })[0]?.type === "act_result", "a cookie flavour (no name=value) is an ordinary argument");
+  check(act({ amount: USD("1.00"), payment_ref: "ok-2", session: { date: "2026-11-20", time: "09:00" } })[0]?.type === "act_result", "a booked class session (date and time) is an ordinary argument");
+  check(act({ amount: USD("1.00"), payment_ref: "ok-3", session: "morning" })[0]?.type === "act_result", "a session name is an ordinary argument");
+  check(T.CREDENTIAL_MEMBERS.includes("session_cookie") && T.CREDENTIAL_MEMBERS.includes("session_token"), "the C210 list names both session spellings");
+});
+scenario("C288 red-team round 3 (V05-F7-04): every binding never states when it lifts (≤ 180 days) and an appeal path", () => {
+  const DAY = 86400e3; const within = (u: unknown) => typeof u === "string" && Date.parse(u) > Date.parse(NOW) && Date.parse(u) - Date.parse(NOW) <= 180 * DAY;
+  // Stolen card: presented under another representative's proof. The presenter is bound, the card's owner is not.
+  { const { h } = fernHost(); const victim = visitorCard("Aya Linden"); const att = visitorCard("Kiran Vale");
+    const s = new Session(h, att); s.tag = "shokai/0.5"; s.greet();
+    const proof = makeSigned(possessionPayload(s.enc, s.hostNonce, h.cfg.rep_id), att.rep, NOW).signatures[0];
+    const r = s.send(s.msg("card_presentation", { card: victim.card, possession_proof: { ...proof, key_id: victim.card.payload.representative_key.key_id, signer: victim.rep.id, audience: h.cfg.rep_id } })).find((x: any) => x.type === "invitation_response");
+    check(r?.disposition === "never" && r?.retry?.kind === "never" && !r?.reason_code, "stolen card: deny / never, no reason code");
+    check(within(r?.retry?.until) && r.retry.until === h.never.get(canonDid(att.rep.id)), "stolen card: retry.until is the presenter's binding end, within 180 days");
+    check(r?.retry?.appeal?.url === FERN_ENTRY && r?.retry?.appeal?.place === h.cfg.principal_id, "stolen card: the appeal path names the place and its address (no appealUrl set: the entry)");
+    check(!h.isNever(victim.rep.id) && !h.isNever(victim.card.payload.principal.principal_id), "stolen card: the victim is not bound");
+  }
+  // An operator-set appeal URL wins.
+  { const { h } = fernHost({ opts: { appealUrl: "https://fernwood.example/appeals" } }); const victim = visitorCard("Aya Linden"); const att = visitorCard("Noor Achterberg");
+    const s = new Session(h, att); s.tag = "shokai/0.5"; s.greet();
+    const proof = makeSigned(possessionPayload(s.enc, s.hostNonce, h.cfg.rep_id), att.rep, NOW).signatures[0];
+    const r = s.send(s.msg("card_presentation", { card: victim.card, possession_proof: { ...proof, key_id: victim.card.payload.representative_key.key_id, signer: victim.rep.id, audience: h.cfg.rep_id } })).find((x: any) => x.type === "invitation_response");
+    check(r?.retry?.appeal?.url === "https://fernwood.example/appeals", "appealUrl set: the reply names it");
+  }
+  // Counted probing: the Nth distinct listed, out-of-card shape binds the principal; that reply and a later one both state the end and the appeal path.
+  { const { h } = fernHost({ tweak: (c) => { for (const a of ["store.wholesale_quote", "store.subscribe", "store.gift_card"]) c.policy.actions.push({ action: a, purposes: ["visitation"], level: "advise" } as any); } });
+    const pv = visitor("Vex Arlo", "person", { purposes: ["visitation"], actions: ["store.browse_catalog"] }); const rs: any[] = [];
+    let laterNever: any;
+    for (const a of ["store.wholesale_quote", "store.subscribe", "store.gift_card", "store.subscribe"]) { const ps = new Session(h, pv); ps.tag = "shokai/0.5"; ps.ritual(null, mandate(pv, "visitation", ["store.browse_catalog"]), { actions: [a] }); rs.push(ps.response());
+      laterNever = payloads(ps).find((x: any) => x?.type === "invitation_response" && x.disposition === "never"); }
+    const n = rs.find((x) => x?.disposition === "never");
+    check(!!n && within(n.retry?.until) && !!n.retry?.appeal?.url, "probing never: retry.until within 180 days and an appeal path");
+    const later = laterNever;
+    check(later?.disposition === "never" && later.retry?.until === n?.retry?.until && !!later.retry?.appeal?.url, "a later visit while bound: its never states the same end and the appeal path");
+  }
 });
 scenario("C233 idempotent repeats", () => {
   const { h } = fernHost(); const aya = visitorCard("Aya Linden"); const { s, act } = seated(h, aya, "50.00", "shokai/0.5");
@@ -1175,6 +1223,32 @@ scenario("C263 context requests: card enough, admit then request, or request bef
   const after = V.contextAdmission({ ...R, mode: "admit_then_request" }, undefined);
   check(after.admit && after.send_request, "admit then request: seated, and the request follows");
   check(V.contextAdmission({ mode: "card_enough" }, undefined).admit && !V.contextAdmission(undefined, undefined).send_request, "card enough (or no requirements): seated, nothing requested");
+  // v0.5.1 (§6.12): a place must not ask for a password, a recovery phrase or seed, or a card number (V05-F10-03).
+  const credFields = [
+    { name: "passkey_recovery_phrase", what: "Your passkey recovery phrase", why: "So we can verify it is really you.", required: true },
+    { name: "account_password", what: "Your account password", why: "To link your order history.", required: true },
+    { name: "card_number", what: "Card number", why: "Card on file.", required: true },
+    { name: "login_help", what: "Your Kettle & Leaf account password", why: "To sign you in." },
+    { name: "backup", what: "Your seed phrase", why: "So we can restore your account." },
+  ];
+  for (const f of credFields) {
+    check(V.contextFieldAsksCredential(f), `detects a credential ask: ${f.name}`);
+    check(V.contextRequirementsProblems({ mode: "before_entry", fields: [f], retention_days: 0 }).includes("context_requirements:credential_field"), `invalid config (the door won't start): ${f.name}`);
+    check(V.contextRequestFor("taste-blend", { mode: "before_entry", fields: [f], retention_days: 0 }, [f.name], opts) === null, `not emitted: ${f.name}`);
+  }
+  check(!V.contextFieldAsksCredential(R.fields![0]) && !V.contextFieldAsksCredential({ name: "favorite_seed", what: "A seed you like to cook with", why: "To stock the pantry." }),
+    "ordinary fields (a favorite opening, a cooking seed) are not credential asks");
+  check(start({ mode: "before_entry", fields: [credFields[0]], retention_days: 0 }).includes("context_requirements:credential_field")
+    && start({ mode: "admit_then_request", fields: [credFields[1]], retention_days: 0 }).includes("context_requirements:credential_field")
+    && start({ mode: "before_entry", fields: [credFields[2]], retention_days: 0 }).includes("context_requirements:credential_field"),
+    "a door with a password, recovery phrase or card-number question refuses to start (v0.5.1)");
+  const sneaky = { type: "context_request" as const, request_id: "cr-cred", place: "taste-blend", mode: "before_entry" as const,
+    fields: [{ name: "account_password", what: "Your account password", why: "To link your order history.", required: true }], retention_days: 0, expires_at: opts.expires_at };
+  const sneakyReq = { mode: "before_entry" as const, retention_days: 0, fields: sneaky.fields };
+  check(V.contextRequestProblems(sneaky, sneakyReq, "taste-blend").includes("credential_field:account_password"),
+    "a visiting representative refuses a request that asks for a password, even if the signed house named it");
+  check(V.contextRequestProblems(sneaky, undefined, "taste-blend").includes("credential_field:account_password"),
+    "and refuses it even when there are no signed requirements to check against");
 });
 
 scenario("R3-01 / C292 relay (unknown-key-share): a 0.5 possession proof is bound to the door it was made for", () => {

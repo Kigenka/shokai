@@ -1,20 +1,16 @@
 sequenceDiagram
   autonumber
-  participant TM as Theo (employee, owner)
-  participant R as Theo's co-worker representative
-  participant HQ as Halvenstone's company representative
-  participant G as Shōkai gate in front of internal MCP servers
-  participant S as Shipments MCP server
-  participant P as Pricing MCP server
-  TM->>R: Signs the card with a passkey (Theo's password never leaves Theo)
-  HQ-->>R: A vouch from did:web:halvenstone.example: role "account manager", team, purposes
-  R->>G: card, vouch, invitation_request: data_access, shipments.read for one client
-  Note over G: Checks owner signature, company vouch,<br/>role claim (vouched), purpose and limits
-  G->>R: grant, pass: tool_allowlist [shipments.read], 30 minutes
-  R->>G: act shipments.read
-  G->>S: forwarded with the pass attached (whose agent, why, within what)
-  S-->>R: last quarter's shipments
-  R->>G: act pricing.apply_discount 4 percent
-  G->>R: act_decision: considering, routed to the pricing approvals role
-  Note over G,P: Outside the pass, so the call never reaches the pricing server
-  R->>TM: Report: review ready, discount waiting for approval through the usual pricing process
+  participant TM as Theo<br/>(employee, owner)
+  participant R as Co-worker<br/>agent representative
+  participant H as Shipments-door<br/>host representative
+  Note over TM,H: After SSO, in the company's<br/>own app, Theo and the company<br/>sign a CustomerLink
+  TM->>R: Signs a Shōkai visitor card<br/>with a passkey
+  R->>H: Visitor card, proof,<br/>and invitation_request
+  H->>R: Host card, proof,<br/>then a welcome
+  Note over R,H: Checks the signature,<br/>the customer link,<br/>purpose and limits
+  H->>R: grant, pass (wire: seat):<br/>shipments.read, 30 minutes
+  R->>H: act shipments.read
+  R->>H: act pricing.apply_discount
+  H->>R: considering, routed<br/>to pricing approvals
+  Note over H: Outside the pass.<br/>Local record at the door.
+  R->>TM: Report home: review ready,<br/>discount waiting for approval

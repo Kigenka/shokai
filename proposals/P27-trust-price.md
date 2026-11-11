@@ -61,7 +61,7 @@ The protocol never sets a price, never moves money and never holds a payment met
 - **In the policy (signed).** `policy.trust_requirements` maps an action name to a `TrustRequirement`. It is part of the house config, so changing the price is a change of house that needs a new owner signature on the Shōkai host card (§2.3, §3.1, C205).
 - **In the listing (public summary).** Each `PlaceAction` MAY carry `trust: { paths: TrustPathKind[], obtain_url? }`, naming **the kinds of proof** the place accepts (`introduction`, `history`, `deposit`, `paid`, `spending_mandate`, `customer_link`, …). *Decided (Q2):* the listing and every answer show **kinds, never numeric thresholds**: no visit counts, day counts or cap sizes, so an attacker can't read how long to wait or how far to go.
 - **Issuers are not public.** *Decided (Q3):* third-party issuers a place accepts are named only to a **verified** visiting representative (its Shōkai visitor card verified at step 2), in the `trust` readiness item; never in the listing or the lobby, as for `trusted_introducers` (§4). A place's own `obtain_url` may be public.
-- **Absent = today's behaviour.** A small shop that sets nothing pays nothing extra.
+- **Absent = today's behavior.** A small shop that sets nothing pays nothing extra.
 
 ### 4.2 Shape
 
@@ -221,7 +221,7 @@ Items 17 and 23 are about **device attestation**: proving what made a passkey, o
 
 ### 6.7 Receipt levels (informative)
 
-A `TrustReceipt` MAY carry `level`, a label the place defines (`"1"`, `"silver"`, `"regular"`). Honest customers move up over time, like a loyalty programme or airline miles: a place can reissue a higher-level receipt after several clean purchases or visits, and its own policy can let a higher level meet more paths or larger grants. Levels are the place's choice: the protocol gives them no meaning, they never travel to another place (§6.1, one `audience`), and a level never overrides a recorded finding. A place that uses levels SHOULD describe them in plain words in the receipt's `shown_to_owner`.
+A `TrustReceipt` MAY carry `level`, a label the place defines (`"1"`, `"silver"`, `"regular"`). Honest customers move up over time, like a loyalty program or airline miles: a place can reissue a higher-level receipt after several clean purchases or visits, and its own policy can let a higher level meet more paths or larger grants. Levels are the place's choice: the protocol gives them no meaning, they never travel to another place (§6.1, one `audience`), and a level never overrides a recorded finding. A place that uses levels SHOULD describe them in plain words in the receipt's `shown_to_owner`.
 
 ## 7. Honest limits
 

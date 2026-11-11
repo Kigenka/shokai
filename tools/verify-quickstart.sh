@@ -15,13 +15,14 @@ else ( cd "$ROOT/packages/shokai" && npm pack --silent --pack-destination "$TMP"
 TGZ="$(ls "$TMP"/kigenka-shokai-*.tgz)"
 cd "$TMP" && mkdir shokai-quickstart && cd shokai-quickstart
 npm init -y >/dev/null && npm pkg set type=module
-# The dependency pins come from QUICKSTART.md itself (its `npm install @kigenka/shokai@0.5.0 …` line). The test still installs a local package file so it does not need the registry:
+# The dependency pins come from QUICKSTART.md itself (its `npm install @kigenka/shokai@<package version> …` line). The test still installs a local package file so it does not need the registry:
 # the test installs exactly what the reader is told to install, and fails if the document stops pinning them.
-PINS="$(python3 - "$ROOT/QUICKSTART.md" <<'PY'
+PKGV="$(node -p "require('$ROOT/packages/shokai/package.json').version")"
+PINS="$(python3 - "$ROOT/QUICKSTART.md" "$PKGV" <<'PY'
 import re,sys
-doc=open(sys.argv[1]).read()
-m=re.search(r"^npm install @kigenka/shokai@0\.5\.0 ((?:\S+@\d\S*\s*)+)$", doc, re.M)
-assert m, "QUICKSTART.md: no pinned `npm install @kigenka/shokai@0.5.0 <deps@version>` line"
+doc=open(sys.argv[1]).read(); v=sys.argv[2]
+m=re.search(r"^npm install @kigenka/shokai@" + re.escape(v) + r" ((?:\S+@\d\S*\s*)+)$", doc, re.M)
+assert m, f"QUICKSTART.md: no pinned `npm install @kigenka/shokai@{v} <deps@version>` line"
 pins=m.group(1).split()
 need={"@modelcontextprotocol/sdk","zod"}
 have={p.rsplit("@",1)[0] for p in pins}

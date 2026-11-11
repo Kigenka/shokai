@@ -1,11 +1,27 @@
-flowchart TB
-  Q1["Which software sent this request?"] --> P1["Web Bot Auth (IETF draft), RFC 9421 signatures"]
-  Q2["Which client app and user session, with which scopes?"] --> P2["OAuth 2.1, as used by MCP authorization"]
-  Q3["Whose representative is this, why did it come,<br/>what may it do here, and how has it behaved?"] --> P3["Shōkai"]
-  Q4["Which tools and data can it use?"] --> P4["MCP"]
-  Q5["How do agents work together on a task?"] --> P5["A2A"]
-  Q6["A personal agent working with a company"] --> P6["Personal Agent Protocol (draft) · PACT"]
-  Q7["Is this payment authorized?"] --> P7["AP2 · Agentic Commerce Protocol"]
-  Q8["Issuer-backed identity and delegation?"] --> P8["KYA-OS · x401"]
+flowchart TD
+  Q1["Which software sent this request?"]
+  Q1 --> P1["Web Bot Auth (IETF draft),<br/>RFC 9421 signatures"]
+
+  P1 --> Q2["Which client app and user session,<br/>with which scopes?"]
+  Q2 --> P2["OAuth 2.1, as used by<br/>MCP authorization"]
+
+  P2 --> Q3["Whose representative is this,<br/>why did it come,<br/>what may it do here,<br/>and how has it behaved?"]
+  Q3 --> P3["Shōkai"]
+
+  P3 --> Q4["Which tools and data can it use?"]
+  Q4 --> P4["MCP"]
+
+  P4 --> Q5["How do agents work together<br/>on a task?"]
+  Q5 --> P5["A2A"]
+
+  P5 --> Q6["A personal agent working<br/>with a company"]
+  Q6 --> P6["Personal Agent Protocol (draft)<br/>and PACT"]
+
+  P6 --> Q7["Is this payment authorized?"]
+  Q7 --> P7["AP2 and Agentic<br/>Commerce Protocol"]
+
+  P7 --> Q8["Issuer-backed identity<br/>and delegation?"]
+  Q8 --> P8["KYA-OS and x401"]
+
   classDef shokai fill:#2c4a6c,stroke:#2c4a6c,color:#fbf9f4
   class P3 shokai

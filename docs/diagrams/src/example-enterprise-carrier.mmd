@@ -1,0 +1,18 @@
+sequenceDiagram
+  autonumber
+  participant TM as Theo<br/>(employee, owner)
+  participant R as Co-worker<br/>agent representative
+  participant C as Redfen booking-door<br/>host representative
+  Note over TM,C: Redfen's door sits in front<br/>of its booking desk
+  TM->>R: Signs a mandate: book one<br/>Pacific lane, this week,<br/>no rate change
+  R->>C: Reads the listing
+  Note over R,C: No card needed to look
+  R->>C: Shōkai visitor card<br/>and possession proof
+  C->>R: Carrier host card<br/>and a fresh proof, then a welcome
+  R->>C: invitation_request: book one<br/>lane, with the signed mandate
+  Note over R,C: Carrier policy decides.<br/>Pass = policy ∩ mandate ∩ request
+  C->>R: grant, pass (wire: seat):<br/>one booking, this lane,<br/>this week
+  R->>C: act bookings.create
+  R->>C: farewell
+  Note over C: Local record<br/>at the door
+  R->>TM: Report home: the booking<br/>is confirmed

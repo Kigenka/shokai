@@ -1,145 +1,139 @@
-# An online university: a campus door, course doors and a room inside
+# An online university: three doors a campus would set
 
-**The story:** Sorawick Online University (fictional) teaches online. In online learning, the first questions are always about security and who's who: is this really the enrolled student, is this really the course's teacher, and who can see whose records? Students and faculty now have agents that work for them, so the campus needs a way to tell whose agent is calling and what it may do. Ines Marlow (fictional) is a student with her own representative agent. Dr. Hana Ellery (fictional) teaches DS 210, Data and Society, with Prof. Oren Calloway (fictional). Every name here is fictional, and no real university or person is described.
+**Non-normative, written for v0.5.0.** This page is from the **place's side**: how an online university would set the doors that matter once faculty and students have agent representatives. The specification decides; where this page and the spec disagree, the spec wins.
 
-Like a physical campus, the online one has a main gate and doors inside it. The **campus door** is kept by the university's **host representative** for admissions and the registrar. Each **course door** is kept by a faculty member's representative. Once inside, the representatives the campus let in can meet in a **room**: a study group, a peer introduction, an exchange of Shōkai cards.
+**The story:** Sorawick Online University (fictional) teaches a fifteen-week online course, DS 210, Data and Society. Dr. Hana Ellery (fictional) teaches it, with Prof. Oren Calloway (fictional). Ines Marlow (fictional) is an enrolled student. The university provides a Workspace — a Drive under university credentials — where students submit weekly work. Every name here is fictional. No real university, course, faculty member, student, or product is described.
 
-The examples below use the plain-words names: the **window** (a place's open listing), **knock and introduce**, **check**, **decide**, **pass**, **work within limits** and **both report**.
+Faculty now have co-worker agents that can help design a course, operate it, and read what students submit. Students should have a representative of their own from enrollment, and keep using it. The university's job is to put a **Shōkai door** in front of each resource it is responsible for, so a visit is visible, scoped, and recorded.
 
-## Two views of one campus
+The visits themselves follow the eight beats: the **window** (the listing, and the leaflet for a visitor without a card), **cards and proofs**, **welcome**, **purpose and signed limits**, **decide**, **pass** (wire: `seat`), **acts checked**, and **report home** with a **local record**.
 
-**The host view:** the university signs its campus Shōkai host card and sets the door policy. Every arrival is answered: an anonymous visiting representative gets the leaflet, a prospective student gets a narrow pass, and an admitted student enrols and goes on to course doors.
+**What v0.5.0 already gives, and what it does not.** Shōkai already has Shōkai visitor and host cards, audience-bound possession proofs, signed mandates, a pass (wire: `seat`), local records, and a customer link for a place that already knows someone ([SPEC §5.4](../../SPEC.md), the institutions extension). A connector that binds a door to a particular Workspace or Drive is **not built**. Where this draft talks about the university's Workspace door, the door sits in front of the university's own Drive; wiring that door to a vendor's Workspace product is a proposal, not something the 0.5 release ships.
 
-[![The campus door seen from inside: anonymous visiting representatives, prospective students, admitted students, course doors kept by faculty members' host representatives, and the room](../diagrams/svg/example-university-host.svg)](../diagrams/svg/example-university-host.svg)
+## Three doors the university sets
 
-**The visiting view:** Ines signs once. Her visiting representative reads the window, knocks and introduces itself, is checked, decided on and given a pass at the campus door and then at a course door, works within its pass, and reports home. Dr. Ellery's own agent also goes out, to a publisher, as her visiting representative.
+[![Three doors Sorawick would set: a university Workspace door, a course door, and onboarding so each student has their own representative](../diagrams/svg/example-university-three-doors.svg)](../diagrams/svg/example-university-three-doors.svg)
 
-[![Ines's visiting representative at the campus and at a course door, and Dr. Ellery's agent going out](../diagrams/svg/example-university-visiting.svg)](../diagrams/svg/example-university-visiting.svg)
+A campus door for admissions and the registrar still sits at the front: a visiting representative with no Shōkai visitor card gets the leaflet, not a rejection; a prospective student can read the window and, with a card, may receive a narrow pass to look, ask and apply; enrollment may use the university's own signed offer of admission (optional in v0.5.0, SPEC §4). This page's focus is the three doors below, which is where weekly teaching actually happens.
 
-## Who's who: many representatives, one per owner
+## 1. The university's Workspace door
 
-| Representative | Owner (who signs its Shōkai card) | What it does |
-|---|---|---|
-| The campus host representative (admissions and registrar) | The university | Keeps the campus door: the leaflet, applications, enrolment |
-| A course host representative | One of the course's faculty members | Keeps one course door: materials, submissions, each student's own grades, office hours |
-| A department or section host representative (optional) | The university | Keeps a door for one area, such as the library desk or a department office |
-| A faculty member's representative | That faculty member | Keeps their course door, and goes out for them |
-| A student's representative | That student | Goes out for the student: to the campus, to courses, to a study room |
+Students submit weekly work, through a fifteen-week term, into a Drive the university provides under its own credentials. That Workspace is the university's, not each student's private store. **Without a door**, a faculty member — or a co-worker agent acting for them — can be given access to those folders, sweep them at speed, and bring back a synthesis. The store does not, by itself, say whose agent came, for which course and week, or that they may summarize and not edit. The student whose work was read may not know that an agent visited at all.
 
-Each course has one or two faculty members, and **either one's representative can keep the course door**. For DS 210, Dr. Ellery's representative keeps it; if Prof. Calloway kept it instead, the course Shōkai card would be his to sign. The campus listing names each course door and the key its Shōkai card must be signed by, so a student's representative checks a course door against the campus's own window before asking for anything (SPEC §3.1).
+**With a door in front of the university's Drive**, that visit becomes visible and scoped. The university owns and operates one Workspace door. It signs the Shōkai host card and sets the door policy. Students are not the owners of this door. They are the **subjects of the record**: university policy is that every visit that touches a student's work is recorded at the door and is visible to that student.
 
-**One agent, or several.** Dr. Ellery uses one representative agent with two Shōkai cards she signed: one to keep her course door, one to go out. Prof. Calloway uses separate agents: one to go out, and one that would keep a course door. Both ways are fine; each Shōkai card names its owner, and withdrawing one Shōkai card leaves the other untouched (SPEC §2.3, §2.6).
+The door sits in front of the resource. A Drive (or other Workspace) integration is not built in v0.5.0; this is how the university would place a Shōkai door in front of its own Drive, not a claim that 0.5 already wires one to a vendor's product.
 
-## Enrolment: bring your own representative, or make one here
+Each week, Dr. Ellery's co-worker agent visits as her **visiting representative**, with the **Shōkai visitor card** she signed and a mandate she signed for that errand — scoped to one course, one week, read-only, summarize only. For example: "read DS 210 week 6 submissions, summarize, no edits." The university already knows her as faculty, so the door may also ask for a **customer link** made in its own staff channel ([SPEC §5.4](../../SPEC.md)). The Workspace host representative checks the card and the audience-bound possession proof, shows the Workspace host card with its own proof, welcomes the visitor, and decides. The pass is *policy ∩ mandate ∩ request* (SPEC §7.1): the university's door policy, what Dr. Ellery signed, and what this visit asked for.
 
-A student comes with a representative in one of two ways:
-
-- **Bring your own.** Ines already has a representative agent. She signs its Shōkai card once with her passkey, on her own phone.
-- **Make one here.** Tomas Reyna (fictional), a classmate, has no agent yet. The university's setup creates a representative for him at enrolment. It is still **his**: he signs its Shōkai card with his own passkey, the Shōkai card names him as the owner, and he can withdraw it or take it with him. The university hosts the setup; it never signs for him.
-
-## 1. An anonymous visiting representative comes first
-
-An agent with no Shōkai card knocks at the campus door. The campus host representative doesn't ignore it: it gives the leaflet (what the campus is, what enrolment needs, one plain sentence the agent can show its owner) and a kind "not now" (SPEC §3.3).
-
-## 2. A prospective student: the window, then a narrow pass
-
-Lio Varga (fictional) is thinking about applying. His visiting representative reads the **window** first: the programmes, and what each action will ask Lio for. Applying asks for a name and an email; enrolment asks for a name, an email and a date of birth (`data_asks`, SPEC §3.1). It needs no Shōkai card to look.
-
-Then it **knocks and introduces itself** with the Shōkai card Lio signed, and states its purpose: to ask and apply.
+[![Dr. Ellery's co-worker agent visits the university's Workspace door to read DS 210 week 6 submissions](../diagrams/svg/example-university-workspace-door.svg)](../diagrams/svg/example-university-workspace-door.svg)
 
 ```json
 { "type": "invitation_request",
-  "mandate": { "payload": { "purpose": { "code": "inquiry", "statement": "Ask about the data science programme, and apply", "locale": "en-US" },
-                            "allowed_actions": ["campus.look", "programs.ask", "application.submit"] } },
-  "proposal": { "request": { "actions": ["campus.look", "programs.ask", "application.submit"] }, "etiquette_register": "first_meeting" } }
+  "card_digest": "sha-256:…",
+  "mandate": { "payload": { "purpose": { "code": "data_access", "statement": "Read DS 210 week 6 submissions, summarize, no edits", "locale": "en-US" },
+                            "allowed_actions": ["submissions.read", "submissions.summarize"] } },
+  "proposal": { "request": { "actions": ["submissions.read", "submissions.summarize"] }, "etiquette_register": "established",
+                "value_to_counterparty": { "text": "Weekly review of DS 210 week 6 submissions.", "locale": "en-US" } } }
 ```
 
-The campus host representative **checks** the Shōkai card and the purpose, **decides** and **gives it a pass**. Lio isn't a student yet, so the pass is narrow:
-
 ```json
-{ "decision": "grant", "seat": { "tool_allowlist": ["campus.look", "programs.ask", "application.submit"] } }
+{ "type": "invitation_response", "decision": "grant",
+  "seat": { "seat_id": "seat-sw-ws-ellery-w6-01", "levels": ["act_on_behalf"],
+            "tool_allowlist": ["submissions.read", "submissions.summarize"],
+            "access_mode": "user_delegated",
+            "brand": { "label": "Sorawick Workspace", "vendor_warranted": true } } }
 ```
 
-A request for course materials from this pass gets an explicit answer, never silence: `act_decision` `deny`, because it is outside the pass (SPEC §7.2). Lio's representative applies within its pass, and admissions decides later, with people.
-
-## 3. Enrolment, with the offer of admission
-
-Ines applied the same way and was admitted. The **offer of admission** is the campus's own invitation: a signed statement from the university's own key, naming Ines's representative and its Shōkai card. Enrolment creates an account, and the specification recommends that a place offering accounts asks for an introduction or its own invitation before it does (SPEC §4). So without the offer, the answer is an explained "not now":
+A request to edit is outside the pass. The Workspace host representative refuses it with a reason:
 
 ```json
-{ "decision": "deny", "disposition": "not_now", "reason_code": "VOUCH_REQUIRED" }
+{ "type": "act_decision", "decision": "deny", "disposition": "not_a_fit",
+  "seat_id": "seat-sw-ws-ellery-w6-01", "tool": "submissions.edit" }
 ```
 
-With it, Ines's visiting representative gets a pass for `campus.look` and `enrolment.confirm`, and enrols.
+The visiting representative reports home to Dr. Ellery (a synthesis of week 6, rendered from machine fields, SPEC §8.2). The Workspace door keeps a **local record** of the visit (SPEC §9.1). Because the visit touched Ines's work, university policy makes that record visible to Ines: she can see who visited, for what purpose, and what was granted or refused. There is no global score.
 
-## 4. A course door: exactly what a student needs
+The same contrast holds for every week of the term: institutional folder access under university credentials can be invisible and unscoped; a door in front of the university's Drive makes the faculty agent a named visitor with a signed limit, and the student a visible subject of the record.
 
-Ines's representative knocks at the DS 210 door. Dr. Ellery's representative, as the course's host representative, checks the Shōkai card Ines signed, decides and gives it a pass. The pass is *policy ∩ mandate ∩ request* (SPEC §7.1):
+## 2. The course door
+
+DS 210 has its own door, in front of the course's materials, questions and guidance. Dr. Ellery's co-worker agent — the same agent that helped design and produce the course — now **operates it as the course's host representative**. That is how this campus would run an agentic course: the agent that built the materials is the agent that keeps the door. Dr. Ellery and Prof. Calloway set the course policy and sign the course Shōkai host card; they do not leave decisions the policy does not cover to the agent alone.
+
+This is a **curated door**. Ines is already enrolled, so the university can ask for a **customer link** ([SPEC §5.4](../../SPEC.md)), made in its own enrollment channel — not from a self-declared "I am a student here." The link is signed by the university's principal key and by Ines's passkey. The course door checks it on visits that need it. When enrollment ends, the university ends the link.
 
 ```json
-{ "decision": "grant",
-  "seat": { "tool_allowlist": ["course.materials.read", "assignment.submit", "grades.view_own", "office_hours.book"] } }
+{ "link_id": "cl-ines-ds210-01",
+  "place": "did:web:ds210.sorawick.example",
+  "owner_id": "did:jwk:eyJ…ines",
+  "rp_id": "owners.sorawick.example",
+  "scope": { "actions": ["course.materials.read", "assignment.submit", "grades.view_own", "course.ask"] },
+  "issued_at": "2026-09-01T12:00:00Z",
+  "expires_at": "2027-06-01T12:00:00Z",
+  "shown_to_owner": { "text": "Link your agent representative to your DS 210 enrollment for materials, submissions, your own grades and course questions.", "locale": "en-US" } }
+```
+
+Ines's **agent representative** arrives with the **Shōkai visitor card** she signed and an audience-bound possession proof. The course host representative shows the course Shōkai host card with its proof, welcomes the visitor, and decides. The pass is again *policy ∩ mandate ∩ request*:
+
+```json
+{ "type": "invitation_response", "decision": "grant",
+  "seat": { "seat_id": "seat-ds210-ines-01", "levels": ["act_on_behalf"],
+            "tool_allowlist": ["course.materials.read", "assignment.submit", "grades.view_own", "course.ask"],
+            "access_mode": "user_delegated",
+            "brand": { "label": "DS 210: Data and Society", "vendor_warranted": true },
+            "mandate_id": "m-…" } }
 ```
 
 | In the pass | Not in the pass |
 |---|---|
 | Course materials | Other students' records, grades and submissions |
 | Submitting her own assignments | The class roster |
-| Her own grades | Grading tools (the faculty's own) |
-| Booking office hours with Dr. Ellery | Anything Ines didn't sign for |
+| Her own grades | Grading tools (faculty and staff use their own doors) |
+| Questions and guidance within course policy | Anything Ines didn't sign for |
 
-The pass keeps every other tool out of reach. Which rows `grades.view_own` returns, only Ines's, is the course's own service, the way checking a price is a shop's (SPEC §7.2). When the course runs behind an MCP server, `tools/list` shows only these four tools, and each call is a signed act (SPEC §11.3).
+A request for `grades.view_all` is refused with a reason (`act_decision` `deny`, `not_a_fit`). A question the pass does not cover, such as asking for an extension, can be answered `considering`: taken inside to Dr. Ellery, with a date for the answer (SPEC §6.8). The course-operating agent does not decide that alone.
 
-Her representative tries `grades.view_all`. It isn't in the pass, so the course's host representative refuses it with a reason:
+Throughout the term, Ines's representative can come back for materials, submit work, and ask for guidance, always within the pass. The course door records each visit locally. Ines's representative reports home.
 
-```json
-{ "type": "act_decision", "decision": "deny" }
-```
+**Optional (SPEC §4):** a shared study room, or a classmate's vouch to enter one, is not required for the course door or the Workspace door to function, and it is not the way this campus admits students to the course.
 
-**Office hours and questions.** Booking a slot is in the pass. A question the pass doesn't cover, such as asking for an extension, can be answered `considering`: taken inside to Dr. Ellery, with a date for the answer (SPEC §6.8). Dr. Ellery's representative never decides it alone.
+## 3. Onboarding: each student gets a representative of their own
 
-## 5. Both report
+The most lasting thing the university can set up is making sure each student has an **agent representative** and a **Shōkai visitor card** at enrollment, practices with it all term, and can take it to other doors afterwards.
 
-Ines's visiting representative reports home, rendered from machine fields only (SPEC §8.2). From the run:
+A student comes with a representative in one of two ways:
 
-> The place with key …(this run's key) (claims to be "DS 210: Data and Society (Dr. Ellery)"; not verified) gave me a pass for "course.materials.read", "assignment.submit", "grades.view_own" and "office_hours.book", no spending. I did 4 actions; 1 was refused.
+- **Bring your own.** Ines already has a representative agent. She signs its Shōkai visitor card once with her passkey, on her own device. The signing key stays with her, not on an agent server.
+- **Make one here.** Tomas Reyna (fictional), a classmate, has no agent yet. The university's enrollment setup creates a representative for him. It is still **his**: he signs its Shōkai visitor card with his own passkey, the card names him as the owner, and he can withdraw it or take it with him. The university hosts the setup; it does not sign for him.
 
-The course's host representative records the visit at its door, in the record it keeps of each counterpart (SPEC §9.1). That is how the course remembers who came, what was decided and how each visit went.
+From week 1, that representative is what the student uses at the course door, and later at other course doors, at the campus door, or at doors outside the university. By the end of the term it is a practiced habit, not a new tool they meet at the last assignment. Each place still decides under its own policy. The Workspace door remains the university's; the student's representative is not its host.
 
-## 6. The room: safe, because everyone came through the door
+A visiting representative that arrives at the campus or course door without a Shōkai visitor card is not ignored: it receives the leaflet (what the place is, what is needed, a plain sentence for its owner) and a kind `not_now`. That is not a rejection (SPEC §3.3).
 
-Everyone inside got there through a Shōkai door, so their representatives can meet inside: a study group for DS 210, a peer introduction, an exchange of Shōkai cards. Each Shōkai card was checked at the door, and inside, with the [Gatherings extension](../../extensions/gatherings.md), every message is signed and the guest list is too.
+## Proposal: badges that open doors
 
-Ines's representative also keeps a small door for her: her DS 210 study room, which asks for an introduction and says so in its listing. Tomas's representative knocks with no introduction and isn't given a pass. Then a **warm introduction**: Wen Halsey (fictional), a classmate Ines knows, signs a vouch for Tomas's representative: "a classmate introduced me here". It is signed, scoped to study collaboration and revocable, and Wen answers for it with her own standing (SPEC §4). With it, Tomas's representative gets a pass and posts the week 3 notes. Most rooms never need one.
+**Proposal, not built in v0.5.0.** Universities issue credentials and badges. [Open Badges 3.0](https://standards.1edtech.org/open-badges/specifications/standards/v3p0) is a 1EdTech standard, built on the [W3C Verifiable Credentials Data Model](https://www.w3.org/TR/vc-data-model-2.0/). Shōkai v0.5.0 does not read Open Badges. The closest piece already in the protocol is an optional vouch ([SPEC §4](../../SPEC.md)): a signed introduction, which is not an achievement credential.
 
-## 7. A faculty member's representative goes out
+Ines earns a "Data Ethics, gold" badge. Her agent representative can carry it. A door whose policy asks for that badge — an advanced lab, or a scholarship desk — may grant a wider pass when the badge is presented and checks out.
 
-Dr. Ellery's same agent, with the Shōkai card she signed for going out, visits Fernhill Press (a fictional publisher) as her **visiting representative**, to ask about a reading pack for DS 210. It reads the window, introduces itself and gets a pass to look at the catalogue and ask for permission. The publisher sees her going-out Shōkai card only, not the course Shōkai card.
+The **Shōkai visitor card is not upgraded.** It still says who she is and who stands behind the representative. Badges are separate signed proofs, presented alongside the card when a door asks for them. Each door decides what a badge is worth. The student chooses what to show — the minimum the door asked for — so no door sees her whole record. There is no global score.
 
-## 8. Weekly coursework, with the student's consent
+## Faculty and staff doors
 
-Each week, Dr. Ellery's representative collects the students' exercises from their coursework folders.
+The university can put a door in front of faculty and staff tools the same way a company puts a door in front of internal MCP servers: roster, grading, and section administration sit behind a staff door. A faculty co-worker agent arrives on the faculty member's Shōkai visitor card, with a customer link made in the university's own staff channel ([SPEC §5.4](../../SPEC.md)). That door is how the course-operating agent reaches tools a student must not. It is the same protocol; it is not a third path for students.
 
-**Today.** Students who volunteer share a folder link with the course. Any agent holding that link can get in, and the folder can't tell whose agent it is or why it came.
-
-**With Shōkai.** Ines's representative keeps the door of her DS 210 coursework, as her **host representative**. Dr. Ellery's representative knocks and introduces itself as her **visiting representative**: "I've come to collect this week's exercises for DS 210." Ines's host representative checks whose agent it is and gives it a pass. The pass is *policy ∩ mandate ∩ request* (SPEC §7.1): the policy is Ines's door, opened within the university's rules for the course folder only, read only; the mandate is what Dr. Ellery signed for her representative; the request is this week's exercises. It reads the DS 210 folder and nothing else; a request for the rest of Ines's folders is refused with a reason.
-
-It is opt-in, never required. Ines decides whether to open that door, and can close it at any time. Each side reports: Dr. Ellery's representative to Dr. Ellery, and Ines's host representative in its own record of who came (SPEC §9.1).
-
-Her representative also helps Ines keep up: it reads the course materials within her pass, reminds her of what is due, and brings home anything that needs her.
-
-**One institution, many doors.** The university sets an agent policy for each kind of door it is responsible for: the campus door, course doors kept by faculty members' representatives, and the rules within which students open their own doors. The protocol is the same at every one of them.
+Dr. Ellery can also send the same agent out, with the Shōkai visitor card she signed for going out, to a publisher or another campus service. The place she visits sees her going-out visitor card, not the course host card.
 
 ## Student data and no nudging
 
-- **Only what the owner allowed.** A student's representative shares only what the student signed for. It is loyal to the student (SPEC §1).
-- **Declared up front.** Each campus action declares the personal data it will ask for (`data_asks`). A place shouldn't ask for undeclared data, and a representative takes an undeclared ask home rather than answer it (SPEC §3.1).
-- **Other students stay private.** Another student's records are never in a student's pass, and the course's record of a visit is the course's own.
-- **No nudging.** A place's prose is never an input to a decision (SPEC §6.4). Instructions hidden in prose have no effect and are noted as manipulation (SPEC §6.5). At a person's own door, pressure the signed offer doesn't back is declined and reported (SPEC §10).
+- **What the owner allowed.** A student's representative shares what the student signed for, and not more. It is loyal to the student (SPEC §1).
+- **Declared up front.** Each campus and course action declares the personal data it will ask for (`data_asks`). A place shouldn't ask for undeclared data, and a representative takes an undeclared ask home rather than answer it (SPEC §3.1).
+- **Other students stay private.** Another student's records are not in a student's pass. A visit that touches a student's work is recorded at the door that was visited, and university policy makes that record visible to the student it concerns.
+- **No nudging.** A place's prose is not an input to a decision (SPEC §6.4). Instructions hidden in prose have no effect and are noted as manipulation (SPEC §6.5). At a person's own door, pressure the signed offer doesn't back is declined and reported (SPEC §10).
 - **Nothing beyond the limits.** Anything beyond what the student signed goes home for the student to decide.
 
 ## Run it
 
-The campus, the course, the study room and the publisher are in one SDK run, with fresh keys and no network (owner keys are stand-ins for passkeys): [`examples/traces/university.mjs`](../../examples/traces/university.mjs). It checks every step above, including the narrow prospective pass, enrolment with and without the offer, the four course tools, the refused `grades.view_all`, the course's record, the study room with and without Wen's vouch, Dr. Ellery's one agent with several Shōkai cards, and the weekly collection at Ines's coursework door, given a pass for the DS 210 folder only. `npm test` in `packages/shokai` runs its 25 checks.
+The campus door, the course door, an optional study room, a publisher visit and a weekly collection at a coursework door are in one SDK run, with fresh keys and no network (owner keys are stand-ins for passkeys): [`examples/traces/university.mjs`](../../examples/traces/university.mjs). It checks the narrow prospective pass, enrollment with and without the university's signed offer, the course tools and a refused `grades.view_all`, the course's local record, the optional study room with and without a classmate's vouch, Dr. Ellery's one agent with more than one Shōkai card, and a protocol-level visit to a coursework door with a pass for that course folder only. The SDK test suite in `packages/shokai` includes these checks.
 
-[![One student's visit to a course, message by message](../diagrams/svg/example-university.svg)](../diagrams/svg/example-university.svg)
+That run is the protocol walk. It does not implement a Drive or Workspace connector, and it does not itself design a course. In the run, the weekly collection is modeled as a door Ines's representative keeps for her own coursework folder. This page places that visit at one university-owned Workspace door instead, with students as the subjects of the record rather than the door's owners. Wiring the door to a vendor's Workspace remains a proposal.

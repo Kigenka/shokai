@@ -1,0 +1,10 @@
+/* Force the same face mermaid measures with and draws with. */
+:root, html, body, #my-svg, #container, #container * {
+  font-family: "Noto Sans", sans-serif !important;
+  --mermaid-font-family: "Noto Sans", sans-serif !important;
+}
+#my-svg, #my-svg text, #my-svg tspan, #my-svg .actor, #my-svg .actor-box,
+#my-svg .noteText, #my-svg .messageText, #my-svg .label, #my-svg .nodeLabel,
+#my-svg .edgeLabel, #my-svg .loopText, #my-svg span, #my-svg p, #my-svg div {
+  font-family: "Noto Sans", sans-serif !important;
+}

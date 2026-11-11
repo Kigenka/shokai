@@ -1,12 +1,12 @@
 # Contributing to Shōkai
 
-Thank you for looking at Shōkai. **v0.5.0 is the current draft** in this repository (not yet on npm). **v0.3.0 is the latest published release** (`@kigenka/shokai@0.3.0`). Neither is 1.0, so review is the most useful contribution right now: read the specification, try to implement it, and tell us where it's unclear or unsafe.
+Thank you for looking at Shōkai. **v0.5.0 is the current published protocol** in this repository. **`@kigenka/shokai@0.5.0` is also npm `latest`**, as of 10 November 2026, 7:26 PM Pacific Time. The public GitHub repository is [Kigenka/shokai](https://github.com/Kigenka/shokai), at tag [v0.5.0](https://github.com/Kigenka/shokai/releases/tag/v0.5.0). It is not 1.0, so review is the most useful contribution right now: read the specification, try to implement it, and tell us where it's unclear or unsafe.
 
 ## Ways to help
 
 - **Open an issue** for anything unclear, contradictory or unsafe. Quote the section (for example "§6.7") and, if you can, the conformance check involved (for example "C151").
 - **Implement it** from the specification alone (start with [`SPEC.md`](./SPEC.md); the canonical normative text is [`docs/SPEC-DETAIL.md`](./docs/SPEC-DETAIL.md)), run the conformance runner against your door (`npx shokai-conformance <url>`), and tell us where you had to guess. An independent implementation is the strongest review there is.
-- **Propose a change.** Small fixes can be a pull request. A change to normative behaviour starts as a proposal in [`proposals/`](./proposals/): copy the shape of an existing one (problem, proposal, open questions) and open a pull request with it.
+- **Propose a change.** Small fixes can be a pull request. A change to normative behavior starts as a proposal in [`proposals/`](./proposals/): copy the shape of an existing one (problem, proposal, open questions) and open a pull request with it.
 - **Report a vulnerability privately.** See [SECURITY.md](./SECURITY.md); please don't open a public issue for it.
 
 - **Ask or discuss** in GitHub Discussions: questions, ideas, and what you built.
@@ -68,13 +68,13 @@ Signed-off-by: Your Name <you@example.com>
 
 ## Licenses
 
-- **Code and the whole specification** (the reference implementations, the SDK, tools and tests, plus `SPEC.md`, `docs/SPEC-DETAIL.md`, `extensions/`, `conformance/`, `proposals/`, `protocol-shapes.ts` and `THREAT-MODEL.md`): [Apache License 2.0](./LICENSE), including its patent licence (§3).
+- **Code and the whole specification** (the reference implementations, the SDK, tools and tests, plus `SPEC.md`, `docs/SPEC-DETAIL.md`, `extensions/`, `conformance/`, `proposals/`, `protocol-shapes.ts` and `THREAT-MODEL.md`): [Apache License 2.0](./LICENSE), including its patent license (§3).
 - **Explanatory documentation** (`docs/`, except the normative `docs/SPEC-DETAIL.md`): [Creative Commons Attribution 4.0](./LICENSE-docs).
 - [`REUSE.toml`](./REUSE.toml) maps every path to its license; the license texts are in [`LICENSES/`](./LICENSES/).
 
 By signing off, you agree that your contribution is licensed under the license that applies to the files you change. The use of the project's names and logo is in [TRADEMARKS.md](./TRADEMARKS.md).
 
-**IP status (governing statement).** Shōkai's specification and reference implementation are presently available under Apache License 2.0. The project intends to add a specification-level patent commitment under the OWFa 1.0 Final Specification Agreement (Patent Only), made per final version, starting with v0.5.0, with Yu Sung Yeh (the copyright holder and current founder-steward) as the intended signer; the copyright licence stays Apache License 2.0. No such commitment has been executed yet. If the project later moves to a legal entity or a neutral home, later versions may be signed by it, as described in [PATENTS.md](./PATENTS.md); the choice is recorded as decision D27 in [DECISIONS.md](./DECISIONS.md), pending the editor's confirmation and legal review. No existing copyright or patent owner is represented as having made an OWFa commitment merely because the specification has been published. **Scope of a future commitment.** Under OWFa 1.0, a signer's Granted Claims are limited to the patent claims needed to implement the functionality the specification describes (§7.4). A commitment does not reach a signer's whole personal patent portfolio, or claims that are not needed for the specification. The proposed commitment is described in [PATENTS.md](./PATENTS.md) (not yet executed).
+**IP status (governing statement).** Shōkai's specification and reference implementation are presently available under Apache License 2.0. The project intends to add a specification-level patent commitment under the OWFa 1.0 Final Specification Agreement (Patent Only), made per final version, starting with v0.5.0, with Yu Sung Yeh (the copyright holder and current founder-steward) as the intended signer; the copyright license stays Apache License 2.0. No such commitment has been executed yet. If the project later moves to a legal entity or a neutral home, later versions may be signed by it, as described in [PATENTS.md](./PATENTS.md); the choice is recorded as decision D27 in [DECISIONS.md](./DECISIONS.md), pending the editor's confirmation and legal review. No existing copyright or patent owner is represented as having made an OWFa commitment merely because the specification has been published. **Scope of a future commitment.** Under OWFa 1.0, a signer's Granted Claims are limited to the patent claims needed to implement the functionality the specification describes (§7.4). A commitment does not reach a signer's whole personal patent portfolio, or claims that are not needed for the specification. The proposed commitment is described in [PATENTS.md](./PATENTS.md) (not yet executed).
 
 You keep the copyright in what you contribute; signing off licenses it, it doesn't assign it. New source files start with a short header naming the actual copyright holder: your own name for a file you write, or the project line for the project's own files (use `#` instead of `//` in shell and Python files, and an HTML comment in specification Markdown):
 
@@ -101,7 +101,7 @@ You may use AI tools (code assistants, agents, language models) to help write co
 
 - Every new MUST or SHOULD carries at least one tag: a scenario (`[SC-…]`), a golden trace (`[G…]`) or a conformance check (`[C…]`). `npm run trace-lint` must report 0 gaps.
 - Golden traces must still typecheck (`npm run trace-typecheck`).
-- Behaviour changes come with tests in the reference implementation (`reference/engawa/test/`) and, if they're visible on the wire, a conformance check.
+- Behavior changes come with tests in the reference implementation (`reference/engawa/test/`) and, if they're visible on the wire, a conformance check.
 - Add an entry to [`CHANGELOG.md`](./CHANGELOG.md) under "Unreleased".
 
 ## Pull requests

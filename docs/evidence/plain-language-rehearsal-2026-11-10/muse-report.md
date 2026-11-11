@@ -1,6 +1,6 @@
 # Muse rehearsal report
 
-**Provenance.** Pasted by YSY into the Shōkai work chat as message t1490u on 10 November 2026 at about 3:30 PM Pacific Time. The body below is Muse's report, copied as received.
+**Provenance.** Pasted by the editor into the Shōkai work chat on 10 November 2026 at about 3:30 PM Pacific Time. The body below is Muse's report, copied as received.
 
 ---
 

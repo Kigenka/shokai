@@ -1,24 +1,19 @@
 sequenceDiagram
-  title Marketplace: turned away with the leaflet, then back prepared and granted a pass at Mossgate Commons (rc4 simulated-team round 2, recorded wire log)
-  participant V as A plain agent, then a visiting representative (simulated)
-  participant D as Mossgate Commons (simulated team, Python) door
-  participant G as Mossgate Commons (simulated team, Python) MCP gate
-  Note over V,D: [1] harness readiness probe GET /shokai/places → 200
-  V->>D: [2] GET /shokai/places
-  D-->>V: 200 listing: market-hall, notice-board, members-room
-  V->>D: [3] plain prose (application/json)
-  D-->>V: 200 greeting (digest ✓, sig ✓)
-  D-->>V: lobby_briefing onboarding_url, readiness (digest ✓, sig ✓)
-  D-->>V: invitation_response deny/not_now/CREDENTIAL_REQUIRED (digest ✓, sig ✓)
-  D-->>V: farewell outcome=declined (digest ✓, sig ✓)
-  V->>D: [4] greeting (digest ✓, sig ✓)
-  D-->>V: 200 greeting (digest ✓, sig ✓)
-  V->>D: [5] card_presentation (digest ✓, sig ✓)  card owner sig ES256: digest ✓, sig ✓
-  D-->>V: 200 card_presentation (digest ✓, sig ✓)
-  D-->>V: card_receipt (digest ✓, sig ✓)
-  V->>D: [6] introduction vouch=null (self-introduction) (digest ✓, sig ✓)
-  V->>D: [7] invitation_request purpose=visitation actions=stalls.browse, mandate owner sig: digest ✓, sig ✓ (digest ✓, sig ✓)
-  D-->>V: 200 invitation_response grant pass=[stalls.browse] (digest ✓, sig ✓)
-  D-->>V: farewell outcome=pass (digest ✓, sig ✓)
-  V->>D: [8] farewell outcome=completed (digest ✓, sig ✓)
-  Note over V,G: Signatures re-verified with the reference crypto
+  title Marketplace: the leaflet, then a prepared visit
+  participant V as A plain agent, then Sam's visiting representative
+  participant D as Mossgate Commons host representative
+  Note over V,D: Looking is free: the agent reads the listing with no card
+  V->>D: greeting, unsigned
+  D-->>V: greeting, leaflet (lobby_briefing), deny not_now, farewell
+  Note over V,D: The same agent returns with a signed card
+  V->>D: greeting
+  D-->>V: greeting
+  V->>D: card_presentation
+  D-->>V: host card, card_receipt
+  V->>D: introduction, vouch null
+  V->>D: invitation_request: stalls.browse
+  D-->>V: grant: pass for stalls.browse
+  Note over V,D: The protocol calls the grant a pass. On the wire the field is still seat.
+  V->>D: act stalls.browse
+  D-->>V: act_result
+  V->>D: farewell

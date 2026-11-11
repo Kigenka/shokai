@@ -29,7 +29,7 @@ The core is complete on its own: **a door can be safe and courteous at its entra
 | **Meaning notes** | stable | Carrying meaning across languages and cultures, beyond the language-neutral core. |
 | **W3C VC mapping** | experimental | Expressing Shōkai cards, vouches and mandates as W3C Verifiable Credentials. |
 
-**Stable** means the rules are settled for v0.3 and only fixes are expected. **Experimental** means the extension may change or be dropped after review; don't depend on it yet. Since the feature freeze (October 27, 2026), no new extensions or proposals enter the 0.3 line; they wait for v0.4.
+**Stable** means the rules are settled for v0.5.0 and only fixes are expected. **Experimental** means the extension may change or be dropped after review; don't depend on it yet. A feature freeze on October 27, 2026 applied to the earlier 0.3 line. New extensions or proposals wait for a later version.
 
 Each extension is rendered with the specification: see [the extensions](../extensions/README.md).
 

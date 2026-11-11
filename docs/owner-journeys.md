@@ -4,6 +4,8 @@
 
 Anyone can host a Shōkai place: a tea house, a small shop, a project room, for an afternoon or for years. A place can admit only representatives whose owners signed for them, while ordinary agents keep using its other routes and get the place's leaflet at its door. These are the two journeys a person should see. Neither needs a terminal, a file or a key the person handles.
 
+Worked examples, told from the place's side, walk through the same ideas in specific settings: [At an online university](./examples/online-university.md), [At a fan community](./examples/fan-community.md), [At a freight company](./examples/enterprise-coworker.md), and [At an introduction-only club](./examples/introduction-only-club.md). Situation pages such as [Look before you join](./examples/look-before-you-join.md) and [Unsolicited offer, pressure declined](./examples/pressure-declined.md) cover other common visits.
+
 ## Journey 1: the host
 
 *Kiran wants a members-only project room for a few collaborators. She uses whatever agent she already has.*

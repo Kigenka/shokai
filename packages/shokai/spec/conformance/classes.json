@@ -1586,7 +1586,7 @@
     },
     "C267": {
       "class": "ext-context-requests",
-      "role": "door",
+      "role": "both",
       "status": "provisional"
     },
     "C268": {
@@ -1860,6 +1860,10 @@
     ],
     "packages/shokai/test/redteam-highs.test.ts": [
       "core-door"
+    ],
+    "packages/shokai/test/redteam-round3.test.ts": [
+      "core-door",
+      "ext-institutions"
     ],
     "packages/shokai/test/restart.test.ts": [
       "core-door"

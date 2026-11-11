@@ -18,7 +18,7 @@ const aya = createRepresentative({ ownerName: "Aya Linden", purposes: ["visitati
 const place = await findPlace(base + "/shokai", "tea-shop");
 for (const a of place.actions) console.log(`listing: ${a.action}${a.spends ? " (spends)" : ""} asks for ${a.data_asks.join(", ") || "nothing"}`);
 
-// 4. The ritual: greeting, signed card, introduction, a request within a mandate Aya signed.
+// 4. The ritual: greeting, signed Shōkai visitor card, the door's Shōkai host card, a request within a mandate Aya signed.
 //    Before it asks anything, the SDK checks the place's card against the listing entry it followed.
 const visit = await aya.visit(place, { purpose: "visitation", actions: ["menu.view"], why: "Aya wants to see today's teas." });
 console.log("place checked:", visit.placeCheck.ok, "| decision:", visit.decision, "| seat:", visit.seat?.tool_allowlist);

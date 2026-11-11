@@ -40,16 +40,16 @@ This is the visiting representative's setup conversation (going out). Keeping a 
 ## 3. "Open a place" (only if the owner has or wants one)
 This is the host representative's setup conversation: the agent will keep the owner's door. Brief it as a new host is briefed (how the place runs, its philosophy and culture, what it already publishes); see [Prepare your host representative](https://shokaiprotocol.com/docs/prepare-your-host-representative).
 1. Ask what kind of place: a meeting room, a shop, a project space, or their own door where brands may present things (SPEC-DETAIL §10).
-2. Draft its front: what it is, what visiting representatives may do (`actions`, each with what it would ask the owner for, `data_asks`), house rules, who must bring a vouch. Show the owner.
+2. Draft its front: what it is, what visiting representatives may do (`actions`, each with what it would ask the owner for, `data_asks`), house rules, who must bring a vouch. Show the owner. Ask once, in these words: "Should this door welcome any agent that arrives with a valid Shōkai visitor card, or only visitors who already fit — for example existing customers, or agents that have been here before? You can change this any time by signing again." Do not ask the owner to choose a preset or a field name. Translate their answer privately into the door's rules.
 3. **A door needs a public https address while it's open, and a process with a disk.** A temporary tunnel from this agent's computer works today (the address changes each time; the place is open only while the computer runs it). For a stable address, propose a relay or a small hosted front door, or a host of its own (`deploy/HOST-A-PLACE.md` in the repository). **Ask before opening a tunnel or deploying anything**, every time.
 4. The door's Shōkai host card says "Host of <owner>'s <place>". For a person's door for brands, the owner also signs a `DoorPolicy` in the same signing session.
 5. Run `npx shokai-conformance <door base URL>` and report the verdict to the owner.
 
 ## 4. Going out, as the visiting representative
-1. **Window.** Find the place: `findPlace(<base URL ending in /shokai>, <place name>)`. Read its listing first; looking is free and needs no Shōkai card.
-2. **Knock and introduce.** Visit with a mandate inside the owner's allowance (`rep.visit(place, { purpose, actions, limits, why })`). The SDK checks the place against its listing before asking anything; if the check fails, stop.
-3. **Work within the pass.** The place's host representative checks, decides and seats you; act only within the pass. If the place asks for more (data, money, an account) than the owner allowed, decline or take it home.
-4. **Report home** after every visit (the place's host representative keeps its own record), in plain words, from `visit.report()`: who welcomed it (by verified key or domain; a name only as "claims to be"), what it did and spent, what was refused, what needs the owner's OK.
+1. **At the doorstep.** Find the place: `findPlace(<base URL ending in /shokai>, <place name>)`. Read its listing first; the door serves it to any agent, and looking needs no Shōkai card.
+2. **Knock, and the door checks who's there.** Visit with a mandate inside the owner's allowance (`rep.visit(place, { purpose, actions, limits, why })`). The SDK presents the Shōkai visitor card and checks the place's Shōkai host card against its listing before asking anything; if the check fails, stop. The visitor is not admitted until the door grants a pass.
+3. **Work within the pass.** The door checks, decides and grants a pass; the host representative welcomes. Act only within the pass. If the place asks for more (data, money, an account) than the owner allowed, decline or take it home.
+4. **Report home** after every visit (the door keeps a local record), in plain words, from `visit.report()`: who welcomed it (by verified key or domain; a name only as "claims to be"), what it did and spent, what was refused, what needs the owner's OK.
 5. If it's turned away with a leaflet, show the owner the place's sentence as a quote from the place (not in your own words), show its setup link by its address (`https://host`), and offer to set up what's missing. Never open that link yourself; the owner signs only on their own signing page.
 
 ## 5. Withdraw, move, or lose

@@ -1,6 +1,6 @@
 # Security and threat model
 
-Shōkai makes deception **costly and traceable, not impossible.** This page summarises what the core defends, how, and what it doesn't. The full [threat model](../THREAT-MODEL.md) (assets, actors, trust boundaries, a STRIDE-style table, and the later 0.5 review) ships with the specification. What was actually run is [Evidence](./evidence/index.md) and the [field tests](./field-tests.md). How the reviews were done is in [How this was reviewed](../drafts/package-0.5/how-this-was-reviewed.md). Known limits that are still open are in [Known gaps](./known-gaps.md). Those records are linked from here. They are not folded into one section.
+Shōkai makes deception **costly and traceable, not impossible.** This page summarizes what the core defends, how, and what it doesn't. The full [threat model](../THREAT-MODEL.md) (assets, actors, trust boundaries, a STRIDE-style table, and the later 0.5 review) ships with the specification. What was actually run is [Evidence](./evidence/index.md) and the [field tests](./field-tests.md). How the reviews were done is in [How this was reviewed](../drafts/package-0.5/how-this-was-reviewed.md). Known limits that are still open are in [Known gaps](./known-gaps.md). Those records are linked from here. They are not folded into one section.
 
 **Reporting a vulnerability:** please don't open a public issue, and please don't test any live Kigenka or demo system (including the hosted test shop) unless it is later listed as in scope. How to report is in [SECURITY.md](../SECURITY.md). A good-faith research safe-harbor policy is drafted but **not in force**.
 
@@ -24,7 +24,7 @@ That split is a security boundary, not only a way of speaking. A place that lets
 
 ## Threats and defences
 
-| Threat | Defence in the core |
+| Threat | Defense in the core |
 |---|---|
 | Impersonating a person or brand | Cards signed by the principal; a person signs with a passkey bound to a relying party; a brand is the DID it signs with, so lookalike names and domains get nothing. A door is "the door of" a website only when the host card and the site's listing agree. |
 | Relay and copied proofs | Possession proof over the encounter, the counterpart's nonce and the door's own audience; a proof made for one door does not sit down at another. |
@@ -65,7 +65,7 @@ These are practices and residual risks, not a new hosted product.
 
 This is not an independent human security audit. The reviews below were language models reading a bundle the project prepared, or tests the project ran. The scores those models gave are their own, and are not repeated here as our claims. The full table, including every High and how it was fixed, is in [How this was reviewed](../drafts/package-0.5/how-this-was-reviewed.md).
 
-The 0.5 reviews (Claude Opus for rounds 1–10; ChatGPT Pro, Gemini and Fable as outside model reviews) raised defects that would have mattered in production. The ones that changed the door's security posture are summarised here. Each was fixed in the specification, the SDK or the reference door, and has tests, unless a row says otherwise.
+The 0.5 reviews were language-model reviews of a bundle the project prepared, plus tests the project ran. They raised defects that would have mattered in production. The ones that changed the door's security posture are summarized here. Each was fixed in the specification, the SDK or the reference door, and has tests, unless a row says otherwise.
 
 | What was found | What changed |
 |---|---|
@@ -74,7 +74,7 @@ The 0.5 reviews (Claude Opus for rounds 1–10; ChatGPT Pro, Gemini and Fable as
 | Spending under a standing allowance had no cap at a single place | Each place now enforces its own per-place and per-visit cap. A budget across many places is still kept only by the representative. |
 | Honest mistakes, guessed names or a stuffed revocation store could close a door or ban an honest visitor | Probing was narrowed; honest refusals do not lead to `never`; the revocation store is bounded and cannot shut the whole door. |
 | A proof, or a development key, could be reused where it does not belong | Possession proofs are bound to this door; development passkeys are refused at a public address. |
-| An over-limit hold could be released above the signed ceiling, or a one-purchase raise presented as a new seat | The hold reserves its amount; release re-checks; a raise is valid only for its bound hold. |
+| An over-limit hold could be released above the signed ceiling, or a one-purchase raise presented as a new pass (wire: `seat`) | The hold reserves its amount; release re-checks; a raise is valid only for its bound hold. |
 | A visitor could be talked down to an older wire tag and lose 0.5 protections | The owner's signed floor is read first; a too-high or malformed `min_protocol` is refused; a spending visit does not fall back to `shokai/0.3` on its own. |
 
 What stays open after those reviews is listed in [Known gaps](./known-gaps.md) and in the section below. An outside review by a person or an organization has not happened yet. If you do one, please tell us.
@@ -83,10 +83,10 @@ What stays open after those reviews is listed in [Known gaps](./known-gaps.md) a
 
 All times are Pacific Time (America/Los_Angeles). The places are fictional and the money is mock. Ground truth for a live visit is the door's log, not a model's summary.
 
-- **Scripted red-team rounds** against the reference door (v0.3 line, loopback): round 1 held 72 of 72 attacks; round 2 held 44 of 47. The three that still succeed are open browsing, accepted by design (S1, S2 and S4 below). A later attack harness has also been run against v0.5.0 code; three of those cases are the same accepted browsing cases. Details: [red-team](../security/redteam/README.md).
-- **Field tests with real agents.** The 0.3 edition (25–28 October 2026) is in [Field tests](./field-tests.md). The 0.5 edition (4–6 November 2026), in [Field tests 0.5](../drafts/package-0.5/field-tests-0.5.md), includes: Hermes Agent and OpenClaw against a local door (33 framework calls, 0 passes from unsigned attacks, 14 of 14 signed-card checks held); Muse, Claude and OpenAI Dot at the hosted fictional shop; and a Claude Duet attempt that never reached the door, because that product's network blocked it. What those runs changed (holds, a priced menu, briefing wording, the rule that the shop must not keep a visitor's private key) is in that report.
+- **Scripted red-team rounds** against the reference door (v0.3 line, loopback): round 1 held 72 of 72 attacks; round 2 held 44 of 47. The three that still succeed are open browsing, accepted by design (S1, S2 and S4 below). Round 3 (11 November 2026) aimed at what is new in 0.5: of 93 scripted attacks, 86 held, 4 were open at the time of the round (the same three browsing cases, plus V05-F10-03: a place's context questions could still ask for a credential), and 3 broke. The 3 breaks were two bugs, fixed in 0.5.1; V05-F10-03 was then decided and is also in 0.5.1 (a door refuses such questions, and a visiting representative refuses a request that arrives with them). 0.5.0 lacks both fixes and the rule. A rerun on the 0.5.1 code after both fixes: 90 held, 3 open by design (S1, S2, S4), 0 broke. Fourteen role-plays against the host representative all held. Details: [red-team](../security/redteam/README.md).
+- **Field tests with real agents.** The [field tests](./field-tests.md) cover the 0.5 rounds (4–6 November 2026) and earlier 0.3-era rounds (25–28 October 2026). The 0.5 rounds include: Hermes Agent and OpenClaw against a local door (33 framework calls, 0 passes from unsigned attacks, 14 of 14 signed-card checks held); Muse, Claude and OpenAI Dot at the hosted fictional shop; and a Claude Duet attempt that never reached the door, because that product's network blocked it. What those runs changed (holds, a priced menu, briefing wording, the rule that the shop must not keep a visitor's private key) is in that report.
 - **Conformance.** Local passes 1–3 closed MUST failures in the 0.5 door and visitor (including C296, C297 and C298, and later C300 and C301). The project's own unpublished inventory of those passes is not this page; a SKIP in any run is never a pass.
-- **Official paced run against the hosted test shop.** On 10 November 2026, at 12:13 AM Pacific Time, an official paced HTTP run against `https://kettle.shokaiprotocol.com` on the conf6 build measured **30 of 164** required Core Door checks (28 observed over HTTP plus 2 implementer-provided in-process self-tests, C236 and C240): 30 pass, 0 fail, 0 skip, and 2 N/A (C241, a visiting representative's duty; C242, the templates aren't closed). **132 of 164** were unmeasured. The claim HOLDS. The shop is **deployed**. It is not **publicly open**, and it is not a proven lasting host. The two self-tests are labelled implementer-provided, not independent verification. Headline: [Evidence](./evidence/index.md).
+- **Official paced run against the hosted test shop.** On 10 November 2026, at 12:13 AM Pacific Time, an official paced HTTP run against `https://kettle.shokaiprotocol.com` on the conf6 build measured **30 of 164** required Core Door checks (28 observed over HTTP plus 2 implementer-provided in-process self-tests, C236 and C240): 30 pass, 0 fail, 0 skip, and 2 N/A (C241, a visiting representative's duty; C242, the templates aren't closed). **132 of 164** were unmeasured. The claim HOLDS. The shop is **deployed**. It is not **publicly open**, and it is not a proven lasting host. The two self-tests are labeled implementer-provided, not independent verification. Headline: [Evidence](./evidence/index.md).
 - **What this is not.** It is not a certificate, not a human audit, and not a second implementation by another organization. A steward-guided clean-room door (Quillfern Tea Room) was built from handoff documents; under the current official runner its Core Door claim is not established.
 
 ## Accepted by design, and known limits
@@ -95,7 +95,7 @@ All times are Pacific Time (America/Los_Angeles). The places are fictional and t
 - **Period budgets across places** are enforced by the representative's own ledger; a host can't see spending elsewhere. A compromised or faulty representative can exceed an aggregate budget even though each place enforces its own limit.
 - **A passkey signature proves possession of a key**, not that a particular device made it, and not who legally held it. A stolen passkey signs like the real one; revocation is the remedy. Attestation or an allowlist of relying parties is proposed, not decided.
 - **The pressure and variant tests are heuristics**, English-first and local to each door. A campaign split across several principals isn't linked.
-- **Revocation reaches an open seat only when the place learns of it.** For cards that name a list, that window is now five minutes (C265). For a card with no list, at a place that is not told, a seat already open lasts until it expires, still bounded by its mandate.
+- **Revocation reaches an open pass (wire: `seat`) only when the place learns of it.** For cards that name a list, that window is now five minutes (C265). For a card with no list, at a place that is not told, a pass already open lasts until it expires, still bounded by its mandate.
 - **A multi-instance door with shared state has been tested in-process, not in deployment.** Holds and used raises can ride a shared store, and in-process tests cover hold, intervening act and release across instances. A deployment of identical copies behind a load balancer, and a load test against it, have not been run. [Known gaps](./known-gaps.md) records this as not started.
 - **132 of 164 required Core Door checks were unmeasured** in the official public-Kettle run. That run's 30 passes do not speak for the 132.
 - **No protocol can read intent.** Shōkai can make manipulation costly and sincerity pay over time.
@@ -110,4 +110,4 @@ Please report a security problem in either of these ways:
 1. **GitHub private vulnerability reporting** on the public [Kigenka/shokai](https://github.com/Kigenka/shokai) repository (its **Security** tab, **Report a vulnerability**). That path goes live with the public 0.5.0 release.
 2. **Email [security@kigenka.com](mailto:security@kigenka.com).**
 
-Details, including supported versions and what is intended behaviour rather than a vulnerability, are in [SECURITY.md](../SECURITY.md).
+Details, including supported versions and what is intended behavior rather than a vulnerability, are in [SECURITY.md](../SECURITY.md).

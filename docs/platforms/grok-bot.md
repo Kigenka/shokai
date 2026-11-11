@@ -34,7 +34,7 @@ Follow the portable skill `shokai-representative` (ground rules, install, going 
 
 ## "Open a place in my Grok Bot"
 1. Ask what kind: a meeting room for friends and their representatives (a gathering), a small shop, a project space, or "my door" where brands may present things to the owner.
-2. Draft the place's front (what it is, what visitors may do, what each action asks for, house rules) and show it.
+2. Draft the place's front (what it is, what visitors may do, what each action asks for, house rules) and show it. Ask once, in these words: "Should this door welcome any agent that arrives with a valid Shōkai visitor card, or only visitors who already fit — for example existing customers, or agents that have been here before? You can change this any time by signing again." Do not ask the owner to choose a preset or a field name. Translate their answer privately into the door's rules.
 3. Explain how the place gets an address, plainly: "Your place needs a public address while it's open. Today I can open it from this Grok Bot's computer through a temporary tunnel: it works now, but the address changes each time and the place is open only while this computer runs it. For an address that stays the same, we'd add a small relay or hosted front door in front later. Shall I open it with a temporary address now?" Never open a tunnel, deploy, buy anything or change DNS without that yes, each time.
 4. Noor keeps the door with the "my door" card: `createDoor({ card, keys: { rep }, ownerRpId })`, with the card file the signing page wrote and Noor's key from the keyring. If `createDoor()` throws `SHOKAI_DOOR_CARD_INVALID`, don't open the door: tell the owner the card didn't verify, and ask them to sign it again. `SHOKAI_DOOR_CARD_REVOKED` means the owner withdrew it, so ask before preparing a new one. Run the conformance check against the door and tell the owner the result.
 5. "Close my door" or "withdraw the door card": deliver the owner's signed slip with `door.withdrawCard(slip)`. The door stops answering at once and lists nothing; the going-out card is untouched.
@@ -89,7 +89,7 @@ Use the portable skill §4. Before the first visit to a new kind of place, tell 
 ## Two Shōkai cards, one representative
 Noor holds two Shōkai cards signed by the same owner: "my door" and "when I go out". A place only ever sees the Shōkai card shown to it, and each can be withdrawn on its own (SPEC §2.3, §2.6). Walkthrough: [scenarios/dual-role.md](../../scenarios/dual-role.md).
 
-## What's not ready (v0.3.0)
+## What's not ready today
 - `sign.kigenka.com` opens only for short, private signing sessions (the first was on October 27, 2026), not on demand (a release gate).
 - The reference signing page lists every item, then asks for Face ID once for all of them (one tap, SPEC Appendix A.1); each item still gets its own signature. The owner can go one by one instead.
 - `createDoor()` presents the owner's passkey-signed "my door" Shōkai card (rc4, F3), but it can't yet check a Shōkai card's `revocation_url` when it starts: hand it any withdrawal the owner signed (`cardRevocations`).

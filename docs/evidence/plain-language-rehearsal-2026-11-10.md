@@ -26,7 +26,7 @@ A conversation **fails** if a banned technical word is spoken without being aske
 
 ## Closed rehearsal (afternoon of 10 November)
 
-Authorization: YSY, t1484u / t1485u / t1486u.
+Authorized by the editor, 10 November 2026.
 
 - **Grok Bot** installer, host and visitor: Grok Bot played its own side from the skill text; the fictional owners were scripted.
 - **Other working skills:** Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) played the agent with the full skill loaded. A second Haiku turn played the owner. This is a simulation of those agents, not the real ChatGPT, Gemini, Muse, Hermes, OpenClaw, Dot, Sidekick or WordPress Agent.
@@ -50,7 +50,7 @@ A simulation is not the real agent. That is why the Muse run below matters.
 
 ## Real Muse run (about 3:30 PM Pacific Time)
 
-YSY pasted Muse a self-contained brief (the three Muse skills, the two practice owners, the pass bar, and a report format) and asked Muse to run the test exactly as written. Muse reported that it ran all six rehearsals as written: fictional people and shops only, no contact, no live door or page visit, no spending, no keys generated, and nothing installed or deployed.
+The editor pasted Muse a self-contained brief (the three Muse skills, the two practice owners, the pass bar, and a report format) and asked Muse to run the test exactly as written. Muse reported that it ran all six rehearsals as written: fictional people and shops only, no contact, no live door or page visit, no spending, no keys generated, and nothing installed or deployed.
 
 **All six passed:**
 
@@ -65,7 +65,7 @@ YSY pasted Muse a self-contained brief (the three Muse skills, the two practice 
 
 Muse also stayed honest where the skills require it: it declined the lasting greeter job, stopped rather than guess a door address, and did not pretend it had opened a page.
 
-Muse's report, copied from the paste (t1490u), is a [readable page](./plain-language-rehearsal-2026-11-10/muse-report.md) and a <a href="/raw/evidence/plain-language-rehearsal-2026-11-10/muse-report.txt" target="_blank" rel="noopener">text file</a>. In this repository it also sits at `docs/evidence/plain-language-rehearsal-2026-11-10/muse-report.md`.
+Muse's report, copied from the paste, is a [readable page](./plain-language-rehearsal-2026-11-10/muse-report.md) and a <a href="/raw/evidence/plain-language-rehearsal-2026-11-10/muse-report.txt" target="_blank" rel="noopener">text file</a>. In this repository it also sits at `docs/evidence/plain-language-rehearsal-2026-11-10/muse-report.md`.
 
 ## Limits
 

@@ -13,7 +13,7 @@ People will change agents. They will move from one vendor to another, run two ag
 1. **No portable history.** What a representative has done (visits, introductions, vouches, the decisions places made) lives in places' records and in the agent's memory. Neither travels when the owner changes agents. In practice it belongs to whoever runs the agent.
 2. **No statement of continuity.** Nothing says "representative B continues representative A". A place can't tell a replacement from a second representative, and state keyed per representative is lost: seats, bound visit-receipt keys (Visit receipts extension), and earned edges whose `from` is a representative id (§9.2).
 3. **No rule for several representatives** of one owner at one place.
-4. **An honest Sybil story is missing.** Per-place owner identities (§2.8) let an owner start over at a place. The text names the floor (the uninvited allowance and introducer accountability) but doesn't treat history as a defence, or say what it can't do.
+4. **An honest Sybil story is missing.** Per-place owner identities (§2.8) let an owner start over at a place. The text names the floor (the uninvited allowance and introducer accountability) but doesn't treat history as a defense, or say what it can't do.
 
 ## 2. Three things that must stay apart
 
@@ -118,7 +118,7 @@ The owner's history is an append-only collection of receipts plus the owner's ow
 - the owner, or the issuing place, can see a gap in that place's chain;
 - a third place shown receipt `seq = n` learns that `n − 1` earlier receipts from that place exist, without seeing them.
 
-**What a log can't prove (normative intent).** An owner shows what they choose. A log proves that the receipts in it happened. It doesn't prove that nothing else happened. Proposed text: *A place MUST NOT treat the absence of unfavourable receipts as evidence of good conduct, and MUST weigh receipts itself, by issuer, as evidence at most (§2.5 proof levels; never `verified` for the conduct described).* The defence against hiding a bad record is §5 (at the place that made the decision), not the log.
+**What a log can't prove (normative intent).** An owner shows what they choose. A log proves that the receipts in it happened. It doesn't prove that nothing else happened. Proposed text: *A place MUST NOT treat the absence of unfavourable receipts as evidence of good conduct, and MUST weigh receipts itself, by issuer, as evidence at most (§2.5 proof levels; never `verified` for the conduct described).* The defense against hiding a bad record is §5 (at the place that made the decision), not the log.
 
 ### 4.3 Presenting history: per facet, owner-chosen
 
@@ -268,14 +268,14 @@ The owner's signature shows the move was the owner's choice, and HPKE keeps the 
 
 **What history does.** Receipts make *age* and *breadth* expensive to fake only when the issuers are places the receiving place has reason to trust. Receipts from a ring of farm-run places prove nothing. Proposed text: *A place MUST weigh a receipt by its issuer, and SHOULD give no weight to receipts from issuers it doesn't know.*
 
-**The main defence: introducer accountability.** Anything that matters (money, accounts, D17) needs an introduction. An introducer's standing is penalised, locally and in grades (D1), when the people they vouch for misbehave, and "accept any introducer" never covers money or sign-ups (D14). A farm has to buy or build introducers places already trust, and loses them when it is caught. This was true before P20, and P20 doesn't replace it.
+**The main defense: introducer accountability.** Anything that matters (money, accounts, D17) needs an introduction. An introducer's standing is penalised, locally and in grades (D1), when the people they vouch for misbehave, and "accept any introducer" never covers money or sign-ups (D14). A farm has to buy or build introducers places already trust, and loses them when it is caught. This was true before P20, and P20 doesn't replace it.
 
 **Optional place policy hooks.** All of them are listed in the listing so a visitor knows before arriving, and the owner may always decline.
 - `requires_introduction` (exists, §3.1).
 - *Proposed:* `history_ask?: { kinds: HistoryReceiptKind[]; min_age_days?: number; issuers?: "any" | "known" }`. The place may ask for receipts at least this old from issuers it knows. Declining to show history is never misconduct, and it gets the same answer as having none.
 - *Proposed:* `representatives_per_owner` (§6).
 
-**Out of scope, deliberately.** No biometrics, liveness checks, face or voice data, government ID or other personal data as history or as a Sybil defence in this protocol. A place that needs legal identity uses its own process outside Shōkai, under `data_asks` (§3.1).
+**Out of scope, deliberately.** No biometrics, liveness checks, face or voice data, government ID or other personal data as history or as a Sybil defense in this protocol. A place that needs legal identity uses its own process outside Shōkai, under `data_asks` (§3.1).
 
 ## 9. Why this matters (informative)
 
