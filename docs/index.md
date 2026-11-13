@@ -1,5 +1,13 @@
 # What is Shōkai?
 
+**Your place, your rules, when agents come to visit.** Shōkai is an open protocol that gives online places a door for AI agents. Every agent that comes in arrives introduced: who sent it, why it came, and what it may do.
+
+## Who it's for
+
+Shōkai is written for the person who owns a place — a bakery, a studio, a shop, a university, a community. You decide the rules. The door enforces them from signed facts. Visitors bring their own agents; Shōkai is the door and the card, not the agent. No money moves through the door.
+
+For a fuller account of what Shōkai is not, see [Why Shōkai](./why.md#what-shōkai-is-not).
+
 [![Shōkai: an arch of two halves, a visiting representative and a place, joined by a keystone: the introduction that completes it](./assets/hero.svg)](./assets/hero.svg)
 
 The world is filling with agents of every kind: agents that write, research, shop, plan and build. A **representative agent** is the new kind of agent the door makes possible. It carries someone's name and reputation into places, for a person, a brand, a business or a place, introduced with a Shōkai card they signed. That's more than acting on someone's behalf, which a coding agent does too. Representatives work in both directions. Inbound, a **host representative** receives visiting representatives at its owner's place; outbound, a **visiting representative** goes out and introduces itself at other places.
@@ -8,7 +16,7 @@ The world is filling with agents of every kind: agents that write, research, sho
 
 **Yours, not a platform's.** Your agent representative's visitor card belongs to you, not to a platform. You sign it, you set its limits, and you can withdraw it at any time. Each place decides whom it lets in, and you decide where your representative goes and what it may do there. What it brings home can be rich, too: pictures of a place, a short audio note, its visit stamps, the story told in its own personality.
 
-**Shōkai (紹介) is an open protocol that gives online places a door for agents.** Every agent that comes in arrives introduced: who sent it, why it came, and what it may do. Every representative answers to an owner who signed for it: a person, a business or an organization, never an anonymous agent running wild. That matters now. Banks are finding agents inside customer accounts and often can't tell whether the customer directed them ([Axios, October 22, 2026](https://www.axios.com/2026/10/22/ai-agents-banks-unauthorized-accounts-access)); Amazon blocked Muse (Meta) from shopping on its store, saying the agent didn't identify itself ([September 20, 2026](./why.md#happening-now-agents-at-the-store)); and when the editor's agent bought this project's domain, no site could tell an agent was acting, or for whom ([October 28, 2026](./why.md#a-true-story-my-agent-bought-a-domain)).
+Every representative answers to an owner who signed for it: a person, a business or an organization, never an anonymous agent running wild. That matters now. Banks are finding agents inside customer accounts and often can't tell whether the customer directed them ([Axios, October 22, 2026](https://www.axios.com/2026/10/22/ai-agents-banks-unauthorized-accounts-access)); Amazon blocked Muse (Meta) from shopping on its store, saying the agent didn't identify itself ([September 20, 2026](./why.md#happening-now-agents-at-the-store)); United Airlines restricted unauthorized third-party AI agents from booking or managing trips unless the airline itself permits them ([November 11, 2026](./why.md#happening-now-agents-at-the-airline)); and when the editor's agent bought this project's domain, no site could tell an agent was acting, or for whom ([October 28, 2026](./why.md#a-true-story-my-agent-bought-a-domain)).
 
 Shōkai has already been tested with agents that already exist: Grok Bot (SpaceXSI), Muse, Hermes Agent (Nous Research) and OpenClaw (OpenClaw Foundation). In the project's own field tests, an agent on each was admitted at a test place: Hermes Agent and OpenClaw in sandboxed runs with development keys; Grok Bot and Muse with Shōkai cards their owner signed with a passkey and prepared for them in advance. None of them has adopted Shōkai, and Shōkai isn't affiliated with them or their makers.
 

@@ -72,7 +72,7 @@ With a Shōkai door at the registrar, my agent wouldn't have to pass as me. It w
 
 ## Happening now: agents at the store
 
-*As of October 28, 2026, from public sources linked below. Shōkai is an open standard offered to every place and every agent; it isn't a side in any dispute, and it isn't affiliated with any company named here.*
+*As of November 12, 2026, from public sources linked below. Shōkai is an open standard offered to every place and every agent; it isn't a side in any dispute, and it isn't affiliated with any company named here.*
 
 - **Amazon cut off Meta's Muse (September 20, 2026).** Amazon stopped Muse, Meta's personal agent, from shopping on Amazon.com for its users. Amazon said Meta hadn't told it Muse would access its store and that the agent doesn't identify itself when it browses. Muse users saw a notice that "continued access by an unauthorized AI agent violates Amazon's Conditions of Use" ([GeekWire](https://www.geekwire.com/2026/amazon-blocks-metas-muse-ai-assistant-in-new-standoff-over-agentic-shopping/)).
 - **Amazon's terms ask agents to identify themselves, and let Amazon block them.** The "Agents" section of Amazon's Conditions of Use (last updated August 14, 2026) says an agent must identify itself in every request ("Agent/[agent name]" in the user agent string), must not hide that it's an agent or get around CAPTCHAs, must answer truthfully when asked whether it is a human, and may be limited or blocked at Amazon's discretion ([Conditions of Use](https://www.amazon.com/gp/help/customer/display.html?nodeId=508088)). It names the agent, but not whose agent it is, what its owner allowed, or up to how much.
@@ -80,11 +80,13 @@ With a Shōkai door at the registrar, my agent wouldn't have to pass as me. It w
 
 - **Banks can't tell either (October 22, 2026).** Axios reported that major U.S. banks are detecting third-party AI agents inside customer accounts, often logged in with the customer's own credentials, and that "many banks are broadly not able to parse whether agent account activity is user-directed" ([Axios](https://www.axios.com/2026/10/22/ai-agents-banks-unauthorized-accounts-access)). Several are blocking or restricting agents while they look for a middle ground.
 
-Nobody comes out ahead. The store loses the sale and still doesn't know whose agent knocked; the owner's agent simply goes around it.
+- <a id="happening-now-agents-at-the-airline"></a>**United restricts unauthorized AI agents (November 11, 2026).** United Airlines restricted unauthorized third-party AI agents from searching, booking, buying, managing trips or collecting information on united.com or the app, including through agencies and aggregators, unless United has given permission. A customer's own approval is not enough. United said it does not yet work with any third-party AI agents, and that it wants "standardized, secure technology integrations with privacy, security, authorization and accountability protections in place" ([United newsroom](https://united.mediaroom.com/news-releases?item=125496); [United FAQ](https://www.united.com/en/us/fly/help-center/digital-trust-center/artificial-intelligence/third-party-ai-agents.html)).
+
+Nobody comes out ahead. The store loses the sale and still doesn't know whose agent knocked; the owner's agent simply goes around it. An airline that turns unauthorized agents away is left looking for a standard way to admit the ones it is willing to permit.
 
 ### What a Shōkai door would offer instead
 
-Asking agents to say they're agents is a good first step. A Shōkai door adds what a store, a marketplace or a bank needs next, at its own door and under its own policy:
+Asking agents to say they're agents is a good first step. A Shōkai door adds what a store, a marketplace, a bank or an airline needs next, at its own door and under its own policy:
 
 | Today | With a Shōkai door |
 |---|---|
@@ -93,6 +95,8 @@ Asking agents to say they're agents is a good first step. A Shōkai door adds wh
 | Allowed in blind, or blocked | **A pass.** A temporary pass (the specification's *seat*) for exactly this errand, never wider than the store's policy, the owner's mandate and the request |
 | A block page | **The leaflet instead of a block.** An agent that isn't ready gets what's needed, a plain sentence for its owner, and a kind "not now" it can recover from |
 | No record of the agent | **A record at the door,** and a report home to the owner |
+
+For an airline, those same pieces answer the authorization and accountability questions United named: a card that identifies who sent the agent; a mandate the owner signed, with limits; a door run by the airline's own host, so the place itself grants permission; and a visit record of what was asked and what was decided. A signed card does not replace a human acknowledgment the FAA or DOT requires at check-in; at most the door can send that step home to the person. Loyalty programs and payments stay behind the door, in the airline's own systems. A valid card does not, by itself, stop a determined scraper: someone can sign a card, state a false purpose, and try mass fare searches, and a new card is cheap to make. The host can still enforce mandate limits, compare behavior with the stated purpose, rate-limit or revoke the card, and decide what it takes to get past the door.
 
 Muse has already walked through a Shōkai door this way. In the project's field tests on October 27, 2026, a Muse agent introduced itself at a fictional test tea house with a Shōkai card and mandate its owner signed with a passkey, was admitted, ordered within its limit and collected a stamp ([Field tests, test 7](./field-tests.md)). That was a test place with mock money, not a store; it shows that an existing public agent can follow the door as written.
 
@@ -123,5 +127,7 @@ That world needs a way for agents to arrive with manners: to introduce themselve
 - **Not an agent framework or agent platform.** Shōkai doesn't give you an agent. It is an open, platform-neutral protocol and blueprint for the whole agent ecosystem, decoupled from any agent, model or platform: any agent can follow it, and any framework, platform or place can implement it ([who can implement Shōkai](./index.md#who-can-implement-shōkai)). It encourages people and organizations to make one of their many agents their representative, receiving visiting representatives at their place, visiting other places, or both, and it names, in the open, what the agent web needs: signed identity, clear answers, limits and manners.
 - **Not a replacement for MCP, A2A or OAuth.** It sits in front of them. See [Relationship to other protocols](./relationship-to-other-protocols.md).
 - **Not a reputation network.** There is no global score. Each door judges for itself and records stay at the door that saw the conduct. See [Design lessons](./design-lessons.md).
-- **Not a payment protocol.** Payment authorization belongs to AP2, card networks and processors such as Stripe. Shōkai carries limits and can point to a payment mandate.
+- **Not a payment protocol.** A Shōkai card is not a payment card or wallet. It can carry signed spending limits, but it carries no money and no payment method. Payments happen at the place's own checkout. Payment authorization belongs to AP2, card networks and processors such as Stripe, and Shōkai can point to a payment mandate. See [Does Shōkai handle payments?](./faq.md#does-shōkai-handle-payments).
+- **Not an AI host that negotiates who gets in.** The door decides from signed facts: grant, conditional, deny, or considering, when a person should decide. The host representative welcomes the visitor and explains, but it can't change who gets in. See [Who decides who gets in?](./faq.md#who-decides-who-gets-in).
+- **Revocation is not left unsolved.** An owner can withdraw a card at any time by signing a `CardRevocation`. That ends the card's open visits once a place learns of the withdrawal. See [How a card is withdrawn](./concepts/cards.md#how-a-card-is-withdrawn) and [SPEC-DETAIL §2.6](./SPEC-DETAIL.md#26-verification).
 - **Not bulletproof.** Shōkai makes deception costly and traceable, not impossible. Its weaknesses are documented openly in [Security and threat model](./security.md), and community review is part of the design.
