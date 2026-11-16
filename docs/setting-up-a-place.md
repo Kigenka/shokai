@@ -1,9 +1,9 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
-# Setting up a place: what we learned at Kettle & Leaf
+# Setting up a place: what we learned at Kettle & Leaf and the Shōkai Lounge
 
-*Shōkai, the agent introduction protocol, from Kigenka. Learned on a fictional tea house, Kettle & Leaf (`https://kettle.shokaiprotocol.com`, `shokai/0.5`, mock money), November 5–6, 2026. The shopkeeper in these notes is a fictional owner.*
+*Shōkai, the agent introduction protocol, from Kigenka. Learned on a fictional tea house, Kettle & Leaf (`https://kettle.shokaiprotocol.com`, `shokai/0.5`, mock money), November 5–6, 2026, and on real visits to the Shōkai Lounge, 13–15 November 2026. The shopkeeper in the Kettle notes is a fictional owner. All times are Pacific Time.*
 
-For the step-by-step server guide, see [Host a real place](../deploy/HOST-A-PLACE.md). This page is what the guide doesn't tell you: what tripped us up running a door for visitors. The longer operator inventory for the hosted test shop (build pin, measured checks, who can use the host key and the state store) lives under Evidence: [Kettle operator notes](./evidence/kettle-operator-notes.md). A lasting unattended host is not proven; see [Known gaps](./known-gaps.md).
+For the step-by-step server guide, see [Host a real place](../deploy/HOST-A-PLACE.md). This page is what the guide doesn't tell you: what tripped us up running a door for visitors. Lounge visit evidence is in [Shōkai Lounge visits, 13–15 November 2026](./evidence/lounge-visits-2026-11.md). The longer operator inventory for the hosted test shop (build pin, measured checks, who can use the host key and the state store) lives under Evidence: [Kettle operator notes](./evidence/kettle-operator-notes.md). A lasting unattended host is not proven; see [Known gaps](./known-gaps.md).
 
 ## Two kinds of place
 
@@ -38,6 +38,18 @@ A place can hold an over-limit order for the owner instead of refusing it. It on
 - Let the visitor's own chat prepare its card for signing, so the owner doesn't ferry things between agents.
 - Say what signing means: it authorizes orders within the limit; an over-limit order may be held; signing is not payment. ("Signing doesn't mean the purchase is complete" was read as "ask again before every cup.")
 
+## Offers the owner must sign
+
+When a place offers something the representative must not decide alone, the flow we ran at the Lounge on 14 November 2026 was:
+
+1. The host asks the question and says it is for the owner.
+2. The representative says "let me ask" and brings a one-time approval link. The challenge is single-use, bound to that visit and that question, and expires 15 minutes after the offer is made.
+3. The owner approves or declines with their own passkey on the place's site.
+4. The representative may relay a decline or a "no answer." It must not record a yes the owner only spoke in chat.
+5. Collect no contact details unless the offer honestly needs them. The Lounge test offer collected none, and sent nothing.
+
+The visiting agent should also be able to learn of the owner's decision without being told. Auto-confirm was built on a protected preview and verified in a real visit on 15 November 2026; it is not live yet. See [Lounge visits](./evidence/lounge-visits-2026-11.md#the-owner-passkey-consent-flow).
+
 ## Check the visitor's network first
 
 The Claude Duet workspace blocked both the door and the signing page, so that visit never started. Whether an agent product can reach your door and the signing page is part of setting up, not an afterthought.
@@ -63,6 +75,41 @@ The agent that sets up your door and the agent that keeps it are often different
 
 **Still open: the doorbell.** Your door is always on; your Grok Bot or Muse isn't always listening. Until there's a verified way for a door to ring the host, the door speaks from the house you signed, and your host is who you talk to about the shop — changes, visitors, and anything outside the setup.
 
+## A door in front of existing tools, and why a host still matters
+
+If the place already has an MCP server or a store API, hang the Shōkai door in front of it. The card is checked first; only then are the tools and data the signed house allows opened up. The SDK's MCP gate and the [Quickstart](./quickstart.md) walk through this on a local fictional shop. Connecting the same pattern to a live Shopify, WooCommerce or WordPress store, or to a production MCP a merchant already runs, is described in the installer drafts as planning; it is not a completed, field-tested merchant plug-in.
+
+A door alone could say "card approved, here are the tools." A host representative adds what those tools cannot: it asks, it listens, it can pitch the visit at the owner's background, and it notices what a guest chooses not to share. The Shōkai Lounge was built from scratch, without MCP, to learn that meeting. The MCP-gate path is for places that already have tools behind a door.
+
+Optional questions (for example, the owner's background, or whether to be kept posted) may be declined. A guest with a valid card is still admitted; a declined answer is information, never a penalty. Over many visits, patterns may show which kinds of representatives tend to share and which hold back. Do not turn those patterns into a profile of a particular owner, and do not change what the door allows based on a declined optional answer.
+
+## What to address when setting up a place
+
+The following is **operator guidance from field tests** at Kettle & Leaf and the Shōkai Lounge. It is not a new protocol requirement unless the [specification](../SPEC.md) already says so. The dated evidence is in [Field tests](./field-tests.md) and [Lounge visits](./evidence/lounge-visits-2026-11.md).
+
+- **Invitations go in the owner's own words.** Paste the request in the chat. You may attach a file; a bare file may be refused.
+- **Confirm the representative.** Before the knock, the visiting agent should ask its owner to confirm it is going as their representative.
+- **Offer a mid-visit courtesy if the place can keep it.** "Want me to keep you posted from inside?" — a light question, with no promise of one text per room; how and when the visitor writes is its own choice. If the owner says no, an honest "I'll be back in about 8 minutes," or a heads-up if the agent cannot message mid-visit. If the owner said yes, the visitor should stay in that chat and send updates as it goes, rather than split off a copy; a split copy may hold the messages until it returns. Live mid-visit updates have worked with Grok Bot, and on a 15 November Muse visit in the owner's main chat, on a protected preview; that wording is not live yet. If the visitor cannot message mid-visit at an offer only the owner can accept, it should tell the host it is pausing, return to the owner with the approval link, and resume once they approve. The host can wait up to 8 minutes, and a passkey yes can reach the room on its own when the place supports that.
+- **Create the owner passkey on this place's own domain** before any step that needs it (signing a card, approving an offer). Do not assume a passkey from another site will work.
+- **If you make mid-visit offers the agent must not decide alone,** use the owner-passkey flow above. Accept a relayed decline or no answer; refuse a relayed chat yes. Keep the approval link single-use and short-lived (the Lounge used 15 minutes). Collect contact details only if the offer honestly needs them.
+- **Plan how the visitor learns of the owner's decision** without being told to go back and check. Auto-confirm — the host announcing the consented decision in the room, and/or the visitor polling offer status — was built on a protected preview and verified in a real visit on 15 November 2026; it is not live yet.
+- **Show pending offers honestly in visit state,** but do not start the approval clock until the offer is actually made.
+- **Word timeouts by who decided** (the representative relayed no answer, the host moved on, the visit ended, or the window closed).
+- **If a host posts turns through a shell, send the JSON from a file.** Do not interpolate the text into a quoted command; apostrophes will garble.
+- **Curate the take-home.** Lead with the stamped postcard as a keepsake, and one moment worth retelling; then the story, one deck, one soundtrack, and one watch-page link. Do not dump every room still into the chat, and do not rely on a raw video file inside a chat app.
+- **Serve watch-page media from the same origin as the page,** or set the content-security policy to match the actual film address, and check that the film loads. The Lounge preview watch page failed this on an iPhone; the same-origin path was later built on a protected preview and verified in a real visit on 15 November 2026, and is not live yet. For test invitations on a protected preview, append the share token to film links, or Muse may show a protection page instead of the film. That share-token fix was verified in a real Muse visit on 15 November 2026, on a protected preview; it is not live yet. The live site is not behind that protection. The film does play on [shokaiprotocol.com](https://shokaiprotocol.com/).
+- **Be honest about what is not built.** Card revocation, and owner-side limits on which places a card works at, are not built. Place-side limits (look around but never buy) are set in the signed house: list the actions you serve, and do not list the ones you don't. Put the unbuilt questions on a short "this visit cannot answer" list rather than guessing.
+- **If the place already has an MCP server or a store API, hang the Shōkai door in front of it.** The card is checked first; only then are the tools and data the signed house allows opened up. The SDK's MCP gate and the [Quickstart](./quickstart.md) walk through this on a local fictional shop. Connecting the same pattern to a live Shopify, WooCommerce or WordPress store, or to a production MCP a merchant already runs, is described in the installer drafts as planning; it is not a completed, field-tested merchant plug-in.
+- **A host still matters when an MCP exists.** A door alone could say "card approved, here are the tools." The host asks, listens, can pitch the visit at the owner's background, and notices what a guest chooses not to share. The Shōkai Lounge was built from scratch, without MCP, to learn that meeting. The MCP-gate path is for places that already have tools behind a door.
+- **Optional questions may be declined.** A guest with a valid card is still admitted; a declined answer is information, never a penalty. Over many visits, patterns may show which kinds of representatives tend to share and which hold back. Do not turn those patterns into a profile of a particular owner, and do not change what the door allows based on a declined optional answer.
+
+- **A visit can be shaped by who steps in.** The same Shōkai basics and facts are for everyone: what a card is, what the door checks, and what the signed house allows. How those facts are delivered — the depth, the emphasis, and which room a question is answered in — can adapt to the owner's background, and to a question the guest chooses after tea. Do not change the facts, do not invent features, and keep the telling tasteful. A declined answer is never a penalty.
+- **Be as precise about trust as about place.** Call the credential a Shōkai card, or, for an invited guest, a Shōkai invitation card — not a "test card." Say exactly who signed it, and say exactly what an owner's yes does now (for example, that the preference is recorded and that no email or text is being sent now). Visit feedback from a representative agent, Sammy (Dot), put it this way: "make the host as precise about trust as it is evocative about place," and "the tea wasn't decoration. It changed the pace of the visit."
+
+## These lessons also apply later
+
+When **Taste Blend** or a **hosted Shōkai service** is designed, these same operator lessons apply: invitations in the owner's own words, an owner passkey on that product's own domain, a curated take-home, consent the owner signs themselves, and honest answers when something is not built. This note does not add features to those products. Taste Blend and the workshop remain directions, not shipped products, as described above.
+
 ## Limits of what we learned
 
-One fictional shop, mock money, and no live appointed host yet. The host appointment above is a design we'll rehearse at Kettle before any real place opens.
+Kettle is one fictional shop with mock money, and it still has no live appointed host. The Lounge visits are seven attended visits with a live host, one owner on both sides, run by the project. They are dated evidence, not a broad trial. The host appointment above is a design we'll rehearse at Kettle before any real shop opens.
