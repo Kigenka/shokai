@@ -70,3 +70,7 @@ These skills are drafts. They are not installed natively from this package.
 - **Grok Bot and Muse.** The 0.5 installer, host and visitor drafts have been rehearsed in conversation ([plain-language rehearsal](./evidence/plain-language-rehearsal-2026-11-10.md)). Grok Bot can follow a skill file; Muse does not take user-installed skills, so the rehearsal pasted the draft and asked Muse to follow it. A lasting unattended host is not proven. An older Grok Bot recipe remains at [grok-bot.md](./platforms/grok-bot.md).
 - **ChatGPT, Gemini, Sidekick and WordPress Agent.** [Installer drafts](./skills/index.md) only — there is no host or visitor skill for them.
 - **Hermes Agent, OpenClaw, Dot and others.** Drafts or simulations, not a recorded owner setup on that platform. The older [platform recipes](./platforms/recipes.md) describe where a portable skill file would go; prefer the per-agent drafts on [Skills (drafts)](./skills/index.md).
+
+## Optional questions
+
+Optional questions (for example, the owner's background, or whether to be kept posted) may be declined. A guest with a valid card is still admitted; a declined answer is information, never a penalty. Over many visits, patterns may show which *kinds* of representatives tend to share and which hold back. Do not turn those patterns into a profile of a particular owner, and do not change what the door allows based on a declined optional answer.

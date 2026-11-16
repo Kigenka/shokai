@@ -63,6 +63,15 @@ The agent that sets up your door and the agent that keeps it are often different
 
 **Still open: the doorbell.** Your door is always on; your Grok Bot or Muse isn't always listening. Until there's a verified way for a door to ring the host, the door speaks from the house you signed, and your host is who you talk to about the shop — changes, visitors, and anything outside the setup.
 
+
+## A door in front of existing tools, and why a host still matters
+
+If the place already has an MCP server or a store API, hang the Shōkai door in front of it. The card is checked first; only then are the tools and data the signed house allows opened up. The SDK's MCP gate and the [Quickstart](./quickstart.md) walk through this on a local fictional shop. Connecting the same pattern to a live Shopify, WooCommerce or WordPress store, or to a production MCP a merchant already runs, is described in the installer drafts as planning; it is not a completed, field-tested merchant plug-in.
+
+A door alone could say "card approved, here are the tools." A host representative adds what those tools cannot: it asks, it listens, it can pitch the visit at the owner's background, and it notices what a guest chooses not to share. The Shōkai Lounge was built from scratch, without MCP, to learn that meeting. The MCP-gate path is for places that already have tools behind a door.
+
+Optional questions (for example, the owner's background, or whether to be kept posted) may be declined. A guest with a valid card is still admitted; a declined answer is information, never a penalty. Over many visits, patterns may show which kinds of representatives tend to share and which hold back. Do not turn those patterns into a profile of a particular owner, and do not change what the door allows based on a declined optional answer.
+
 ## Limits of what we learned
 
 One fictional shop, mock money, and no live appointed host yet. The host appointment above is a design we'll rehearse at Kettle before any real place opens.
