@@ -6,7 +6,9 @@ description: "What the unpublished 0.6.0 draft changes: Lounge-aligned skills an
 
 *Shōkai, the agent introduction protocol, from Kigenka. Byline: YSY. 18 November 2026, Pacific Time. This draft is not published to npm or GitHub until the owner says go. The published package remains @kigenka/shokai@0.5.1. The specification version and wire tag stay v0.5.0 / `shokai/0.5`.*
 
-0.6.0 brings the public package, the site and the skills in line with the live Shōkai Lounge door. It does not add a new wire tag, and it does not claim a certification. Conformance is still stated as: 30 of 164 Core Door checks measured, all 30 passed, 132 unmeasured.
+0.6.0 does not change the SDK's compiled code from 0.5.1. The specification version and wire tag stay v0.5.0 / `shokai/0.5`. What is new lives in the live Lounge door, the site, and the installer, host, visitor and invitation-setup skills.
+
+It brings the public package, the site and the skills in line with the live Shōkai Lounge door. It does not add a new wire tag, and it does not claim a certification. Conformance is still stated as: 30 of 164 Core Door checks measured, all 30 passed, 132 unmeasured.
 
 ## At the door
 

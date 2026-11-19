@@ -11,7 +11,7 @@
   "npm_status": "unpublished",
   "latest_on_npm": "0.5.1",
   "tarball": "kigenka-shokai-0.6.0.tgz",
-  "sha256": "dbe0b09c8bd34e377f45a3acf1acb595b953940f94679b254751359340cd32d1",
+  "sha256": "0a2666583f57d45f5604e62a8659330286d85681e30da9fc287794e82795bc6e",
   "sdk_tests": {
     "passed": 1275,
     "failed": 0,

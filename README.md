@@ -16,7 +16,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-9c4a32)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-555555)](packages/shokai/package.json)
 
-> This branch is the unpublished **0.6.0** draft (specification v0.5.0, wire tag `shokai/0.5`). The published package remains [`@kigenka/shokai@0.5.1`](https://www.npmjs.com/package/@kigenka/shokai/v/0.5.1) until this draft is released. See the [changelog](CHANGELOG.md) and [What is new in 0.6.0](docs/whats-new-v060.md).
+> This branch is the unpublished **0.6.0** draft (specification v0.5.0, wire tag `shokai/0.5`). The published package remains [`@kigenka/shokai@0.5.1`](https://www.npmjs.com/package/@kigenka/shokai/v/0.5.1) until this draft is released. 0.6.0 does not change the SDK's compiled code from 0.5.1; what is new lives in the live Lounge door, the site, and the skills. See the [changelog](CHANGELOG.md) and [What is new in 0.6.0](docs/whats-new-v060.md).
 
 _New to Shōkai? Run the two-second demo (`npx @kigenka/shokai@0.5.1 demo`), then read [How Shōkai works](docs/how-it-works.md): one visit to a tea shop, in plain words._
 
