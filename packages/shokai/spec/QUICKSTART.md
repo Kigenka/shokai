@@ -2,7 +2,7 @@
 
 The rest of this page is the **by-hand** path: you type the commands and can read every function. In about ten minutes you will run an MCP server behind a Shōkai door (your place, with its own host representative), send a visiting representative to it, watch it present its Shōkai visitor card and get a pass, call tools within its pass, make a visit that spends within a limit, and run the conformance checks. Everything runs on your machine; nothing is sent anywhere.
 
-If you would rather have an assistant walk you through planning a place, see the labeled draft [installer skills](https://github.com/Kigenka/shokai/blob/v0.6.0/drafts/package-0.5/installer-skills/README.md). Those drafts were rehearsed in conversation; they are not a finished installer, and they are not in the published `@kigenka/shokai` package.
+If you would rather have an assistant walk you through planning a place, see the labeled draft [installer skills](https://github.com/Kigenka/shokai/blob/v0.6.0/drafts/package-0.6/installer-skills/README.md). Those drafts were rehearsed in conversation; they are not a finished installer, and they are not in the published `@kigenka/shokai` package.
 
 ## Pass vs `seat` (canonical) {#pass-vs-seat}
 
@@ -33,17 +33,17 @@ You need Node.js 22 or later.
 
 You are making a folder on your machine and installing the Shōkai package, plus the MCP SDK your door will sit in front of. Nothing is published, and nothing leaves this folder.
 
-**Tested with** (November 5, 2026, re-checked against the published `@kigenka/shokai@0.5.0` on November 10, 2026, and against the 0.5.1 package file on November 11, 2026): Debian GNU/Linux 13 (Linux 6.12), Node.js 24.22.1, npm 11.21.1, `@modelcontextprotocol/sdk` 1.32.2, `zod` 4.6.7, and `@kigenka/shokai@0.5.1`. The versions above are pinned to what was tested. **macOS is untested** (the commands are standard POSIX and should work, but nobody has run them there yet). The stated minimum is **Node.js 22** (`engines`); CI runs Node 22 and 24.
+**Tested with** (November 5, 2026, re-checked against the published `@kigenka/shokai@0.5.0` on November 10, 2026, and against the 0.5.1 package file on November 11, 2026): Debian GNU/Linux 13 (Linux 6.12), Node.js 24.22.1, npm 11.21.1, `@modelcontextprotocol/sdk` 1.32.2, `zod` 4.6.7, and `@kigenka/shokai@0.5.1`. 0.6.0 does not change the SDK's compiled code from 0.5.1, so the same walkthrough applies to `@kigenka/shokai@0.6.0`. The versions above are pinned to what was tested. **macOS is untested** (the commands are standard POSIX and should work, but nobody has run them there yet). The stated minimum is **Node.js 22** (`engines`); CI runs Node 22 and 24.
 
 ```sh
 mkdir shokai-quickstart && cd shokai-quickstart
 npm init -y && npm pkg set type=module
-npm install @kigenka/shokai@0.5.1 @modelcontextprotocol/sdk@1.32.2 zod@4.6.7
+npm install @kigenka/shokai@0.6.0 @modelcontextprotocol/sdk@1.32.2 zod@4.6.7
 ```
 
 This walkthrough uses **Zod 4** (`zod@4.6.7`), required by the pinned MCP SDK — not Zod 3.
 
-The package digest is recorded in [release/kigenka-shokai-0.5.1.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.5.1.sha256) (0.5.0's in [release/kigenka-shokai-0.5.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.5.0.sha256)).
+The package digest is recorded in [release/kigenka-shokai-0.6.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.6.0.sha256) (0.5.1's in [release/kigenka-shokai-0.5.1.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.5.1.sha256); 0.5.0's in [release/kigenka-shokai-0.5.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.5.0.sha256)).
 
 ## Run a place (host representative)
 

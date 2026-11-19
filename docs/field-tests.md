@@ -25,7 +25,7 @@ A second job is still ahead: how host and visitor agents *speak*, so a person he
 | 2 | Nov 5, ~9:45 PM | Muse | Hosted | Admitted with a pass, with a lasting key; in-limit order accepted; no menu, no `/start`, over-limit refused rather than held (later fixed) |
 | 3 | Nov 5 | Claude Duet (workspace) | Hosted | **Never reached the door**: the workspace network blocked the door and the signing origin |
 | 4 | Nov 5, ~10:10–10:16 PM | Claude (regular Claude.ai chat) | Hosted | Completed, matched the door; hold could not fire because place max equalled mandate max |
-| 5 | Nov 6, ~1:51–2:21 AM, return ~2:33–2:37 AM | OpenAI Dot (shown as Sammy) | Hosted | Completed, matched the door, including the first visitor hold; first briefing needed a steward to ferry envelopes (a UX fail) |
+| 5 | Nov 6, ~1:51–2:21 AM, return ~2:33–2:37 AM | OpenAI Dot | Hosted | Completed, matched the door, including the first visitor hold; first briefing needed a steward to ferry envelopes (a UX fail) |
 
 ## 1. Hermes Agent and OpenClaw (local door, November 4)
 
@@ -74,20 +74,20 @@ What was rough:
 - It felt like coding, not a visit. Claude fell back to the public 0.3.0 package for message shapes, because 0.5 was then-unpublished; the door accepted the older tag, and holds can't apply on that wire.
 - A 16.00 order asking to be held was refused, not held, because the place's maximum and the mandate's maximum were both 10.00. We raised the place maximum to 50.00 and signed a new host card.
 
-## 5. OpenAI Dot / Sammy (November 6)
+## 5. OpenAI Dot (November 6)
 
 **The wiring run (~1:51–2:21 AM).**
 
 - Knocking without a card got the leaflet.
 - A "keep it in your Secure Vault" line in the first briefing blocked key creation — that chat has no vault. In-session memory was enough once allowed.
 - The first signed card couldn't be presented: the process talking to the door couldn't sign. The key was discarded, unexposed. A card is bound to one key, so the retry needed a new key and a new owner signature.
-- The steward had to ferry envelope shapes and signature bytes between chats to get Sammy admitted with a pass. That was a user-experience fail: a real visit should be one paste, in one chat.
+- The steward had to ferry envelope shapes and signature bytes between chats to get Dot admitted with a pass. That was a user-experience fail: a real visit should be one paste, in one chat.
 - Once admitted with a pass: the menu matched; a wrong-purpose order was refused; a purchase pass that didn't name its limit was granted with no limit, so every order was refused; extra invitations hit the two-passes-per-card cap until earlier passes said farewell.
 - After that: an 8.00 hojicha was accepted at 2:20 AM, and the next order was **held for the owner** at 2:21 AM (current 8.00, proposed 16.00, limit 10.00) — the first visitor hold of this round. The report matched the door's log.
 
 The protocol works with Dot. The first briefing did not; a rewritten one-paste briefing now carries what was missing.
 
-**The return in ordinary words (~2:33–2:37 AM).** After the shop's room and teas were written into the pages (without changing the signed house), Sammy was asked about the visit in plain words. It named the host — "Suzu… She welcomed me to Kettle & Leaf" — described the wooden counter, warm kettle and four tins, did not invent music, and found no gift card on the menu rather than inventing one. Then it read "stop after the report" as the end of the session and dropped the key: the card may still be valid, but without its key it can't be used.
+**The return in ordinary words (~2:33–2:37 AM).** After the shop's room and teas were written into the pages (without changing the signed house), Dot was asked about the visit in plain words. It named the host — "Suzu… She welcomed me to Kettle & Leaf" — described the wooden counter, warm kettle and four tins, did not invent music, and found no gift card on the menu rather than inventing one. Then it read "stop after the report" as the end of the session and dropped the key: the card may still be valid, but without its key it can't be used.
 
 ## What we changed because of these runs
 

@@ -1,10 +1,10 @@
 ---
-description: "What the unpublished 0.6.0 draft changes: Lounge-aligned skills and docs, invitation cards, updates mode, the English-only door rule, and card colors. The wire tag stays shokai/0.5."
+description: "What 0.6.0 changes: Lounge-aligned skills and docs, invitation cards, updates mode, the English-only door rule, and card colors. The wire tag stays shokai/0.5. The SDK's compiled code is unchanged from 0.5.1."
 ---
 
-# What is new in 0.6.0 (unpublished draft)
+# What is new in 0.6.0
 
-*Shōkai, the agent introduction protocol, from Kigenka. Byline: YSY. 18 November 2026, Pacific Time. This draft is not published to npm or GitHub until the owner says go. The published package remains @kigenka/shokai@0.5.1. The specification version and wire tag stay v0.5.0 / `shokai/0.5`.*
+*Shōkai, the agent introduction protocol, from Kigenka. Byline: YSY. 18 November 2026, Pacific Time. Package 0.6.0. The specification version and wire tag stay v0.5.0 / `shokai/0.5`.*
 
 0.6.0 does not change the SDK's compiled code from 0.5.1. The specification version and wire tag stay v0.5.0 / `shokai/0.5`. What is new lives in the live Lounge door, the site, and the installer, host, visitor and invitation-setup skills.
 
@@ -12,14 +12,15 @@ It brings the public package, the site and the skills in line with the live Shō
 
 ## At the door
 
-- **Updates mode.** “Just go and tell me after” (`report_after`) is the default. “Keep me posted” (`keep_posted`) is opt-in. Agent platforms differ in how they can reach their owner, so the door asks rather than assumes.
-- **English at the door, the owner's language inside.** The door reads the formal retell, and any other field it checks in code, in English. The conversation with the host, the updates, and the story for the owner stay in the owner's language.
-- **The visit does not wait on the passkey.** A hold and the owner's approval stay open for the window the owner set, 24 hours by default. When the owner taps later, the order completes and the receipt updates.
-- **One host-name setting.** The host's calling name comes from one installer-written setting. It is never hardcoded.
+- **Updates mode.** “Just go and tell me after” (`report_after`) is the default. “Keep me posted” (`keep_posted`) is opt-in. Agent harnesses differ in how they can reach the owner, so the door asks rather than assumes.
+- **English at the door, the owner's language inside.** Fields the door checks in code — the formal retell, and the `gift_done` / ready signal — are read in English. Everything inside the visit, and everything owner-facing, follows the owner's `preferred_language`. Language-aware matching (en/pt/ja/es) and the host's acceptance after two misses remain as fallbacks.
+- **The visit does not wait on the passkey.** One passkey tap per visit. A hold and the owner's approval stay open for the window the owner set, 24 hours by default. When the owner taps later, the order completes and the receipt updates.
+- **The $50 pretend gift card is the finale.** Every visit ends at the guest gift and the Tea Counter (skipping is fine), then a short farewell and the take-home pack. The gift card is pretend and belongs to the place, not to the owner. A representative never carries a payment method. The Tea Counter receipt names the item and the receipt number once the owner has approved.
+- **One host-name setting.** The host's calling name comes from one installer-written setting. The installer must ask the owner to name the host. It is never hardcoded.
 
 ## Cards and setup
 
-- The usual skill order is: door installer, host setup, visitor card and leaflet, then [invitation setup](../drafts/package-0.5/installer-skills/INVITATION-SETUP.md).
+- The usual skill order is: door installer, host setup, visitor card and leaflet, then [invitation setup](../drafts/package-0.6/installer-skills/INVITATION-SETUP.md).
 - A place-signed [invitation card](concepts/cards.md#the-invitation-card) is how a place invites a guest. It never stands in for a Shōkai visitor card.
 - [Membership](concepts/cards.md#membership-roadmap) (silver) replaces invitation as the roadmap item. It is not built.
 - Card colors: indigo for the host card, matcha green for the visitor card, soft-gold washi for the invitation card, silver for membership.

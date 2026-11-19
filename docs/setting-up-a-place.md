@@ -18,7 +18,7 @@ Both still need a host, appointed by their owner. Taste Blend and the workshop a
 
 You talk with your agent. An [installer skill](./skills/) (a draft) helps you set up and customize the door for the place. You sign the Shōkai host card with your passkey on your own device — the owner key never sits on an agent server. The installer then hands off to the appointed host representative, which follows a [host skill](./skills/) (also a draft). Briefing continues as conversation: how the place runs, what it believes, how it welcomes people. What that conversation covers: [Prepare your host representative](./prepare-your-host-representative.md).
 
-These skills are unpublished drafts. Grok Bot and Muse rehearsals are recorded in the [plain-language rehearsal](./evidence/plain-language-rehearsal-2026-11-10.md). Other platforms are simulated or drafts only. ChatGPT, Gemini, Sidekick and WordPress Agent have installer drafts only — no host or visitor skill. A lasting unattended host is not proven.
+These skills are labeled drafts. Grok Bot and Muse rehearsals are recorded in the [plain-language rehearsal](./evidence/plain-language-rehearsal-2026-11-10.md). Other platforms are simulated or drafts only. ChatGPT, Gemini, Sidekick and WordPress Agent have installer drafts only — no host or visitor skill. A lasting unattended host is not proven.
 
 ## Opening a door
 
@@ -57,11 +57,38 @@ Our first visitors reported in codes and step numbers — useful for checking th
 The agent that sets up your door and the agent that keeps it are often different.
 
 1. **Your guide** learns the shop, writes the house and rehearses a few visits with you.
-2. It asks **who gets the job** — "an assistant you already use, like Grok Bot or Muse, or me?" — and what you'd like to call your host.
+2. It asks **who gets the job** — "an assistant you already use, like Grok Bot or Muse, or me?" — and, as a required step, what you'd like to call your host. Offer a few fitting suggestions in the place's spirit, and let the host suggest a name; do not default to a working or product name. A named host representative is the place's personality, not just a bot.
 3. It writes a **letter** for the agent you chose: the shop, the voice, the house in plain words, the door's address, and a request that the agent first check — without making a key — whether it can keep a lasting host key that only it can use and recover in a fresh session. The letter does not tell the agent to make a key before that check.
 4. You carry the letter over in one paste. The appointed agent asks what you would like to call it and checks, without making a key, whether it can keep a lasting host key that only it can use and recover in a fresh session. If it cannot — and as of the 0.5 walkthroughs, Grok Bot, Muse, Hermes, OpenClaw and Dot could not — it declines the lasting job and stays an attended conversation partner. It does not make a key or ask you to sign a lasting appointment it cannot keep. If a later host ever meets that bar, it would make its own key, show you only the public half, read the house back, and you would sign once with your passkey; the guide would hang only the public card.
 
 **Still open: the doorbell.** Your door is always on; your Grok Bot or Muse isn't always listening. Until there's a verified way for a door to ring the host, the door speaks from the house you signed, and your host is who you talk to about the shop — changes, visitors, and anything outside the setup.
+
+
+## A worked example: designing a new place (the Shōkai Lounge)
+
+Kettle & Leaf, above, is a fictional shop that already existed, with a Shōkai door added to it. The **Shōkai Lounge** is a different kind of example: a place designed from the start for visiting representative agents, using Shōkai. Walk it from start to finish.
+
+### 1. Design the place and its rooms
+
+The Lounge is a short visit, not a storefront with a door bolted on. Its rooms are: a reception, a cup of tea and a question the guest chooses, a three-part keynote (the problem, the introduction, the film), a door tour that shows how the guest's own card was just checked, a two-sentence retell, a guest gift, a short farewell, and a take-home pack. Write the rooms, the voice, and what the guest carries home before anyone signs a card.
+
+### 2. Name the host
+
+Naming the host representative is a required setup step. Ask the owner what their host should be called; offer a few fitting suggestions; let the host suggest a name. Write the confirmed name into the host-name config, the host agent's own name, and the invitation line, and into the card's role when that text includes the calling name. See [Naming the host](../drafts/package-0.6/installer-skills/NAMING-THE-HOST.md).
+
+### 3. Sign one host card per door
+
+Signing the host card is the heart of setup. It is the owner's contract with the appointed host representative: who keeps this door, under which duties, for which place, for about 90 days. The order is: name the host, prepare the card (role, duties, place, door address, relying-party id), the owner reviews and taps their passkey on the place's own site, then the signed card is hung on that door and the door is redeployed. Signing does not open the door and does not charge anyone. If the role text or the name later changes, sign again. See [Appointing the host](../drafts/package-0.6/installer-skills/APPOINTING-THE-HOST.md).
+
+**One signed card per door.** The Lounge has two doors: the Lounge itself, and the Tea Counter. A card signed for one will not open the other. A door that does not yet have its own card should say honestly that it is not open. The host checks before sending a guest there.
+
+### 4. A room that runs its own tool service behind its own door
+
+The Tea Counter is a showcase of a place's own tool service — an MCP, a standard way for an agent to use a shop's tools — running behind its own door. The guest gift is a $50 pretend gift card from the place, the finale of the visit (skipping is fine). A visiting agent may browse the menu, hold an item, and place an order only after the owner's passkey on the place's own site. One passkey tap per visit. A yes in chat does not count. A representative never carries a payment method. The Tea Counter receipt names the item and the receipt number once the owner has approved.
+
+### 5. The guest's visit, and what the owner gets back
+
+The guest arrives with its owner's Shōkai visitor card, and may also bring an invitation card. It is welcomed by the named host, walks the rooms, and — if it visits the counter — shows its owner the menu and waits for a passkey choice. It carries home a pack (postcard, film, proof of visit, and the rest) and a short story of the visit. The owner can follow live on a progress page, choose at the counter with their own passkey, and read the receipt afterwards, including what was chosen at the Tea Counter when that step is done.
 
 ## Limits of what we learned
 

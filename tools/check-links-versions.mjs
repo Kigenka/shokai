@@ -41,13 +41,14 @@ const specPath = [join(root, "SPEC.md"), ...bundles.map((b) => join(b, "SPEC.md"
 const head = specPath ? readFileSync(specPath, "utf8").match(/\*\*Specification v(\d+\.\d+\.\d+(?:-rc\d+)?) \(core\)\.\*\*/) : null;
 if (!head) errors.push("SPEC.md: no '**Specification vX (core).**' header");
 const V = head?.[1]; const specPkgV = V?.replace(/-rc(\d+)$/, "-rc.$1");
-// 0.5.1 onward: a package patch release may follow a specification version without changing it (same wire tag, same
-// spec_ref.version, same schema id; additive optional members only). The package version is then V's major.minor with a
-// patch at or above V's. Everything else keeps naming the specification version V.
+// A package release may follow a specification version without changing it (same wire tag, same
+// spec_ref.version). 0.5.1 was a patch on the 0.5 line; 0.6.0 is a package minor whose compiled SDK
+// code is unchanged from 0.5.1. The package version keeps the specification's major and is at or
+// above the specification version. Everything else keeps naming the specification version V.
 const PKG_VERSION = JSON.parse(readFileSync(join(root, "packages/shokai/package.json"), "utf8")).version;
-const samePatchLine = (pv, sv) => { const a = /^(\d+)\.(\d+)\.(\d+)$/.exec(pv ?? ""), b = /^(\d+)\.(\d+)\.(\d+)$/.exec(sv ?? "");
-  return !!a && !!b && a[1] === b[1] && a[2] === b[2] && Number(a[3]) >= Number(b[3]); };
-const pkgV = PKG_VERSION === specPkgV || samePatchLine(PKG_VERSION, specPkgV) ? PKG_VERSION : specPkgV;
+const sameLineOrNewer = (pv, sv) => { const a = /^(\d+)\.(\d+)\.(\d+)$/.exec(pv ?? ""), b = /^(\d+)\.(\d+)\.(\d+)$/.exec(sv ?? "");
+  return !!a && !!b && a[1] === b[1] && (Number(a[2]) > Number(b[2]) || (a[2] === b[2] && Number(a[3]) >= Number(b[3]))); };
+const pkgV = PKG_VERSION === specPkgV || sameLineOrNewer(PKG_VERSION, specPkgV) ? PKG_VERSION : specPkgV;
 const need = (file, re, what) => { for (const base of [root, ...bundles]) { const p = join(base, file); if (!existsSync(p)) continue; versions++;
   if (!re.test(readFileSync(p, "utf8"))) errors.push(`${relative(root, p)}: ${what} doesn't name ${V}`); } };
 const q = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -64,7 +65,7 @@ if (V) {
   need("s5/engawa/src/version.ts", new RegExp(`SPEC_VERSION = "${q(V)}"`), "SPEC_VERSION");
   need("reference/engawa/src/version.ts", new RegExp(`SPEC_VERSION = "${q(V)}"`), "SPEC_VERSION");
   need("packages/shokai/src/core/version.ts", new RegExp(`SPEC_VERSION = "${q(V)}"`), "the SDK's SPEC_VERSION");
-  need("packages/shokai/package.json", new RegExp(`"version": "${q(pkgV)}"`), `the SDK package version (${pkgV}; specification ${V}, same major.minor, patch at or above)`);
+  need("packages/shokai/package.json", new RegExp(`"version": "${q(pkgV)}"`), `the SDK package version (${pkgV}; specification ${V}, same major, package at or above the specification version)`);
   // no other current-version marker may name an older release candidate of this version
   for (const base of new Set([root, ...bundles])) for (const f of ["SPEC.md", "protocol-shapes.ts", "conformance/golden-traces.md"]) { const p = join(base, f); if (!existsSync(p)) continue;
     const t = readFileSync(p, "utf8"); const stale = [...t.matchAll(/"version": "(\d+\.\d+\.\d+(?:-rc\d+)?)"/g)].map((m) => m[1]).filter((x) => x !== V);

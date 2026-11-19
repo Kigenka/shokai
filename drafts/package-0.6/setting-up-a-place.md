@@ -1,4 +1,4 @@
-> **Draft (0.5).** Labeled so it is not mistaken for a shipped product or a 1.0 claim.
+> **Draft (0.6).** Labeled so it is not mistaken for a shipped product or a 1.0 claim.
 
 # Setting up a place: what we learned at Kettle & Leaf
 
@@ -19,7 +19,7 @@ Both still need a host, appointed by their owner.
 
 You talk with your agent. An [installer skill](../../docs/skills/) (a draft) helps you set up and customize the door for the place. You sign the Shōkai host card with your passkey on your own device — the owner key never sits on an agent server. The installer then hands off to the appointed host representative, which follows a [host skill](../../docs/skills/) (also a draft). Briefing continues as conversation: how the place runs, what it believes, how it welcomes people. What that conversation covers: [Prepare your host representative](../../docs/prepare-your-host-representative.md).
 
-These skills are unpublished drafts. Grok Bot and Muse rehearsals are recorded in the [plain-language rehearsal](../../docs/evidence/plain-language-rehearsal-2026-11-10.md). Other platforms are simulated or drafts only. ChatGPT, Gemini, Sidekick and WordPress Agent have installer drafts only — no host or visitor skill. A lasting unattended host is not proven.
+These skills are labeled drafts. Grok Bot and Muse rehearsals are recorded in the [plain-language rehearsal](../../docs/evidence/plain-language-rehearsal-2026-11-10.md). Other platforms are simulated or drafts only. ChatGPT, Gemini, Sidekick and WordPress Agent have installer drafts only — no host or visitor skill. A lasting unattended host is not proven.
 
 ## Opening a door
 
@@ -86,13 +86,13 @@ Signing the host card is the heart of setup. It is the owner's contract with the
 
 ### 4. A room that runs its own tool service behind its own door
 
-The Tea Counter is a showcase of a place's own tool service — an MCP, a standard way for an agent to use a shop's tools — running behind its own door. A visiting agent may browse the menu, hold an item, and place an order only after the owner's passkey on the place's own site. A yes in chat does not count. A representative never carries a payment method.
+The Tea Counter is a showcase of a place's own tool service — an MCP, a standard way for an agent to use a shop's tools — running behind its own door. The guest gift is a $50 pretend gift card from the place, the finale of the visit (skipping is fine). A visiting agent may browse the menu, hold an item, and place an order only after the owner's passkey on the place's own site. One passkey tap per visit. A yes in chat does not count. A representative never carries a payment method. The Tea Counter receipt names the item and the receipt number once the owner has approved.
 
 ### 5. The guest's visit, and what the owner gets back
 
-The guest arrives with a signed invitation card, is welcomed by the named host, walks the rooms, and — if it visits the counter — shows its owner the menu and waits for a passkey choice. It carries home a pack (postcard, film, proof of visit, and the rest) and a short story of the visit. The owner can follow live on a progress page, choose at the counter with their own passkey, and read the receipt afterwards, including what was chosen at the Tea Counter when that step is done.
+The guest arrives with its owner's Shōkai visitor card, and may also bring an invitation card. It is welcomed by the named host, walks the rooms, and — if it visits the counter — shows its owner the menu and waits for a passkey choice. It carries home a pack (postcard, film, proof of visit, and the rest) and a short story of the visit. The owner can follow live on a progress page, choose at the counter with their own passkey, and read the receipt afterwards, including what was chosen at the Tea Counter when that step is done.
 
-These skills and this walk remain unpublished drafts. They authorize no deploy, publication, or live change.
+These skills and this walk remain labeled drafts. They authorize no deploy, publication, or live change.
 
 ## Limits of what we learned
 

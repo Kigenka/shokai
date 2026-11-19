@@ -1,6 +1,6 @@
 # Future directions (not in the protocol yet)
 
-> **None of this is implemented.** These are directions the project expects agents to take, written down so the design can make room for them. Nothing on this page is in Shōkai v0.5 (specification v0.5.0, package 0.5.1), its SDK or its conformance suite, and nothing here changes what the [specification](../SPEC.md) requires. Where an idea would need a protocol change, it is noted as a proposal.
+> **None of this is implemented.** These are directions the project expects agents to take, written down so the design can make room for them. Nothing on this page is in Shōkai v0.5 (specification v0.5.0, package 0.6.0), its SDK or its conformance suite, and nothing here changes what the [specification](../SPEC.md) requires. Where an idea would need a protocol change, it is noted as a proposal.
 
 ## Representatives that discover places on their own
 

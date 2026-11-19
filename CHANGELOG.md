@@ -4,18 +4,19 @@ All notable changes to the Shōkai specification, SDK and reference code. Before
 
 ## Unreleased
 
-- Nothing yet. (0.6.0 is in the section below, still unpublished.)
+- Nothing yet.
 
-## v0.6.0 (unpublished draft), 2026-11-18
+## v0.6.0, 2026-11-18
 
-A package and documentation draft. The specification stays v0.5.0 on the wire: the wire tag is still `shokai/0.5`, and `spec_ref.version` is still `"0.5.0"`. This draft is not published to npm or pushed to GitHub until the owner says go. The published package remains 0.5.1.
+A package and documentation release. The specification stays v0.5.0 on the wire: the wire tag is still `shokai/0.5`, and `spec_ref.version` is still `"0.5.0"`.
 
-0.6.0 does not change the SDK's compiled code from 0.5.1. The specification version and the wire tag stay v0.5.0 / `shokai/0.5`. What is new in this draft lives in the live Lounge door, the site, and the installer, host, visitor and invitation-setup skills. It brings the repository, the npm package docs and the skills in line with the live Shōkai Lounge door on shokaiprotocol.com. Conformance is still stated as: 30 of 164 Core Door checks measured, all 30 passed, 132 unmeasured. This draft does not claim a certification.
+0.6.0 does not change the SDK's compiled code from 0.5.1. The specification version and the wire tag stay v0.5.0 / `shokai/0.5`. What is new lives in the live Lounge door, the site, and the installer, host, visitor and invitation-setup skills. It brings the repository, the npm package docs and the skills in line with the live Shōkai Lounge door on shokaiprotocol.com. Conformance is still stated as: 30 of 164 Core Door checks measured, all 30 passed, 132 unmeasured. This release does not claim a certification.
 
-- **Invitation cards and invitation setup.** A place-signed invitation card the guest brings with its owner's Shōkai visitor card. It never stands in for that card and cannot widen anything the owner signed. [Invitation setup](drafts/package-0.5/installer-skills/INVITATION-SETUP.md) is the fourth skill, after the door installer, host setup, and the visitor card and leaflet. The owner sets how long a hold and the approval stay open; the default is 24 hours. The visit does not wait on the passkey.
-- **Updates mode.** “Just go and tell me after” (`report_after`) is the default; “keep me posted” (`keep_posted`) is opt-in. Agent platforms differ in how they can reach their owner.
-- **English at the door, the owner's language inside.** The door reads the formal retell, and any other field it checks in code, in English. The conversation with the host, the updates, and the story for the owner stay in the owner's language.
-- **One host-name setting.** The host's calling name comes from one installer-written setting. It is never hardcoded.
+- **Invitation cards and invitation setup.** A place-signed invitation card the guest brings with its owner's Shōkai visitor card. It never stands in for that card and cannot widen anything the owner signed. [Invitation setup](drafts/package-0.6/installer-skills/INVITATION-SETUP.md) is the fourth skill, after the door installer, host setup, and the visitor card and leaflet. The owner sets how long a hold and the approval stay open; the default is 24 hours. The visit does not wait on the passkey. One passkey tap per visit.
+- **Updates mode.** “Just go and tell me after” (`report_after`) is the default; “keep me posted” (`keep_posted`) is opt-in. Agent harnesses differ in how they can reach the owner.
+- **English at the door, the owner's language inside.** Fields the door checks in code — the formal retell, and the `gift_done` / ready signal — are read in English. Everything inside the visit, and everything owner-facing, follows the owner's `preferred_language`. Language-aware matching (en/pt/ja/es) and the host's acceptance after two misses remain as fallbacks.
+- **The $50 pretend gift card is the finale.** Every visit ends at the guest gift and the Tea Counter (skipping is fine), then a short farewell and the take-home pack. The gift card is pretend and belongs to the place, not to the owner. A representative never carries a payment method. The Tea Counter receipt names the item and the receipt number once the owner has approved.
+- **One host-name setting.** The host's calling name comes from one installer-written setting. The installer must ask the owner to name the host. It is never hardcoded.
 - **Card colors.** Indigo for the host card, matcha green for the visitor card, soft-gold washi for the invitation card, silver for membership (roadmap only). Membership replaces invitation as the roadmap item; it is not built.
 - **Skills.** Installer, host, visitor (Grok Bot, Muse, Hermes, OpenClaw, Dot) and invitation-setup drafts follow the live door.
 - **README.** The 47-second hero film is at the top of this README.

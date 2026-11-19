@@ -11,10 +11,10 @@
   "npm_status": "unpublished",
   "latest_on_npm": "0.5.1",
   "tarball": "kigenka-shokai-0.6.0.tgz",
-  "sha256": "0a2666583f57d45f5604e62a8659330286d85681e30da9fc287794e82795bc6e",
+  "sha256": "bd885f9c1f2f76b50fab3e5040967b663d4f6292da6e7e98e2bb7d659f2b6c4f",
   "sdk_tests": {
     "passed": 1275,
     "failed": 0,
-    "date": "2026-11-11"
+    "date": "2026-11-18"
   }
 }

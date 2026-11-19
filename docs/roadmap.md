@@ -1,17 +1,18 @@
 # Roadmap
 
-Shōkai's current specification is **v0.5.0** (wire tag `shokai/0.5`). The current package is `@kigenka/shokai@0.5.1`, npm `latest` as of 11 November 2026. It is not 1.0; review continues, and changes go into later versions. *The sections below on the 0.3 line are kept as the historical record of that earlier release.*
+Shōkai's current specification is **v0.5.0** (wire tag `shokai/0.5`). The current package is `@kigenka/shokai@0.6.0`. 0.6.0 does not change the SDK's compiled code from 0.5.1. It is not 1.0; review continues, and changes go into later versions. *The sections below on the 0.3 line are kept as the historical record of that earlier release.*
 
 **Feature freeze, except for clarifications (October 27, 2026).** No new features or proposals went into the 0.3 line after the freeze: only fixes, clearer wording and packaging until v0.3.0. The clarifications since the freeze are listed in SPEC.md (Status) and the CHANGELOG. Experimental extensions (teaching visits, signed place listings, W3C VC mapping) may still change or be dropped after review.
 
-## 0.6.0 (unpublished draft)
+## 0.6.0
 
-What this draft documents, already running at the Shōkai Lounge:
+What this package documents, already running at the Shōkai Lounge:
 
-- **Invitation cards and invitation setup.** A place-signed invitation card; the owner sets how long a hold and the approval stay open (24 hours by default). The visit does not wait on the passkey.
-- **Updates mode.** “Just go and tell me after” (`report_after`) is the default; “keep me posted” (`keep_posted`) is opt-in.
-- **English at the door, the owner's language inside.** The door reads the formal retell, and any other field it checks in code, in English. The conversation with the host, the updates, and the story for the owner stay in the owner's language.
-- **One host-name setting.** The host's calling name comes from one installer-written setting. It is never hardcoded.
+- **Invitation cards and invitation setup.** A place-signed invitation card; the owner sets how long a hold and the approval stay open (24 hours by default). The visit does not wait on the passkey. One passkey tap per visit.
+- **Updates mode.** “Just go and tell me after” (`report_after`) is the default; “keep me posted” (`keep_posted`) is opt-in. Agent harnesses differ in how they can reach the owner.
+- **English at the door, the owner's language inside.** Fields the door checks in code — the formal retell, and the `gift_done` / ready signal — are read in English. Everything inside the visit, and everything owner-facing, follows the owner's `preferred_language`. Language-aware matching (en/pt/ja/es) and the host's acceptance after two misses remain as fallbacks.
+- **The $50 pretend gift card is the finale.** The Tea Counter receipt names the item and the receipt number once the owner has approved. A representative never carries a payment method.
+- **One host-name setting.** The host's calling name comes from one installer-written setting. The installer must ask the owner to name the host. It is never hardcoded.
 - **Card colors.** Indigo host, matcha visitor, soft-gold washi invitation, silver membership (roadmap only).
 
 The wire tag stays `shokai/0.5`. Membership (silver) is the roadmap item that takes the place of the old dashed invitation. It is not built.

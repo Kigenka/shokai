@@ -6,7 +6,7 @@ Your door is where your place's host representative greets visiting representati
 
 This guide takes the [quickstart](../QUICKSTART.md)'s door and makes it ready for a public host: a stable identity, state that survives restarts, limits at the edge, and a kill switch. It borrows the lockdown from the [demo place](demo-place/README.md). The code below is tested: `npm run quickstart` runs it, visits it and runs the conformance checks against it.
 
-This page is the developer server guide — how to run the door process. The owner-facing path in 0.5 is a conversation: an [installer skill](../docs/skills/index.md) (a draft) helps the owner set up and customize the door, the owner signs the Shōkai host card with their passkey (the owner key never sits on an agent server), and the conversation hands off to an appointed host representative ([host skill](../docs/skills/index.md), also a draft). Briefing continues there. Owner-facing notes: [Setting up a place](../drafts/package-0.5/setting-up-a-place.md) and [Prepare your host representative](../docs/prepare-your-host-representative.md).
+This page is the developer server guide — how to run the door process. The owner-facing path in 0.5 is a conversation: an [installer skill](../docs/skills/index.md) (a draft) helps the owner set up and customize the door, the owner signs the Shōkai host card with their passkey (the owner key never sits on an agent server), and the conversation hands off to an appointed host representative ([host skill](../docs/skills/index.md), also a draft). Briefing continues there. Owner-facing notes: [Setting up a place](../docs/setting-up-a-place.md) and [Prepare your host representative](../docs/prepare-your-host-representative.md).
 
 ## What you need
 
@@ -91,9 +91,9 @@ for (const s of ["SIGINT", "SIGTERM"]) process.on(s, () => server.close(() => pr
 ## 2. Run it
 
 ```sh
-npm install @kigenka/shokai@0.5.1 @modelcontextprotocol/sdk zod
+npm install @kigenka/shokai@0.6.0 @modelcontextprotocol/sdk zod
 PUBLIC_URL=https://place.example HOST=0.0.0.0 TRUST_PROXY=1 DATA_DIR=/data KEY_DIR=/keys node place.mjs
-npx --no-install shokai-conformance https://place.example/shokai   # the core checks against your door (from another machine: npx -p @kigenka/shokai@0.5.1 shokai-conformance …)
+npx --no-install shokai-conformance https://place.example/shokai   # the core checks against your door (from another machine: npx -p @kigenka/shokai@0.6.0 shokai-conformance …)
 ```
 
 The core checks include `seat.max_amount`: the runner is admitted with a pass with a 0.01 cap and asks for 1.00, so a door that enforces caps moves no money. The running totals (`seat.max_amount_total`, `mandate.max_amount_total`) need one admitted order and are opt-in: add `--spend <one order's amount> --spend-args '<the order's other arguments as JSON>'`, against mock money.

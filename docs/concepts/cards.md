@@ -73,7 +73,7 @@ Cards are exchanged **both ways**: the place shows its card too. Each side greet
 
 A **Shōkai invitation card** is an offer from a place. The place's principal signs it — the same principal its Shōkai host card names. A guest still arrives with a Shōkai visitor card its owner signed with a passkey; the invitation never stands in for that card and cannot widen anything the owner signed.
 
-The Shōkai Lounge already issues this card (a short link or a photograph of the card). Invitation setup is the fourth skill in the usual order, after the door installer, host setup, and the visitor card and leaflet. When the owner designs the invitation they set how long a hold and the owner's approval stay open; the default is 24 hours. The visit itself does not wait on that tap. See `drafts/package-0.5/installer-skills/INVITATION-SETUP.md`.
+The Shōkai Lounge already issues this card (a short link or a photograph of the card). Invitation setup is the fourth skill in the usual order, after the door installer, host setup, and the visitor card and leaflet. When the owner designs the invitation they set how long a hold and the owner's approval stay open; the default is 24 hours. The visit itself does not wait on that tap. See `drafts/package-0.6/installer-skills/INVITATION-SETUP.md`.
 
 Card colors in 0.6.0: indigo for the host card, matcha green for the visitor card, soft-gold washi for the invitation card.
 
