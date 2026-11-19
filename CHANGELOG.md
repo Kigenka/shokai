@@ -4,7 +4,18 @@ All notable changes to the Shōkai specification, SDK and reference code. Before
 
 ## Unreleased
 
-- Nothing yet.
+Documentation only. No change to the SDK, the specification (v0.5.0), the wire tag (`shokai/0.5`) or the published 0.6.0 package.
+
+- **The Shōkai Lounge, as a worked example.** A new page, [The Shōkai Lounge](docs/the-shokai-lounge.md), puts the whole visit in one place: the invitation, redemption, the door and the named host, the rooms, the $50 pretend gift card, the Tea Counter's MCP tools (`see_menu`, `hold_order`, `place_order`) behind their own door, one passkey tap per visit, the receipt and the proof of visit, the updates modes and how different agents reach their owners (`owner_reach`), the English-only rule for fields the door checks in code, the host named through the installer, and the public guestbook that counts visits, not traffic. It ends with what is not built.
+- **The visit-flow diagrams** (`docs/diagrams/src/example-shokai-lounge-visit*.mmd`, rendered to SVG and PNG) now show the agent asking first, the owner accepting, and redemption issuing a place-signed visitor card and a one-visit mandate. The host is "named by the owner."
+- **The invitation card at the protocol level.** [Shōkai cards](docs/concepts/cards.md#the-invitation-card) now explains how the invitation relates to SPEC v0.5.0: not a fourth `kind`, but the printed face of a single-use invitation that the guest's agent redeems with its own key for a place-signed visitor card and a one-visit mandate. It covers the consent model (the card offers; only the owner accepts), the two ways a guest uses the card, the launch page at shokaiprotocol.com/demo, and the hold window. The card art (host, visitor and invitation, fronts, backs and taken-apart views) and a fictional invitation card are in `docs/assets/cards/`.
+- **Field tests 12–18.** [Field tests](docs/field-tests.md) adds the missing summary row for round 12 and the Lounge rounds of 16–18 November 2026, each with what we saw and the lesson it led to. The Lounge rounds of 13–15 November and the dated [Lounge visits](docs/evidence/lounge-visits-2026-11.md) record are now in this repository, matching the site.
+- **Roadmap and known gaps.** The roadmap lists the open questions the Lounge raised, all not built: guest passkeys (today the Lounge's approval page accepts only the Lounge owner's passkey), a passkey at acceptance, early revocation of an invitation and the visitor card it issued, linking a card to an account the owner already has (beyond SPEC v0.5.0's `CustomerLink`), membership, and an always-on hosted host.
+- **Skills.** The visitor skills say what to do with an invitation card (ask first, never invent a code, redeem with your own key) and that, at the Lounge today, only the Lounge owner's passkey can approve an order. The invitation-setup skill says what the printed card carries and what it does not.
+- **README.** The hero film now sits right below the title, as a poster in this repository that opens the film on shokaiprotocol.com. A pointer to the Lounge follows the quick demo.
+- **Docs now match the site.** Setting up a place, set up your representative, prepare your host, design lessons, known gaps, how it works, the docs index and the evidence index carry the same Lounge lessons as the site.
+- **Corrections to the v0.6.0 entry below.** The card colors are matcha green for the host card and indigo for the visitor card, as in the card art; the entry below has them reversed. And redeeming an invitation is itself how the guest's agent gets a visitor card for that visit, signed by the place; the invitation does not have to travel beside a card the owner signed.
+- **American spelling** in the docs and skills.
 
 ## v0.6.0, 2026-11-18
 
