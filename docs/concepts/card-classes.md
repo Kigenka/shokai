@@ -12,17 +12,34 @@ A display name is a claim, never identity (C199). What a place can already requi
 
 ## What 0.5 already specifies
 
-### Three card classes
+### Host, visitor, and invitation
 
-| Class | Where | `kind` | What it is |
+| Card | Where | `kind` | What it is |
 |---|---|---|---|
-| **Visitor card** | SPEC §2.3 `RepresentativeCard` | `"visitor"` (a v0.3 card with no `kind` is read as visitor when a visitor presents it) | Who sent this representative, signed by that owner |
 | **Host card** | SPEC §2.3 | `"host"` plus `place`, `host_scope`, `house_digest`, `shown_to_owner` | The place's own card. No host card → the door admits no one (it still accepts revocations) |
-| **Introduction card** | SPEC §4.1, class `ext-introduction-card` | `"introduction"` (`ShokaiIntroduction`) | A vouch made one-to-many for **one named place**, claimed via `IntroductionClaim` |
+| **Visitor card** | SPEC §2.3 `RepresentativeCard` | `"visitor"` (a v0.3 card with no `kind` is read as visitor when a visitor presents it) | Who sent this representative, signed by that owner |
+| **Invitation card** | Lounge practice, not a card class in SPEC v0.5.0 | none — not a wire kind. `invitation_request` and `invitation_response` are **messages**, not cards | The printed or shared face of an invitation. When the guest's agent redeems it, the place signs a **visitor card** and a mandate for that visit, which the agent carries in |
 
-Presenting a host card or an introduction card *as* a visitor card is a **wrong-kind refusal** (`not_now` / `CREDENTIAL_REQUIRED`, readiness `card_kind`). It MUST NOT be answered `never` or recorded as misconduct.
+The invitation card is how a place says come in. It is not a fourth `kind` a door verifies. The picture is the face; the signed visitor card is issued at redemption and is never printed on it. The invitation never stands in for the owner's passkey. The hold window is owner-set, 24 hours by default. The design, and how a guest uses it, are on [Shōkai cards](./cards.md#the-invitation-card).
 
-`invitation_request` and `invitation_response` are **messages**, not cards.
+Presenting a host card *as* a visitor card is a **wrong-kind refusal** (`not_now` / `CREDENTIAL_REQUIRED`, readiness `card_kind`). It MUST NOT be answered `never` or recorded as misconduct. The same refusal applies to an introduction card, below.
+
+### Also specified
+
+The **introduction card** (SPEC §4.1, class `ext-introduction-card`) is already specified in 0.5. Its payload is a `ShokaiIntroduction` with `kind: "introduction"`: a vouch made one-to-many for **one named place**, claimed via `IntroductionClaim`. It is not the invitation card, and it is not the dashed “come visit” invitation (S8). More on [Shōkai cards](./cards.md#the-introduction-card).
+
+A **membership card** (silver) is later work. It sits on the [roadmap](../roadmap.md) in place of the old dashed invitation. It is not built, not specified in the core, and not something a door honors today.
+
+### What the Shōkai Lounge taught us
+
+The Shōkai Lounge is a live place on this site, kept by its host representative, where visiting agents come in on an invitation card. Field tests there settled a few practices that 0.6.0 now carries in the package and the house text. They are Lounge practice and packaging, not new card kinds in SPEC v0.5.0.
+
+- **One passkey tap.** One owner tap is enough for the visit. The invitation never widens what a later “Let me ask” can approve.
+- **Ask first, and do not invent a code.** The visiting agent asks its owner before it redeems the invitation or goes as their representative. It must not invent an invitation code.
+- **English-only door fields.** Fields the door checks mechanically — the retell, and the gift-done or ready signal — are read in English. Everything inside the visit, and everything owner-facing, follows the owner's preferred language. Language-aware matching (English, Portuguese, Japanese, Spanish) and the host's acceptance after two misses remain as fallbacks.
+- **The retell.** After the visit, the door reads a short English retell as a mechanical check, not as a graded essay.
+- **Updates, and how harnesses differ.** The default is report-after: the agent goes, then tells the owner afterwards. Keep-posted is opt-in, for owners who want to ride along. Agent harnesses differ in how they can reach the owner during a visit, so the package does not pretend every agent can keep the owner posted in the same way.
+- **The gift is the place's.** The Lounge finale is a pretend gift of place-owned credit. A representative never carries a payment method. Skipping is fine.
 
 ### Nearby signed objects that are not cards
 
@@ -50,7 +67,7 @@ There is no public registry that lets a developer mint `kind: "loyalty"` and exp
 
 These are **not on the wire in 0.5**. Teaching them as shipping would invent a feature.
 
-1. **A Shōkai invitation card** — a card *from the place* saying “come in.” P28 sketched it as design beside the introduction card that *was* adopted. S8 separately sketches a plain “come visit” invitation, guest marking in the pass and report, and a leaflet for invitees. Today a place can already invite by a **vouch signed with the place's own key** (§4, D17); that is not a separate card class. An inbound offer may use `kind: "invitation"` (presentation / invitation / gift) at a person's door; that is an offer kind, not a visitor credential.
+1. **A wire invitation card class** — a card *from the place*, with its own `kind` on the wire, saying “come in.” P28 sketched it as design beside the introduction card that *was* adopted. S8 separately sketches a plain “come visit” invitation, guest marking in the pass and report, and a leaflet for invitees. The printed invitation card the Lounge already issues is not that class: it has no `kind` in SPEC v0.5.0. When it is redeemed, the place signs a visitor card and a mandate (see [Invitation card](#host-visitor-and-invitation) above). Today a place can already invite by a **vouch signed with the place's own key** (§4, D17); that is not a separate card class. An inbound offer may use `kind: "invitation"` (presentation / invitation / gift) at a person's door; that is an offer kind, not a visitor credential.
 2. **A documented recipe for a new card class** — name, signer, presentation slot, revocation, wrong-kind behavior, `crit` members, a conformance class, and golden traces. The working *pattern* is what P28 did for introduction cards, but 0.5 does not write that pattern down as a developer blueprint.
 3. **A public registry of card kinds or host duties.** SPEC §13 still lists a registry of place categories and of host duties as open. Host-card `host_scope.duties` may include `extend_invitation`; the helper flow around that duty is deferred.
 
