@@ -48,7 +48,7 @@ Three rules carry the whole design:
 
 A representative never carries a payment method, a password or a one-time code. Anything that spends money or shares something new goes through "Let me ask": the agent brings the question to its owner, and the owner answers with their passkey on the place's own site. A yes typed in chat does not count. At the Lounge, that one tap is the whole of the owner's work during a visit.
 
-**Today, only the Lounge owner's passkey works there.** The approval page accepts one passkey: the one the Lounge's owner made on shokaiprotocol.com. A guest whose owner has no passkey there can still hold an item, and the hold ends with nothing placed when the window closes. Guest passkeys are on the [roadmap](roadmap.md#open-questions-from-the-shōkai-lounge-1618-november-2026-not-built).
+**Today, only the Lounge owner's passkey works there.** The approval page accepts one passkey: the one the Lounge's owner made on shokaiprotocol.com. A guest's owner can't make a passkey there yet. So a guest can hold an item, and its owner can open the approval page and say no, but a yes can't be recorded from the guest's own device: the hold ends with nothing placed when the window closes, and the visit goes on to the farewell and the take-home pack. Guest passkeys are on the [roadmap](roadmap.md#open-questions-from-the-shōkai-lounge-1618-november-2026-not-built).
 
 ## The Tea Counter: a place's own tools behind its own door
 
