@@ -1,5 +1,8 @@
 # Shōkai cards
 
+<p align="center"><img src="../assets/cards/host-front.svg" alt="A Shōkai host card (matcha green) for fictional Kettle &amp; Leaf, whose host representative is Suzu" width="220"> <img src="../assets/cards/visiting-front.svg" alt="A Shōkai visitor card (indigo) for fictional Mio, representing Aya Linden" width="220"> <img src="../assets/cards/invitation-front.svg" alt="A soft-gold Shōkai invitation card, a fictional example for The Shōkai Lounge" width="220"></p>
+<p align="center"><em>A Shōkai host card, a visitor card, and an invitation card. Fictional examples; the backs and the taken-apart views are in the same folder. Dashed parts are proposed, not in SPEC v0.5.0.</em></p>
+
 The **card** (*meishi*, the Japanese business card) is how a representative introduces itself: who it's here for, signed by that person or organization. A `RepresentativeCard` contains:
 
 - the **principal** (who it represents) and its **role** ("Representative of Kiran Vale", "Account manager, Pacific freight team")
@@ -28,7 +31,7 @@ It is signed by the principal.
 ```
 *Abridged and illustrative, v0.5.0 (`shokai/0.5`; a v0.3.0 Shōkai card says `shokai/0.3` and has no `kind`): the envelope, signatures and some required members are omitted.*
 
-A Shōkai card is both a helpful metaphor — a signed business card you can picture — and a signed, typed document a door can verify. Developers who want to invent their own card types should treat 0.5's family as the pattern and read [Cards as a blueprint](./card-classes.md). A conforming door verifies the three specified classes: visitor, host and introduction. An unknown kind is not honoured; a new class is design work until it is specified, tested and given a conformance class.
+A Shōkai card is both a helpful metaphor — a signed business card you can picture — and a signed, typed document a door can verify. Developers who want to invent their own card types should treat 0.5's family as the pattern and read [Cards as a blueprint](./card-classes.md). A conforming door verifies the three specified classes: visitor, host and introduction. An unknown kind is not honored; a new class is design work until it is specified, tested and given a conformance class.
 
 ## The host card
 
@@ -71,21 +74,45 @@ Cards are exchanged **both ways**: the place shows its card too. Each side greet
 
 ## The invitation card
 
-A **Shōkai invitation card** is how a place says come in. It is printed in a soft-gold and cream palette, on a dusk garden scene that feels like washi stationery. The documentation site shows a large fictional example of The Shōkai Lounge card.
+A **Shōkai invitation card** is how a place says come in. It is printed in a soft-gold and cream palette, on a dusk garden scene that feels like washi stationery.
+
+<p align="center"><img src="../assets/cards/shokai-invitation-card.jpg" alt="A Shōkai invitation card for The Shōkai Lounge: a dusk garden and wooden gate in fog, with the words You're invited, in a soft-gold and cream frame, and a dark panel for the visiting agent." width="420"></p>
+<p align="center"><em>A fictional example of a Shōkai invitation card from The Shōkai Lounge. The address on this picture is not a working invitation, and the card does not contain a usable code.</em></p>
 
 The top names the place and the invitation: “You're invited to visit, with your agent, YSY's Lounge.” A quiet line under that — “There may be a little surprise inside.” — hints that something is waiting, without spelling it out.
 
 The dark panel is for the visiting agent. It holds the invitation address, and two plain instructions: ask your owner whether to go as their representative, and do not invent a code. The QR code, marked “SCAN TO OPEN,” opens the same invitation.
 
-### What it carries
+<p align="center"><img src="../assets/cards/exploded-invitation.svg" alt="The Shōkai invitation card taken apart, front to back: the face, the address and QR, and the agent instructions are printed; the hold window, the visitor card and mandate issued at redemption, the owner's passkey at Let me ask, and the gift are not printed." width="640"></p>
+<p align="center"><em>The invitation card taken apart, front to back. The face, the address and QR, and the agent instructions are printed on the card. Dashed layers are not printed: the hold window (24 hours by default, owner-set), the visitor card and mandate the place signs at redemption, the owner's passkey at “Let me ask” (one tap), and the gift (place-owned pretend credit). These are Lounge practice, not a card class in SPEC v0.5.0.</em></p>
 
-The picture is the face of the invitation. The signed visitor card is not printed on it.
+### What it is, at the protocol level
 
-When the guest's agent redeems the invitation, the place signs a visitor card — and a mandate for that visit — so the agent can carry them in. The place signs those, not the owner's passkey. The invitation never widens what a later “Let me ask” and a passkey tap can approve.
+SPEC v0.5.0 specifies three card classes: visitor, host and introduction (see [Cards as a blueprint](card-classes.md)). The invitation card is **not a fourth `kind`**, and no door verifies an invitation card as such. It is the printed face of a place's invitation: a short, single-use address (`/i/<code>`) that the place minted, and that expires (24 hours by default at the Lounge). What a door verifies is issued later, at redemption:
+
+1. **Redeem.** The guest's agent posts the code with its **own** public key to the claim address. A `GET` there returns a hint, not a dead end. The agent's private key never leaves the agent.
+2. **The place signs.** The place signs a `RepresentativeCard` with `kind: "visitor"` for that key, and a one-visit `Mandate` whose actions match what the place's signed house serves. At the Lounge that is nine actions, none of which spends. The Tea Counter, a second door, gets its own separate mandate (`see_menu`, `hold_order`, `place_order`). A mandate that asks for more than a house serves is refused at that door, so the two are kept apart.
+3. **It says who signed.** The place signs this visitor card, not the guest's owner, and the card says so. It proves the invitation, not the owner's identity. The owner's own yes comes later, through "Let me ask" and a passkey.
+4. **Knock.** The agent knocks with that card and mandate like any visitor. The door checks the signatures in code before any conversation, then wakes the host.
+
+The same claim tells the door how this visitor works, so the visit can fit it: the owner's preferred language, whether this is the owner's main agent or a helper, the agent family, the updates mode, and how its words reach its owner (`owner_reach`: during its turn, or only when its turn ends). These answers are self-reported. The door adapts to behavior, not brand, and any valid card is admitted. See [The Shōkai Lounge](../the-shokai-lounge.md#who-steps-in).
+
+### The card offers; only the owner accepts
+
+The agent line on the card says: ask your owner first, and do not invent a code. The owner accepts in their own chat, in their own words, for example "Please accept this invitation." That phrase is never printed on the card. If it were, the card would accept itself. The agent then confirms the names it will use, echoes the terms in one short line (including how to keep the owner updated, and in which language), and goes. A card that was already used gets a gracious note, not a second visit.
+
+In this demo, the owner accepts in words. A passkey at acceptance, so that a typed yes alone does not count, is on the [roadmap](../roadmap.md#open-questions-from-the-shōkai-lounge-1618-november-2026-not-built).
 
 ### How a guest uses it
 
-On a phone, save the card and share it with your agent. On a computer, photograph it with the agent app. The same invitation also works as a short link.
+There are two ways in.
+
+- **On a phone.** Save or share the card with your agent. You may add: *Please accept this invitation.* Your agent will check with you; say yes.
+- **On a computer, with your phone nearby.** Open your agent's app on your phone, tap +, choose Take Photo, and photograph the card on the screen.
+
+For Grok Bot, a shortcut opens the app with the invitation already typed. Muse has no prefilled-message link, so use a photo, a shared image, or copy and paste. The same invitation also works as a short link.
+
+**Where to get one.** [shokaiprotocol.com/demo](https://shokaiprotocol.com/demo) is the Lounge's launch page, and the link to share with anyone you invite. Pick your agent, create your invitation, and show it the card. The site's Try page leads to the same place.
 
 Invitation setup is the fourth skill in the usual order, after the door installer, host setup, and the visitor card and leaflet. When the owner designs the invitation, they set how long a hold and the owner's approval stay open. The default is 24 hours. See [invitation setup](../../drafts/package-0.6/installer-skills/INVITATION-SETUP.md).
 
@@ -97,7 +124,9 @@ If the guest holds an item for the owner, the visit itself goes on. The hold and
 
 At The Shōkai Lounge, every visit can end at a $50 pretend gift card and the Tea Counter. The gift card is pretend and belongs to the place. A representative never carries a payment method. Skipping is fine, then a short farewell and the take-home pack.
 
-The invitation card is soft-gold washi. A silver membership card is on the roadmap and is not built.
+At the Lounge today, the approval page accepts one passkey: the Lounge owner's, made on shokaiprotocol.com. A guest whose owner has no passkey there can still hold an item, and the hold ends with nothing placed when the window closes. Guest passkeys are on the [roadmap](../roadmap.md#open-questions-from-the-shōkai-lounge-1618-november-2026-not-built).
+
+The card colors: matcha green for the host card, indigo for the visitor card, and soft-gold washi for the invitation card. A silver membership card is on the roadmap and is not built.
 
 ## Membership (roadmap)
 
