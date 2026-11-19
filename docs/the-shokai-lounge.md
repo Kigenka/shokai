@@ -48,7 +48,7 @@ Three rules carry the whole design:
 
 A representative never carries a payment method, a password or a one-time code. Anything that spends money or shares something new goes through "Let me ask": the agent brings the question to its owner, and the owner answers with their passkey on the place's own site. A yes typed in chat does not count. At the Lounge, that one tap is the whole of the owner's work during a visit.
 
-**Today, only the Lounge owner's passkey works there.** The approval page accepts one passkey: the one the Lounge's owner made on shokaiprotocol.com. A guest's owner can't make a passkey there yet. So a guest can hold an item, and its owner can open the approval page and say no, but a yes can't be recorded from the guest's own device: the hold ends with nothing placed when the window closes, and the visit goes on to the farewell and the take-home pack. Guest passkeys are on the [roadmap](roadmap.md#open-questions-from-the-shōkai-lounge-1618-november-2026-not-built).
+**Each guest's owner has their own passkey there.** When an owner makes an invitation on /demo, the first step is a passkey for the Lounge, made on shokaiprotocol.com. It is setup, not an approval, and it is kept 30 days for that invitation only. If the owner skips it, their agent brings the same one-time setup link when it accepts the invitation, and the approval page sets the passkey up first if it is still missing. At the Tea Counter, that same passkey gives the one yes. The Lounge owner's passkey never signs a guest's order. How it works is in the [design note](guest-passkeys.md).
 
 ## The Tea Counter: a place's own tools behind its own door
 
@@ -117,7 +117,6 @@ The dated record is in [Field tests](field-tests.md#1318-shōkai-lounge-november
 
 ## Not built yet
 
-- **Guest passkeys:** each invited owner making their own passkey on the place's site. Designed and built on a preview, not live yet: see the [design note](guest-passkeys.md).
 - **A passkey at acceptance,** so that a typed yes alone does not accept an invitation.
 - **Revoking an invitation, or the visitor card it issued,** early; and card revocation in general.
 - **Linking a card to an account the owner already has.** SPEC v0.5.0 specifies `CustomerLink` for institutions; a friendly link-and-unlink flow for an ordinary place is not built.

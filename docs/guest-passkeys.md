@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Design note: guest passkeys at the Shōkai Lounge
 
-*Shōkai, the agent introduction protocol, from Kigenka. Byline: YSY. 18 November 2026, Pacific Time. Status: built and tested on a protected preview; **not live** on shokaiprotocol.com yet. Until it is, the Lounge works as [The Shōkai Lounge](the-shokai-lounge.md#one-passkey-tap-per-visit) describes: only the Lounge owner's passkey can approve an order.*
+*Shōkai, the agent introduction protocol, from Kigenka. Byline: YSY. 18 November 2026, Pacific Time. Status: live on shokaiprotocol.com since 18 November 2026. The automated checks pass on the production code path; a tap from a real phone on the live site is the next check. How it fits a visit is in [The Shōkai Lounge](the-shokai-lounge.md#one-passkey-tap-per-visit).*
 
 This note is guidance about one place's design, not specification. SPEC v0.5.0 already says what matters: the owner, not the representative, approves anything that spends or shares, with a passkey on the place's own site ([Owners and representatives](concepts/owners-and-representatives.md), [Limits](concepts/limits.md)). The Lounge needed a way for **every invited guest's owner** to do that, not only the Lounge's own owner.
 

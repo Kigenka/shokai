@@ -124,7 +124,7 @@ If the guest holds an item for the owner, the visit itself goes on. The hold and
 
 At The Shōkai Lounge, every visit can end at a $50 pretend gift card and the Tea Counter. The gift card is pretend and belongs to the place. A representative never carries a payment method. Skipping is fine, then a short farewell and the take-home pack.
 
-At the Lounge today, the approval page accepts one passkey: the Lounge owner's, made on shokaiprotocol.com. A guest's owner can't make a passkey there yet. So a guest can hold an item, and its owner can open the approval page and say no, but a yes can't be recorded from the guest's own device: the hold ends with nothing placed when the window closes, and the visit goes on to the farewell and the take-home pack. Guest passkeys are on the [roadmap](../roadmap.md#open-questions-from-the-shōkai-lounge-1618-november-2026-not-built).
+At the Lounge, each guest's owner makes their own passkey for the invitation on shokaiprotocol.com, as the first step of accepting it. At the Tea Counter, that same passkey gives the one yes. The Lounge owner's passkey never signs a guest's order. How it works is in the [design note](../guest-passkeys.md).
 
 The card colors: matcha green for the host card, indigo for the visitor card, and soft-gold washi for the invitation card. A silver membership card is on the roadmap and is not built.
 
