@@ -32,7 +32,8 @@ So a guest's visit has exactly one approval tap, whether the passkey was made a 
 - **Never in the Lounge owner's slot.** A guest credential is stored separately from the Lounge owner's credential. It can't replace it, and it can't sign the Lounge's host cards.
 - **The Lounge owner's passkey never signs a guest's order.** The approval page for a guest's visit asks only for that guest's passkey. If a stored guest credential turned out to be the Lounge owner's own, the page would refuse it.
 - **A guest's yes is recorded as the guest's.** The consent record names the guest credential's key as the signer, says it is a guest passkey, and keeps the WebAuthn proof. It is never recorded as the Lounge owner's yes.
-- No name, email, phone number or payment method is asked for or stored.
+- The passkey record holds no name, email, phone number or payment method.
+- **The guest's owner is never named after the Lounge owner.** When making an invitation on /demo, the person may type an optional first name. That name goes on the guest's card, stamps, decision lines and receipt. If they leave it blank, the Lounge says "your owner" or "the guest's owner" instead. The Lounge owner's name appears only on the host side.
 
 ## Who gets the approval link
 
