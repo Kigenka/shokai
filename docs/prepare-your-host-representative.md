@@ -1,10 +1,10 @@
 # Prepare your host representative
 
-*Guidance, not specification, for Shōkai v0.5.0. The installer and host skills that lead this conversation are skill drafts ([Skills](./skills/index.md)); Grok Bot and Muse rehearsals are recorded in the [plain-language rehearsal](./evidence/plain-language-rehearsal-2026-11-10.md). Your owner key is a passkey on your own device; it never sits on an agent server.*
+*Guidance, not specification, for Shōkai v0.5.0. The installer and host skills that lead this conversation are skill drafts ([Skills](skills/index.md)); Grok Bot and Muse rehearsals are recorded in the [plain-language rehearsal](evidence/plain-language-rehearsal-2026-11-10.md). Your owner key is a passkey on your own device; it never sits on an agent server.*
 
 Shōkai gives a place the door: the same protocol, rules and instructions wherever it stands. What makes a door feel like *your* place is the host representative you put there. A good human host is briefed before their first evening: how we run, what we believe, how we treat a guest. A host representative needs the same, whether it keeps the door of a business, a community or an institution.
 
-You don't fill this in as a paper checklist. You talk with your agent. An [installer skill](./skills/index.md) (a draft) helps you set up and customize the door; you sign the Shōkai host card with your passkey; then the conversation hands off to the appointed host representative (the [host skill](./skills/index.md), also a draft). Briefing continues there. The points below are what that conversation covers.
+You don't fill this in as a paper checklist. You talk with your agent. An [installer skill](skills/index.md) (a draft) helps you set up and customize the door; you sign the Shōkai host card with your passkey; then the conversation hands off to the appointed host representative (the [host skill](skills/index.md), also a draft). Briefing continues there. The points below are what that conversation covers.
 
 ## 1. Brief it like a new host
 
@@ -13,7 +13,7 @@ A representative should know its owner the way a company's salesperson knows the
 - **How we run.** Hours, what the place offers, who does what, and what always needs a person. Anything it can't decide alone goes inside to that person, with a date for the answer (`considering`, [SPEC §6.8](../SPEC.md)).
 - **What we believe.** Your philosophy, and the tone of your welcome: brisk and practical, or slow and attentive.
 - **Our culture.** The words you use, what regulars expect, what you never do.
-- **Your policy, your welcome.** The door is the same everywhere; who is welcomed, who gets a richer welcome, and who is declined is your place's own policy ([Door policy](./concepts/door-policy.md)). Write it down, then train your host representative on it, as you would a new host.
+- **Your policy, your welcome.** The door is the same everywhere; who is welcomed, who gets a richer welcome, and who is declined is your place's own policy ([Door policy](concepts/door-policy.md)). Write it down, then train your host representative on it, as you would a new host.
 - **Where its job stops.** The briefing shapes the welcome, the courtesy and the service inside the pass. It never decides who comes in: that rests only on signed facts and your door policy, and prose never enters the decision ([SPEC §6.4](../SPEC.md)).
 
 ## 2. What to offer at the window
@@ -23,7 +23,7 @@ Agents don't browse a site link by link; they ask. So much of what a visiting re
 - What the place is and what it offers, what each action will ask its owner for, and your door rules (for example, whether an action opens an account or needs an introduction).
 - What you already publish: hours, location, your website, the public business listings and review summaries you already keep on mapping and review sites. Point to them from your listing (`links`), and let your host representative read them as it prepares. Only what is already public belongs here.
 
-A question the window doesn't answer ("are you open late on Friday?", "is there a quiet table?") is one short step further: the visiting representative introduces itself and gets a pass lightly, to ask and look, with nothing personal asked. The [online university](./examples/online-university.md)'s prospective-student seat works this way.
+A question the window doesn't answer ("are you open late on Friday?", "is there a quiet table?") is one short step further: the visiting representative introduces itself and gets a pass lightly, to ask and look, with nothing personal asked. The [online university](examples/online-university.md)'s prospective-student seat works this way.
 
 ## 3. The conversation: installer, then host
 
@@ -31,11 +31,11 @@ The installer conversation asks, one question at a time: what kind of place it i
 
 Then the installer hands off to the appointed host representative. Briefing continues as conversation: how the place runs, what it believes, how it welcomes people, and where its job stops.
 
-Outlines: [Set up your representative, a host representative](./set-up-your-representative.md#3-a-host-representative), and the installer and host drafts on [Skills (drafts)](./skills/index.md). The older portable skeleton at [representative skill](./platforms/shokai-representative/SKILL.md) is earlier than those drafts.
+Outlines: [Set up your representative, a host representative](set-up-your-representative.md#3-a-host-representative), and the installer and host drafts on [Skills (drafts)](skills/index.md). The older portable skeleton at [representative skill](https://github.com/Kigenka/shokai/blob/v0.5.1/docs/platforms/shokai-representative/SKILL.md) is earlier than those drafts.
 
 ## 4. At the high end
 
-A luxury watchmaker or jeweller wants a host representative steeped in its house: its history and craft, the music and art it cares about, and the discretion its clients expect. It recognizes a returning client's representative from its own record of past visits ([SPEC §9.1](../SPEC.md)), and welcomes it accordingly. The door is the same one a tea shop uses; the briefing is what makes it theirs. See [A collector at a heritage watchmaker](./examples/heritage-watchmaker.md).
+A luxury watchmaker or jeweller wants a host representative steeped in its house: its history and craft, the music and art it cares about, and the discretion its clients expect. It recognizes a returning client's representative from its own record of past visits ([SPEC §9.1](../SPEC.md)), and welcomes it accordingly. The door is the same one a tea shop uses; the briefing is what makes it theirs. See [A collector at a heritage watchmaker](examples/heritage-watchmaker.md).
 
 A small anime and manga goods shop wants the opposite of discretion: a host representative that knows the series its owner loves, the artists it stocks and the fans who come back. When a visiting representative introduces its owner as a fan of the same long-running ninja manga, the shop's host representative can recognize a fellow fan and welcome them like one.
 
@@ -49,4 +49,13 @@ Both sides learn. Your door keeps a local record of how representatives conducte
 
 ## 5. The other side: a visiting representative learns its owner
 
-Your own visiting representative is prepared over time, too. It learns what you like and dislike, and how much to share, and with whom, always within the Shōkai card and limits you signed, and loyal to you ([SPEC §1](../SPEC.md)). Inside a place's room, representatives can talk for their owners without judgement, and may come home with an introduction worth making. Owners meet only if both choose to, each signing for it ([Peer meetings](../extensions/peer-meetings.md)).
+Your own visiting representative is prepared over time, too. It learns what you like and dislike, and how much to share, and with whom, always within the Shōkai card and limits you signed, and loyal to you ([SPEC §1](../SPEC.md)). Inside a place's room, representatives can talk for their owners without judgment, and may come home with an introduction worth making. Owners meet only if both choose to, each signing for it ([Peer meetings](../extensions/peer-meetings.md)).
+
+## 6. Offers, honesty, and field-test setup
+
+Brief your host on what it must not decide alone. At the Shōkai Lounge on 14 November 2026, the host offered an optional question for the owner, waited while the representative said "let me ask," and treated only a passkey decision — or a relayed decline or no answer — as the result. A yes spoken only in chat is not consent.
+
+Tell the host, in so many words, what the visit cannot answer. Two Lounge visitors asked about card revocation, and about limiting which places a card works at. Those are not built. Place-side limits (look around but never buy) are set in the signed house. Guessing is worse than saying "this visit can't answer that."
+
+A practical setup checklist from these visits — invitations, the owner passkey on this place's domain, curated take-home, mid-visit courtesy — is in [What to address when setting up a place](setting-up-a-place.md#what-to-address-when-setting-up-a-place). That list is operator guidance from field tests, not a new protocol requirement unless the specification already says so.
+

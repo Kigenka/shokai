@@ -2,9 +2,9 @@
 
 This is a reviewer-facing trim of the known-gaps list for published **v0.5.0**. It is not a schedule, and not a design of new infrastructure. A first-version protocol can ship incomplete. People forgive gaps they were told about. They do not forgive a claim that turns out to be untrue.
 
-The statuses used in this package are project conventions, not specification keywords: **signed**, **appointed**, **deployed**, and **publicly open**. A reachable URL or `/healthz open=true` is not **publicly open**. A **SKIP** is never a pass. An older project convention also used **validated** for an official run whose claim held on the checks it measured; that shorthand is explained in [Kettle operator notes](./evidence/kettle-operator-notes.md). It is not used as a status on this page, and it never meant the unmeasured checks passed.
+The statuses used in this package are project conventions, not specification keywords: **signed**, **appointed**, **deployed**, and **publicly open**. A reachable URL or `/healthz open=true` is not **publicly open**. A **SKIP** is never a pass. An older project convention also used **validated** for an official run whose claim held on the checks it measured; that shorthand is explained in [Kettle operator notes](evidence/kettle-operator-notes.md). It is not used as a status on this page, and it never meant the unmeasured checks passed.
 
-**Kettle status.** The fictional test shop at `https://kettle.shokaiprotocol.com` is **deployed**. It is not **publicly open**, and it is not a proven lasting host. An official paced HTTP run at 12:13 AM Pacific Time, 10 November 2026, measured **30 of 164** required Core Door checks (28 observed over HTTP plus 2 implementer-provided in-process self-tests (C236, C240)): 30 pass, 0 fail, 0 skip, 2 N/A (C241, a visiting representative's duty; C242, the templates aren't closed). **132 of 164** were unmeasured. Those 30 passes do not speak for the 132. The build pin and operator inventory are in [Kettle operator notes](./evidence/kettle-operator-notes.md).
+**Kettle status.** The fictional test shop at `https://kettle.shokaiprotocol.com` is **deployed**. It is not **publicly open**, and it is not a proven lasting host. An official paced HTTP run at 12:13 AM Pacific Time, 10 November 2026, measured **30 of 164** required Core Door checks (28 observed over HTTP plus 2 implementer-provided in-process self-tests (C236, C240)): 30 pass, 0 fail, 0 skip, 2 N/A (C241, a visiting representative's duty; C242, the templates aren't closed). **132 of 164** were unmeasured. Those 30 passes do not speak for the 132. The build pin and operator inventory are in [Kettle operator notes](evidence/kettle-operator-notes.md).
 
 ## What stays on the 0.6 side
 
@@ -12,7 +12,7 @@ These are not required to call v0.5.0 an honest published release. It is still n
 
 ### Lasting hosts
 
-A lasting, unattended conversational host is not proven in 0.5. Walkthroughs of that job declined it over key custody and recovery. Suzu is named on the hung Kettle host card; this package does not claim the status **appointed** for Suzu. The longer operator inventory for the hosted test shop is in [Kettle operator notes](./evidence/kettle-operator-notes.md).
+A lasting, unattended conversational host is not proven in 0.5. Walkthroughs of that job declined it over key custody and recovery. Suzu is named on the hung Kettle host card; this package does not claim the status **appointed** for Suzu. The longer operator inventory for the hosted test shop is in [Kettle operator notes](evidence/kettle-operator-notes.md).
 
 ### Key rotation
 
@@ -28,7 +28,7 @@ Quillfern Tea Room is a steward-guided model build from handoff documents, not a
 
 ### Invitation cards, a new-card-class recipe, and a registry
 
-0.5 specifies visitor, host and introduction cards, and fail-closed rules for unknown kinds. It does not specify invitation cards, a developer recipe for minting a new card class, or a public registry of card kinds. See [Cards as a blueprint](./concepts/card-classes.md).
+0.5 specifies visitor, host and introduction cards, and fail-closed rules for unknown kinds. It does not specify invitation cards, a developer recipe for minting a new card class, or a public registry of card kinds. See [Cards as a blueprint](concepts/card-classes.md).
 
 ### A hosted door as a future design idea
 
@@ -36,7 +36,12 @@ Making it easier for a place owner to put a door online is a later product idea.
 
 ### Multi-instance door with shared state, then load testing
 
-**Status: not started.** The intended design is on [Implementation and scaling](./implementation-and-scaling.md#6-how-a-door-scales-intended-design): one address and one host card in front, identical copies behind a load balancer, sharing one durable-plus-live store. The SDK already has that store shape and in-process instance tests. A multi-instance deployment of those copies, then a load test against it, has not been run. This page promises no throughput numbers.
+**Status: not started.** The intended design is on [Implementation and scaling](implementation-and-scaling.md#6-how-a-door-scales-intended-design): one address and one host card in front, identical copies behind a load balancer, sharing one durable-plus-live store. The SDK already has that store shape and in-process instance tests. A multi-instance deployment of those copies, then a load test against it, has not been run. This page promises no throughput numbers.
+
+
+### Card revocation and card scope
+
+v0.5.0 does not specify how an owner takes a card back after signing, or how an owner limits which places a given card works at. Visiting agents asked these questions at the Shōkai Lounge on 13, 14 and 15 November 2026, and on the 15 November visit the returning agent called revocation "the sharpest open edge in the whole design." The host answered honestly that they are not built. Place-side action limits (look around but never buy) are already in the signed house and are not this gap. See [Roadmap](roadmap.md#raised-by-field-tests-not-built) and [Lounge visits](evidence/lounge-visits-2026-11.md). This note does not invent a revoke URL or a card-scope object.
 
 ## Other open items already on the record
 

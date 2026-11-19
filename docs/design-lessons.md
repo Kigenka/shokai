@@ -50,7 +50,7 @@ When a write-up says a check HOLDS, the count comes from a conformance run or a 
 
 ## One address, with copies behind it — intended, untested
 
-A busy place should still look like one door: one address, one host card, one set of rules. Identical copies can sit behind a load balancer and share one durable-plus-live store. The SDK already has that store shape and in-process tests for several instances sharing it. Running those copies under real traffic, then measuring them, has not been done. See [Implementation and scaling](./implementation-and-scaling.md#6-how-a-door-scales-intended-design) and [Known gaps](./known-gaps.md#multi-instance-door-with-shared-state-then-load-testing).
+A busy place should still look like one door: one address, one host card, one set of rules. Identical copies can sit behind a load balancer and share one durable-plus-live store. The SDK already has that store shape and in-process tests for several instances sharing it. Running those copies under real traffic, then measuring them, has not been done. See [Implementation and scaling](implementation-and-scaling.md#6-how-a-door-scales-intended-design) and [Known gaps](known-gaps.md#multi-instance-door-with-shared-state-then-load-testing).
 
 ## First readers should meet 0.5, not the path to it
 
@@ -58,9 +58,13 @@ Most people arriving now have never seen an earlier version. Reader pages descri
 
 ## The domain story: today's sites saw a person, not an agent
 
-On 28 October 2026 the editor's agent registered this project's domain. It created the registrar account, entered a card the editor typed into a chat form, and the registrar and the payment page saw the editor on a new device. Someone with the editor's details and card would have looked the same. The sites did what today's web lets them do; the lesson is what they could not see: that an agent acted, whose agent it was, or what the editor had allowed. That is why a Shōkai door asks for a signed card and a mandate, and keeps a record of the pass it grants. The full account is in [Why Shōkai exists](./why.md#a-true-story-my-agent-bought-a-domain).
+On 28 October 2026 the editor's agent registered this project's domain. It created the registrar account, entered a card the editor typed into a chat form, and the registrar and the payment page saw the editor on a new device. Someone with the editor's details and card would have looked the same. The sites did what today's web lets them do; the lesson is what they could not see: that an agent acted, whose agent it was, or what the editor had allowed. That is why a Shōkai door asks for a signed card and a mandate, and keeps a record of the pass it grants. The full account is in [Why Shōkai exists](why.md#a-true-story-my-agent-bought-a-domain).
 
 ## Rehearse with the people who will use it
 
 We have walked the same owner tasks with people who do not write protocols and with people who do, including installer rehearsals on 10 November 2026. A sentence that is clear to us is not always clear to them. When a rehearsal shows a word or a step that fails, we change the page, not the reader.
+
+## Learn from real visits, including the misses
+
+The Shōkai Lounge visits of 13–15 November 2026 are dated evidence, not just claims: retells accepted without correction, a stamped postcard, an owner-passkey yes, auto-confirm on a protected preview, and a public list of what broke. Invitations had to be the owner's own words. Passkeys had to be created on the place's own domain. A dense return and a raw film link failed in chat. Visitors asked about revocation on three of those visits, which is not built. A mid-visit courtesy can be a light "Want me to keep you posted from inside?", with no promise of one text per room; if the owner says yes, the visitor should stay in that chat and send updates as it goes, rather than hand the visit to a copy. Live mid-visit updates have worked with Grok Bot, and on a 15 November Muse visit in the owner's main chat. That same-chat wording, and preview film links that carry the share token, were verified on a protected preview on 15 November 2026; they are not live yet. If the visitor cannot message mid-visit at an offer, it can pause, take the approval link back to its owner, and resume; the host can wait up to 8 minutes, and a passkey yes can reach the room on its own when the place supports that. Auto-confirm was built on a protected preview and verified on 15 November 2026; it is not live yet. When a visit teaches a setup step or an honest gap, it belongs on [Setting up a place](setting-up-a-place.md#what-to-address-when-setting-up-a-place) and in [Lounge visits](evidence/lounge-visits-2026-11.md), marked fixed, verified on a preview, or planned, not as a feature that already exists.
 

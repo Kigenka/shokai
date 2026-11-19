@@ -20,8 +20,9 @@ It brings the public package, the site and the skills in line with the live Shō
 
 ## Cards and setup
 
+- **The whole visit, in one place.** [The Shōkai Lounge](the-shokai-lounge.md) is the worked example: the visit flow with its diagram, the Tea Counter's MCP tools behind their own door, the receipt and proof of visit, how different agents reach their owners, the public guestbook, and what is not built yet.
 - The usual skill order is: door installer, host setup, visitor card and leaflet, then [invitation setup](../drafts/package-0.6/installer-skills/INVITATION-SETUP.md).
-- A place-signed [invitation card](concepts/cards.md#the-invitation-card) is how a place invites a guest. The cards page on the documentation site shows the soft-gold washi card, what it carries, and how a guest's agent uses it. The invitation never stands in for the owner's passkey.
+- An [invitation card](concepts/cards.md#the-invitation-card) is how a place invites a guest. Redeeming it gives the guest's agent a place-signed visitor card and a one-visit mandate. The cards page shows the soft-gold washi card, what it carries, and how a guest's agent uses it. The invitation never stands in for the owner's passkey.
 - [Membership](concepts/cards.md#membership-roadmap) (silver) replaces invitation as the roadmap item. It is not built.
 - Card colors: matcha green for the host card, indigo for the visitor card, soft-gold washi for the invitation card, silver for membership.
 
