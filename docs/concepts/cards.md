@@ -68,6 +68,19 @@ A place that is changing its host card still accepts revocations while it answer
 Cards are exchanged **both ways**: the place shows its card too. Each side greets with a fresh `nonce`, and the presenter signs the counterpart's nonce with the card's key (the **possession proof**). A copied card replayed by another key fails, and binds only the presenter, never the card's real owner.
 
 
+
+## The invitation card
+
+A **Shōkai invitation card** is an offer from a place. The place's principal signs it — the same principal its Shōkai host card names. A guest still arrives with a Shōkai visitor card its owner signed with a passkey; the invitation never stands in for that card and cannot widen anything the owner signed.
+
+The Shōkai Lounge already issues this card (a short link or a photograph of the card). Invitation setup is the fourth skill in the usual order, after the door installer, host setup, and the visitor card and leaflet. When the owner designs the invitation they set how long a hold and the owner's approval stay open; the default is 24 hours. The visit itself does not wait on that tap. See `drafts/package-0.5/installer-skills/INVITATION-SETUP.md`.
+
+Card colors in 0.6.0: indigo for the host card, matcha green for the visitor card, soft-gold washi for the invitation card.
+
+## Membership (roadmap)
+
+A **Shōkai membership card** (silver) is the later idea that now sits on the roadmap in place of the old dashed invitation. It would record a standing relationship with a place. It is not built, not specified in the core, and not something a door honors today.
+
 ## The introduction card
 
 The **introduction card** (SPEC §4.1, class `ext-introduction-card`) is a vouch made one-to-many for **one named place**. Its payload is a `ShokaiIntroduction` with `kind: "introduction"`. A visitor claims it with an `IntroductionClaim`. It is already specified in 0.5; it is not the dashed "place invitation" artwork (S8), and it is not an invitation card from the place saying "come in."

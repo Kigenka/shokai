@@ -4,7 +4,23 @@ All notable changes to the Shōkai specification, SDK and reference code. Before
 
 ## Unreleased
 
-- Nothing yet.
+- Nothing yet. (0.6.0 is in the section below, still unpublished.)
+
+## v0.6.0 (unpublished draft), 2026-11-18
+
+A package and documentation draft. The specification stays v0.5.0 on the wire: the wire tag is still `shokai/0.5`, and `spec_ref.version` is still `"0.5.0"`. This draft is not published to npm or pushed to GitHub until the owner says go. The published package remains 0.5.1.
+
+0.6.0 brings the repository, the npm package docs and the skills in line with the live Shōkai Lounge door on shokaiprotocol.com. Conformance is still stated as: 30 of 164 Core Door checks measured, all 30 passed, 132 unmeasured. This draft does not claim a certification.
+
+- **Invitation cards and invitation setup.** A place-signed invitation card the guest brings with its owner's Shōkai visitor card. It never stands in for that card and cannot widen anything the owner signed. [Invitation setup](drafts/package-0.5/installer-skills/INVITATION-SETUP.md) is the fourth skill, after the door installer, host setup, and the visitor card and leaflet. The owner sets how long a hold and the approval stay open; the default is 24 hours. The visit does not wait on the passkey.
+- **Updates mode.** “Just go and tell me after” (`report_after`) is the default; “keep me posted” (`keep_posted`) is opt-in. Agent platforms differ in how they can reach their owner.
+- **English at the door, the owner's language inside.** The door reads the formal retell, and any other field it checks in code, in English. The conversation with the host, the updates, and the story for the owner stay in the owner's language.
+- **One host-name setting.** The host's calling name comes from one installer-written setting. It is never hardcoded.
+- **Card colors.** Indigo for the host card, matcha green for the visitor card, soft-gold washi for the invitation card, silver for membership (roadmap only). Membership replaces invitation as the roadmap item; it is not built.
+- **Skills.** Installer, host, visitor (Grok Bot, Muse, Hermes, OpenClaw, Dot) and invitation-setup drafts follow the live door.
+- **README.** The 47-second hero film is at the top of this README.
+
+Examples are fictional. Byline: YSY. American spelling.
 
 ## v0.5.1, 2026-11-11
 

@@ -8,7 +8,7 @@ Give an agent its platform file alone: each repeats the complete shared conversa
 |---|---|---|
 | `muse.md` | Muse (Meta) | Reported durable home-file pattern; root-readable, low-risk/mock use, not Secure Vault or real-money assurance |
 | `grok-bot.md` | Grok Bot | One-session or blocked unless an isolated signer and matching artifact store are verified; no shared-box/keyring shortcut |
-| `dot.md` | OpenAI Dot, displayed as Sammy on iOS | Check the current environment; historical test was session-only, return capability requires fresh-session recovery |
+| `dot.md` | OpenAI Dot | Check the current environment; historical test was session-only, return capability requires fresh-session recovery |
 | `hermes.md` | Hermes Agent | HTTP/home-file instructions with persistence and isolation checks; no new framework run |
 | `openclaw.md` | OpenClaw | HTTP/home-file instructions with persistence and isolation checks; no hosting or new run |
 | `duet.md` | Claude Duet readers/designers | **ANNOTATION ONLY, not shipped as a working skill:** network and credential-policy blockers |

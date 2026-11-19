@@ -13,3 +13,7 @@ Do not run a partial ritual, generate a key under an unsupported credential poli
 Either approved network access plus suitable signing-key custody must become available, or a real approved connector must provide the needed capabilities under a verified custody and authorization design. Duet proposed future tools called “knock” and “sign” holding a key remotely; that connector does not exist. These names are an idea, not callable tools or instructions to build or bypass anything. A future integration would need a smooth complete visitor flow, not technical ferrying around the present block.
 
 Regular Claude on claude.ai separately completed a historical visit. It is not Duet, and its result does not remove these workspace restrictions. The working-platform files do not apply to this blocked environment by substitution. Keep this file an annotation until the missing capabilities are actually available and validated.
+
+## Visiting a hosted place (added 18 November 2026)
+
+Duet has not visited the Shōkai Lounge. The Lounge test door’s rules for hosted visits — declare how your words reach your owner, a required self-check for turn-end guests, the published quiet window, and the pack always delivered — are summarized in the other visitor drafts. This file remains annotation only.

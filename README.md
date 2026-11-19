@@ -1,3 +1,8 @@
+<p align="center">
+  <a href="https://shokaiprotocol.com/story/films/hero.mp4"><img src="https://shokaiprotocol.com/story/films/hero-poster.jpg" alt="Agents, introduced properly — a 47-second film. Click to play." width="760"></a><br>
+  <em>Agents, introduced properly. About 47 seconds, click to play; music only, words on screen and in captions. <a href="https://shokaiprotocol.com/docs/film-transcripts#hero">Transcript</a>. Fictional people and places only.</em>
+</p>
+
 <p align="center"><img src="docs/assets/hero.svg" alt="Shōkai: an arch of two halves, a visiting representative and a place, joined by a keystone: the introduction that completes it" width="760"></p>
 
 # Shōkai (紹介), the agent introduction protocol
@@ -11,10 +16,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-9c4a32)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-555555)](packages/shokai/package.json)
 
-> The current package is [`@kigenka/shokai@0.5.1`](https://www.npmjs.com/package/@kigenka/shokai/v/0.5.1) on npm (specification v0.5.0, wire tag `shokai/0.5`), source at [github.com/Kigenka/shokai](https://github.com/Kigenka/shokai). 0.5.1 fixes two red-team bugs found in 0.5.0 and adds a rule that a place must not ask for a password, recovery phrase or card number; see the [changelog](CHANGELOG.md).
-
-<!-- Planned: a short introduction video (thumbnail linking to it) and an illustration of the Shōkai card, going out and coming home. -->
-*Video coming soon: a short introduction to Shōkai.*
+> This branch is the unpublished **0.6.0** draft (specification v0.5.0, wire tag `shokai/0.5`). The published package remains [`@kigenka/shokai@0.5.1`](https://www.npmjs.com/package/@kigenka/shokai/v/0.5.1) until this draft is released. See the [changelog](CHANGELOG.md) and [What is new in 0.6.0](docs/whats-new-v060.md).
 
 _New to Shōkai? Run the two-second demo (`npx @kigenka/shokai@0.5.1 demo`), then read [How Shōkai works](docs/how-it-works.md): one visit to a tea shop, in plain words._
 

@@ -2,7 +2,7 @@
 
 The rest of this page is the **by-hand** path: you type the commands and can read every function. In about ten minutes you will run an MCP server behind a Shōkai door (your place, with its own host representative), send a visiting representative to it, watch it present its Shōkai visitor card and get a pass, call tools within its pass, make a visit that spends within a limit, and run the conformance checks. Everything runs on your machine; nothing is sent anywhere.
 
-If you would rather have an assistant walk you through planning a place, see the labeled draft [installer skills](https://github.com/Kigenka/shokai/blob/v0.5.1/drafts/package-0.5/installer-skills/README.md). Those drafts were rehearsed in conversation; they are not a finished installer, and they are not in the published `@kigenka/shokai` package.
+If you would rather have an assistant walk you through planning a place, see the labeled draft [installer skills](https://github.com/Kigenka/shokai/blob/v0.6.0/drafts/package-0.5/installer-skills/README.md). Those drafts were rehearsed in conversation; they are not a finished installer, and they are not in the published `@kigenka/shokai` package.
 
 ## Pass vs `seat` (canonical) {#pass-vs-seat}
 
@@ -43,7 +43,7 @@ npm install @kigenka/shokai@0.5.1 @modelcontextprotocol/sdk@1.32.2 zod@4.6.7
 
 This walkthrough uses **Zod 4** (`zod@4.6.7`), required by the pinned MCP SDK — not Zod 3.
 
-The package digest is recorded in [release/kigenka-shokai-0.5.1.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.5.1/release/kigenka-shokai-0.5.1.sha256) (0.5.0's in [release/kigenka-shokai-0.5.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.5.1/release/kigenka-shokai-0.5.0.sha256)).
+The package digest is recorded in [release/kigenka-shokai-0.5.1.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.5.1.sha256) (0.5.0's in [release/kigenka-shokai-0.5.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.5.0.sha256)).
 
 ## Run a place (host representative)
 
@@ -311,7 +311,7 @@ You don't need a server of your own to visit a place. This script is a visiting 
 - **Its actions are its own.** A place lists its own actions (`menu.view`, `tea.ask`, `order.place`, ...), what each spends and what it will ask for. Read them from the listing; don't assume the names in this quickstart.
 - **Shōkai card scope vs mandate.** `createRepresentative({ purposes, actions })` sets the scope of the representative's **Shōkai card**: everything it may ever ask for on its owner's behalf, signed once. Each `visit()` carries a **mandate**: one purpose, the actions for this errand (within the Shōkai card's scope) and its limits, signed for this errand. A visit can ask for less than the Shōkai card allows, never more; a mandate beyond its Shōkai card is refused (`MANDATE_INVALID`). The script below builds both from the listing only to stay short.
 
-- **Test owner: local or test doors only.** `createRepresentative({ ownerName })` with no `owner` or `card` signs with `developmentPasskey()`, a software stand-in whose `rp_id` is the reserved `owners.example`. A door on loopback (like step 2's) or in the test profile admits it. A correctly configured public door (https, not loopback) refuses it before any pass: the visit ends `not_now` and the door's log says `rp_id owners.example is an RFC 2606 reserved name (a development passkey)`. To visit a public door, the owner signs the Shōkai card with a real passkey (the signing page, [SIGNING.md](SIGNING.md)) and you pass it in: `createRepresentative({ card, ... })`, or `createRepresentative({ owner, ... })` with the owner's passkey signer ([docs/build-a-visitor.md](https://github.com/Kigenka/shokai/blob/v0.5.1/docs/build-a-visitor.md)). `shokai visit <url>` uses the test owner too, so it is for demo and test doors only.
+- **Test owner: local or test doors only.** `createRepresentative({ ownerName })` with no `owner` or `card` signs with `developmentPasskey()`, a software stand-in whose `rp_id` is the reserved `owners.example`. A door on loopback (like step 2's) or in the test profile admits it. A correctly configured public door (https, not loopback) refuses it before any pass: the visit ends `not_now` and the door's log says `rp_id owners.example is an RFC 2606 reserved name (a development passkey)`. To visit a public door, the owner signs the Shōkai card with a real passkey (the signing page, [SIGNING.md](SIGNING.md)) and you pass it in: `createRepresentative({ card, ... })`, or `createRepresentative({ owner, ... })` with the owner's passkey signer ([docs/build-a-visitor.md](https://github.com/Kigenka/shokai/blob/v0.6.0/docs/build-a-visitor.md)). `shokai visit <url>` uses the test owner too, so it is for demo and test doors only.
 
 Save this as `visitor.mjs`; it reads any door's listing, asks for a pass for the actions that spend nothing, and lists the tools in its pass:
 

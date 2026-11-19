@@ -4,6 +4,18 @@ Shōkai's current specification is **v0.5.0** (wire tag `shokai/0.5`). The curre
 
 **Feature freeze, except for clarifications (October 27, 2026).** No new features or proposals went into the 0.3 line after the freeze: only fixes, clearer wording and packaging until v0.3.0. The clarifications since the freeze are listed in SPEC.md (Status) and the CHANGELOG. Experimental extensions (teaching visits, signed place listings, W3C VC mapping) may still change or be dropped after review.
 
+## 0.6.0 (unpublished draft)
+
+What this draft documents, already running at the Shōkai Lounge:
+
+- **Invitation cards and invitation setup.** A place-signed invitation card; the owner sets how long a hold and the approval stay open (24 hours by default). The visit does not wait on the passkey.
+- **Updates mode.** “Just go and tell me after” (`report_after`) is the default; “keep me posted” (`keep_posted`) is opt-in.
+- **English at the door, the owner's language inside.** The door reads the formal retell, and any other field it checks in code, in English. The conversation with the host, the updates, and the story for the owner stay in the owner's language.
+- **One host-name setting.** The host's calling name comes from one installer-written setting. It is never hardcoded.
+- **Card colors.** Indigo host, matcha visitor, soft-gold washi invitation, silver membership (roadmap only).
+
+The wire tag stays `shokai/0.5`. Membership (silver) is the roadmap item that takes the place of the old dashed invitation. It is not built.
+
 ## The 0.3 line (some items continue after v0.3.0)
 
 - **The rename and wire break.** Wire tag `shokai/0.3`, regenerated test vectors and golden traces, with a stated transition window for the pre-release tag.
