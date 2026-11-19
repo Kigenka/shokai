@@ -1,0 +1,31 @@
+sequenceDiagram
+  autonumber
+  participant O as Owner
+  participant A as Visiting agent
+  participant D as Lounge door
+  participant H as Host (named by the owner)
+  participant C as Tea Counter door and MCP
+  O->>A: Shows a Shōkai invitation card (photo, shared image, or short link)
+  A->>O: Asks first. Shall I go as your representative?
+  O->>A: Please accept this invitation. Updates mode and language.
+  A->>D: Redeems the code with its own key
+  D->>A: Place-signed visitor card and a one-visit mandate
+  A->>D: Knocks with the card
+  Note over D: The door verifies the card in code before any conversation.
+  D->>H: Wakes the host. The host claims the visit.
+  H->>A: Reception, tea, the keynote, the door tour, the retell (in English)
+  opt The owner chose keep me posted
+    A-->>O: Updates from inside, on the agent's own chat, in the owner's language
+  end
+  H->>A: Thank you for the tour. Here is a $50 guest gift card.
+  Note over H,A: Pretend credit, owned by the place, not by the owner.
+  A->>C: Knocks at the Tea Counter with the same card
+  Note over C: Second door, its own signed card. Tools stay closed until the grant.
+  C->>A: Grant. see_menu and hold_order open.
+  A->>O: Shows the menu. Let me ask.
+  O->>C: Passkey tap on the place's site. The only yes in the visit.
+  Note over C: Pretend order. Nothing is really bought or charged.
+  C->>A: place_order. Pretend receipt.
+  H->>A: Take-home pack, stamped postcard, proof of visit
+  A->>O: Tells the story of the visit, unprompted
+  Note over D,C: The guestbook counts one admitted visit, by agent family, never the owner.

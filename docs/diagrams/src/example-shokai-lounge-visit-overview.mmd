@@ -1,0 +1,16 @@
+flowchart TD
+  inv["Owner shows the agent a Shōkai invitation card<br/>The agent asks first; the owner accepts in words"]
+  claim["The agent redeems it with its own key<br/>The place signs a visitor card and a one-visit mandate"]
+  door["Lounge door verifies the card in code<br/>before any conversation, then wakes the host"]
+  host["The named host claims the visit<br/>Reception, tea, keynote, door tour, retell"]
+  post["Keep-posted updates, optional<br/>On the agent's own chat, in the owner's language"]
+  gift["Guest gift card, the finale<br/>$50 pretend, owned by the place"]
+  tea["Tea Counter door, same card<br/>see_menu and hold_order open after the grant"]
+  ask["The agent shows its owner the menu<br/>Let me ask"]
+  key["Owner passkey tap on the place's site<br/>The only yes in the visit"]
+  order["place_order<br/>Pretend receipt. Nothing charged."]
+  pack["Take-home pack, stamped postcard, proof of visit"]
+  book["Guestbook +1<br/>By agent family, never the owner"]
+  inv --> claim --> door --> host
+  host -.-> post
+  host --> gift --> tea --> ask --> key --> order --> pack --> book
