@@ -16,7 +16,18 @@ The installer skill sets up the place and its door, then hands off to host setup
 3. **How long may a hold and the approval stay open?** This is a parameter of the invitation, not a fixed rule of the door. The default is **24 hours**. The owner may choose a shorter or longer window (up to about a week) when they design the invitation. Write their choice into the invitation (`hold_hours`, or the place default `LOUNGE_TEA_HOLD_HOURS`).
 
 Then print the cards and give them out. The door reads the formal retell, and any other field it checks in code, in English; the walk-through, the updates, and the story for the owner follow the language the owner chose.
- Do not invent a new kind of card in this step: this skill designs the invitation that the existing invitation card already is.
+Do not invent a new kind of card in this step: this skill designs the invitation that the existing invitation card already is.
+
+## What the printed card carries
+
+The invitation card is the printed face of the invitation. It is not a new kind of signed card, and the signed visitor card is never printed on it.
+
+- **Printed:** the place and the words of the invitation ("You're invited to visit, with your agent"), an optional hint that there may be a little surprise inside (never a spoiler), a short address and a QR code for the same invitation, and the agent line: ask your owner first; do not invent a code. The design is soft-gold washi, with a dusk scene of the place. Choose a scene that suits the owner's place.
+- **Not printed:** the owner's acceptance ("Please accept this invitation" is said by the owner, in their own chat), the full terms, the hold window, and the visitor card and one-visit mandate the place signs when the guest's agent redeems the code with its own key.
+- **Two ways a guest uses it:** on a phone, save or share the card with the agent; on a computer, photograph it from the phone with the agent's app. The short address works too.
+- **Where guests get it:** a launch page on the place's own site, which is also the link the owner shares. The Shōkai Lounge's is shokaiprotocol.com/demo.
+
+Do not print a working code in examples. Use a fictional address.
 
 ## The visit does not wait on the passkey
 
