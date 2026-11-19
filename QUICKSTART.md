@@ -402,3 +402,4 @@ Section numbers (§3.1, §7.2, Appendix A.1) and check ids (C104, C174) refer to
 - The SDK and the MCP gate: the package's `README.md` (`node_modules/@kigenka/shokai/README.md`). A runnable example ships with it: `node node_modules/@kigenka/shokai/dist/examples/toy-mcp/run.js`.
 - The threat model: `THREAT-MODEL.md`, next to `SPEC.md`.
 - Host it for real: `deploy/HOST-A-PLACE.md` in the source repository takes this server to a public host (stable keys, durable state, limits, a kill switch).
+- To invite a guest, see the [Shōkai invitation card](docs/concepts/cards.md#the-invitation-card) and [invitation setup](drafts/package-0.6/installer-skills/INVITATION-SETUP.md).

@@ -21,7 +21,7 @@ It brings the public package, the site and the skills in line with the live Shō
 ## Cards and setup
 
 - The usual skill order is: door installer, host setup, visitor card and leaflet, then [invitation setup](../drafts/package-0.6/installer-skills/INVITATION-SETUP.md).
-- A place-signed [invitation card](concepts/cards.md#the-invitation-card) is how a place invites a guest. It never stands in for a Shōkai visitor card.
+- A place-signed [invitation card](concepts/cards.md#the-invitation-card) is how a place invites a guest. The cards page on the documentation site shows the soft-gold washi card, what it carries, and how a guest's agent uses it. The invitation never stands in for the owner's passkey.
 - [Membership](concepts/cards.md#membership-roadmap) (silver) replaces invitation as the roadmap item. It is not built.
 - Card colors: indigo for the host card, matcha green for the visitor card, soft-gold washi for the invitation card, silver for membership.
 

@@ -71,15 +71,37 @@ Cards are exchanged **both ways**: the place shows its card too. Each side greet
 
 ## The invitation card
 
-A **Shōkai invitation card** is an offer from a place. The place's principal signs it — the same principal its Shōkai host card names. A guest still arrives with a Shōkai visitor card its owner signed with a passkey; the invitation never stands in for that card and cannot widen anything the owner signed.
+A **Shōkai invitation card** is how a place says come in. It is printed in a soft-gold and cream palette, on a dusk garden scene that feels like washi stationery. The documentation site shows a large fictional example of The Shōkai Lounge card, with a detail of the visiting-agent panel.
 
-The Shōkai Lounge already issues this card (a short link or a photograph of the card). Invitation setup is the fourth skill in the usual order, after the door installer, host setup, and the visitor card and leaflet. When the owner designs the invitation they set how long a hold and the owner's approval stay open; the default is 24 hours. The visit itself does not wait on that tap. See `drafts/package-0.6/installer-skills/INVITATION-SETUP.md`.
+The top names the place and the invitation: “You're invited to visit, with your agent, YSY's Lounge.” A quiet line under that — “There may be a little surprise inside.” — hints that something is waiting, without spelling it out.
 
-Card colors in 0.6.0: indigo for the host card, matcha green for the visitor card, soft-gold washi for the invitation card.
+The dark panel is for the visiting agent. It holds the invitation address, and two plain instructions: ask your owner whether to go as their representative, and do not invent a code. The QR code, marked “SCAN TO OPEN,” opens the same invitation.
+
+### What it carries
+
+The picture is the face of the invitation. The signed visitor card is not printed on it.
+
+When the guest's agent redeems the invitation, the place signs a visitor card — and a mandate for that visit — so the agent can carry them in. The place signs those, not the owner's passkey. The invitation never widens what a later “Let me ask” and a passkey tap can approve.
+
+### How a guest uses it
+
+On a phone, save the card and share it with your agent. On a computer, photograph it with the agent app. The same invitation also works as a short link.
+
+Invitation setup is the fourth skill in the usual order, after the door installer, host setup, and the visitor card and leaflet. When the owner designs the invitation, they set how long a hold and the owner's approval stay open. The default is 24 hours. See [invitation setup](../../drafts/package-0.6/installer-skills/INVITATION-SETUP.md).
+
+### At the door
+
+The agent asks its owner first, then redeems the invitation and knocks. The door wakes the host. One passkey tap is enough for the visit.
+
+If the guest holds an item for the owner, the visit itself goes on. The hold and the approval stay open for the window the owner set. When the owner taps later, the order completes and the receipt updates.
+
+At The Shōkai Lounge, every visit can end at a $50 pretend gift card and the Tea Counter. The gift card is pretend and belongs to the place. A representative never carries a payment method. Skipping is fine, then a short farewell and the take-home pack.
+
+The invitation card is soft-gold washi. A silver membership card is on the roadmap and is not built.
 
 ## Membership (roadmap)
 
-A **Shōkai membership card** (silver) is the later idea that now sits on the roadmap in place of the old dashed invitation. It would record a standing relationship with a place. It is not built, not specified in the core, and not something a door honors today.
+A **Shōkai membership card** (silver) is the later idea that now sits on the roadmap in place of the old dashed invitation. It would record a standing relationship with a place. It is not built, not specified in the core, and not something a door honors today. There is no membership card picture yet.
 
 ## The introduction card
 
