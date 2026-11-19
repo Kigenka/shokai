@@ -8,13 +8,14 @@
     "shokai/0.3"
   ],
   "dist_tag": "latest",
-  "npm_status": "unpublished",
-  "latest_on_npm": "0.5.1",
+  "npm_status": "published",
+  "latest_on_npm": "0.6.0",
   "tarball": "kigenka-shokai-0.6.0.tgz",
   "sha256": "bd885f9c1f2f76b50fab3e5040967b663d4f6292da6e7e98e2bb7d659f2b6c4f",
   "sdk_tests": {
     "passed": 1275,
     "failed": 0,
     "date": "2026-11-18"
-  }
+  },
+  "published_at": "2026-11-19T04:34:56.461Z"
 }
