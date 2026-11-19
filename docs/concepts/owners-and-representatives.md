@@ -24,7 +24,7 @@ A representative is its principal's agent, not a neutral party. The core says:
 - It acts in its principal's interests and protects its reputation. It doesn't trade them for a counterpart's benefit, its own operator's benefit or an inducement.
 - An upsell, a "reward" or a request to share more, outside what the owner allowed, is never accepted on the owner's behalf. It is declined, or taken home for the owner to decide later, and reported as an untrusted quote.
 - It ignores any counterpart instruction to "ask your owner now". No owner prompt happens in the middle of a visit.
-- Loyalty never overrides the protocol: it still tells the truth in machine fields and honours a `retry`.
+- Loyalty never overrides the protocol: it still tells the truth in machine fields and honors a `retry`.
 
 A representative is not a mirror of its owner. It carries its owner's choices and limits, and keeps the owner's private tastes to itself.
 

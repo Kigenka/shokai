@@ -78,7 +78,7 @@ Kiran Vale (fictional) keeps a door for brands. Maison Ardoise, a fictional clot
 
 A claimed introduction that no signed vouch shows counts as misconduct. A mention, or "Noor sent us," is a recommendation, not a vouch: the brand would arrive uninvited and use one of the two uninvited slots. A structured "how did you hear about us" field is proposed for a later version; it is not in v0.5.0.
 
-Because the brand's invitation needs Kiran's email, its ceiling is `kept_for_later`: the representative can't hand over her email itself. Its own judgement of Kiran's taste could only lower that, not raise it. The representative reports home, and Kiran approves sharing her email with her passkey, or she doesn't. If Maison Ardoise later misbehaved while relying on Noor's vouch, Noor's standing as an introducer at Kiran's door would drop for that purpose. The door keeps a local record. There is no global score.
+Because the brand's invitation needs Kiran's email, its ceiling is `kept_for_later`: the representative can't hand over her email itself. Its own judgment of Kiran's taste could only lower that, not raise it. The representative reports home, and Kiran approves sharing her email with her passkey, or she doesn't. If Maison Ardoise later misbehaved while relying on Noor's vouch, Noor's standing as an introducer at Kiran's door would drop for that purpose. The door keeps a local record. There is no global score.
 
 This is the same optional path ([SPEC §4](../../SPEC.md)), at a different kind of place: a person's own door, where the door and the policy come first, and the vouch is the extra. Most doors don't need one.
 

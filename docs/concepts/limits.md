@@ -32,7 +32,7 @@ A `Mandate` gives a purpose (a language-neutral code plus a statement), allowed 
 ```
 *Illustrative and abridged.*
 
-- **No spending allowance means no spending.** A mandate without `max_amount` authorises no spending at all.
+- **No spending allowance means no spending.** A mandate without `max_amount` authorizes no spending at all.
 - **Amounts are exact.** `Money` is a strict decimal string plus an ISO 4217 code, compared as scaled integers, never as floating point.
 - **Learn vs buy.** `visitation` (looking, asking, comparing) never needs a spending allowance; `purchase` gets a pass only within one.
 

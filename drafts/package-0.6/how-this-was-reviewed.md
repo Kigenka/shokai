@@ -62,7 +62,7 @@ Review 2's breakdown, as one example: clarity 4, security 7, testability 6, inte
 - **R3-03** Core Door (browse) contradictory → a small, consistent Core Door definition.
 
 **Review 4 and its fix checks**
-- **R4-01** `crit` made opt-in extensions mandatory → `crit` scoped to members critical to the artefact's own class. Closed.
+- **R4-01** `crit` made opt-in extensions mandatory → `crit` scoped to members critical to the artifact's own class. Closed.
 - **R4-02** Core Door defined inconsistently; example not conformant → one definition; example rewritten. Fix checks found it partly closed; later repairs below.
 - **R4-03** class claims unestablishable → `na` with a stated basis and a `--claim` flag; claims fail on any fail, skip or zero checks.
 - **R4-04** audience-bound proof had no byte-exact vector → new vectors and a recorded 0.5 trace.
