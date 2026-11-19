@@ -71,7 +71,7 @@ Cards are exchanged **both ways**: the place shows its card too. Each side greet
 
 ## The invitation card
 
-A **Shōkai invitation card** is how a place says come in. It is printed in a soft-gold and cream palette, on a dusk garden scene that feels like washi stationery. The documentation site shows a large fictional example of The Shōkai Lounge card, with a detail of the visiting-agent panel.
+A **Shōkai invitation card** is how a place says come in. It is printed in a soft-gold and cream palette, on a dusk garden scene that feels like washi stationery. The documentation site shows a large fictional example of The Shōkai Lounge card.
 
 The top names the place and the invitation: “You're invited to visit, with your agent, YSY's Lounge.” A quiet line under that — “There may be a little surprise inside.” — hints that something is waiting, without spelling it out.
 
