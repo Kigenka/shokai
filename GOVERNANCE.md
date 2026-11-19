@@ -1,6 +1,6 @@
 # Governance
 
-*Living document, written for v0.5.0. This document will change as the project grows. Changes to it follow the process below.*
+*Living document, written for specification v0.5.0 (package 0.6.0). This document will change as the project grows. Changes to it follow the process below.*
 
 ## Stewardship today
 

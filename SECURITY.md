@@ -1,6 +1,6 @@
 # Security policy
 
-The latest release of Shōkai is **package 0.5.1** (specification v0.5.0), published 11 November 2026. It is not 1.0. Its reference implementations and SDK are not yet production software. Even so, we want to hear about weaknesses in the specification, the SDK, the conformance runner or the reference code.
+The latest release of Shōkai is **package 0.6.0** (specification v0.5.0, wire tag `shokai/0.5`), published 18 November 2026. Its SDK code is unchanged from 0.5.1. It is not 1.0. Its reference implementations and SDK are not yet production software. Even so, we want to hear about weaknesses in the specification, the SDK, the conformance runner or the reference code.
 
 ## Reporting a vulnerability
 
@@ -21,7 +21,7 @@ Earlier private development history held unlabeled workshop/test key files (`wor
 
 | Version | State | Security fixes |
 |---|---|---|
-| 0.5.x (specification v0.5.0, `@kigenka/shokai` 0.5.x) | Current, supported | Yes |
+| 0.6.x and 0.5.x (specification v0.5.0, `@kigenka/shokai` 0.6.x and 0.5.x; 0.6.0 has the same SDK code as 0.5.1) | Current, supported | Yes |
 | 0.3.x (specification v0.3.0, `@kigenka/shokai` 0.3.x) | Superseded | No code backports — not even for security fixes. Please upgrade to 0.5.x. How 0.5.x treats the earlier wire tag is in the [changelog](./CHANGELOG.md) and on the documentation site's compatibility page. |
 | 0.4.x | Draft, never released | No |
 | The 0.3.0 release candidates and 0.2.x | Superseded | No: please move to 0.5.x |
@@ -40,7 +40,7 @@ Before 1.0, a fix may need a specification change; it then ships as a new 0.5.x 
 - **Delegated authority** (a Shōkai visitor card, mandate or allowance) records what the owner allowed their representative agent to do; whether an act binds the owner is a question for the applicable law.
 - **Financial authorization and payment execution** belong to the bank or payment provider and its rules. Shōkai is not a payment rail and moves no money.
 - **Place-enforced limits** are enforced by each place for its own passes. **Aggregate budgets across places** are managed by the representative (or a service the owner adds); Shōkai does not provide a universally enforced cross-place ledger.
-- **Real-money integrations are a separate, higher-risk launch category**, with their own legal and security review. v0.5.0 and its demos use fictional money only.
+- **Real-money integrations are a separate, higher-risk launch category**, with their own legal and security review. v0.5.0, package 0.6.0, and their demos (including the Shōkai Lounge's $50 gift card and Tea Counter) use pretend or fictional money only.
 
 ## What happens after you report
 
