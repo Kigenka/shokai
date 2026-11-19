@@ -1,24 +1,26 @@
-<p align="center">
-  <a href="https://shokaiprotocol.com/story/films/hero.mp4"><img src="https://shokaiprotocol.com/story/films/hero-poster.jpg" alt="Agents, introduced properly — a 47-second film. Click to play." width="760"></a><br>
-  <em>Agents, introduced properly. About 47 seconds, click to play; music only, words on screen and in captions. <a href="https://shokaiprotocol.com/docs/film-transcripts#hero">Transcript</a>. Fictional people and places only.</em>
-</p>
-
-<p align="center"><img src="docs/assets/hero.svg" alt="Shōkai: an arch of two halves, a visiting representative and a place, joined by a keystone: the introduction that completes it" width="760"></p>
-
 # Shōkai (紹介), the agent introduction protocol
+
+<p align="center">
+  <a href="https://shokaiprotocol.com/story/films/hero.mp4"><img src="docs/assets/hero-film-poster.jpg" alt="Agents, introduced properly: a 47-second film. A visiting agent and a person at the door of a small tea room. Click to play." width="760"></a><br>
+  <em><a href="https://shokaiprotocol.com/story/films/hero.mp4">▶ Watch the film</a>: <strong>Agents, introduced properly</strong>, about 47 seconds. Music only; words on screen and in captions (<a href="https://shokaiprotocol.com/docs/film-transcripts#hero">transcript</a>). Fictional people and places only.</em>
+</p>
 
 **Your place, your rules, when agents come to visit.**
 
 **Agents, introduced properly.** Shōkai is an open protocol that gives online places a door for AI agents. Every agent that comes in arrives introduced: who sent it, why it came, and what it may do. From Kigenka.
 
 [![Specification](https://img.shields.io/badge/specification-v0.5.0-2c4a6c)](SPEC.md)
-[![Wire tag](https://img.shields.io/badge/wire-shokai%2F0.5-2c4a6c)](SPEC.md#22-the-signed-envelope-every-message-is-signed-sc-r1)
+[![Wire tag](https://img.shields.io/badge/wire-shokai%2F0.5-2c4a6c)](docs/SPEC-DETAIL.md#22-the-signed-envelope-every-message-is-signed-sc-r1)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-9c4a32)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-555555)](packages/shokai/package.json)
+
+<p align="center"><img src="docs/assets/hero.svg" alt="Shōkai: an arch of two halves, a visiting representative and a place, joined by a keystone: the introduction that completes it" width="760"></p>
 
 > This is Shōkai **0.6.0** (specification v0.5.0, wire tag `shokai/0.5`). 0.6.0 does not change the SDK's compiled code from 0.5.1; what is new lives in the live Lounge door, the site, and the skills. See the [changelog](CHANGELOG.md) and [What is new in 0.6.0](docs/whats-new-v060.md).
 
 _New to Shōkai? Run the two-second demo (`npx @kigenka/shokai@0.6.0 demo`), then read [How Shōkai works](docs/how-it-works.md): one visit to a tea shop, in plain words._
+
+**See it live.** Send the agent you already use to [The Shōkai Lounge](https://shokaiprotocol.com/demo), a place on shokaiprotocol.com built for visiting representatives. Get a soft-gold invitation card, show it to your agent, and it visits on your behalf. How it works, and what we learned building it: [The Shōkai Lounge: a worked example](docs/the-shokai-lounge.md).
 
 This repository contains:
 
@@ -452,7 +454,7 @@ The core is one story: arrive, introduce itself, ask, answer, act within limits,
 | [`RELEASING.md`](RELEASING.md) | How a release is packed, checked and published |
 | [`ROADMAP-0.6.md`](ROADMAP-0.6.md) | What is planned after 0.5 (not normative) |
 | [`GOVERNANCE.md`](GOVERNANCE.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md), [`MAINTAINERS.md`](MAINTAINERS.md), [`DCO.txt`](DCO.txt) | How the project is run, how to contribute, how to report a vulnerability |
-| [`LICENSE`](LICENSE), [`LICENSE-docs`](LICENSE-docs), [`LICENSES/`](LICENSES/), [`REUSE.toml`](REUSE.toml), [`NOTICE`](NOTICE), [`PATENTS.md`](PATENTS.md), [`TRADEMARKS.md`](TRADEMARKS.md) | Licences (Apache-2.0 for code and the specification, CC BY 4.0 for explanatory docs), the patent pledge (draft, not yet signed) and the names |
+| [`LICENSE`](LICENSE), [`LICENSE-docs`](LICENSE-docs), [`LICENSES/`](LICENSES/), [`REUSE.toml`](REUSE.toml), [`NOTICE`](NOTICE), [`PATENTS.md`](PATENTS.md), [`TRADEMARKS.md`](TRADEMARKS.md) | Licenses (Apache-2.0 for code and the specification, CC BY 4.0 for explanatory docs), the patent pledge (draft, not yet signed) and the names |
 | [`package.json`](package.json) | Monorepo scripts (`npm run setup`, `npm test`); private, never published |
 
 ## Status
@@ -470,7 +472,8 @@ We publish what we tested, what broke and what we changed, including the costs a
 
 | Record | What's in it |
 |---|---|
-| [Field tests](docs/field-tests.md) | Eight tests, October 25 to 28, 2026: cold developers on Hermes Agent and OpenClaw, probe runs against the door, an independent implementation from the spec alone, Muse as a cold visiting representative, and two signing sessions with a real passkey |
+| [Field tests](docs/field-tests.md) | Real agents at real doors. Eighteen numbered rounds since November 4, 2026: Hermes Agent, OpenClaw, Muse, Claude and Dot at the Kettle & Leaf test shop, then thirteen rounds at [The Shōkai Lounge](docs/the-shokai-lounge.md) (November 13–18) with Muse, Dot and Grok Bot, including cold agents shown only a photo of an invitation card and a full Tea Counter visit on the live door. Plus the earlier 0.3 rounds of October 25 to 28, 2026 |
+| [Lounge visits, 13–15 November 2026](docs/evidence/lounge-visits-2026-11.md) | The dated record of seven attended visits: retells, stamped postcards, the owner-passkey consent flow, and what broke |
 | [Review history](docs/review-history.md) | Every review so far, who or what did it, the scores, and where each gap stands |
 | [Red-team rounds](security/redteam/README.md) | 72 of 72 and 44 of 47 attacks held; the 3 that succeed are open by design, and why |
 | [Enforcement suite](tools/enforce/README.md) | One command, `npm run enforce`: a real door on 127.0.0.1, 15 attacks on it (altered, expired, revoked, replayed and stolen cards, spending past the owner's limit in one go and across visits, a card number, a fake door, an unsigned setup change, instructions hidden in messages), and what the door did about each, in plain words |
@@ -499,6 +502,6 @@ Please report vulnerabilities privately, through GitHub private vulnerability re
 - Royalty-free patent commitment for final specification versions: [PATENTS.md](PATENTS.md) (not yet executed).
 - Use of the Shōkai and Kigenka names and logo: [TRADEMARKS.md](TRADEMARKS.md).
 
-See [NOTICE](NOTICE). Per-file licences are mapped in [REUSE.toml](REUSE.toml).
+See [NOTICE](NOTICE). Per-file licenses are mapped in [REUSE.toml](REUSE.toml).
 
 Shōkai is an independent project stewarded by Kigenka. It is not affiliated with, sponsored by or endorsed by any project or company named here. Technologies and companies are named only to show how Shōkai fits next to them. All people, places and businesses in examples are fictional. The field-test notes describe the editor's own tests by role, not by name. The agents named as tested (Grok Bot, Muse from Meta, Hermes Agent and OpenClaw) are real, public agents made by others, not agents of this project.
