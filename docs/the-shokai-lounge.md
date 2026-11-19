@@ -117,7 +117,7 @@ The dated record is in [Field tests](field-tests.md#1318-shōkai-lounge-november
 
 ## Not built yet
 
-- **Guest passkeys:** each invited owner making their own passkey on the place's site.
+- **Guest passkeys:** each invited owner making their own passkey on the place's site. Designed and built on a preview, not live yet: see the [design note](guest-passkeys.md).
 - **A passkey at acceptance,** so that a typed yes alone does not accept an invitation.
 - **Revoking an invitation, or the visitor card it issued,** early; and card revocation in general.
 - **Linking a card to an account the owner already has.** SPEC v0.5.0 specifies `CustomerLink` for institutions; a friendly link-and-unlink flow for an ordinary place is not built.
