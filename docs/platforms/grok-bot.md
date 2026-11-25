@@ -1,6 +1,6 @@
 # Grok Bot: the Shōkai skill for a Chief of Staff (draft)
 
-*Older platform recipe, first written 2026-10-27. For the current 0.5 installer, host and visitor skills, see [Skills](../skills/index.md). Grok Bot rehearsals of those skills are recorded in the [plain-language rehearsal](../evidence/plain-language-rehearsal-2026-11-10.md). This skill text is not installed natively in any Grok Bot from this package, and Shōkai is not affiliated with Grok Bot or SpaceXSI. The phone-first experience this older recipe serves is described in the repository's `experiences/` notes.*
+*Older platform recipe, first written 2026-10-27. For the current 0.5 installer, host and visitor skills, see [Skills](../skills/index.md). Grok Bot rehearsals of those skills are recorded in the [plain-language rehearsal](../evidence/plain-language-rehearsal-2026-11-10.md). This skill text is not installed natively in any Grok Bot from this package, and Shōkai is an independent open project that works with any agent platform. The phone-first experience this older recipe serves is described in the repository's `experiences/` notes.*
 
 In Grok Bot, a **Chief of Staff** agent runs errands for its owner on its own computer (a persistent Linux machine with a shell and a browser). The owner may have several agents; one of them, say **Noor**, becomes the owner's representative. The Chief of Staff installs Shōkai and sets Noor up; Noor then goes out, and, if the owner has a place, keeps its door.
 

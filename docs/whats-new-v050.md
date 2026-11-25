@@ -1,6 +1,6 @@
 # What changed in v0.5.0
 
-*First written November 1, 2026; refreshed November 5, 2026 after pre-release reviews. v0.5.0 is published as `@kigenka/shokai@0.5.0`, and the 0.5.1 patch release (`@kigenka/shokai@0.5.1`, 11 November 2026) is now npm `latest`. How earlier wire tags are treated is in the changelog. If this page and the specification ([SPEC.md](../SPEC.md), normative detail in [docs/SPEC-DETAIL.md](SPEC-DETAIL.md)) disagree, the specification wins.*
+*First written November 1, 2026; refreshed November 5, 2026 after pre-release reviews. v0.5.0 is published as `@kigenka/shokai@0.5.0`, and the 0.5.1 patch release (`@kigenka/shokai@0.5.1`, 11 November 2026) followed it. The current package is `@kigenka/shokai@0.6.0` (18 November 2026), which keeps this specification and does not change the SDK’s compiled code from 0.5.1. How earlier wire tags are treated is in the changelog. If this page and the specification ([SPEC.md](../SPEC.md), normative detail in [docs/SPEC-DETAIL.md](SPEC-DETAIL.md)) disagree, the specification wins.*
 
 This page says what changed since v0.4.0 and why, how to move to the new wire tag, which text is normative and which is a labeled proposal, how far conformance testing goes today, and what we know is missing. Every item links to the section that defines it. The full list is in the [changelog](../CHANGELOG.md).
 

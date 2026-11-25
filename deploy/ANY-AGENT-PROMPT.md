@@ -7,7 +7,7 @@ Paste this into any agent that can run a terminal command (Grok Bot, Hermes Agen
 
 What your agent will see: a small tea shop's door, with its own host representative there. A demo visiting representative introduces itself with a Shōkai card its (demo) owner signed and a spending limit, is let in, orders within the limit, is stopped past it, and reports home. No one vouches for it; introducing itself is the normal case.
 
-Until the demo place is deployed, use a door on `http://127.0.0.1`: from a checkout of this repository, `npm run setup`, then the quickstart's place ([QUICKSTART.md](../QUICKSTART.md)). Pin the package as `@kigenka/shokai@0.5.1`, or use the package file as the quickstart shows. Replace `<DOOR>` with the demo place's address once it is live.
+Until the demo place is deployed, use a door on `http://127.0.0.1`: from a checkout of this repository, `npm run setup`, then the quickstart's place ([QUICKSTART.md](../QUICKSTART.md)). Pin the package as `@kigenka/shokai@0.6.0`, or use the package file as the quickstart shows. Replace `<DOOR>` with the demo place's address once it is live.
 
 Copy only the block below (with `<DOOR>` replaced):
 

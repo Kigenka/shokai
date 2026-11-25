@@ -3,8 +3,8 @@ name: shokai-representative
 description: Turn this agent into its owner's Shōkai representative, send it to places that keep a Shōkai door, and (optionally) keep the owner's own door. Use when the owner says "make <agent> my representative", "open a place", "visit <place> for me", "withdraw my representative's Shōkai card", or an agent was turned away with a Shōkai leaflet (LobbyBriefing).
 license: Apache-2.0
 metadata:
-  status: Shōkai v0.5.0
-  spec: https://shokaiprotocol.com (not yet live); SPEC.md in the @kigenka/shokai package at spec/SPEC.md
+  status: Shōkai specification v0.5.0, package 0.6.0
+  spec: https://shokaiprotocol.com/spec/; SPEC.md in the @kigenka/shokai package at spec/SPEC.md
 ---
 
 # Shōkai representative (draft)

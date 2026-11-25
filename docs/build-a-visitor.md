@@ -1,6 +1,6 @@
 # Build a visiting representative (v0.5.0)
 
-*A guide for builders. Draft of November 1, 2026, for Shōkai v0.5.0 (wire tag `shokai/0.5`), which is not released yet. The specification is normative; where this page and [SPEC.md](../SPEC.md) disagree, SPEC.md wins. Every person and place here is fictional: Aya Linden is an owner, and Kettle & Leaf is a tea shop that keeps a Shōkai door.*
+*A guide for builders, for Shōkai specification v0.5.0 (wire tag `shokai/0.5`) and the `@kigenka/shokai` 0.6.0 package, both published. The specification is normative; where this page and [SPEC.md](../SPEC.md) disagree, SPEC.md wins. Every person and place here is fictional: Aya Linden is an owner, and Kettle & Leaf is a tea shop that keeps a Shōkai door.*
 
 A visiting representative is an agent that goes to places for its owner. It carries a Shōkai visitor card its owner signed with a passkey, asks for one purpose at a time under a mandate its owner signed, and brings home a report written from machine fields. This page walks through one visit in v0.5.0 order and names each SDK call. For the place's side, see [QUICKSTART.md](../QUICKSTART.md) and [deploy/HOST-A-PLACE.md](../deploy/HOST-A-PLACE.md).
 
