@@ -231,7 +231,8 @@
     "B.7",
     "3.6",
     "Appendix A",
-    "A.1"
+    "A.1",
+    "12.5"
   ],
   "informative_sections": [
     "Terminology",
@@ -326,7 +327,15 @@
     "C178": "visitor",
     "C297": "both",
     "C298": "both",
-    "C299": "both"
+    "C299": "both",
+    "C302": "visitor",
+    "C303": "visitor",
+    "C304": "visitor",
+    "C305": "visitor",
+    "C306": "visitor",
+    "C307": "visitor",
+    "C308": "visitor",
+    "C309": "visitor"
   },
   "checks": {
     "C1": {
@@ -1754,6 +1763,46 @@
       "role": "both",
       "status": "stable"
     },
+    "C302": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C303": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C304": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C305": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C306": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C307": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C308": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C309": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
     "C199": {
       "class": "core",
       "role": "both",
@@ -1887,6 +1936,12 @@
     ],
     "packages/shokai/test/state.test.ts": [
       "core-door"
+    ],
+    "packages/shokai/test/trap-fixtures.ts": [
+      "core-visitor"
+    ],
+    "packages/shokai/test/trap-places.test.ts": [
+      "core-visitor"
     ],
     "packages/shokai/test/v050.test.ts": [
       "core-door",

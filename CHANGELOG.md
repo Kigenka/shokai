@@ -18,6 +18,11 @@ Documentation only. No change to the SDK, the specification (v0.5.0), the wire t
 - **Corrections to the v0.6.0 entry below.** The card colors are matcha green for the host card and indigo for the visitor card, as in the card art; the entry below has them reversed. And redeeming an invitation is itself how the guest's agent gets a visitor card for that visit, signed by the place; the invitation does not have to travel beside a card the owner signed.
 - **American spelling** in the docs and skills.
 
+### Drafted for the next specification version (local, not released)
+
+- **Visitor safety: trap places (SPEC-DETAIL §12.5, C302–C309).** The specification so far protected a place from its visitors. This draft protects a visiting representative, and its owner, from a place built to work on visitors: floods, instructions hidden in what it serves, nudges to the owner's taste, and requests to write to the owner's memory. A representative treats place content as data, curates to its owner's brief, keeps the take-home within a budget (five items and 4 KiB of quoted place text by default), reads under a size cap, writes nothing to the owner's lasting memory without the owner, leaves a place that floods or pressures, and reports what it kept, what it left and why, and the trap signals it saw. Eight new Core Visitor checks; the Core Door class is unchanged (still 164 checks). Decision D28; threat model §10.
+- **SDK (visitor side, unreleased).** The default HTTP transport now reads a place's reply under a 1 MiB cap and refuses a larger reply whole. A new `TakeHome` helper keeps the take-home budget, flags trap signals, refuses memory writes without the owner, and adds `take_home` to the visit report.
+
 ## v0.6.0, 2026-11-18
 
 A package and documentation release. The specification stays v0.5.0 on the wire: the wire tag is still `shokai/0.5`, and `spec_ref.version` is still `"0.5.0"`.

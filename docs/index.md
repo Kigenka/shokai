@@ -90,7 +90,7 @@ How to choose between one agent and separate ones, and the steps for each: [Set 
 
 ### Safety, in every visit
 
-Safety isn't a separate use case; it's in every visit. A pushy or manipulative approach is declined and reported, with hidden text shown to the owner and never obeyed ([an annotated example](./examples/pressure-declined.md)). See [Security and threat model](./security.md) and [Conduct](./concepts/conduct.md).
+Safety isn't a separate use case; it's in every visit. A pushy or manipulative approach is declined and reported, with hidden text shown to the owner and never obeyed ([an annotated example](./examples/pressure-declined.md)). See [Security and threat model](./security.md) and [Conduct](./concepts/conduct.md). Safety runs the other way too: a place can be a trap for visiting agents, and a representative comes home lean by curating to its owner's brief ([Trap places](./trap-places.md), a draft for the next specification version).
 
 ## How Shōkai makes MCP better
 
@@ -135,7 +135,7 @@ Shōkai is inspired by how good introductions work between people, and by *omote
 | **Core concepts** | [Index](./concepts/index.md) · [Places and doors](./concepts/places-and-doors.md) · [Website, agent front, door](./concepts/website-front-door.md) · [Shōkai cards](./concepts/cards.md) · [Owners and representatives](./concepts/owners-and-representatives.md) · [Arriving](./concepts/arriving.md) · [Limits and mandates](./concepts/limits.md) · [Outcomes](./concepts/outcomes.md) · [Report home](./concepts/report-home.md) · [Conduct](./concepts/conduct.md) · [Door policy](./concepts/door-policy.md) · [Visit stamps](./concepts/visit-stamps.md) |
 | **Build with it** | [SDK](../packages/shokai/README.md) · [Host a place](../deploy/HOST-A-PLACE.md) · [A place's address](./place-addresses.md) · [Quickstart](./quickstart.md) · [Agent platforms](./platforms/README.md) · [Extensions](./extensions.md) · [Specification](./specification.md) · [JSON Schema](../schema/README.md) · [Signing profile](../SIGNING.md) |
 | **Examples** | [Worked examples](./examples/index.md) · [The Shōkai Lounge](the-shokai-lounge.md) · [Situations and proofs](./examples/index.md#situations-and-proofs) · [Runnable examples](../examples/README.md) · [Owner journeys](./owner-journeys.md) · [Agent platforms](./platforms/README.md) |
-| **Security** | [Security and threat model](./security.md) · [Full threat model](../THREAT-MODEL.md) · [Red-team rounds](../security/redteam/README.md) · [Reporting a vulnerability](../SECURITY.md) |
+| **Security** | [Security and threat model](./security.md) · [Trap places](./trap-places.md) · [Full threat model](../THREAT-MODEL.md) · [Red-team rounds](../security/redteam/README.md) · [Reporting a vulnerability](../SECURITY.md) |
 | **Verify** | [Evidence](./evidence/index.md). The benchmark stays beside it on the docs site. Verify is not renamed, and it is not merged into Transparency. |
 | **Transparency** | [Field tests](./field-tests.md) · [Review history](./review-history.md) · [Design decisions](../DECISIONS.md) · [Changelog](../CHANGELOG.md) · [Release notes v0.3.0](./releases/v0.3.0.md). Field tests and the review history link to Evidence. |
 | **Context and plans** | [Relationship to other protocols](./relationship-to-other-protocols.md) · [Roadmap](./roadmap.md) · [Proposals](../proposals/README.md) |

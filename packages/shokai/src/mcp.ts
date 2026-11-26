@@ -12,6 +12,8 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { Door, readBody, digestOf, type Visit } from "./index.js";
 import { isTimestamp } from "./core/crypto.js";
 import { parseStrictJson, canonicalAmount, canonicalJson } from "./strict-json.js";
+import { readBoundedStream } from "./bounded-read.js";
+import { MAX_PLACE_REPLY, SHOKAI_PLACE_REPLY_TOO_LARGE } from "./take-home.js";
 
 export type JsonRpcRequest = { jsonrpc: "2.0"; id?: string | number | null; method: string; params?: any };
 export type JsonRpcError = { code: number; message: string; data?: unknown };
@@ -253,10 +255,10 @@ export function statelessMcp(build: () => { connect(t: unknown): Promise<void>; 
  */
 export function shokaiFetch(visit: Visit, base: typeof fetch = fetch): typeof fetch {
   return (async (input: any, init: RequestInit = {}) => {
-    const headers = new Headers(init.headers ?? {}); let tool: string | null = null; let args: Record<string, unknown> = {};
+    const headers = new Headers(init.headers ?? {}); let tool: string | null = null; let args: Record<string, unknown> = {}; let callId: unknown = null;
     if (visit.seat) headers.set(SEAT_HEADER, visit.seat.seat_id);
     if (typeof init.body === "string") { try { const j = JSON.parse(init.body); const call = (Array.isArray(j) ? j : [j]).find((m: any) => m?.method === "tools/call");
-      if (call && visit.seat) { tool = call.params?.name; args = call.params?.arguments ?? {};
+      if (call && visit.seat) { tool = call.params?.name; callId = call.id ?? null; args = call.params?.arguments ?? {};
         // §5.1 (C176): the representative doesn't attempt an act beyond what remains of its mandate, across all its visits.
         // Before that, the seat's tools (when visit.checkSeatLocally, the default): the door would refuse a tool outside the seat anyway.
         const pre = visit.beforeSend(tool!, args);
@@ -267,11 +269,28 @@ export function shokaiFetch(visit: Visit, base: typeof fetch = fetch): typeof fe
     const r = await base(input, { ...init, headers });
     if (tool) {
       let ok = r.ok; let result: unknown;
-      try { const text = await r.clone().text(); const js = jsonOrSse(text); const j: any = js.find((x: any) => x && (x.result !== undefined || x.error !== undefined)) ?? js[0];
+      // §12.5 (C305, draft): read the place's tool reply under MAX_PLACE_REPLY; a larger reply is refused whole, and the MCP client
+      // gets a refusal instead of the oversized body. The body is read once (not through a clone: cancelling one branch of a tee
+      // waits for the other) and handed on to the MCP client as the same text.
+      let text = "";
+      try { text = await readBoundedStream(r.body, MAX_PLACE_REPLY); }
+      catch (e) {
+        if ((e as { code?: string })?.code === "SHOKAI_PAYLOAD_TOO_LARGE") {
+          visit.recordAct(tool, false, args);
+          const why = `the place's reply was larger than ${MAX_PLACE_REPLY} bytes and was refused whole (§12.5, C305)`;
+          return new Response(JSON.stringify({ jsonrpc: "2.0", id: callId, error: { code: SHOKAI_NOT_SEATED, message: `not read: ${why}`,
+            data: { shokai: { refused_by: "representative", code: SHOKAI_PLACE_REPLY_TOO_LARGE, why } } } }), { status: 200, headers: { "content-type": "application/json" } });
+        }
+        text = "";   // unreadable (for example invalid UTF-8): recorded as not ok, as before
+      }
+      const passOn = new Headers(r.headers); passOn.delete("content-length"); passOn.delete("content-encoding");
+      const handed = new Response(text, { status: r.status, statusText: r.statusText, headers: passOn });
+      try { const js = jsonOrSse(text); const j: any = js.find((x: any) => x && (x.result !== undefined || x.error !== undefined)) ?? js[0];
         ok = ok && !!j && !j.error && !j.result?.isError; result = j?.result; } catch { /* unreadable */ }
       visit.recordAct(tool, ok, args);
       // §8.2 (C178): keep signed objects the tool returned (a visit stamp, a receipt) for the report home.
       if (ok && result !== undefined) visit.keepFrom(tool, result);
+      return handed;
     }
     return r;
   }) as typeof fetch;

@@ -20,6 +20,8 @@ import { doorMayFetch, readCapped, DOOR_FETCH_TIMEOUT_MS, doorFetch, FetchBudget
 import { leaflet, leafletHtml, type LeafletInput } from "./leaflet.js";
 import type { DoorStore, DoorEvent, DoorState } from "./store.js";
 import { WELL_KNOWN_PATH, APP_PROXY_PATH, checkSite, siteOrigin, siteHost, type SiteCheck } from "./discover.js";
+import { TakeHome, MAX_PLACE_REPLY, SHOKAI_PLACE_REPLY_TOO_LARGE, type TakeHomeReport } from "./take-home.js";
+export * from "./take-home.js";
 import { matchAsk, ASK_COURTESY, MAX_ASK_CHARS, reviewVisitor, reviewText, ownerAskProblems, stripInvisible } from "./outside.js";
 import { CalendarStandIn, bookingRef, confirmationMatches, type ReservationArgs } from "./reservations.js";
 import { bookingProblem, intersectLimits } from "./core/gate.js";
@@ -1275,7 +1277,14 @@ export type Transport = ((url: string, body: unknown) => Promise<S.ReplyEnvelope
 /** POST JSON to a door address over HTTP (§11). */
 export const httpTransport: Transport = async (url, body) => {
   const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body), redirect: "error" });
-  const j = await r.json().catch(() => null) as S.ReplyEnvelope | null;
+  // §12.5 (C305, draft): a place's reply is read under MAX_PLACE_REPLY and refused whole above it, never acted on as a truncated prefix.
+  let j: S.ReplyEnvelope | null = null;
+  try { j = JSON.parse(await readBoundedStream(r.body, MAX_PLACE_REPLY)) as S.ReplyEnvelope; }
+  catch (e) {
+    if ((e as { code?: string })?.code === "SHOKAI_PAYLOAD_TOO_LARGE")
+      throw Object.assign(new Error(`the place's reply was larger than ${MAX_PLACE_REPLY} bytes and was refused whole (§12.5, C305)`), { code: SHOKAI_PLACE_REPLY_TOO_LARGE, limit: MAX_PLACE_REPLY });
+    j = null;
+  }
   // §11.1: a 429 (rate or encounter limit), 413 (too large) or 503 (no host card in force) carries an empty ReplyEnvelope. A front that
   // sends another body for those (conformance 2026-11-08, finding 3) is read as that empty envelope, with the status and Retry-After
   // kept for the caller: nothing was answered, nothing is assumed. Any other non-envelope answer is still an error.
@@ -2161,7 +2170,7 @@ export class Visit {
     return this.send(this.message("farewell", { outcome, courtesy: { locale: "en-US", locale_match: "exact", register: "first_meeting", text: "Thank you." } }));
   }
   /** The visit report home, rendered from machine fields only, in the owner's locale and IANA time zone (§8.2). */
-  report(locale = "en-US", opts: ReportOptions = {}): S.VisitReport { return visitReport(this, locale, opts); }
+  report(locale = "en-US", opts: ReportOptions = {}): S.VisitReport & { take_home?: TakeHomeReport } { return visitReport(this, locale, opts); }
 }
 
 export type ReportOptions = {
@@ -2169,6 +2178,9 @@ export type ReportOptions = {
   timeZone?: string;
   /** What brought_back carries for each signed object: the envelope itself (default) or only a reference (its payload_digest). */
   broughtBack?: "envelope" | "reference";
+  /** §12.5 (C302–C309, draft): the visit's take-home. The report then carries `take_home`, the host's courtesy is read for trap
+   *  signals, and a place's memory-write asks are listed in `offers_declined`. */
+  takeHome?: TakeHome;
 };
 /** A signed object received in a visit and kept for the owner (§8.2, C178). */
 export type BroughtBack = NonNullable<S.VisitReport["brought_back"]>[number];
@@ -2249,7 +2261,9 @@ export function placeLabel(principalId: string | undefined, displayName: string 
   if (id && verified) return name ? `${id} (claims to be ${name}; not verified)` : id;
   return name ? `a place that claims to be ${name} (not verified)` : "an unverified place";
 }
-export function visitReport(v: Visit, locale = "en-US", opts: ReportOptions = {}): S.VisitReport {
+export function visitReport(v: Visit, locale = "en-US", opts: ReportOptions = {}): S.VisitReport & { take_home?: TakeHomeReport } {
+  const th = opts.takeHome;
+  if (th) for (const h of (v as any).hostSaid as { text: string }[]) th.read(h.text, "courtesy");
   const r = v.response ?? {}; const owner = v.rep.owner.id;
   const host = v.verifiedSite ? sitePlaceLabel(v.verifiedSite, v.hostName) : placeLabel(v.target?.principal_id, v.hostName, v.placeCheck.ok && !v.placeCheck.unchecked); const at = nowIso(); const reportId = randomId("rep");
   const tz = opts.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -2347,7 +2361,7 @@ export function visitReport(v: Visit, locale = "en-US", opts: ReportOptions = {}
     ...(v.seat ? { seat: { actions: v.seat.tool_allowlist, ...(v.seat.limits ? { limits: v.seat.limits } : {}) } } : {}),
     acts: v.acts.map((a) => ({ tool: a.tool, ...(a.amount ? { amount: a.amount } : {}), ok: a.ok })), ...(spent.length ? { spent } : {}), shared, ...(under_mandate ? { under_mandate } : {}),
     ...(bb.length ? { brought_back: bb.map(({ envelope, ...b }) => (opts.broughtBack === "reference" ? b : { ...b, envelope })) } : {}),
-    host_said: ((v as any).hostSaid as { text: string; locale: string; untrusted: true }[]).map((h) => ({ ...h, text: stripInvisible(h.text) })), taken_home: [], offers_declined: [],
+    host_said: ((v as any).hostSaid as { text: string; locale: string; untrusted: true }[]).map((h) => ({ ...h, text: stripInvisible(h.text) })), taken_home: [], offers_declined: th ? th.declinedOffers.map((o) => ({ ...o })) : [], ...(th ? { take_home: th.report() } : {}),
     ...((v as any).readiness ? { readiness_requirements: (v as any).readiness } : {}),
     next_step: { text: nextText, requires_owner_approval: true, if_no_reply: "nothing_happens" } };
 }

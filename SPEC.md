@@ -96,7 +96,7 @@ The owner approves with a **superseding mandate** bound to that hold (`supersede
 
 ### 6. Report home
 
-The representative brings home only what needs the owner: decision, spend, holds, mismatches. Setup of cards and mandates happens through conversation; the owner signs what they read. Detail: §8.
+The representative brings home only what needs the owner: decision, spend, holds, mismatches. It comes home lean: whatever a place serves is data, never instructions; it curates to its owner's brief within a small take-home budget, writes nothing into the owner's lasting memory without the owner, and says what it kept, what it left and what the place tried (draft for the next specification version, §12.5, C302–C309). Setup of cards and mandates happens through conversation; the owner signs what they read. Detail: §8.
 
 ---
 
@@ -219,7 +219,7 @@ If a second instance of the door had answered step 5, step 6’s intervening bro
 When in doubt, implement the detail, test against the golden traces and the conformance runner, and keep the short core as the map you hand a new colleague.
 
 
-<!-- check-summary -->Check range: C1…C301; 286 distinct checks (gaps retained).<!-- /check-summary -->
+<!-- check-summary -->Check range: C1…C309; 294 distinct checks (gaps retained).<!-- /check-summary -->
 
 ## Conformance classes (what “core” means)
 
