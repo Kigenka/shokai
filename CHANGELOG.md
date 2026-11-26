@@ -6,7 +6,7 @@ All notable changes to the Shōkai specification, SDK and reference code. Before
 
 Nothing yet.
 
-## v0.6.1, release candidate (not published)
+## v0.6.1, 2026-11-25
 
 A package patch release. The specification stays v0.5.0 on the wire: the wire tag is still `shokai/0.5`, `spec_ref.version` is still `"0.5.0"`, and no wire member changes. Like 0.5.1, the package amends the text in place, adds one optional member in a new JSON Schema file (`schema/v0.6.1/schema.json`; the v0.5.0 and v0.5.1 files are unchanged), and adds MUST-level rules. Unlike 0.6.0, this release changes the SDK's compiled code. A 0.6.0 peer and a 0.6.1 peer keep talking to each other: nothing on the wire changes.
 
