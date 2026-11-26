@@ -16,7 +16,7 @@
 
 <p align="center"><img src="docs/assets/hero.svg" alt="Shōkai: an arch of two halves, a visiting representative and a place, joined by a keystone: the introduction that completes it" width="760"></p>
 
-> This is Shōkai **0.6.1** (specification v0.5.0, wire tag `shokai/0.5`). 0.6.1 adds visitor safety against trap places, a domain-and-certificate rule for doors, and a corrected `spec_ref.url`; the wire does not change. See the [changelog](CHANGELOG.md), [Trap places](docs/trap-places.md) and [What is new in 0.6.0](docs/whats-new-v060.md).
+> This is Shōkai **0.6.1** (specification v0.5.0, wire tag `shokai/0.5`). 0.6.1 adds visitor safety against trap places, a domain-and-certificate rule for doors, and a corrected `spec_ref.url`; the wire does not change. See the [changelog](CHANGELOG.md), [Trap places](docs/trap-places.md) and [What was new in 0.6.0](docs/whats-new-v060.md).
 
 _New to Shōkai? Run the two-second demo (`npx @kigenka/shokai@0.6.1 demo`), then read [How Shōkai works](docs/how-it-works.md): one visit to a tea shop, in plain words._
 

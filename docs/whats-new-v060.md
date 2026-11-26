@@ -6,6 +6,8 @@ description: "What 0.6.0 changes: Lounge-aligned skills and docs, invitation car
 
 *Shōkai, the agent introduction protocol, from Kigenka. Byline: YSY. 18 November 2026, Pacific Time. Package 0.6.0. The specification version and wire tag stay v0.5.0 / `shokai/0.5`.*
 
+> This page describes package 0.6.0, an earlier release. The current package is 0.6.1: see [What is in 0.6.1](../CHANGELOG.md).
+
 0.6.0 does not change the SDK's compiled code from 0.5.1. The specification version and wire tag stay v0.5.0 / `shokai/0.5`. What is new lives in the live Lounge door, the site, and the installer, host, visitor and invitation-setup skills.
 
 It brings the public package, the site and the skills in line with the live Shōkai Lounge door. It does not add a new wire tag, and it does not claim a certification. Conformance is still stated as: 30 of 164 Core Door checks measured, all 30 passed, 132 unmeasured.

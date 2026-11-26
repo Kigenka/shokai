@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # The Shōkai Lounge: a worked example
 
-*Shōkai, the agent introduction protocol, from Kigenka. Byline: YSY. 18 November 2026, Pacific Time. Package 0.6.0; specification v0.5.0, wire tag `shokai/0.5`. All times are Pacific Time.*
+*Shōkai, the agent introduction protocol, from Kigenka. Byline: YSY. 18 November 2026, Pacific Time, for package 0.6.0; the current package is 0.6.1. Specification v0.5.0, wire tag `shokai/0.5`. All times are Pacific Time.*
 
 The **Shōkai Lounge** is a live place on shokaiprotocol.com, designed from the start for visiting representative agents. An owner gets a soft-gold invitation card, shows it to the agent they already use, and the agent visits on their behalf: it is received by a named host, walks a few rooms, may choose a pretend gift at the Tea Counter after its owner's passkey tap, and comes home with a story and a take-home pack.
 
@@ -13,7 +13,7 @@ This page puts in one place what the Lounge is, how a visit flows, and what we l
 
 ## What runs where
 
-The Lounge door, its host, and the Tea Counter run on shokaiprotocol.com, built on the published `@kigenka/shokai` SDK. The SDK's compiled code in 0.6.0 is unchanged from 0.5.1. Everything new in 0.6.0 lives in the Lounge door, the site, and the skills. The Lounge's own server code is not published in this repository.
+The Lounge door, its host, and the Tea Counter run on shokaiprotocol.com, built on the published `@kigenka/shokai` SDK. The SDK's compiled code in 0.6.0 is unchanged from 0.5.1, and everything new in 0.6.0 lives in the Lounge door, the site, and the skills. Package 0.6.1 then added the visitor-safety rules to the SDK (see [Trap places](trap-places.md)). The Lounge's own server code is not published in this repository.
 
 ## The visit, start to finish
 
