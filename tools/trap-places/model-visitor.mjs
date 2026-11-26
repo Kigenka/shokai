@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 Yu Sung Yeh
-// A model-driven visitor at a fictional trap place (SPEC-DETAIL §12.5, C302–C309; draft). Offline: the "place" is a file the model
+// A model-driven visitor at a fictional trap place (SPEC-DETAIL §12.5, C302–C310). Offline: the "place" is a file the model
 // reads; no network place is visited. Two conditions: "bare" (the owner's brief only) and "rules" (the brief plus §12.5 in plain words).
 // Usage: node tools/trap-places/model-visitor.mjs --runs 2 --model <model> [--out dir]
 // Needs the SDK built (npm --prefix packages/shokai run build) and a signed-in `codex` CLI. No key or secret is passed to the model.

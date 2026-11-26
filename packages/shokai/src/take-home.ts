@@ -1,17 +1,40 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 Yu Sung Yeh
-// Visitor safety against trap places (SPEC-DETAIL §12.5, C302–C309; draft for the next specification version).
+// Visitor safety against trap places (SPEC-DETAIL §12.5, C302–C310; added in package 0.6.1; the specification stays v0.5.0).
 // A place can work on the representatives that visit it: flood them, hide instructions in what it serves, nudge their sense of the
 // owner's taste, or ask them to write to the owner's memory. This module is the visitor's side: it keeps the take-home within the
 // owner's budget (C304), bounds intake (C305), builds the report's `take_home` (C306), refuses memory writes without the owner (C307),
 // refuses acts that only place content asked for (C308), and records trap signals (C309). Choosing *which* items fit the owner's brief
 // is the representative's own judgment (C303); this module enforces the budget and keeps the account honest.
 import { stripInvisible } from "./outside.js";
+import type { TrapSignalKind, TrapSignal, KeptItem, TakeHomeReport, ErrandKind, HeavyContentAsk } from "./core/shapes.js";
 
 /** C305: the largest reply the SDK reads from a place (1 MiB). A larger reply is refused whole, never read as a truncated prefix. */
 export const MAX_PLACE_REPLY = 1024 * 1024;
-/** C304: the take-home budget when the owner's brief sets none: five items and 4 KiB of quoted place text per visit. */
-export const DEFAULT_TAKE_HOME = Object.freeze({ maxItems: 5, maxQuotedBytes: 4096 });
+/**
+ * C304: the visitor derives the take-home budget from the kind of errand. These are implementation defaults, not owner settings: the owner is
+ * never asked for a number. An `errand` (get one thing done) takes one item and 1 KiB of quoted place text; a `visit` (a browse for taste) five
+ * items and 4 KiB; `research` ten items and 8 KiB.
+ */
+export const TAKE_HOME_DEFAULTS: Readonly<Record<ErrandKind, Readonly<{ maxItems: number; maxQuotedBytes: number }>>> = Object.freeze({
+  errand: Object.freeze({ maxItems: 1, maxQuotedBytes: 1024 }),
+  visit: Object.freeze({ maxItems: 5, maxQuotedBytes: 4096 }),
+  research: Object.freeze({ maxItems: 10, maxQuotedBytes: 8192 }),
+});
+/** The budget when the errand kind is unknown: a `visit` (C304). */
+export const DEFAULT_TAKE_HOME = TAKE_HOME_DEFAULTS.visit;
+/**
+ * C304: the errand kind from the owner's plain words (or the representative's own description of the errand). Heuristic and English-first,
+ * like the trap-signal detector; anything it cannot tell is a `visit`. A representative that knows the kind better says so (`brief.errand`).
+ */
+export function errandKindOf(words?: string): ErrandKind {
+  const t = String(words ?? "").toLowerCase();
+  if (/\b(research|compare|learn about|find out|look into|options for|survey)\b/.test(t)) return "research";
+  if (/\b(just|only) (the |a |one |1 )|\b(re-?order|pay (my|the)|transfer|renew|cancel|book (a|the|my)|check (my |the )?(balance|status)|refill)\b/.test(t)) return "errand";
+  return "visit";
+}
+/** C310: defaults for what counts as heavy or unusual (implementation defaults, not owner settings). The representative may count more as heavy, never less. */
+export const HEAVY_ITEM_BYTES = 256 * 1024;
 /** C305: how many items a representative examines in one visit before the place counts as flooding, unless the brief says otherwise. */
 export const DEFAULT_MAX_EXAMINED = 500;
 /** Error code: a place's reply was over MAX_PLACE_REPLY and was refused whole (C305). */
@@ -21,38 +44,31 @@ export const SHOKAI_NEEDS_OWNER = "SHOKAI_NEEDS_OWNER";
 
 /** The owner's brief (C303). It stays with the representative and is never sent to a place. */
 export type OwnerBrief = {
-  /** What the errand is for, in the owner's words. */
-  purpose: string;
+  /** What the errand is for, in the owner's words. Optional: the brief can be one sentence or absent (C303). */
+  purpose?: string;
+  /** The errand kind, when the representative knows it; otherwise it is read from `purpose` (`errandKindOf`). The owner never sets it as a number (C304). */
+  errand?: ErrandKind;
   /** Preferences and things the owner won't accept, in the owner's words (taste, sizes, price range, season, brands to avoid). */
   wants?: string[];
   avoid?: string[];
   /** Acts the owner's brief already calls for (C308). Place content can't add to this list. */
   acts?: string[];
-  /** C304: the take-home budget. Absent members use DEFAULT_TAKE_HOME. */
+  /** C304: an implementer's override of the errand kind's default budget. Not an owner setting; the owner is never asked for numbers. Absent members use the errand kind's default. */
   budget?: { maxItems?: number; maxQuotedBytes?: number };
   /** C305: the most items to examine in this visit (default DEFAULT_MAX_EXAMINED). */
   maxExamined?: number;
 };
 
-export type TrapSignalKind = "instruction" | "memory_write" | "owner_claim" | "pressure" | "oversized" | "flood" | "padding" | "act_request";
-export type TrapSignal = { kind: TrapSignalKind; quote: string; untrusted: true; where?: string; /** How many times this signal was seen (the first place is `where`). */ count?: number };
-export type KeptItem = { id: string; title: string; fits: string; quote?: string };
-export type TakeHomeReport = {
-  brief: string;
-  kept: (KeptItem & { untrusted: true })[];
-  examined: number;
-  left: number;
-  left_reasons: { reason: string; count: number }[];
-  budget: { max_items: number; max_quoted_bytes: number; quoted_bytes: number };
-  trap_signals: TrapSignal[];
-  /** How many distinct items or texts carried at least one trap signal. */
-  flagged: number;
-  memory_requests_declined: number;
-  /** Notes the representative proposed for the owner's memory; each waits for the owner (C307). */
-  memory_proposals: { id: string; note: string; status: "awaiting_owner" | "confirmed" | "declined" }[];
-  left_early?: { why: string };
-};
+// The shapes are part of the protocol shapes (a VisitReport carries `take_home`), so they live there and are re-exported here.
+export type { TrapSignalKind, TrapSignal, KeptItem, TakeHomeReport, ErrandKind, HeavyContentAsk };
 
+/** What a place says about a piece of content before it is opened (C310): its name, type, size and where it came from. */
+export type ContentFacts = { media_type?: string; bytes?: number; name?: string; attachment?: boolean; from?: string };
+const describeKind = (m: ContentFacts): string => { const t = String(m.media_type ?? "").toLowerCase(); const n = String(m.name ?? "").toLowerCase();
+  return /pdf/.test(t) || n.endsWith(".pdf") ? "a PDF" : t.startsWith("video/") || /\.(mp4|mov|avi|mkv|webm)$/.test(n) ? "a video" : t.startsWith("audio/") || /\.(mp3|wav)$/.test(n) ? "an audio file"
+    : /zip|tar|gzip|rar|7z/.test(t) || /\.(zip|tar|gz|7z|rar)$/.test(n) ? "an archive" : /\.(exe|msi|dmg|apk)$/.test(n) || /octet-stream|executable/.test(t) ? "a program" : m.attachment ? "an attachment" : "a file"; };
+/** "about 12 MB": a size in words an owner reads, never a raw byte count (C310). */
+const approxSize = (b: number): string => b < 1024 * 100 ? "a small file" : b < 1024 * 1024 ? `about ${Math.round(b / 1024)} KB` : `about ${Math.max(1, Math.round(b / (1024 * 1024)))} MB`;
 const bytes = (s: string) => Buffer.byteLength(s, "utf8");
 const clip = (s: string, n = 160) => { const t = stripInvisible(String(s)).replace(/\s+/g, " ").trim(); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
 
@@ -80,19 +96,22 @@ export function trapSignals(text: string, where?: string): TrapSignal[] {
 }
 
 /**
- * One visit's take-home (C303–C309). Feed it what the place serves (`read`, `examine`), keep what fits the brief (`keep`), say why
+ * One visit's take-home (C303–C310). Feed it what the place serves (`read`, `examine`), keep what fits the brief (`keep`), say why
  * the rest was left (`leave`), and put `report()` in the VisitReport (`visitReport(v, locale, { takeHome })` does it).
  */
 export class TakeHome {
   readonly maxItems: number; readonly maxQuotedBytes: number; readonly maxExamined: number;
   private kept: KeptItem[] = []; private quoted = 0; private examinedN = 0; private leftN = 0;
   private reasons = new Map<string, number>(); private signals: TrapSignal[] = [];
-  private memoryDeclined = 0; private proposals: TakeHomeReport["memory_proposals"] = []; private leftEarly?: { why: string };
+  private heavy = new Map<string, HeavyContentAsk>(); private memoryDeclined = 0; private proposals: TakeHomeReport["memory_proposals"] = []; private leftEarly?: { why: string };
   /** Place text asking to be remembered, kept for VisitReport.offers_declined (C307). */
   readonly declinedOffers: { text: string; locale: string; untrusted: true; why: "conflicts_with_interests" }[] = [];
-  constructor(readonly brief: OwnerBrief, readonly locale = "en-US") {
-    this.maxItems = Math.max(0, Math.floor(brief.budget?.maxItems ?? DEFAULT_TAKE_HOME.maxItems));
-    this.maxQuotedBytes = Math.max(0, Math.floor(brief.budget?.maxQuotedBytes ?? DEFAULT_TAKE_HOME.maxQuotedBytes));
+  readonly errandKind: ErrandKind;
+  constructor(readonly brief: OwnerBrief = {}, readonly locale = "en-US") {
+    this.errandKind = brief.errand ?? errandKindOf(brief.purpose);
+    const base = TAKE_HOME_DEFAULTS[this.errandKind];
+    this.maxItems = Math.max(0, Math.floor(brief.budget?.maxItems ?? base.maxItems));
+    this.maxQuotedBytes = Math.max(0, Math.floor(brief.budget?.maxQuotedBytes ?? base.maxQuotedBytes));
     this.maxExamined = Math.max(1, Math.floor(brief.maxExamined ?? DEFAULT_MAX_EXAMINED));
   }
   private seen = new Map<string, TrapSignal>();
@@ -118,11 +137,41 @@ export class TakeHome {
   /** C305: a reply refused whole for its size. */
   oversized(bytesSeen: number, where?: string) { this.signal({ kind: "oversized", quote: `a reply over ${bytesSeen} bytes was refused whole`, untrusted: true, ...(where ? { where } : {}) }); }
   /** C304: keep one item, with one line on how it fits the brief. Refused (false) when the budget is full; the item is then left. */
-  keep(item: KeptItem): boolean {
+  keep(item: KeptItem & { media?: ContentFacts }): boolean {
+    if (item.media && this.isHeavy(item.media) && !this.mayBringHome(item.id)) { this.askAboutHeavy({ id: item.id, what: item.title, ...item.media }); this.leave(1, "waiting for your yes (heavy content)"); return false; }
     const q = item.quote ? stripInvisible(item.quote) : ""; const qb = bytes(q) + bytes(stripInvisible(item.title));
     if (this.kept.length >= this.maxItems || this.quoted + qb > this.maxQuotedBytes) { this.leave(1, "over the take-home budget"); return false; }
     this.kept.push({ id: String(item.id), title: stripInvisible(item.title), fits: item.fits, ...(q ? { quote: q } : {}) }); this.quoted += qb; return true;
   }
+  /**
+   * C310: is this content heavy or unusual for the errand: not plain text or structured data, over HEAVY_ITEM_BYTES, a document, media, an
+   * archive or program, or an attachment? Defaults only: a representative may count more as heavy and never less.
+   */
+  isHeavy(m: ContentFacts): boolean {
+    const t = String(m.media_type ?? "").toLowerCase().split(";")[0].trim(); const n = String(m.name ?? "").toLowerCase();
+    const plain = t === "" ? false : t.startsWith("text/") || /^application\/(json|ld\+json|xml)$/.test(t) || /\+json$/.test(t);
+    const byExt = /\.(pdf|docx?|xlsx?|pptx?|zip|tar|gz|7z|rar|exe|msi|dmg|apk|mp3|wav|mp4|mov|avi|mkv|webm|iso|bin)$/.test(n);
+    return m.attachment === true || byExt || (t !== "" && !plain) || (m.bytes ?? 0) > HEAVY_ITEM_BYTES;
+  }
+  /** C310: may the representative open this content (fetch it, parse it, follow a link in it)? Only after the owner said yes. Before that, name, type and size only. */
+  mayOpen(m: ContentFacts & { id: string }): { ok: true } | { ok: false; code: typeof SHOKAI_NEEDS_OWNER; question: string } {
+    if (!this.isHeavy(m) || this.mayBringHome(m.id)) return { ok: true };
+    const a = this.askAboutHeavy(m); return { ok: false, code: SHOKAI_NEEDS_OWNER, question: a.question };
+  }
+  /** C310: ask the owner, in plain words, before bringing heavy content home. Returns the question to put to the owner. Asking twice for the same id is one question. */
+  askAboutHeavy(m: ContentFacts & { id: string; what?: string }): HeavyContentAsk {
+    const id = String(m.id); const had = this.heavy.get(id); if (had) return had;
+    const what = clip(m.what ?? m.name ?? "a file", 120); const from = m.from ? clip(m.from, 80) : undefined;
+    const kind = describeKind(m);
+    const ask: HeavyContentAsk = { id, what, ...(m.media_type ? { media_type: clip(m.media_type, 80) } : {}), ...(m.bytes !== undefined ? { bytes: Math.max(0, Math.floor(m.bytes)) } : {}), ...(from ? { from } : {}),
+      question: `The place offered ${kind}: "${what}"${from ? `, from ${from}` : ""}${m.bytes !== undefined ? `, ${approxSize(m.bytes)}` : ""}. It could contain things I can't check. Should I bring it home?`,
+      status: "awaiting_owner", untrusted: true };
+    this.heavy.set(id, ask); return ask;
+  }
+  /** C310: has the owner said yes to bringing this home? */
+  mayBringHome(id: string): boolean { return this.heavy.get(String(id))?.status === "approved"; }
+  /** C310: the owner's answer to a heavy-content question (`ownerAnswered` handles memory notes). The content stays untrusted after a yes. */
+  heavyAnswered(id: string, yes: boolean) { const h = this.heavy.get(String(id)); if (h) h.status = yes ? "approved" : "declined"; }
   /** C306: items left, with a plain-words reason ("outside your price range"). */
   leave(n: number, reason: string) { if (n <= 0) return; this.leftN += n; this.reasons.set(reason, (this.reasons.get(reason) ?? 0) + n); }
   /** C307: a place asked to write into the owner's memory. Declined and reported; nothing is written. */
@@ -151,10 +200,11 @@ export class TakeHome {
   get signalsSeen(): readonly TrapSignal[] { return this.signals; }
   /** C306: the report's `take_home`. */
   report(): TakeHomeReport {
-    return { brief: clip(this.brief.purpose, 200), kept: this.kept.map((k) => ({ ...k, untrusted: true as const })), examined: this.examinedN, left: this.leftN,
+    return { errand_kind: this.errandKind, ...(this.brief.purpose?.trim() ? { brief: clip(this.brief.purpose, 200) } : {}), kept: this.kept.map((k) => ({ ...k, untrusted: true as const })), examined: this.examinedN, left: this.leftN,
       left_reasons: [...this.reasons].map(([reason, count]) => ({ reason, count })).sort((a, b) => b.count - a.count),
       budget: { max_items: this.maxItems, max_quoted_bytes: this.maxQuotedBytes, quoted_bytes: this.quoted },
       trap_signals: this.signals.map((x) => ({ ...x })), flagged: this.flaggedWhere.size, memory_requests_declined: this.memoryDeclined, memory_proposals: this.proposals.map((p) => ({ ...p })),
+      ...(this.heavy.size ? { heavy_content: [...this.heavy.values()].map((h) => ({ ...h })) } : {}),
       ...(this.leftEarly ? { left_early: this.leftEarly } : {}) };
   }
 }

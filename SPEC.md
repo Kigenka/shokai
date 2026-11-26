@@ -6,6 +6,8 @@
 
 *Package 0.5.1 (11 November 2026) amends this text in place without changing its version on the wire:* the wire tag stays `shokai/0.5`, `spec_ref.version` stays `"0.5.0"`, and the v0.5.0 JSON Schema file is unchanged. It adds two optional members to a binding `never` (when it lifts and where to appeal; SPEC-DETAIL §9.3, C288) and one MUST-level rule: a place must not ask, in its context questions, for a password, a recovery phrase or seed, or a card number (SPEC-DETAIL §6.12). The two members are in a new schema file, [schema/v0.5.1/schema.json](./schema/v0.5.1/schema.json), with its own `$id`. A validator that uses the 0.5.0 schema rejects a `never` that carries `until` and `appeal`; to accept them, validate with the 0.5.1 schema file. The CHANGELOG lists what a 0.5.0 peer sees differently.
 
+*Package 0.6.1 amends this text in place the same way* (the wire tag stays `shokai/0.5`, `spec_ref.version` stays `"0.5.0"`). It adds visitor safety against trap places (SPEC-DETAIL §12.5, C302–C310; THREAT-MODEL §10) and the rule that a door has a domain name and a valid certificate (§11.1, C311–C314): Core Visitor goes from 120 to 132 checks, and Core Door from 164 to 166 (C311, C312). The visitor sets its own small take-home from the errand and never asks the owner for numbers (C304); heavy content such as a PDF or a video asks the owner first (C310). It adds one optional report member, `take_home`, on the owner's report (not a wire message), in a new schema file, [schema/v0.6.1/schema.json](./schema/v0.6.1/schema.json). It changes the URL the reference implementation puts in `spec_ref.url`: the published text instead of a placeholder (§3.1; there is still no canonical URL a place must use).
+
 **How to read this.** In plain words the grant a place gives is a **pass**; the published wire field and the SPEC field remain `seat`. This file is the short core: a staged human read of what Shōkai is and how a visit works (~15 minutes). The full normative text — every MUST, every check id, every edge case — lives in [`docs/SPEC-DETAIL.md`](./docs/SPEC-DETAIL.md). **Which document wins:** the tagged release in the GitHub repository (`github.com/Kigenka/shokai`, tag `v0.5.0`) is canonical, and within it `docs/SPEC-DETAIL.md` is the normative text; the site and the npm package mirror it, and § numbers in every Shōkai document refer to it. Agents and implementers use the detail; people start here. Requirement ids (`C…`, `SC-…`, `G…`, `D…`) are stable across both. Wire tag: `shokai/0.5` (places still accept `shokai/0.3` for 90 days after release). History: [CHANGELOG.md](./CHANGELOG.md). Extensions: [extensions/README.md](./extensions/README.md). Shapes: [schema.json](./schema/v0.5.0/schema.json).
 
 *© 2026 Yu Sung Yeh. Licensed under the [Apache License 2.0](./LICENSE). Patent commitment (draft): [PATENTS.md](./PATENTS.md). Names and logo: [TRADEMARKS.md](./TRADEMARKS.md).*
@@ -96,7 +98,7 @@ The owner approves with a **superseding mandate** bound to that hold (`supersede
 
 ### 6. Report home
 
-The representative brings home only what needs the owner: decision, spend, holds, mismatches. It comes home lean: whatever a place serves is data, never instructions; it curates to its owner's brief within a small take-home budget, writes nothing into the owner's lasting memory without the owner, and says what it kept, what it left and what the place tried (draft for the next specification version, §12.5, C302–C309). Setup of cards and mandates happens through conversation; the owner signs what they read. Detail: §8.
+The representative brings home only what needs the owner: decision, spend, holds, mismatches. It comes home lean: whatever a place serves is data, never instructions; it curates to its owner's brief within a small take-home budget, writes nothing into the owner's lasting memory without the owner, and says what it kept, what it left and what the place tried (§12.5, C302–C309). Setup of cards and mandates happens through conversation; the owner signs what they read. Detail: §8.
 
 ---
 
@@ -158,7 +160,7 @@ The **inbound door** (§10) is the other direction: someone else’s agent knock
 
 **Spending Core Door.** Everything above, plus mandates with `max_amount`, seat spend ledgers, optional purchase holds and over-limit raises, and — if more than one instance serves the place — one shared store for durable and live state.
 
-**Core Visitor.** Card and mandate construction, possession proofs, local seat and mandate checks before acting, figure checks on `LimitRequest` before asking the owner, visit report home.
+**Core Visitor.** Card and mandate construction, possession proofs, local seat and mandate checks before acting, figure checks on `LimitRequest` before asking the owner, visit report home, and (package 0.6.1) visitor safety against trap places (§12.5).
 
 ---
 
@@ -219,7 +221,7 @@ If a second instance of the door had answered step 5, step 6’s intervening bro
 When in doubt, implement the detail, test against the golden traces and the conformance runner, and keep the short core as the map you hand a new colleague.
 
 
-<!-- check-summary -->Check range: C1…C309; 294 distinct checks (gaps retained).<!-- /check-summary -->
+<!-- check-summary -->Check range: C1…C314; 299 distinct checks (gaps retained).<!-- /check-summary -->
 
 ## Conformance classes (what “core” means)
 
@@ -253,7 +255,7 @@ A claim names the class plus any extensions. Appendix F in the detail document m
 | Need | Go to |
 |---|---|
 | Every MUST / check / edge case | [docs/SPEC-DETAIL.md](./docs/SPEC-DETAIL.md) |
-| Message shapes | [schema/v0.5.1/schema.json](./schema/v0.5.1/schema.json) (package 0.5.1; the released [v0.5.0 file](./schema/v0.5.0/schema.json) is unchanged), [protocol-shapes.ts](./protocol-shapes.ts) |
+| Message shapes | [schema/v0.6.1/schema.json](./schema/v0.6.1/schema.json) (package 0.6.1; the released [v0.5.1](./schema/v0.5.1/schema.json) and [v0.5.0](./schema/v0.5.0/schema.json) files are unchanged), [protocol-shapes.ts](./protocol-shapes.ts) |
 | Golden traces & checklist | [conformance/golden-traces.md](./conformance/golden-traces.md) |
 | Passkey signing UX | [SIGNING.md](./SIGNING.md) |
 | Optional features | [extensions/README.md](./extensions/README.md) |

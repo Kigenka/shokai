@@ -308,7 +308,12 @@
     "C306": "core",
     "C307": "core",
     "C308": "core",
-    "C309": "core"
+    "C309": "core",
+    "C310": "core",
+    "C311": "core",
+    "C312": "core",
+    "C313": "core",
+    "C314": "core"
   },
   "scenarios": {
     "SC-L0": "core",

@@ -59,7 +59,7 @@ These rules already make a door fail safe. They are not a registry of new types.
 - **Unknown members.** Ignore unknown members unless they appear in `crit`. A receiver that does not implement a non-`crit` member reads it as unknown and ignores it.
 - **Must-understand (`crit`).** If `crit` names a member the receiver does not implement (or is malformed) → `deny` / `not_now` / `UNSUPPORTED_CRITICAL`. That is a setup failure: it MUST NOT count toward probing and MUST NOT be acted on in part (C289).
 - **Unknown message `type` or artifact `kind`.** MUST NOT act on it; treat it as a malformed body (§11.1); grant nothing. An unknown `decision` is read as `deny` / `not_now`; an unknown `disposition` is read as `not_now` (never as `never`).
-- **Schema.** TypeScript `protocol-shapes.ts` is the source of types; `schema/v0.5.1/schema.json` is generated from it (the released `schema/v0.5.0/schema.json` stays as it was). Closed lobby templates (`closed: true`) list every accepted top-level member of a visitor card and mandate; extra top-level members are refused (`x-` members are always allowed).
+- **Schema.** TypeScript `protocol-shapes.ts` is the source of types; `schema/v0.6.1/schema.json` is generated from it (the released `schema/v0.5.0/schema.json` and `schema/v0.5.1/schema.json` stay as they were). Closed lobby templates (`closed: true`) list every accepted top-level member of a visitor card and mandate; extra top-level members are refused (`x-` members are always allowed).
 
 There is no public registry that lets a developer mint `kind: "loyalty"` and expect doors to accept it. A new kind that old readers must refuse needs a new type or purpose they already reject, plus typically a new conformance class.
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 Yu Sung Yeh
-// SDK tests (SPEC-DETAIL §12.5, C302–C309; draft for the next specification version): visitor safety against trap places.
+// SDK tests (SPEC-DETAIL §12.5, C302–C310; added in package 0.6.1): visitor safety against trap places.
 // Offline: a fictional trap store runs behind a Shōkai door on this computer (loopback only). It floods (3,001 items), hides
 // instructions and a memory-write ask in item text, nudges taste, pushes a purchase, serves a padded lookbook and a 7 MB reply.
 // The visitor goes in with a fictional owner's brief and must come home lean. Fictional people and places throughout.
@@ -54,7 +54,7 @@ function judge(i: Item): string | null {
 const warmth: Record<string, number> = { cashmere: 3, "cashmere blend": 3, merino: 2, wool: 2, down: 2, leather: 1 };
 
 async function main() {
-  console.log("SDK visitor safety: trap places (§12.5, C302–C309, draft)");
+  console.log("SDK visitor safety: trap places (§12.5, C302–C310)");
 
   // ---- unit: the take-home budget, memory, acts and signals --------------------------------------------------------------
   const t0 = new TakeHome({ purpose: "test" });

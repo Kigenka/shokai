@@ -20,15 +20,29 @@ import { doorMayFetch, readCapped, DOOR_FETCH_TIMEOUT_MS, doorFetch, FetchBudget
 import { leaflet, leafletHtml, type LeafletInput } from "./leaflet.js";
 import type { DoorStore, DoorEvent, DoorState } from "./store.js";
 import { WELL_KNOWN_PATH, APP_PROXY_PATH, checkSite, siteOrigin, siteHost, type SiteCheck } from "./discover.js";
-import { TakeHome, MAX_PLACE_REPLY, SHOKAI_PLACE_REPLY_TOO_LARGE, type TakeHomeReport } from "./take-home.js";
+import { TakeHome, MAX_PLACE_REPLY, SHOKAI_PLACE_REPLY_TOO_LARGE } from "./take-home.js";
 export * from "./take-home.js";
 import { matchAsk, ASK_COURTESY, MAX_ASK_CHARS, reviewVisitor, reviewText, ownerAskProblems, stripInvisible } from "./outside.js";
 import { CalendarStandIn, bookingRef, confirmationMatches, type ReservationArgs } from "./reservations.js";
 import { bookingProblem, intersectLimits } from "./core/gate.js";
 import type { ServiceContext, ServiceAnswer } from "./core/host.js";
 import { summaryDigest, summaryMatches, limitRequestOf, houseSummaryOf, contextRequestProblems as ctxProblemsOf, contextFieldAsksCredential } from "./core/v050.js";
-/** Red team phase 1 (§11.1, C269): https, or plain http only on this computer (loopback). */
-export function secureEntry(u: string): boolean { try { const x = new URL(u); if (x.protocol === "https:") return true; if (x.protocol !== "http:") return false; const h = x.hostname; return h === "localhost" || h === "[::1]" || /^127\.\d+\.\d+\.\d+$/.test(h); } catch { return false; } }
+/** Is this URL host an IP address (IPv4 or IPv6 literal) rather than a domain name (§11.1, C311)? */
+export function isIpHost(hostname: string): boolean { const h = hostname.replace(/^\[|\]$/g, ""); return /^\d{1,3}(\.\d{1,3}){3}$/.test(h) || h.includes(":"); }
+/** Loopback: plain http and an IP host are allowed here, on this computer only (§11.1, C269, C311). */
+const isLoopbackHost = (h: string) => h === "localhost" || h === "[::1]" || h === "::1" || /^127\.\d+\.\d+\.\d+$/.test(h);
+/**
+ * Red team phase 1 (§11.1, C269): https, or plain http only on this computer (loopback). Package 0.6.1 (C311): a place is named by a
+ * domain name, so an `https` address whose host is an IP literal is refused too, except on this computer. No anonymous doors.
+ */
+export function secureEntry(u: string): boolean { try { const x = new URL(u); const h = x.hostname; if (isLoopbackHost(h)) return x.protocol === "https:" || x.protocol === "http:"; if (x.protocol !== "https:") return false; return !isIpHost(h); } catch { return false; } }
+/** Error code: the place's certificate was not valid for its domain, so nothing was sent (§11.1, C313). */
+export const SHOKAI_PLACE_CERTIFICATE_INVALID = "SHOKAI_PLACE_CERTIFICATE_INVALID";
+/** Does this fetch failure come from TLS certificate validation (an expired, self-signed, untrusted or wrong-name certificate)? */
+export function certificateProblem(e: unknown): boolean {
+  const codes: string[] = []; for (let x: any = e, n = 0; x && n < 4; x = x.cause, n++) { if (x.code) codes.push(String(x.code)); }
+  return codes.some((c) => /^(CERT_|DEPTH_ZERO_SELF_SIGNED_CERT|SELF_SIGNED_CERT_IN_CHAIN|UNABLE_TO_(VERIFY_LEAF_SIGNATURE|GET_ISSUER_CERT|GET_ISSUER_CERT_LOCALLY)|ERR_TLS_CERT_ALTNAME_INVALID|ERR_SSL_)/.test(c));
+}
 import { HostBudgetKeeper, priceTableMeter, HOST_BUDGET_LINES, type CostMeter, type HostModelEstimate, type ModelUsage, type BudgetTicket, type BudgetScope, type HostBudgetNotice } from "./host-budget.js";
 import { ErrandMeter, neverSentMember, acknowledgementOnly, SHOKAI_NEVER_SENT, SHOKAI_ACKNOWLEDGEMENT_ONLY, SHOKAI_ERRAND_BUDGET_REACHED, type ErrandStep, type ErrandLimit } from "./errand.js";
 export { signErrandBudget, errandBudgetProblem, ErrandMeter, neverSentMember, acknowledgementOnly, SHOKAI_ERRAND_BUDGET_REACHED, SHOKAI_ERRAND_BUDGET_INVALID,
@@ -439,7 +453,7 @@ export class Door {
   constructor(readonly opts: DoorOptions) {
     this.base = (opts.baseUrl ?? "http://127.0.0.1:0/shokai").replace(/\/$/, "");
     // Red team phase 1 (§11.1, C269, provisional): a door's addresses are https outside loopback and the test profile.
-    if (!opts.testProfile && !secureEntry(this.base)) throw Object.assign(new Error(`SHOKAI_DOOR_INSECURE: baseUrl ${this.base} must be https (plain http only on loopback or with testProfile), §11.1`), { code: "SHOKAI_DOOR_INSECURE" });
+    if (!opts.testProfile && !secureEntry(this.base)) throw Object.assign(new Error(`SHOKAI_DOOR_INSECURE: baseUrl ${this.base} must be https at a domain name, not an IP address (plain http and IP hosts only on loopback or with testProfile), §11.1`), { code: "SHOKAI_DOOR_INSECURE" });
     this.checkPublicCard(this.base, opts.card && fromSigningPage<S.RepresentativeCard>(opts.card), opts);
     this.costlyCaps = costlyCapsOf(opts.costlyActionCaps);
     if (opts.site !== undefined) this.site = doorSite(opts);   // §3.1.1: throws SHOKAI_DOOR_SITE_INVALID for anything that isn't an origin
@@ -872,7 +886,7 @@ export class Door {
   }
   setBaseUrl(base: string) { const b = base.replace(/\/$/, "");
     // §11.1, C269: the same https rule as the constructor. Reserved rp_ids are judged from the current entry address on every card (core host).
-    if (!this.opts.testProfile && !secureEntry(b)) throw Object.assign(new Error(`SHOKAI_DOOR_INSECURE: baseUrl ${b} must be https (plain http only on loopback or with testProfile), §11.1`), { code: "SHOKAI_DOOR_INSECURE" });
+    if (!this.opts.testProfile && !secureEntry(b)) throw Object.assign(new Error(`SHOKAI_DOOR_INSECURE: baseUrl ${b} must be https at a domain name, not an IP address (plain http and IP hosts only on loopback or with testProfile), §11.1`), { code: "SHOKAI_DOOR_INSECURE" });
     this.checkPublicCard(b, this.host.cfg.card);
     (this as { base: string }).base = b; this.host.opts.entryUrl = this.entry; this.host.opts.inboxUrl = this.inbox;
     // v0.4.0 (§2.3): a door that signs its own Shōkai host card re-signs it for its real entry address.
@@ -1276,8 +1290,11 @@ export type Transport = ((url: string, body: unknown) => Promise<S.ReplyEnvelope
   getJson?: (url: string) => Promise<unknown> };
 /** POST JSON to a door address over HTTP (§11). */
 export const httpTransport: Transport = async (url, body) => {
-  const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body), redirect: "error" });
-  // §12.5 (C305, draft): a place's reply is read under MAX_PLACE_REPLY and refused whole above it, never acted on as a truncated prefix.
+  // §11.1 (C313): ordinary certificate validation; a failure ends the visit with nothing sent, and there is no "continue anyway".
+  const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body), redirect: "error" }).catch((e) => {
+    if (certificateProblem(e)) throw Object.assign(new Error(`the place's certificate wasn't valid for its domain (expired, self-signed, or for another name), so I sent nothing (§11.1, C313)`), { code: SHOKAI_PLACE_CERTIFICATE_INVALID });
+    throw e; });
+  // §12.5 (C305): a place's reply is read under MAX_PLACE_REPLY and refused whole above it, never acted on as a truncated prefix.
   let j: S.ReplyEnvelope | null = null;
   try { j = JSON.parse(await readBoundedStream(r.body, MAX_PLACE_REPLY)) as S.ReplyEnvelope; }
   catch (e) {
@@ -1823,7 +1840,7 @@ export class Visit {
   }
   async ritual(mandate: S.SignedMandate, actions: string[], limits: S.Limits | undefined, vouch: S.SignedVouch | null, why?: string) {
     this.mandateSent = mandate; this.myNonce = randomId("n"); this.spending = !!(limits?.max_amount ?? mandate.payload.limits?.max_amount);
-    if (this.requireHttps && !secureEntry(this.entry)) return this.placeFails("the place's entry isn't https (and isn't on this computer), so what we'd say could be read on the way: I didn't greet it (§11.1, C269)");
+    if (this.requireHttps && !secureEntry(this.entry)) return this.placeFails("the place's entry isn't https at a domain name (and isn't on this computer), so what we'd say could be read on the way, or the place has no name to check: I didn't greet it (§11.1, C269, C311)");
     // §3.1 (review 4 R4-05): an entry without principal_id or representative_id is malformed; the visit ends before the greeting.
     if (!this.target?.principal_id) return this.placeFails("no principal_id to check the place against: pass the listing entry from findPlace (§3.1)");
     if (!this.hostId) return this.placeFails("the listing entry names no representative_id, so there is no representative to greet (§3.1)");
@@ -2170,7 +2187,7 @@ export class Visit {
     return this.send(this.message("farewell", { outcome, courtesy: { locale: "en-US", locale_match: "exact", register: "first_meeting", text: "Thank you." } }));
   }
   /** The visit report home, rendered from machine fields only, in the owner's locale and IANA time zone (§8.2). */
-  report(locale = "en-US", opts: ReportOptions = {}): S.VisitReport & { take_home?: TakeHomeReport } { return visitReport(this, locale, opts); }
+  report(locale = "en-US", opts: ReportOptions = {}): S.VisitReport { return visitReport(this, locale, opts); }
 }
 
 export type ReportOptions = {
@@ -2178,7 +2195,7 @@ export type ReportOptions = {
   timeZone?: string;
   /** What brought_back carries for each signed object: the envelope itself (default) or only a reference (its payload_digest). */
   broughtBack?: "envelope" | "reference";
-  /** §12.5 (C302–C309, draft): the visit's take-home. The report then carries `take_home`, the host's courtesy is read for trap
+  /** §12.5 (C302–C310): the visit's take-home. The report then carries `take_home`, the host's courtesy is read for trap
    *  signals, and a place's memory-write asks are listed in `offers_declined`. */
   takeHome?: TakeHome;
 };
@@ -2261,7 +2278,7 @@ export function placeLabel(principalId: string | undefined, displayName: string 
   if (id && verified) return name ? `${id} (claims to be ${name}; not verified)` : id;
   return name ? `a place that claims to be ${name} (not verified)` : "an unverified place";
 }
-export function visitReport(v: Visit, locale = "en-US", opts: ReportOptions = {}): S.VisitReport & { take_home?: TakeHomeReport } {
+export function visitReport(v: Visit, locale = "en-US", opts: ReportOptions = {}): S.VisitReport {
   const th = opts.takeHome;
   if (th) for (const h of (v as any).hostSaid as { text: string }[]) th.read(h.text, "courtesy");
   const r = v.response ?? {}; const owner = v.rep.owner.id;

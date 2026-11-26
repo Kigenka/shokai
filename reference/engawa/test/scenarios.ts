@@ -36,7 +36,7 @@ scenario("SC-L0 door + lobby → bound receipt → proven return; nonces; ritual
   check(resp.decision === "deny" && resp.disposition === "not_now" && resp.reason_code === "CREDENTIAL_REQUIRED" && JSON.stringify(resp.retry.credentials) === '["signed_card","owner_binding","signed_mandate"]', "deny not_now CREDENTIAL_REQUIRED, credentials from required readiness");
   check(resp.readiness_requirements.some((r: any) => r.code === "card" && r.required && r.how?.url), "readiness requirements with how-to link (C28)");
   check(resp.readiness_requirements.every((r: any) => r.owner_text?.locale === "es-ES" && r.detail.locale === "es-ES" && !PROTOCOL_WORDS.test(r.owner_text.text)), "every readiness item has an es-ES owner sentence with no protocol words (§3.3)");
-  check(brief.spec_ref?.version === "0.5.0" && brief.spec_ref.url === "https://shokai.example/spec/v0.5.0" && Array.isArray(brief.actions) && brief.actions.some((a: any) => a.action === "store.place_order" && a.spends === true), "lobby: spec_ref + actions with spends (§3.3)");
+  check(brief.spec_ref?.version === "0.5.0" && brief.spec_ref.url === "https://shokaiprotocol.com/docs/spec-detail" && Array.isArray(brief.actions) && brief.actions.some((a: any) => a.action === "store.place_order" && a.spends === true), "lobby: spec_ref + actions with spends (§3.3)");
   check(brief.templates?.card?.owner_binding?.rp_id?.startsWith("<") && !!brief.templates.mandates?.purchase && !!brief.templates.allowance_grant, "lobby templates: card (owner_binding.rp_id), mandates per purpose, allowance_grant; unsigned skeletons");
   check(noToday(out), "no 'today' promise in any courtesy (v0.2.2)");
   check(!h.log.join("\n").includes(vr.nonce), "receipt nonce never in host log (§9.1)");

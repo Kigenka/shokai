@@ -1,16 +1,16 @@
 # @kigenka/shokai
 
-The reference TypeScript SDK for **Shōkai, the agent introduction protocol** (package 0.6.0; specification v0.5.0, wire tag `shokai/0.5`; the SDK's compiled code is unchanged from 0.5.1): signed Shōkai cards, mandates, vouches and envelopes; doors and representatives; visit reports; a gate that puts a Shōkai door in front of any MCP server; and the `shokai-conformance` runner.
+The reference TypeScript SDK for **Shōkai, the agent introduction protocol** (package 0.6.1; specification v0.5.0, wire tag `shokai/0.5`; visitor safety against trap places, a 1 MiB reply cap and the domain-and-certificate rule are new in 0.6.1): signed Shōkai cards, mandates, vouches and envelopes; doors and representatives; visit reports; a gate that puts a Shōkai door in front of any MCP server; and the `shokai-conformance` runner.
 
-> Install: `npm install @kigenka/shokai@0.6.0`. The quickstart (`spec/QUICKSTART.md` in this package) walks through it.
+> Install: `npm install @kigenka/shokai@0.6.1`. The quickstart (`spec/QUICKSTART.md` in this package) walks through it.
 >
 > **The specification ships in this package**, in `spec/`: `SPEC.md`, the types (`protocol-shapes.ts`), the conformance checklist and golden traces (`conformance/golden-traces.md`), the test vectors, the extensions, the threat model, the changelog and the patent and trademark policies. **`spec/docs/SPEC-DETAIL.md` is the canonical normative text** (every MUST and check id), and section numbers such as §3.1 refer to it. `spec/SPEC.md` is the 15-minute short core of the same rules; where they differ, SPEC-DETAIL wins.
 
 ## See a visit first
 
 ```bash
-npx @kigenka/shokai@0.6.0 demo
-                                # npx --package=./kigenka-shokai-0.6.0.tgz shokai demo
+npx @kigenka/shokai@0.6.1 demo
+                                # npx --package=./kigenka-shokai-0.6.1.tgz shokai demo
 ```
 
 A door, with its host representative, and a visiting representative on 127.0.0.1, printed as the visit happens: the ritual, a pass, an order within a 10.00 USD mandate, an order past it refused (by the representative, and by the door when sent anyway), and the report home. A couple of seconds for the visit itself (the first `npx` run also downloads the package); fictional actors, keys made for the run, nothing leaves the machine.

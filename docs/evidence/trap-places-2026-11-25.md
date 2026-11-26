@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Trap places: offline harness, 25 November 2026
 
-*Byline: YSY. Run on 25 November 2026, Pacific Time, on one computer, offline: loopback only, with no live door visited. The store, the owner and every item are fictional. This tests the draft visitor-safety rules (SPEC-DETAIL §12.5, C302–C309) against the unreleased SDK. It is not a certificate, it isn't part of any official conformance run, and it doesn't claim that every agent behaves this way.*
+*Byline: YSY. Run on 25 November 2026, Pacific Time, on one computer, offline: loopback only, with no live door visited. The store, the owner and every item are fictional. This tests the visitor-safety rules (SPEC-DETAIL §12.5, C302–C309) against the SDK as of package 0.6.1. It is not a certificate, it isn't part of any official conformance run, and it doesn't claim that every agent behaves this way.*
 
 ## What was tested
 
@@ -60,8 +60,9 @@ Nine runs, one model, scored against Mara's brief. "Shortlist fit" counts the it
 
 ## What changed because of this run
 
-- **Specification (draft).** C306 now requires the counts to be the representative's own. The finding about ordering is noted as a known limit, and as informative guidance in the threat model.
-- **SDK (unreleased).** These changes came out of building the harness:
+- **Specification.** C306 now requires the counts to be the representative's own. The finding about ordering is noted as a known limit, and as informative guidance in the threat model.
+- **After this run (package 0.6.1).** The take-home budget became the visitor's own default, derived from the kind of errand, instead of a number in the owner's brief (C304); the owner is never asked for numbers. The harness above still gave its model a budget line in the brief, so its figures stand as measured. Heavy files (C310) and the domain and certificate rules (C311–C314) came after the run and are covered by the SDK tests in `trust-layers.test.ts`, not by this harness.
+- **SDK (package 0.6.1).** These changes came out of building the harness:
   - The default HTTP transport now reads a place's reply under a 1 MiB cap. Before, it read any size.
   - The MCP fetch now caps a tool reply the same way and refuses it whole. Before, it read any size, through a clone.
   - The new `TakeHome` helper keeps the budget, counts intake, flags trap signals, declines memory writes and pushed acts, and adds `take_home` to the visit report.

@@ -11,6 +11,9 @@ export const SPEC_VERSION = "0.5.0";
  *  answers them in shokai/0.3 without any v0.5.0 member, message or code (§11.1). */
 export const SPEC_RC_SAME_WIRE = "0.3.0";
 export const SPEC_EARLIER_ON_LEGACY_TAG = ["0.3.0", "0.4.0"] as const;
-export const SPEC_REF: S.SpecRef = { version: SPEC_VERSION, url: `https://shokai.example/spec/v${SPEC_VERSION}` };
+/** Where this implementation says it read the specification: the published text of the specification (SPEC-DETAIL.md). The page shows the
+ *  current text; `spec_ref.version` names the version, and §3.1 says there is no canonical URL a place must use. */
+export const SPEC_URL = "https://shokaiprotocol.com/docs/spec-detail";
+export const SPEC_REF: S.SpecRef = { version: SPEC_VERSION, url: SPEC_URL };
 /** Appendix B: the conformance test-profile identifier. */
 export const TEST_PROFILE = "shokai-b/0.3";

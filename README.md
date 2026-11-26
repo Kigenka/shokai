@@ -16,16 +16,16 @@
 
 <p align="center"><img src="docs/assets/hero.svg" alt="Shōkai: an arch of two halves, a visiting representative and a place, joined by a keystone: the introduction that completes it" width="760"></p>
 
-> This is Shōkai **0.6.0** (specification v0.5.0, wire tag `shokai/0.5`). 0.6.0 does not change the SDK's compiled code from 0.5.1; what is new lives in the live Lounge door, the site, and the skills. See the [changelog](CHANGELOG.md) and [What is new in 0.6.0](docs/whats-new-v060.md).
+> This is Shōkai **0.6.1** (specification v0.5.0, wire tag `shokai/0.5`). 0.6.1 adds visitor safety against trap places, a domain-and-certificate rule for doors, and a corrected `spec_ref.url`; the wire does not change. See the [changelog](CHANGELOG.md), [Trap places](docs/trap-places.md) and [What is new in 0.6.0](docs/whats-new-v060.md).
 
-_New to Shōkai? Run the two-second demo (`npx @kigenka/shokai@0.6.0 demo`), then read [How Shōkai works](docs/how-it-works.md): one visit to a tea shop, in plain words._
+_New to Shōkai? Run the two-second demo (`npx @kigenka/shokai@0.6.1 demo`), then read [How Shōkai works](docs/how-it-works.md): one visit to a tea shop, in plain words._
 
 **See it live.** Send the agent you already use to [The Shōkai Lounge](https://shokaiprotocol.com/demo), a place on shokaiprotocol.com built for visiting representatives. Get a soft-gold invitation card, show it to your agent, and it visits on your behalf. How it works, and what we learned building it: [The Shōkai Lounge: a worked example](docs/the-shokai-lounge.md).
 
 This repository contains:
 
 - the Shōkai **specification** ([`SPEC.md`](SPEC.md)) and its optional **extensions** ([`extensions/`](extensions/README.md));
-- the **wire types**, defined in TypeScript first ([`protocol-shapes.ts`](protocol-shapes.ts)) and available as **JSON Schema** ([`schema/v0.5.1/schema.json`](schema/README.md); the released v0.5.0 file is unchanged) for other languages;
+- the **wire types**, defined in TypeScript first ([`protocol-shapes.ts`](protocol-shapes.ts)) and available as **JSON Schema** ([`schema/v0.6.1/schema.json`](schema/README.md); the released v0.5.0 and v0.5.1 files are unchanged) for other languages;
 - **conformance**: golden traces with real signatures, byte-exact test vectors, and the conformance runner `shokai-conformance` ([`conformance/`](conformance/));
 - the TypeScript **SDK** [`@kigenka/shokai`](packages/shokai/README.md) on npm: doors, representatives, owner helpers and a gate in front of any MCP server;
 - **reference implementations**: a place server, a prototype, and a passkey signing page you can run on your own domain ([`reference/`](reference/));
@@ -54,7 +54,7 @@ This repository contains:
 For developers who want to see it in code. You need Node.js 22 or later. It runs on whichever computer you paste the command into: the demo door and the visiting representative both run there, and nothing leaves it. The people and the place are fictional, and the keys are made for the run. A fuller experience, with your own representative visiting a hosted place, is coming.
 
 ```bash
-npx @kigenka/shokai@0.6.0 demo
+npx @kigenka/shokai@0.6.1 demo
 ```
 
 Aya Linden (fictional) is a customer, not the shop's owner. Looking for a fine green tea, she came across Kettle & Leaf, a tea shop she has never visited. She's at work all day, so with the Shōkai card she signed with her passkey, she sends her representative to find a new green tea blend, within 10.00 USD, and to tell her what it found. The limit, in plain words: the representative buys one tea for 6.00 USD, leaving 4.00; then the demo deliberately asks for a second 6.00 order, to show that neither the representative nor the door lets it go past 10.00. In the demo, a pretend Kettle & Leaf opens a door on 127.0.0.1 and her representative arrives. The visit itself takes under two seconds (1.4 s in our runs; the first `npx` run also downloads the package). It introduces itself, is admitted with a pass (the demo's output also shows the wire field's name, *seat*: exactly which actions it may take, within which limits, until when), orders, and, to show the limit at work, is refused when the next order would pass it (by itself, and by the door when it's sent anyway). Then it reports home:
@@ -79,9 +79,9 @@ Aya Linden (fictional) is a customer, not the shop's owner. Looking for a fine g
 Then build your own (the [quickstart](QUICKSTART.md) takes about ten minutes, from a clean machine to an admitted visit):
 
 ```bash
-npm install @kigenka/shokai@0.6.0   # a door, a gate in front of your MCP server, and a representative
+npm install @kigenka/shokai@0.6.1   # a door, a gate in front of your MCP server, and a representative
 npx --no-install shokai-conformance <url>    # for builders: check that your own door follows the protocol
-npx --no-install shokai --version   # @kigenka/shokai 0.6.0 (shokai/0.5, spec 0.5.0)
+npx --no-install shokai --version   # @kigenka/shokai 0.6.1 (shokai/0.5, spec 0.5.0)
 ```
 
 ## What Shōkai is, in plain words
@@ -98,7 +98,7 @@ npx --no-install shokai --version   # @kigenka/shokai 0.6.0 (shokai/0.5, spec 0.
 - **Open, and for everyone.** An open protocol (Apache 2.0) for individuals and small businesses as much as for large companies. Anyone can host a place: a tea house, a small shop, a project room, for an afternoon or for years. A place can admit only representatives whose owners signed for them, while ordinary agents keep using the place's other routes, such as its website or the [Personal Agent Protocol](#shōkai-and-the-personal-agent-protocol).
 - **A complement, not a rival.** Shōkai is about who an agent represents, why it came and what its owner signed (and, when someone chooses to vouch for it, who did). It works next to MCP, A2A, OAuth and the Personal Agent Protocol.
 
-Status: **specification v0.5.0, package 0.6.0**. 0.6.0 does not change the SDK's compiled code from 0.5.1. Not 1.0. Author: YSY. Stewarded by Kigenka.
+Status: **specification v0.5.0, package 0.6.1**. Not 1.0. Author: YSY. Stewarded by Kigenka.
 
 ## Tested with existing public agents
 
@@ -381,7 +381,7 @@ Sources (checked 2026-10-26): [docs/relationship-to-other-protocols.md](docs/rel
 ## Quickstart
 
 ```bash
-npm install @kigenka/shokai@0.6.0   # a door, a gate in front of your MCP server, and a test representative
+npm install @kigenka/shokai@0.6.1   # a door, a gate in front of your MCP server, and a test representative
 npx --no-install shokai-conformance <url>    # check a door against the core
 ```
 
@@ -448,7 +448,7 @@ The core is one story: arrive, introduce itself, ask, answer, act within limits,
 | [`tools/`](tools/) | The checks CI runs: trace lint, trace typecheck, links and versions, the schema, the quickstart as written |
 | [`.github/`](.github/) | CI, the release workflow, issue forms and the pull-request template |
 | [`QUICKSTART.md`](QUICKSTART.md) | The newcomer path, step by step (also ships in the package as `spec/QUICKSTART.md`) |
-| [`release/`](release/) | The release tarball `kigenka-shokai-0.6.0.tgz` and its `.sha256` sidecar (0.5.1 and 0.5.0 sidecars are kept), plus `release-status.json` (version, wire tag, dist-tag, npm status, digest: the one source of truth) |
+| [`release/`](release/) | The release tarball `kigenka-shokai-0.6.1.tgz` and its `.sha256` sidecar (0.5.1 and 0.5.0 sidecars are kept), plus `release-status.json` (version, wire tag, dist-tag, npm status, digest: the one source of truth) |
 | [`CHANGELOG.md`](CHANGELOG.md) | One entry per release (review bookkeeping: [docs/review-history.md](docs/review-history.md)) |
 | [`TESTING.md`](TESTING.md), [`AUDIT-METHOD.md`](AUDIT-METHOD.md) | How to run every suite; how the internal audits were run |
 | [`RELEASING.md`](RELEASING.md) | How a release is packed, checked and published |
@@ -459,7 +459,7 @@ The core is one story: arrive, introduce itself, ask, answer, act within limits,
 
 ## Status
 
-**v0.5, not 1.0.** This repository is specification v0.5.0, wire tag `shokai/0.5`, and package `@kigenka/shokai@0.6.0`. 0.6.0 does not change the SDK's compiled code from 0.5.1. A 0.5.x or 0.6.x package keeps the wire tag and `spec_ref.version` ("0.5.0"), so 0.5.0, 0.5.1 and 0.6.0 peers keep talking to each other (0.5.1's JSON Schema is a new file with its own `$id`; the 0.5.0 file is unchanged). How earlier wire tags are treated is in the changelog too. The text is detailed and tested; review continues, and later fixes go into later releases.
+**v0.5, not 1.0.** This repository is specification v0.5.0, wire tag `shokai/0.5`, and package `@kigenka/shokai@0.6.1`. A 0.5.x or 0.6.x package keeps the wire tag and `spec_ref.version` ("0.5.0"), so 0.5.0, 0.5.1, 0.6.0 and 0.6.1 peers keep talking to each other (0.5.1's and 0.6.1's JSON Schemas are new files with their own `$id`; the 0.5.0 file is unchanged). How earlier wire tags are treated is in the changelog too. The text is detailed and tested; review continues, and later fixes go into later releases.
 
 - Tested inside the project: a clean-room implementation written by a sandboxed agent from the spec alone and run by the editors, two adversarial red-team rounds, conformance suites, and field tests with the editor's own passkey and several agent platforms. **Implementations from other organizations and outside review are still needed.**
 - Signing: owners sign on a passkey signing page ([SIGNING.md](SIGNING.md)). Kigenka opens sign.kigenka.com for guided signing sessions, with no uptime promise; it is not an always-on service. The reference signing page ([reference/signing-page](reference/signing-page/README.md)) lets anyone run their own.
@@ -481,7 +481,7 @@ We publish what we tested, what broke and what we changed, including the costs a
 
 **Try to break it yourself.** From a clone, `npm run setup && npm run enforce` starts the reference door locally (test keys and a software passkey stand-in, made for the run) and attacks it. Each case prints the attack, what the door did, and the spec section it enforces; a JSON report is written next to it. A rule the code doesn't enforce yet is printed as a gap, never as a pass. No AI and no network beyond 127.0.0.1. See [tools/enforce](tools/enforce/README.md).
 
-**Help us test it.** These tests are small, and we need more eyes. Run the conformance runner against a door (`npx --no-install shokai-conformance <url>` after installing 0.6.0, or from anywhere: `npx -p @kigenka/shokai@0.6.0 shokai-conformance <url>`), try to break one, and tell us what you find: in [GitHub Discussions](https://github.com/Kigenka/shokai/discussions), or privately through [security reporting](SECURITY.md) for anything that could hurt someone.
+**Help us test it.** These tests are small, and we need more eyes. Run the conformance runner against a door (`npx --no-install shokai-conformance <url>` after installing 0.6.1, or from anywhere: `npx -p @kigenka/shokai@0.6.1 shokai-conformance <url>`), try to break one, and tell us what you find: in [GitHub Discussions](https://github.com/Kigenka/shokai/discussions), or privately through [security reporting](SECURITY.md) for anything that could hurt someone.
 
 ## Authors
 

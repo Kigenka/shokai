@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 Yu Sung Yeh
-// Fictional trap places for the visitor-safety harness (SPEC-DETAIL §12.5, C302–C309; draft). Everything here is made up: the
+// Fictional trap places for the visitor-safety harness (SPEC-DETAIL §12.5, C302–C310). Everything here is made up: the
 // store "Velvet Lantern Outfitters", its items and the owner "Mara Quill". Deterministic (seeded), so every run sees the same place.
 
 export type Item = { id: string; name: string; category: string; season: "winter" | "summer" | "all"; material: string; color: string;

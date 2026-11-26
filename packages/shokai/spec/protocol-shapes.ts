@@ -1757,6 +1757,44 @@ export type ShokaiMessage =
   | DeletionRequestMessage
   | DeletionReceiptMessage;
 
+/** §12.5 (C309): what kind of trap signal a piece of place content carried. A signal is a heuristic hit to record and report, never proof. */
+export type TrapSignalKind = "instruction" | "memory_write" | "owner_claim" | "pressure" | "oversized" | "flood" | "padding" | "act_request";
+/** §12.5 (C309): one trap signal, quoted from the place's content, so it is untrusted text. */
+export type TrapSignal = { kind: TrapSignalKind; quote: string; untrusted: true; where?: string; /** How many times this signal was seen (the first place is `where`). */ count?: number };
+/** §12.5 (C303, C306): one thing the representative kept from the place, with why it fits the brief. The quote is the place's text. */
+export type KeptItem = { id: string; title: string; fits: string; quote?: string };
+/**
+ * v0.6.1 (§12.5, C306): the visit's take-home, in the owner's report. Optional and not a wire message. It says what was kept, how much
+ * was examined and left (and why), the budget and what the quotes used of it, every trap signal, and every memory request: counts are
+ * the representative's own, never the place's.
+ */
+/** §12.5 (C304): the kind of errand the representative worked to; it derives the take-home budget from this, never from an owner setting. */
+export type ErrandKind = "errand" | "visit" | "research";
+/** §12.5 (C310): a question the representative asked its owner about heavy or unusual content (a PDF, a video, a large download, an
+ *  attachment) before bringing it home. `what` and `from` are the place's own words, so they are untrusted. */
+export type HeavyContentAsk = { id: string; what: string; media_type?: string; bytes?: number; from?: string; question: string;
+  status: "awaiting_owner" | "approved" | "declined"; untrusted: true };
+export type TakeHomeReport = {
+  /** The errand kind it worked to (C304). */
+  errand_kind: ErrandKind;
+  /** The owner's brief in a line (C303); absent when the owner gave none. */
+  brief?: string;
+  kept: (KeptItem & { untrusted: true })[];
+  examined: number;
+  left: number;
+  left_reasons: { reason: string; count: number }[];
+  budget: { max_items: number; max_quoted_bytes: number; quoted_bytes: number };
+  trap_signals: TrapSignal[];
+  /** How many distinct items or texts carried at least one trap signal. */
+  flagged: number;
+  memory_requests_declined: number;
+  /** Notes the representative proposed for the owner's memory; each waits for the owner (C307). */
+  memory_proposals: { id: string; note: string; status: "awaiting_owner" | "confirmed" | "declined" }[];
+  /** Heavy or unusual content the representative asked its owner about (C310), with each answer so far. */
+  heavy_content?: HeavyContentAsk[];
+  left_early?: { why: string };
+};
+
 /**
  * The visiting representative's report home, in its own voice and the owner's
  * language. Not a wire message. Host-authored text is quoted, never followed.
@@ -1833,6 +1871,8 @@ export type VisitReport = {
   /** The report itself, in the representative's voice. */
   voice: { text: string; locale: Locale };
   relationship_ref?: string;
+  /** v0.6.1 (§12.5, C306): what the visit took home and left, for the owner. Present when the representative ran the visit under a take-home budget. */
+  take_home?: TakeHomeReport;
 };
 
 // ---------- Gatherings: groups are places ----------

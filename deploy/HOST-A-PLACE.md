@@ -91,9 +91,9 @@ for (const s of ["SIGINT", "SIGTERM"]) process.on(s, () => server.close(() => pr
 ## 2. Run it
 
 ```sh
-npm install @kigenka/shokai@0.6.0 @modelcontextprotocol/sdk zod
+npm install @kigenka/shokai@0.6.1 @modelcontextprotocol/sdk zod
 PUBLIC_URL=https://place.example HOST=0.0.0.0 TRUST_PROXY=1 DATA_DIR=/data KEY_DIR=/keys node place.mjs
-npx --no-install shokai-conformance https://place.example/shokai   # the core checks against your door (from another machine: npx -p @kigenka/shokai@0.6.0 shokai-conformance …)
+npx --no-install shokai-conformance https://place.example/shokai   # the core checks against your door (from another machine: npx -p @kigenka/shokai@0.6.1 shokai-conformance …)
 ```
 
 The core checks include `seat.max_amount`: the runner is admitted with a pass with a 0.01 cap and asks for 1.00, so a door that enforces caps moves no money. The running totals (`seat.max_amount_total`, `mandate.max_amount_total`) need one admitted order and are opt-in: add `--spend <one order's amount> --spend-args '<the order's other arguments as JSON>'`, against mock money.

@@ -235,6 +235,7 @@
     "12.5"
   ],
   "informative_sections": [
+    "12.6",
     "Terminology",
     "Design principles",
     "The core in one story",
@@ -335,7 +336,12 @@
     "C306": "visitor",
     "C307": "visitor",
     "C308": "visitor",
-    "C309": "visitor"
+    "C309": "visitor",
+    "C310": "visitor",
+    "C311": "both",
+    "C312": "door",
+    "C313": "visitor",
+    "C314": "visitor"
   },
   "checks": {
     "C1": {
@@ -1803,6 +1809,31 @@
       "role": "visitor",
       "status": "stable"
     },
+    "C310": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C311": {
+      "class": "core",
+      "role": "both",
+      "status": "stable"
+    },
+    "C312": {
+      "class": "core",
+      "role": "door",
+      "status": "stable"
+    },
+    "C313": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
+    "C314": {
+      "class": "core",
+      "role": "visitor",
+      "status": "stable"
+    },
     "C199": {
       "class": "core",
       "role": "both",
@@ -1941,6 +1972,10 @@
       "core-visitor"
     ],
     "packages/shokai/test/trap-places.test.ts": [
+      "core-visitor"
+    ],
+    "packages/shokai/test/trust-layers.test.ts": [
+      "core-door",
       "core-visitor"
     ],
     "packages/shokai/test/v050.test.ts": [

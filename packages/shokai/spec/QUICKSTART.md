@@ -2,7 +2,7 @@
 
 The rest of this page is the **by-hand** path: you type the commands and can read every function. In about ten minutes you will run an MCP server behind a Shōkai door (your place, with its own host representative), send a visiting representative to it, watch it present its Shōkai visitor card and get a pass, call tools within its pass, make a visit that spends within a limit, and run the conformance checks. Everything runs on your machine; nothing is sent anywhere.
 
-If you would rather have an assistant walk you through planning a place, see the labeled draft [installer skills](https://github.com/Kigenka/shokai/blob/v0.6.0/drafts/package-0.6/installer-skills/README.md). Those drafts were rehearsed in conversation; they are not a finished installer, and they are not in the published `@kigenka/shokai` package.
+If you would rather have an assistant walk you through planning a place, see the labeled draft [installer skills](https://github.com/Kigenka/shokai/blob/v0.6.1/drafts/package-0.6/installer-skills/README.md). Those drafts were rehearsed in conversation; they are not a finished installer, and they are not in the published `@kigenka/shokai` package.
 
 ## Pass vs `seat` (canonical) {#pass-vs-seat}
 
@@ -33,17 +33,17 @@ You need Node.js 22 or later.
 
 You are making a folder on your machine and installing the Shōkai package, plus the MCP SDK your door will sit in front of. Nothing is published, and nothing leaves this folder.
 
-**Tested with** (November 5, 2026, re-checked against the published `@kigenka/shokai@0.5.0` on November 10, 2026, and against the 0.5.1 package file on November 11, 2026): Debian GNU/Linux 13 (Linux 6.12), Node.js 24.22.1, npm 11.21.1, `@modelcontextprotocol/sdk` 1.32.2, `zod` 4.6.7, and `@kigenka/shokai@0.5.1`. 0.6.0 does not change the SDK's compiled code from 0.5.1, so the same walkthrough applies to `@kigenka/shokai@0.6.0`. The versions above are pinned to what was tested. **macOS is untested** (the commands are standard POSIX and should work, but nobody has run them there yet). The stated minimum is **Node.js 22** (`engines`); CI runs Node 22 and 24.
+**Tested with** (November 5, 2026, re-checked against the published `@kigenka/shokai@0.5.0` on November 10, 2026, and against the 0.5.1 package file on November 11, 2026): Debian GNU/Linux 13 (Linux 6.12), Node.js 24.22.1, npm 11.21.1, `@modelcontextprotocol/sdk` 1.32.2, `zod` 4.6.7, and `@kigenka/shokai@0.5.1`. 0.6.0 did not change the SDK's compiled code from 0.5.1, and 0.6.1 adds visitor-safety code the walkthrough does not use, so the same walkthrough applies to `@kigenka/shokai@0.6.1`; `tools/verify-quickstart.sh` runs it against the 0.6.1 package file. The versions above are pinned to what was tested. **macOS is untested** (the commands are standard POSIX and should work, but nobody has run them there yet). The stated minimum is **Node.js 22** (`engines`); CI runs Node 22 and 24.
 
 ```sh
 mkdir shokai-quickstart && cd shokai-quickstart
 npm init -y && npm pkg set type=module
-npm install @kigenka/shokai@0.6.0 @modelcontextprotocol/sdk@1.32.2 zod@4.6.7
+npm install @kigenka/shokai@0.6.1 @modelcontextprotocol/sdk@1.32.2 zod@4.6.7
 ```
 
 This walkthrough uses **Zod 4** (`zod@4.6.7`), required by the pinned MCP SDK — not Zod 3.
 
-The package digest is recorded in [release/kigenka-shokai-0.6.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.6.0.sha256) (0.5.1's in [release/kigenka-shokai-0.5.1.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.5.1.sha256); 0.5.0's in [release/kigenka-shokai-0.5.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.0/release/kigenka-shokai-0.5.0.sha256)).
+The package digest is recorded in [release/kigenka-shokai-0.6.1.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.1/release/kigenka-shokai-0.6.1.sha256) (0.5.1's in [release/kigenka-shokai-0.5.1.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.1/release/kigenka-shokai-0.5.1.sha256); 0.5.0's in [release/kigenka-shokai-0.5.0.sha256](https://raw.githubusercontent.com/Kigenka/shokai/v0.6.1/release/kigenka-shokai-0.5.0.sha256)).
 
 ## Run a place (host representative)
 
@@ -311,7 +311,7 @@ You don't need a server of your own to visit a place. This script is a visiting 
 - **Its actions are its own.** A place lists its own actions (`menu.view`, `tea.ask`, `order.place`, ...), what each spends and what it will ask for. Read them from the listing; don't assume the names in this quickstart.
 - **Shōkai card scope vs mandate.** `createRepresentative({ purposes, actions })` sets the scope of the representative's **Shōkai card**: everything it may ever ask for on its owner's behalf, signed once. Each `visit()` carries a **mandate**: one purpose, the actions for this errand (within the Shōkai card's scope) and its limits, signed for this errand. A visit can ask for less than the Shōkai card allows, never more; a mandate beyond its Shōkai card is refused (`MANDATE_INVALID`). The script below builds both from the listing only to stay short.
 
-- **Test owner: local or test doors only.** `createRepresentative({ ownerName })` with no `owner` or `card` signs with `developmentPasskey()`, a software stand-in whose `rp_id` is the reserved `owners.example`. A door on loopback (like step 2's) or in the test profile admits it. A correctly configured public door (https, not loopback) refuses it before any pass: the visit ends `not_now` and the door's log says `rp_id owners.example is an RFC 2606 reserved name (a development passkey)`. To visit a public door, the owner signs the Shōkai card with a real passkey (the signing page, [SIGNING.md](SIGNING.md)) and you pass it in: `createRepresentative({ card, ... })`, or `createRepresentative({ owner, ... })` with the owner's passkey signer ([docs/build-a-visitor.md](https://github.com/Kigenka/shokai/blob/v0.6.0/docs/build-a-visitor.md)). `shokai visit <url>` uses the test owner too, so it is for demo and test doors only.
+- **Test owner: local or test doors only.** `createRepresentative({ ownerName })` with no `owner` or `card` signs with `developmentPasskey()`, a software stand-in whose `rp_id` is the reserved `owners.example`. A door on loopback (like step 2's) or in the test profile admits it. A correctly configured public door (https, not loopback) refuses it before any pass: the visit ends `not_now` and the door's log says `rp_id owners.example is an RFC 2606 reserved name (a development passkey)`. To visit a public door, the owner signs the Shōkai card with a real passkey (the signing page, [SIGNING.md](SIGNING.md)) and you pass it in: `createRepresentative({ card, ... })`, or `createRepresentative({ owner, ... })` with the owner's passkey signer ([docs/build-a-visitor.md](https://github.com/Kigenka/shokai/blob/v0.6.1/docs/build-a-visitor.md)). `shokai visit <url>` uses the test owner too, so it is for demo and test doors only.
 
 Save this as `visitor.mjs`; it reads any door's listing, asks for a pass for the actions that spend nothing, and lists the tools in its pass:
 
@@ -402,4 +402,4 @@ Section numbers (§3.1, §7.2, Appendix A.1) and check ids (C104, C174) refer to
 - The SDK and the MCP gate: the package's `README.md` (`node_modules/@kigenka/shokai/README.md`). A runnable example ships with it: `node node_modules/@kigenka/shokai/dist/examples/toy-mcp/run.js`.
 - The threat model: `THREAT-MODEL.md`, next to `SPEC.md`.
 - Host it for real: `deploy/HOST-A-PLACE.md` in the source repository takes this server to a public host (stable keys, durable state, limits, a kill switch).
-- To invite a guest, see the [Shōkai invitation card](https://github.com/Kigenka/shokai/blob/v0.6.0/docs/concepts/cards.md#the-invitation-card) and [invitation setup](https://github.com/Kigenka/shokai/blob/v0.6.0/drafts/package-0.6/installer-skills/INVITATION-SETUP.md).
+- To invite a guest, see the [Shōkai invitation card](https://github.com/Kigenka/shokai/blob/v0.6.1/docs/concepts/cards.md#the-invitation-card) and [invitation setup](https://github.com/Kigenka/shokai/blob/v0.6.1/drafts/package-0.6/installer-skills/INVITATION-SETUP.md).

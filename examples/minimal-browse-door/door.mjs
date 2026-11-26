@@ -10,7 +10,7 @@ import http from "node:http";
 import { createHash, createPublicKey, generateKeyPairSync, sign, verify, randomBytes } from "node:crypto";
 const TAG = "shokai/0.5", SKEW = 300e3, SEAT_S = 3600, PROBE_N = 3, PROBE_WINDOW = 24 * 3600e3, NEVER_MS = 180 * 864e5, DAY = 864e5;
 const DEFAULTS = { message_cap: 30, max_message_bytes: 65536, unverified_per_min: 60, unverified_total_per_min: 600, newcomer_per_min: 60, newcomer_source_per_min: 600, seats_per_card: 2, seats_per_source: 16, revocation_store: 10000, seen_revocations_per_principal: 16, unseen_revocations_per_principal: 16, unseen_revocations_total: 10000, encounter_bound: 10000, encounter_idle_s: 120 };
-const SPEC = { version: "0.5.0", url: "https://shokai.example/spec/v0.5.0" }, B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+const SPEC = { version: "0.5.0", url: "https://shokaiprotocol.com/docs/spec-detail" }, B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 // ---- canonical JSON, digests, keys (§2.1, §2.2, Appendix A)
 const jcs = (v) => v === null || typeof v !== "object" ? JSON.stringify(v) : Array.isArray(v) ? `[${v.map(jcs).join(",")}]`
   : `{${Object.keys(v).filter((k) => v[k] !== undefined).sort().map((k) => JSON.stringify(k) + ":" + jcs(v[k])).join(",")}}`;

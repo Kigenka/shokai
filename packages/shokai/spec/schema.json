@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/Kigenka/shokai/blob/v0.5.1/schema/v0.5.1/schema.json",
-  "title": "Shōkai wire types, schema v0.5.1 (specification v0.5.0, wire tag shokai/0.5, with optional members added in package 0.5.1)",
+  "$id": "https://github.com/Kigenka/shokai/blob/v0.6.1/schema/v0.6.1/schema.json",
+  "title": "Shōkai wire types, schema v0.6.1 (specification v0.5.0, wire tag shokai/0.5, with optional members added in package 0.6.1)",
   "description": "GENERATED from protocol-shapes.ts by tools/schema/schema.mjs; do not edit. The TypeScript types are the source of truth; docs/SPEC-DETAIL.md (the normative text) wins where they differ. Start from the definitions WireMessage (a signed envelope), ShokaiMessage (a payload) or DoorPointer.",
   "definitions": {
     "AcceptPresence": {
@@ -4016,6 +4016,15 @@
       "additionalProperties": false,
       "description": "v0.5.0 (§5.5): an owner-signed effort cap for one errand. Kept by the representative; never sent to a place."
     },
+    "ErrandKind": {
+      "type": "string",
+      "enum": [
+        "errand",
+        "visit",
+        "research"
+      ],
+      "description": "§12.5 (C304): the kind of errand the representative worked to; it derives the take-home budget from this, never from an owner setting."
+    },
     "ErrandUsed": {
       "type": "object",
       "properties": {
@@ -5015,6 +5024,50 @@
       "patternProperties": {
         "^x-": {}
       }
+    },
+    "HeavyContentAsk": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "what": {
+          "type": "string"
+        },
+        "media_type": {
+          "type": "string"
+        },
+        "bytes": {
+          "type": "number"
+        },
+        "from": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "awaiting_owner",
+            "approved",
+            "declined"
+          ]
+        },
+        "untrusted": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "id",
+        "what",
+        "question",
+        "status",
+        "untrusted"
+      ],
+      "additionalProperties": false,
+      "description": "§12.5 (C310): a question the representative asked its owner about heavy or unusual content (a PDF, a video, a large download, an attachment) before bringing it home. `what` and `from` are the place's own words, so they are untrusted."
     },
     "HeldNotice": {
       "type": "object",
@@ -8077,6 +8130,30 @@
         }
       ],
       "description": "Step 5 (+6). Extend, decline, or conditionally extend the invitation."
+    },
+    "KeptItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "fits": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "fits"
+      ],
+      "additionalProperties": false,
+      "description": "§12.5 (C303, C306): one thing the representative kept from the place, with why it fits the brief. The quote is the place's text."
     },
     "LearnedMeaning": {
       "type": "object",
@@ -14722,6 +14799,169 @@
         "^x-": {}
       }
     },
+    "TakeHomeReport": {
+      "type": "object",
+      "properties": {
+        "errand_kind": {
+          "$ref": "#/definitions/ErrandKind",
+          "description": "The errand kind it worked to (C304)."
+        },
+        "brief": {
+          "type": "string",
+          "description": "The owner's brief in a line (C303); absent when the owner gave none."
+        },
+        "kept": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "untrusted": {
+                "type": "boolean",
+                "const": true
+              },
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "fits": {
+                "type": "string"
+              },
+              "quote": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "fits",
+              "id",
+              "title",
+              "untrusted"
+            ]
+          }
+        },
+        "examined": {
+          "type": "number"
+        },
+        "left": {
+          "type": "number"
+        },
+        "left_reasons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "count": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "reason",
+              "count"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "max_items": {
+              "type": "number"
+            },
+            "max_quoted_bytes": {
+              "type": "number"
+            },
+            "quoted_bytes": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "max_items",
+            "max_quoted_bytes",
+            "quoted_bytes"
+          ],
+          "additionalProperties": false
+        },
+        "trap_signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TrapSignal"
+          }
+        },
+        "flagged": {
+          "type": "number",
+          "description": "How many distinct items or texts carried at least one trap signal."
+        },
+        "memory_requests_declined": {
+          "type": "number"
+        },
+        "memory_proposals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "note": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "awaiting_owner",
+                  "confirmed",
+                  "declined"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "note",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Notes the representative proposed for the owner's memory; each waits for the owner (C307)."
+        },
+        "heavy_content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HeavyContentAsk"
+          },
+          "description": "Heavy or unusual content the representative asked its owner about (C310), with each answer so far."
+        },
+        "left_early": {
+          "type": "object",
+          "properties": {
+            "why": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "why"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "errand_kind",
+        "kept",
+        "examined",
+        "left",
+        "left_reasons",
+        "budget",
+        "trap_signals",
+        "flagged",
+        "memory_requests_declined",
+        "memory_proposals"
+      ],
+      "additionalProperties": false
+    },
     "ThirdPartyClassifier": {
       "type": "object",
       "properties": {
@@ -14851,6 +15091,48 @@
     "TopicCode": {
       "type": "string",
       "description": "v0.2.1 (D10, the Gatherings extension): registered, language-neutral topic codes. `x-` codes are place-defined and MUST be listed in the Gathering's house_rules.topics. A missing or unknown code MUST be treated as the most restrictive tier."
+    },
+    "TrapSignal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/TrapSignalKind"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "untrusted": {
+          "type": "boolean",
+          "const": true
+        },
+        "where": {
+          "type": "string"
+        },
+        "count": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "quote",
+        "untrusted"
+      ],
+      "additionalProperties": false,
+      "description": "§12.5 (C309): one trap signal, quoted from the place's content, so it is untrusted text."
+    },
+    "TrapSignalKind": {
+      "type": "string",
+      "enum": [
+        "instruction",
+        "memory_write",
+        "owner_claim",
+        "pressure",
+        "oversized",
+        "flood",
+        "padding",
+        "act_request"
+      ],
+      "description": "§12.5 (C309): what kind of trap signal a piece of place content carried. A signal is a heuristic hit to record and report, never proof."
     },
     "TrustPathKind": {
       "type": "string",
@@ -15916,6 +16198,10 @@
         },
         "relationship_ref": {
           "type": "string"
+        },
+        "take_home": {
+          "$ref": "#/definitions/TakeHomeReport",
+          "description": "v0.6.1 (§12.5, C306): what the visit took home and left, for the owner. Present when the representative ran the visit under a take-home budget."
         }
       },
       "required": [

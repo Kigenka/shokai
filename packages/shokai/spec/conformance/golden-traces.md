@@ -363,7 +363,7 @@ The regenerated traces (G1–G5b, M1, L1, H1–H2) show bare messages, as the ge
     "onboarding_url": "https://examplebank.example/shokai/onboard",
     "spec_ref": {
       "version": "0.5.0",
-      "url": "https://shokai.example/spec/v0.5.0"
+      "url": "https://shokaiprotocol.com/docs/spec-detail"
     },
     "inbox": "https://door.examplebank.example/shokai/places/examplebank/inbox",
     "actions": [
@@ -2296,7 +2296,7 @@ Door, step 0 (`POST /fernwood`, plain prose, unknown route):
   "start_with": "greeting",
   "spec_ref": {
     "version": "0.5.0",
-    "url": "https://shokai.example/spec/v0.5.0"
+    "url": "https://shokaiprotocol.com/docs/spec-detail"
   },
   "places": [
     {
@@ -2447,7 +2447,7 @@ Then the newcomer's unsigned greeting and the place's answers:
     ],
     "spec_ref": {
       "version": "0.5.0",
-      "url": "https://shokai.example/spec/v0.5.0"
+      "url": "https://shokaiprotocol.com/docs/spec-detail"
     },
     "inbox": "https://door.example/shokai/places/fernwood/inbox",
     "actions": [
@@ -5125,14 +5125,19 @@ v0.2-freeze decision items:
 - [ ] C299 v0.5.0 (H1(a), editor decision 2026-11-05): wire tags are ordered numerically: every `shokai/0.N` is below `shokai/1`; within 0.x by minor number (`shokai/0.10` above `shokai/0.5`); never compared as strings. Tested in packages/shokai/test/v050.test.ts (compareWireTags).
 - [ ] C300 v0.5.0 (H1(e), editor decision 2026-11-09, conformance pass 3): a mandate whose `min_protocol` isn't a well-formed protocol identifier (a Shōkai wire tag ordered as in H1(a); e.g. `"0.5"` without `shokai/`) is malformed: a place refuses it under either tag as an invalid mandate (`deny` / `not_now` / `MANDATE_INVALID`, retry `with_credential [signed_mandate]`), never ignoring the member. Tested in reference/engawa/test/v050.ts and packages/shokai/test/conformance-0.5.test.ts.
 - [ ] C301 v0.5.0 (H1(f), editor decision 2026-11-09, conformance pass 3): a place refuses an `invitation_request` under `shokai/0.5` whose mandate carries `min_protocol` above `shokai/0.5` with the version-mismatch lobby (C102), as H1(d) does under `shokai/0.3`. Tested in reference/engawa/test/v050.ts and packages/shokai/test/conformance-0.5.test.ts.
-- [ ] C302 draft (next specification version, §12.5): place content is data for a visiting representative: instructions in replies, act results, catalog items or the house summary are not followed, and place content never changes the owner's brief or directives, the mandate, the allowance, the card's scope or the representative's rules; claims about the owner are claims about goods.
-- [ ] C303 draft (§12.5): a representative chooses what it brings home by the owner's brief and the mandate, not by the place's ranking or urging; the brief is not sent to the place beyond what the mandate and consent disclose.
-- [ ] C304 draft (§12.5): the take-home stays within the owner's budget (default five items and 4 KiB of quoted place text per visit); a place's request to bring home more does not raise it.
-- [ ] C305 draft (§12.5): a representative caps each reply it reads and refuses an oversized reply whole (never a truncated prefix), and bounds what it takes in during a visit (the `ErrandBudget` when there is one).
-- [ ] C306 draft (§12.5): a report for a visit that brought something back carries `take_home`: the brief, each kept item with how it fits, counts looked at and left with grouped reasons (the representative's own counts, never the place's stated totals), and the budget; place text quoted as untrusted.
-- [ ] C307 draft (§12.5): nothing from a visit is written to the owner's lasting memory, preferences, directives or brief, or to the representative's own instructions, without the owner confirming that item; a place's "remember/save this" ask is declined and reported in `offers_declined`.
-- [ ] C308 draft (§12.5): a representative SHOULD leave (farewell `withdrawn`) a place that floods, pressures or asks it to set aside its brief or rules, and MUST NOT perform an act only because place content asked for it.
-- [ ] C309 draft (§12.5): trap signals (instruction-like text, memory-write asks, claims about the owner, oversized or padded replies, floods) are listed in `take_home.trap_signals` with kind and quote, kept locally in the place's relationship record, and never sent to other places.
+- [ ] C302 package 0.6.1 (§12.5): place content is data for a visiting representative: instructions in replies, act results, catalog items or the house summary are not followed, and place content never changes the owner's brief or directives, the mandate, the allowance, the card's scope or the representative's rules; claims about the owner are claims about goods.
+- [ ] C303 package 0.6.1 (§12.5): a representative chooses what it brings home by the owner's brief and the mandate, not by the place's ranking or urging; the brief is not sent to the place beyond what the mandate and consent disclose; the brief can be one sentence or absent, and the visitor never asks the owner for settings.
+- [ ] C304 package 0.6.1 (§12.5): the visitor derives a small take-home budget itself from the errand kind (`errand`, `visit`, `research`), with safe defaults (informative: one item and 1 KiB, five items and 4 KiB, ten items and 8 KiB); the owner is never asked for numbers, and a place's request to bring home more does not raise it.
+- [ ] C305 package 0.6.1 (§12.5): a representative caps each reply it reads and refuses an oversized reply whole (never a truncated prefix), and bounds what it takes in during a visit (the `ErrandBudget` when there is one).
+- [ ] C306 package 0.6.1 (§12.5): a report for a visit that brought something back carries `take_home`: the brief, each kept item with how it fits, counts looked at and left with grouped reasons (the representative's own counts, never the place's stated totals), and the budget; place text quoted as untrusted.
+- [ ] C307 package 0.6.1 (§12.5): nothing from a visit is written to the owner's lasting memory, preferences, directives or brief, or to the representative's own instructions, without the owner confirming that item; a place's "remember/save this" ask is declined and reported in `offers_declined`.
+- [ ] C308 package 0.6.1 (§12.5): a representative SHOULD leave (farewell `withdrawn`) a place that floods, pressures or asks it to set aside its brief or rules, and MUST NOT perform an act only because place content asked for it.
+- [ ] C309 package 0.6.1 (§12.5): trap signals (instruction-like text, memory-write asks, claims about the owner, oversized or padded replies, floods) are listed in `take_home.trap_signals` with kind and quote, kept locally in the place's relationship record, and never sent to other places.
+- [ ] C310 package 0.6.1 (§12.5): heavy or unusual content (a PDF or document, audio or video, an archive or program, a large download, an attachment) is not brought home until the visitor has asked the owner in plain words (what, from where, how big, why) and the owner said yes; before the yes only the name, type and size from the place's own words are noted, and nothing is opened, run or followed; the content stays untrusted after the yes.
+- [ ] C311 package 0.6.1 (§11.1, C269): a door is named by a domain name, not an IP address, in its `base`, `entry`, `lobby` and `inbox`; a door does not start on an IP-literal host and a visitor sends nothing to one (loopback and a conformance run excepted).
+- [ ] C312 package 0.6.1 (§11.1): a door is served over `https` with a certificate valid for its domain name, chaining to a trusted authority; not expired, not self-signed, not for another name. Not measurable by the door itself; a probe over `https` uses ordinary validation.
+- [ ] C313 package 0.6.1 (§11.1): a visiting representative validates the certificate of every place it contacts over `https`, sends nothing when validation fails, offers no "continue anyway", and never turns checking off in its own HTTP client.
+- [ ] C314 package 0.6.1 (§11.1, §12.6): a domain and a valid certificate show who controls the domain, not that the place is honest: they never relax a rule of §12.5 or a mandate's limit, and the visitor never calls a place "verified", "safe" or "trusted" to its owner on their account.
 
 - [ ] C199 v0.3.0-rc4 (round 3 clarification): names are claims, never identity. A display name, role, "on behalf of" name, photo or handle is an unverified claim; decisions, relationship records, conduct and `never` bindings are keyed by the verified DIDs, and a report home names a counterpart by its verified identifier (a `did:web` domain or its key), with any self-asserted name shown only as "claims to be …"; a look-alike or matching name earns nothing (§2.1, §12.1, §12.2; SDK `placeLabel`; tricksters: the fake bank, the famous-athlete impersonator, the look-alike brand, the fresh-key "established customer").
 

@@ -89,7 +89,7 @@ async function visitRemote(url: string, name?: string) {
   // §11.1 (C269): https, or plain http only on this computer: 127.x.x.x, localhost or [::1] (the same rule as secureEntry()).
   if (!secureEntry(base)) {
     let host = "?"; try { host = new URL(base).host; } catch { /* not a URL */ }
-    throw new Error(`visit needs an https:// door, or plain http only on this computer (http://127.0.0.1, http://localhost or http://[::1]). ` +
+    throw new Error(`visit needs an https:// door at a domain name (not an IP address), or plain http only on this computer (http://127.0.0.1, http://localhost or http://[::1]). ` +
       `${host} isn't loopback: for a container or LAN host (for example host.docker.internal), put the door behind https, or run the visit on the door's own machine.`);
   }
   console.log(bold(`\nShōkai visit`) + dim(`  (${PROTOCOL}, spec ${SPEC_VERSION}; a demo owner "Aya Linden" with keys made for this run)\n`));

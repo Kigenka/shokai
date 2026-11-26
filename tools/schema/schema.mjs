@@ -26,7 +26,7 @@ const relStatus = join(root, "release/release-status.json");
 const SV = (existsSync(relStatus) && JSON.parse(readFileSync(relStatus, "utf8")).schema_version) || V;
 const out = join(root, "schema", "v" + SV, "schema.json");
 // Released schema files, byte for byte (sha256 of the file at its release tag). --check fails if one changes.
-const FROZEN = { "0.5.0": "49c7c8e3858159e03eea6cc88fdd698983e8af1b87b7252c9ef64759a0c2faf9" };
+const FROZEN = { "0.5.0": "49c7c8e3858159e03eea6cc88fdd698983e8af1b87b7252c9ef64759a0c2faf9", "0.5.1": "3795dc2ff8f1cb51d5190a226b256d21157e9c2c44d35a95c7932f609200f16d" };
 
 const generated = createGenerator({ path: join(root, "protocol-shapes.ts"), type: "*", expose: "export", jsDoc: "extended", skipTypeCheck: true }).createSchema("*");
 // Extensible objects (SPEC Conventions, §0.1: unknown members are ignored unless named in `crit`; `x-` members are always allowed,

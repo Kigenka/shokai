@@ -269,7 +269,7 @@ export function shokaiFetch(visit: Visit, base: typeof fetch = fetch): typeof fe
     const r = await base(input, { ...init, headers });
     if (tool) {
       let ok = r.ok; let result: unknown;
-      // §12.5 (C305, draft): read the place's tool reply under MAX_PLACE_REPLY; a larger reply is refused whole, and the MCP client
+      // §12.5 (C305): read the place's tool reply under MAX_PLACE_REPLY; a larger reply is refused whole, and the MCP client
       // gets a refusal instead of the oversized body. The body is read once (not through a clone: cancelling one branch of a tee
       // waits for the other) and handed on to the MCP client as the same text.
       let text = "";

@@ -45,7 +45,7 @@ When a Shōkai visitor card is issued, the page can offer a standby revocation (
 
 ## 7. Running your own: checklist
 
-The [reference signing page](https://github.com/Kigenka/shokai/blob/v0.6.0/reference/signing-page/README.md) is a small, dependency-free server that does §2–§4 as its README lists them (since 2026-10-28 it builds every summary from the item's machine fields). Run it on your own domain.
+The [reference signing page](https://github.com/Kigenka/shokai/blob/v0.6.1/reference/signing-page/README.md) is a small, dependency-free server that does §2–§4 as its README lists them (since 2026-10-28 it builds every summary from the item's machine fields). Run it on your own domain.
 
 **Supported languages: English and Japanese.** The reference page words every item in English or Japanese, so it meets §2 item 3 only for owners who read one of them. It is not a conformant signing page for an owner in any other language, and it MUST NOT be described as meeting §2 item 3 for other languages. It doesn't fall back silently:
 - an items file may name the owner's language (`owner_language`, a BCP 47 tag; English when absent). `en` and `ja` tags (such as `en-US` or `ja-JP`) are accepted; for any other language the page refuses to start and says why;

@@ -1,6 +1,6 @@
 {
   "name": "shokai",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "description": "Agents, introduced properly. Sh\u014dkai is an open protocol that gives online places a door for agents. This repository: the specification, SDK, conformance runner and reference implementations.",
   "license": "Apache-2.0",
