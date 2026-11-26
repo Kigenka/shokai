@@ -1,6 +1,6 @@
 # Contributing to Shōkai
 
-Thank you for looking at Shōkai. **Specification v0.5.0 is the current published protocol** in this repository, and **`@kigenka/shokai@0.6.0` is npm `latest`**, as of 18 November 2026, 8:34 PM Pacific Time. 0.6.0 does not change the SDK's compiled code from 0.5.1. The public GitHub repository is [Kigenka/shokai](https://github.com/Kigenka/shokai), at tag [v0.6.0](https://github.com/Kigenka/shokai/releases/tag/v0.6.0). It is not 1.0, so review is the most useful contribution right now: read the specification, try to implement it, and tell us where it's unclear or unsafe.
+Thank you for looking at Shōkai. **Specification v0.5.0 is the current published protocol** in this repository, and **`@kigenka/shokai@0.6.1` is npm `latest`**, as of 25 November 2026, 7:50 PM Pacific Time. 0.6.1 adds visitor safety against trap places and the domain-and-certificate rule for doors; the specification stays v0.5.0 on the wire. The public GitHub repository is [Kigenka/shokai](https://github.com/Kigenka/shokai), at tag [v0.6.1](https://github.com/Kigenka/shokai/releases/tag/v0.6.1). It is not 1.0, so review is the most useful contribution right now: read the specification, try to implement it, and tell us where it's unclear or unsafe.
 
 ## Ways to help
 

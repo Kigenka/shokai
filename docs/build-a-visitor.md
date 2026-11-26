@@ -1,12 +1,12 @@
 # Build a visiting representative (v0.5.0)
 
-*A guide for builders, for Shōkai specification v0.5.0 (wire tag `shokai/0.5`) and the `@kigenka/shokai` 0.6.0 package, both published. The specification is normative; where this page and [SPEC.md](../SPEC.md) disagree, SPEC.md wins. Every person and place here is fictional: Aya Linden is an owner, and Kettle & Leaf is a tea shop that keeps a Shōkai door.*
+*A guide for builders, for Shōkai specification v0.5.0 (wire tag `shokai/0.5`) and the `@kigenka/shokai` 0.6.1 package, both published. The specification is normative; where this page and [SPEC.md](../SPEC.md) disagree, SPEC.md wins. Every person and place here is fictional: Aya Linden is an owner, and Kettle & Leaf is a tea shop that keeps a Shōkai door.*
 
 A visiting representative is an agent that goes to places for its owner. It carries a Shōkai visitor card its owner signed with a passkey, asks for one purpose at a time under a mandate its owner signed, and brings home a report written from machine fields. This page walks through one visit in v0.5.0 order and names each SDK call. For the place's side, see [QUICKSTART.md](../QUICKSTART.md) and [deploy/HOST-A-PLACE.md](../deploy/HOST-A-PLACE.md).
 
 ## What you need
 
-- Node.js 22 or later, and `@kigenka/shokai` 0.6.0 from npm (`npm install @kigenka/shokai@0.6.0`). 0.6.0 does not change the SDK's compiled code from 0.5.1.
+- Node.js 22 or later, and `@kigenka/shokai` 0.6.1 from npm (`npm install @kigenka/shokai@0.6.1`). 0.6.1 adds visitor safety against trap places (SPEC-DETAIL §12.5) and the domain-and-certificate rule for doors (§11.1) to the SDK; the wire protocol is unchanged from 0.5.1.
 - A signing page for the owner. The reference one is in `reference/signing-page/`; [SIGNING.md](../SIGNING.md) says what any signing page must show. For practice, `createRepresentative()` without `owner` uses a software stand-in passkey: fine for tests, never for a real owner, and every report it writes says so.
 
 ## The visit, in order

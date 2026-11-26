@@ -1,6 +1,6 @@
 # Roadmap
 
-Shōkai's current specification is **v0.5.0** (wire tag `shokai/0.5`). The current package is `@kigenka/shokai@0.6.0`. 0.6.0 does not change the SDK's compiled code from 0.5.1. It is not 1.0; review continues, and changes go into later versions. *The sections below on the 0.3 line are kept as the historical record of that earlier release.*
+Shōkai's current specification is **v0.5.0** (wire tag `shokai/0.5`). The current package is `@kigenka/shokai@0.6.1`. 0.6.1 (25 November 2026) adds visitor safety against trap places and the domain-and-certificate rule for doors, with no change on the wire. It is not 1.0; review continues, and changes go into later versions. *The sections below on the 0.3 line are kept as the historical record of that earlier release.*
 
 **Feature freeze, except for clarifications (October 27, 2026).** No new features or proposals went into the 0.3 line after the freeze: only fixes, clearer wording and packaging until v0.3.0. The clarifications since the freeze are listed in SPEC.md (Status) and the CHANGELOG. Experimental extensions (teaching visits, signed place listings, W3C VC mapping) may still change or be dropped after review.
 

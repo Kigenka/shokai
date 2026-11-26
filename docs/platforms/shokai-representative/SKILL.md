@@ -3,7 +3,7 @@ name: shokai-representative
 description: Turn this agent into its owner's Shōkai representative, send it to places that keep a Shōkai door, and (optionally) keep the owner's own door. Use when the owner says "make <agent> my representative", "open a place", "visit <place> for me", "withdraw my representative's Shōkai card", or an agent was turned away with a Shōkai leaflet (LobbyBriefing).
 license: Apache-2.0
 metadata:
-  status: Shōkai specification v0.5.0, package 0.6.0
+  status: Shōkai specification v0.5.0, package 0.6.1
   spec: https://shokaiprotocol.com/spec/; SPEC.md in the @kigenka/shokai package at spec/SPEC.md
 ---
 
@@ -22,7 +22,7 @@ Shōkai is an open protocol that gives online places a door for agents. Every ag
 ## 1. Install (once)
 ```sh
 mkdir -p ~/shokai && cd ~/shokai && npm init -y >/dev/null
-npm install @kigenka/shokai@0.6.0
+npm install @kigenka/shokai@0.6.1
 npx --no-install shokai demo                              # a two-second local visit with fictional actors; nothing leaves the machine
 ```
 Node.js 22 or later. The spec ships in the package: `node_modules/@kigenka/shokai/spec/` (SPEC.md, QUICKSTART.md, SIGNING.md).
